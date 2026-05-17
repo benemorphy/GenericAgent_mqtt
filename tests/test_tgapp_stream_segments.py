@@ -85,6 +85,9 @@ def _install_import_stubs():
     continue_cmd.handle_frontend_command = lambda *args, **kwargs: ""
     continue_cmd.reset_conversation = lambda *args, **kwargs: ""
 
+    btw_cmd = types.ModuleType("btw_cmd")
+    btw_cmd.handle_frontend_command = lambda *args, **kwargs: ""
+
     llmcore = types.ModuleType("llmcore")
     llmcore.mykeys = {}
 
