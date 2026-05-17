@@ -178,6 +178,7 @@ h1{color:#00d2ff;font-size:20px;margin-bottom:16px}
 <div class="card"><h2>Agents (<span id="agent-count">0</span>)</h2><div id="agents"></div></div>
 <div class="card"><h2>Tasks (<span id="task-count">0</span>)</h2><div id="tasks"></div></div>
 </div>
+<div class="card"><h2>Stats History</h2><div id="stats-history" style="font-size:12px;color:#94a3b8;line-height:1.6"></div></div>
 <div class="card"><h2>Live Log</h2><div class="log-box" id="log"></div></div>
 <div class="card"><h2>Publish</h2>
 <form class="pub-form" onsubmit="pub(event)"><input id="pub-topic" placeholder="agent/board/task/hello/input" value="agent/board/task/test/input"><input id="pub-msg" placeholder='{"msg":"hello"}'><button type="submit">Publish</button></form></div>
@@ -202,7 +203,13 @@ cc.textContent=cs.length;var h='';cs.forEach(function(c){
 var st=c.connected?'<span style="color:#0f0">&#9679;</span>':'<span style="color:#f44">&#9679;</span>';
 h+=st+' '+c.clientid+' ('+c.ip_address+':'+c.port+') subs:'+c.subscriptions_cnt+'<br>'});
 ce.innerHTML=h})}
-setInterval(function(){fetchAgents();fetchTasks();fetchLogs();fetchBroker()},3000)
+function fetchStats(){fetch('/api/stats/history').then(function(r){return r.json()}).then(function(d){
+var e=document.getElementById('stats-history');
+if(!e)return;
+if(d.length===0){e.innerHTML='<span style="color:#666">collecting...</span>';return}
+var l=d[d.length-1];
+e.innerHTML='Records: '+d.length+' | Latest: C:'+l.c+' T:'+l.t+' S:'+l.s+' R:'+l.r+'<br>Time: '+l.ts.substring(11,19)}).catch(function(){})}
+setInterval(function(){fetchAgents();fetchTasks();fetchLogs();fetchBroker();fetchStats()},3000)
 function fetchAgents(){fetch('/api/agents').then(function(r){return r.json()}).then(function(d){ra('agents',d);document.getElementById('agent-count').textContent=Object.keys(d).length})}
 function fetchTasks(){fetch('/api/tasks').then(function(r){return r.json()}).then(function(d){rt('tasks',d);document.getElementById('task-count').textContent=Object.keys(d).length})}
 fetchAgents();fetchTasks();fetchLogs();
