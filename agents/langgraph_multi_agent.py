@@ -14,6 +14,25 @@ LangGraph 多智能体编排模块 — 三层组合架构中的编排引擎层
 2. StateGraph 串联，支持条件分支与循环
 3. 可被 Node UI 导入并可视化
 """
+"""
+MQTT Agent BBS — 多Agent状态发布
+"""
+_MQTT_PUB = None
+def _publish_agent_status(name, status, detail=""):
+    global _MQTT_PUB
+    if _MQTT_PUB is None:
+        try:
+            from mqtt_bbs import BBSClient
+            _MQTT_PUB = BBSClient(f"lg_{name}")
+            _MQTT_PUB.connect(); _MQTT_PUB.wait_connected(1)
+        except: return
+    try:
+        _MQTT_PUB.publish(f"node/{name}/status", 
+            {"status":status,"detail":str(detail)[:200],"time":__import__('time').time()},
+            retain=True, qos=1)
+    except: pass
+
+
 
 from typing import TypedDict, Literal, List, Dict, Any, Optional
 from langgraph.graph import StateGraph, END

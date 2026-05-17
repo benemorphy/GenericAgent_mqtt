@@ -128,3 +128,7 @@ Snapshots/
 images/
 temp_tools/
 uv.lock
+
+# Local runtime SQLite DB
+agent_bbs.db
+boards.json

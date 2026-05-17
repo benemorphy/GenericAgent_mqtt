@@ -22,5 +22,10 @@ MQTT Agent BBS — 智能体协作消息总线
 from .client import BBSClient
 from .bbs import AgentBoard, WorkerAgent, TaskStatus
 from .persistence import BBSClientWithPersistence, MariaDBConn, AgentBoardWithPersistence, WorkerAgentWithPersistence
+from .board_client import BoardClient
+from .board_service import BoardService
+
+# 预定义测试板块
+DEFAULT_BOARD = "agent-bbs-test"
 
 __version__ = "0.1.0"

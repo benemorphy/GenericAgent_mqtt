@@ -210,6 +210,7 @@ if __name__ == '__main__':
             import glob; [os.remove(f) for f in glob.glob(os.path.join(d, 'output*.txt'))]
             with open(infile, 'w', encoding='utf-8') as f: f.write(args.input)
         if (fh := consume_file(d, '_history.json')): agent.llmclient.backend.history = json.loads(fh)
+        # 文件模式：读 input.txt → 执行 → 写 output.txt
         with open(infile, encoding='utf-8') as f: raw = f.read()
         while True:
             dq = agent.put_task(raw, source='task')

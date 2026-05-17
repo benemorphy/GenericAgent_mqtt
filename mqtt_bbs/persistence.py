@@ -306,10 +306,13 @@ class BBSClientWithPersistence(BBSClient):
     def _on_connect(self, client, userdata, flags, rc, reasonCodeProperties=None):
         super()._on_connect(client, userdata, flags, rc, reasonCodeProperties)
         if rc == 0 and self._db:
-            self._set_agent_online()
-            self._recover_all_retained()
-            self._replay_session_queue()
-            self._recovered = True
+            try:
+                self._set_agent_online()
+                self._recover_all_retained()
+                self._replay_session_queue()
+                self._recovered = True
+            except Exception as e:
+                log.warning(f"[{self.agent_id}] ⚠ DB operation failed (non-fatal): {e}")
 
     def _on_disconnect(self, client, userdata, rc, properties=None, reasonCodeProperties=None):
         if self._db and self._connected:

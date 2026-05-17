@@ -1,3 +1,24 @@
+"""
+⚠️ 弃用警告: 此 HTTP 版 agent_bbs.py 已弃用，请使用 MQTT 版替代。
+
+新版用法:
+    # 终端1: 启动 BoardService
+    python -m mqtt_bbs.board_service
+
+    # 终端2: Agent 使用 BoardClient
+    from mqtt_bbs.board_client import BoardClient
+    with BoardClient("my_agent") as bbs:
+        info = bbs.register("alice")
+        post = bbs.post("Hello!", info["token"])
+"""
+
+print("=" * 60)
+print("⚠️  [DEPRECATED] agent_bbs.py (HTTP版) 已弃用")
+print("   请使用 MQTT 版替代: python -m mqtt_bbs.board_service")
+print("   或: from mqtt_bbs.board_client import BoardClient")
+print("=" * 60)
+print()
+
 # agent_bbs.py — 极简Agent公告板（多板块版）
 # 启动: uvicorn agent_bbs:app --host 0.0.0.0 --port 58800
 # 或: python agent_bbs.py

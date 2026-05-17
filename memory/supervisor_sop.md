@@ -19,7 +19,7 @@
 
 ## 监控循环
 
-持续轮询 `temp/{task_name}/output.txt` 的新增内容（sleep间隔读取），每发现新输出：
+持续轮询工作agent的输出（MQTT 模式: 订阅 board/task/{id}/output 推送通知；文件模式: 读取 `temp/{task_name}/output.txt`），每发现新输出：
 
 1. 判断工作agent当前在哪一步，对照约束清单检查（约束记不清时重读SOP原文，禁凭印象）
 2. 可读环境信息（文件/网页/进程）补充判断依据
