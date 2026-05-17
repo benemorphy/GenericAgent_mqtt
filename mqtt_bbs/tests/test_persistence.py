@@ -3,6 +3,7 @@ import sys, os, json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 import pymysql
+from unittest.mock import patch, MagicMock
 from mqtt_bbs.client import TaskOutput, TaskMessage
 
 
