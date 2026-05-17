@@ -2,7 +2,7 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
-from tools.skill_learn_from_cases.env_detector import _port_open
+from tools.skill_learn_from_cases_full.env_detector import _port_open
 
 
 def test_port_open_localhost():

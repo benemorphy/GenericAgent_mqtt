@@ -2,7 +2,7 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
-from tools.skill_learn_from_cases.dir_manager import _sanitize_skill_name
+from tools.skill_learn_from_cases_full.dir_manager import _sanitize_skill_name
 
 
 def test_sanitize_normal():

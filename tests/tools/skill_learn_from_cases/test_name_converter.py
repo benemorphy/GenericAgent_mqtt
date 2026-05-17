@@ -5,7 +5,7 @@ _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
-from tools.skill_learn_from_cases.name_converter import convert_name
+from tools.skill_learn_from_cases_full.name_converter import convert_name
 
 
 def test_english_name():
