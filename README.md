@@ -564,24 +564,46 @@ worker.start()
 
 ---
 
-### 2. `ga` CLI 命令行工具
+### 2. skill_learn_from_cases — 案例驱动技能学习 CLI 工具
 
-全局命令入口，通过 `ga <命令>` 快速启动所有前端和服务。
+通过真实案例学习一项技能，并用实操验证能力习得。零外部依赖（除搜索引擎 API Key），支持 LLM 增强与纯规则降级双路径。
 
 ```bash
-# 安装后即可使用
-ga gui          # 启动桌面 GUI (PyQt5)
-ga web          # 启动 Web 增强版
-ga tui          # 启动终端 TUI (Textual)
-ga cli          # 启动 CLI 对话 (agentmain)
-ga hub          # 启动 Hub 管理器
-ga launch       # 启动 webview 桌面壳
-ga list         # 列出所有可用命令
-ga status       # 检查运行状态
-ga update       # git pull + pip install 更新
+# 最简用法（纯规则模式）
+python -m tools.skill_learn_from_cases_full docker_compose_production
+
+# 预览：展示环境/领域/hooks
+python -m tools.skill_learn_from_cases_full wiki_search --dry-run
+
+# 启用 LLM 增强
+set SKILL_LLM_ENABLE=1
+set LLM_API_BASE=https://api.deepseek.com/v1
+set LLM_API_KEY=sk-xxx
+set LLM_MODEL=deepseek-chat
+python -m tools.skill_learn_from_cases_full cypher_programming_language
+
+# 支持中英文混合技能名
+python -m tools.skill_learn_from_cases_full 人机交互ui设计原型handoff
 ```
 
-实现位于 [`ga_cli/cli.py`](ga_cli/cli.py)，支持 Windows GBK 终端兼容、参数透传等。
+**6 阶段工作流：** 启动 → 环境探测（Neo4j/Docker/SQLite/Git）→ 定义（LLM/Wikipedia）→ 多源搜索 → 模式提取（LLM/规则）→ 实操构建 → 验证评估
+
+**CLI 参数：**
+```bash
+python -m tools.skill_learn_from_cases_full [skill_name] [选项]
+
+选项:
+  --dry-run       预览：显示环境/领域/hooks
+  --list          列出所有已学习的技能
+  --show SKILL    显示某技能的最新学习报告
+  --version       显示工具版本
+  --force         强制刷新搜索案例，不继承上一版
+  --delete SKILL  删除指定技能的所有学习记录
+```
+
+**元学习闭环：** 本工具能学习技能后反哺自身，已完成 5 轮元学习闭环（structured_logging → cli_ux_design → test_strategy → wiki_search → error_handling）。
+
+实现位于 [`tools/skill_learn_from_cases_full/`](tools/skill_learn_from_cases_full/)，详见其 [README](tools/skill_learn_from_cases_full/README.md)。
 
 ---
 
@@ -716,7 +738,7 @@ LLM_TIMEOUT=60
 | 在线检测 | PID 检查（可能僵尸） | CONNECT/LWT 协议级 |
 | 持久化 | 无（删 temp/ 即丢失） | MariaDB 可选持久化 |
 | 监控面板 | subagent_dashboard（文件扫描） | + **dashboard_mqtt**（MQTT 实时订阅） |
-| CLI 工具 | 无统一入口 | `ga` 命令分发器 |
+| CLI 工具 | 无统一入口 | **skill_learn_from_cases** 案例驱动技能学习 |
 
 ---
 
