@@ -260,7 +260,7 @@ def api_stats_history():
     import json
     try:
         import pymysql
-        c = pymysql.connect(host='127.0.0.1',port=3306,user='root',password='mariadb',database='mqtt_bbs',connect_timeout=2)
+        c = pymysql.connect(host='127.0.0.1',port=3306,user='root',password='mariadb',database='mqtt_bbs',connect_timeout=2,autocommit=True)
         with c.cursor() as cur:
             cur.execute("SELECT ts,connections,topics,subscriptions,routes FROM broker_stats ORDER BY ts ASC LIMIT 100")
             rows = [{"ts":str(r[0]),"c":r[1],"t":r[2],"s":r[3],"r":r[4]} for r in cur.fetchall()]
@@ -302,7 +302,7 @@ def broker_loop():
                     import pymysql
                     s = broker_cache.get("stats", {})
                     if isinstance(s, dict) and len(s) > 1:
-                        c = pymysql.connect(host='127.0.0.1',port=3306,user='root',password='mariadb',database='mqtt_bbs',connect_timeout=2)
+                        c = pymysql.connect(host='127.0.0.1',port=3306,user='root',password='mariadb',database='mqtt_bbs',connect_timeout=2,autocommit=True)
                         with c.cursor() as cur:
                             cur.execute("INSERT INTO broker_stats(connections,topics,subscriptions,routes) VALUES(%s,%s,%s,%s)",
                                        (s.get("connections.count",0), s.get("topics.count",0),
