@@ -168,7 +168,7 @@ h1{color:#00d2ff;font-size:20px;margin-bottom:16px}
 .pub-form{display:flex;gap:8px;margin-top:8px}
 .pub-form input{flex:1;background:#0d1117;border:1px solid #0f3460;padding:6px;border-radius:4px;color:#fff}
 .pub-form button{background:#00d2ff;color:#000;border:none;padding:6px 12px;border-radius:4px;cursor:pointer}
-</style></head><body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script></style></head><body>
 <h1>rmqtt Web UI</h1>
 <div class="grid">
 <div class="card"><h2>Broker <span id="broker-node"></span></h2><div id="broker-info" style="font-size:12px;color:#94a3b8;line-height:1.6"></div></div>
@@ -178,7 +178,7 @@ h1{color:#00d2ff;font-size:20px;margin-bottom:16px}
 <div class="card"><h2>Agents (<span id="agent-count">0</span>)</h2><div id="agents"></div></div>
 <div class="card"><h2>Tasks (<span id="task-count">0</span>)</h2><div id="tasks"></div></div>
 </div>
-<div class="card"><h2>Stats History</h2><div id="stats-history" style="font-size:12px;color:#94a3b8;line-height:1.6"></div></div>
+<div class="card"><h2>Stats History</h2><div style="position:relative;height:120px"><canvas id="stats-chart"></canvas></div><div id="stats-history" style="font-size:11px;color:#94a3b8;text-align:center;padding-top:4px"></div></div>
 <div class="card"><h2>Live Log</h2><div class="log-box" id="log"></div></div>
 <div class="card"><h2>Publish</h2>
 <form class="pub-form" onsubmit="pub(event)"><input id="pub-topic" placeholder="agent/board/task/hello/input" value="agent/board/task/test/input"><input id="pub-msg" placeholder='{"msg":"hello"}'><button type="submit">Publish</button></form></div>
@@ -208,7 +208,25 @@ var e=document.getElementById('stats-history');
 if(!e)return;
 if(d.length===0){e.innerHTML='<span style="color:#666">collecting...</span>';return}
 var l=d[d.length-1];
-e.innerHTML='Records: '+d.length+' | Latest: C:'+l.c+' T:'+l.t+' S:'+l.s+' R:'+l.r+'<br>Time: '+l.ts.substring(11,19)}).catch(function(){})}
+e.innerHTML='Records: '+d.length+' | C:'+l.c+' T:'+l.t+' S:'+l.s+' R:'+l.r+' | '+l.ts.substring(11,19);
+if(window.statsChart){window.statsChart.data.labels=d.map(function(x){return x.ts.slice(11,16)});
+window.statsChart.data.datasets[0].data=d.map(function(x){return x.c});
+window.statsChart.data.datasets[1].data=d.map(function(x){return x.t});
+window.statsChart.data.datasets[2].data=d.map(function(x){return x.s});
+window.statsChart.update();return}
+var ctx=document.getElementById('stats-chart').getContext('2d');
+window.statsChart=new Chart(ctx,{type:'line',data:{labels:d.map(function(x){return x.ts.slice(11,16)}),
+datasets:[
+{label:'C',data:d.map(function(x){return x.c}),borderColor:'#00d2ff',backgroundColor:'rgba(0,210,255,0.1)',fill:true,tension:0.3,pointRadius:2},
+{label:'T',data:d.map(function(x){return x.t}),borderColor:'#ffd700',backgroundColor:'rgba(255,215,0,0.1)',fill:true,tension:0.3,pointRadius:2},
+{label:'S',data:d.map(function(x){return x.s}),borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.1)',fill:true,tension:0.3,pointRadius:2},
+{label:'R',data:d.map(function(x){return x.r}),borderColor:'#ff6b6b',backgroundColor:'rgba(255,107,107,0.1)',fill:true,tension:0.3,pointRadius:2}
+]},
+options:{responsive:true,maintainAspectRatio:false,
+plugins:{legend:{labels:{color:'#94a3b8',boxWidth:12,font:{size:10}}}},
+scales:{x:{ticks:{color:'#666',font:{size:9},maxTicksLimit:10},grid:{color:'#1a1a2e'}},
+y:{beginAtZero:true,ticks:{color:'#666',font:{size:9}},grid:{color:'#1a1a2e'}}}}
+}})}.catch(function(){})}
 setInterval(function(){fetchAgents();fetchTasks();fetchLogs();fetchBroker();fetchStats()},3000)
 function fetchAgents(){fetch('/api/agents').then(function(r){return r.json()}).then(function(d){ra('agents',d);document.getElementById('agent-count').textContent=Object.keys(d).length})}
 function fetchTasks(){fetch('/api/tasks').then(function(r){return r.json()}).then(function(d){rt('tasks',d);document.getElementById('task-count').textContent=Object.keys(d).length})}
