@@ -28,6 +28,11 @@ log_events = []
 sse_clients = []
 MAX_LOG = 100
 
+# Broker HTTP API 缓存
+broker_cache = {"info": {}, "clients": [], "subs": [], "stats": {}}
+BROKER_API_HOST = os.environ.get("BROKER_API_HOST", "127.0.0.1")
+BROKER_API_PORT = int(os.environ.get("BROKER_API_PORT", "6060"))
+
 def _broadcast(event, data):
     payload = f"event: {event}\ndata: {json.dumps(data)}\n\n"
     dead = []
@@ -70,7 +75,6 @@ def mqtt_loop():
     global mqtt_client
     while True:
         try:
-            # 先断开旧的 client，防止残留 loop 线程干扰
             if mqtt_client is not None:
                 try:
                     mqtt_client.disconnect()
@@ -83,7 +87,7 @@ def mqtt_loop():
                 kwargs["username"] = MQTT_USER
                 kwargs["password"] = MQTT_PASS
             c = BBSClient("dashboard", host=BROKER_HOST, port=BROKER_PORT, **kwargs)
-            c._client.reconnect_delay_set(0)  # 禁用 paho 自动重连
+            c._client.reconnect_delay_set(0)
             c.connect()
             if c.wait_connected(timeout=5):
                 mqtt_client = c
@@ -98,7 +102,6 @@ def mqtt_loop():
                     _on_message(msg.topic, pl)
                 c._client.on_message = on_msg
 
-                # 不使用 paho 自动重连，断开后由外层循环重建
                 while mqtt_client is c and c._connected:
                     time.sleep(1)
                 _log("warn", "system", "MQTT disconnected, reconnecting...")
@@ -109,7 +112,41 @@ def mqtt_loop():
             _log("error", "system", f"MQTT error: {e}")
             time.sleep(5)
 
-@get("/")
+def broker_loop():
+    """轮询 rmqtt HTTP API + DB 任务数据"""
+    BASE_URL = f"http://{BROKER_API_HOST}:{BROKER_API_PORT}"
+    apis = {"brokers": "/api/v1/brokers", "clients": "/api/v1/clients", "subs": "/api/v1/subscriptions", "stats": "/api/v1/stats"}
+    tick = 0
+    while True:
+        try:
+            import urllib.request
+            for key, path in apis.items():
+                try:
+                    resp = urllib.request.urlopen(f"{BASE_URL}{path}", timeout=3)
+                    data = json.loads(resp.read().decode())
+                    if key == "brokers" and data: broker_cache["info"] = data[0]
+                    elif key == "clients": broker_cache["clients"] = data
+                    elif key == "subs": broker_cache["subs"] = data
+                    elif key == "stats" and data: broker_cache["stats"] = data[0].get("stats", {}) if isinstance(data[0], dict) else {}
+                except: pass
+            tick += 1
+            if tick % 2 == 0:
+                try:
+                    import pymysql
+                    conn = pymysql.connect(host='127.0.0.1',port=3306,user='root',password='mariadb',database='mqtt_bbs',connect_timeout=2)
+                    with conn.cursor() as cur:
+                        cur.execute("SELECT topic, payload, created_at FROM retained_messages WHERE topic LIKE 'board/task/%%/output' OR topic LIKE 'board/task/%%/status' ORDER BY created_at DESC LIMIT 30")
+                        for row in cur.fetchall():
+                            t, p, ts = row; parts = t.split('/')
+                            if len(parts) >= 3:
+                                tid = parts[2]
+                                if tid not in tasks: tasks[tid] = {"task_id": tid}
+                                tasks[tid]["updated_at"] = ts.strftime("%H:%M:%S") if ts else datetime.now().strftime("%H:%M:%S")
+                                tasks[tid][parts[3] if len(parts) > 3 else "data"] = str(p)[:200]
+                    conn.close()
+                except: pass
+        except: pass
+        time.sleep(3)
 def index():
     return HTML
 
@@ -143,7 +180,27 @@ def sse():
     response.content_type = "text/event-stream"
     return "data: {}\n\n"
 
+@get("/api/broker")
+def api_broker():
+    response.content_type = "application/json"
+    return json.dumps(broker_cache)
+
+@get("/api/clients")
+def api_broker_clients():
+    response.content_type = "application/json"
+    return json.dumps(broker_cache.get("clients", []))
+
+@get("/api/subs")
+def api_broker_subs():
+    response.content_type = "application/json"
+    return json.dumps(broker_cache.get("subs", []))
+
 mqtt_client = None
+
+@get("/")
+def index():
+    """Web UI 首页"""
+    return HTML
 
 HTML = r"""<!DOCTYPE html>
 <html lang="zh"><head><meta charset="utf-8"><title>rmqtt Web UI</title>
@@ -162,8 +219,26 @@ h1{color:#00d2ff;font-size:20px;margin-bottom:16px}
 .pub-form{display:flex;gap:8px;margin-top:8px}
 .pub-form input{flex:1;background:#0d1117;border:1px solid #0f3460;padding:6px;border-radius:4px;color:#fff}
 .pub-form button{background:#00d2ff;color:#000;border:none;padding:6px 12px;border-radius:4px;cursor:pointer}
+#broker-info{font-size:12px;color:#94a3b8;line-height:1.6}
+#clients{font-size:12px;line-height:1.5}
+#clients span{color:#22c55e;margin-right:4px}
+.status{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.status-online{background:#22c55e;box-shadow:0 0 6px #22c55e}
+.status-offline{background:#ef4444}
+.log-box{font-family:monospace;font-size:12px;max-height:200px;overflow:auto;margin-top:8px}
+.log-ERROR{color:#ef4444}
+.log-WARN{color:#f59e0b}
+.pub-form{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pub-form input{flex:1;min-width:120px;padding:8px 12px;border-radius:6px;border:1px solid #0f3460;background:#1a1a2e;color:#e0e0e0;font-size:13px}
+.pub-form button{padding:8px 20px;border-radius:6px;border:none;background:#00d2ff;color:#1a1a2e;cursor:pointer;font-weight:600;font-size:13px}
+.pub-form button:hover{background:#00b4d8}
 </style></head><body>
 <h1>rmqtt Web UI</h1>
+<div class="grid">
+<div class="card"><h2>Broker <span id="broker-node" style="color:#888;font-size:11px"></span></h2>
+<div id="broker-info" style="font-size:12px;color:#aaa"></div></div>
+<div class="card"><h2>Clients (<span id="client-count">0</span>)</h2><div id="clients" style="font-size:12px"></div></div>
+</div>
 <div class="grid">
 <div class="card"><h2>Agents (<span id="agent-count">0</span>)</h2><div id="agents"></div></div>
 <div class="card"><h2>Tasks (<span id="task-count">0</span>)</h2><div id="tasks"></div></div>
@@ -181,17 +256,33 @@ Object.entries(a).forEach(function([k,v]){var d=document.createElement('div');d.
 function pub(e){e.preventDefault();fetch('/api/publish?topic='+encodeURIComponent(document.getElementById('pub-topic').value)+'&msg='+encodeURIComponent(document.getElementById('pub-msg').value));document.getElementById('pub-msg').value=''}
 var logCache='';
 function fetchLogs(){fetch('/api/logs').then(function(r){return r.json()}).then(function(d){var e=document.getElementById('log');var h='';d.forEach(function(l){var c=l[1]==='error'?'log-ERROR':'log-info';h+='<div class="log-line '+c+'">['+l[0]+']['+l[1]+']['+l[2]+'] '+l[3]+'</div>'});if(h!==logCache){e.innerHTML=h;e.scrollTop=e.scrollHeight;logCache=h}})}
-setInterval(function(){fetchAgents();fetchTasks();fetchLogs()},2000)
+function fetchBroker(){fetch('/api/broker').then(function(r){return r.json()}).then(function(d){
+var i=document.getElementById('broker-info');var n=document.getElementById('broker-node');
+if(d.info&&d.info.version){n.textContent=d.info.node_name||''
+i.innerHTML='Version: '+d.info.version+' | Uptime: '+(d.info.uptime||'?')+'<br>Connections: '+(d.stats['connections.count']||'?')+' | Topics: '+(d.stats['topics.count']||'?')+'<br>Subscriptions: '+(d.stats['subscriptions.count']||'?')+' | Routes: '+(d.stats['routes.count']||'?')
+}else{i.innerHTML='<span style="color:#666">Broker API not available</span>'}
+var cc=document.getElementById('client-count');var ce=document.getElementById('clients');
+if(d.clients&&d.clients.length){cc.textContent=d.clients.length;var h='';
+d.clients.forEach(function(c){var st=c.connected?'<span style="color:#0f0">&#9679;</span>':'<span style="color:#f44">&#9679;</span>';
+h+=st+' '+c.clientid+' ('+c.ip_address+':'+c.port+') subs:'+c.subscriptions_cnt+'<br>'});
+ce.innerHTML=h}else{cc.textContent='0';ce.innerHTML='<span style="color:#666">(none)</span>'}})}
+setInterval(function(){fetchAgents();fetchTasks();fetchLogs();fetchBroker()},3000)
 function fetchAgents(){fetch('/api/agents').then(function(r){return r.json()}).then(function(d){ra('agents',d);document.getElementById('agent-count').textContent=Object.keys(d).length})}
 function fetchTasks(){fetch('/api/tasks').then(function(r){return r.json()}).then(function(d){rt('tasks',d);document.getElementById('task-count').textContent=Object.keys(d).length})}
-fetchAgents();fetchTasks();fetchLogs();
+var lastUpdate=document.getElementById('last-update');
+function setTime(){lastUpdate.textContent=new Date().toLocaleTimeString()}
+fetchAgents();fetchTasks();fetchLogs();fetchBroker();setTime();
+setInterval(setTime,5000);
 </script></body></html>
 """
 
 
 if __name__ == "__main__":
     print(f"[rmqtt] Web UI http://127.0.0.1:{WEB_PORT}")
-    t = threading.Thread(target=mqtt_loop, daemon=True)
-    t.start()
+    print(f"[rmqtt] Broker API http://{BROKER_API_HOST}:{BROKER_API_PORT}")
+    t1 = threading.Thread(target=mqtt_loop, daemon=True)
+    t1.start()
+    t2 = threading.Thread(target=broker_loop, daemon=True)
+    t2.start()
     time.sleep(0.5)
     run(host="127.0.0.1", port=WEB_PORT, server="auto", quiet=True)
