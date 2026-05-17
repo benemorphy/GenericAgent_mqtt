@@ -33,6 +33,7 @@ mykey_inner*.py
 mykey_template*.py
 
 tasks/
+skills_learning/
 
 *.zip
 *.exe
