@@ -129,35 +129,3 @@ def check():
                 f'完成后将执行报告写入 {rpt}。')
 
     return None
-
-# ── MQTT 定时任务发布（可选） ──
-_MQTT_CLIENT = None
-def _init_mqtt_publisher():
-    """初始化 MQTT 发布器。失败时静默降级。"""
-    global _MQTT_CLIENT
-    if _MQTT_CLIENT is not None:
-        return True
-    try:
-        from mqtt_bbs import BBSClient
-        _MQTT_CLIENT = BBSClient("scheduler")
-        _MQTT_CLIENT.connect()
-        _MQTT_CLIENT.wait_connected(2)
-        print(f"[Scheduler] MQTT 发布器就绪 (127.0.0.1:1883)")
-        return True
-    except Exception as e:
-        print(f"[Scheduler] MQTT 发布器初始化失败（可选）: {e}")
-        return False
-
-def mqtt_publish_schedule(task_name: str, status: str = "triggered", detail: str = ""):
-    """将定时任务事件发布到 MQTT topic agent/schedule/{name}/status"""
-    if _MQTT_CLIENT is None:
-        if not _init_mqtt_publisher():
-            return
-    try:
-        import json
-        payload = {"name": task_name, "status": status, "detail": detail, "time": __import__('time').time()}
-        _MQTT_CLIENT.publish(f"schedule/{task_name}/status", payload, retain=False, qos=1)
-        print(f"[Scheduler] MQTT 已发布: {task_name} -> {status}")
-    except Exception as e:
-        print(f"[Scheduler] MQTT 发布失败: {e}")
-
