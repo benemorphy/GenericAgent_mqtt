@@ -10,7 +10,7 @@ BBS 业务层 — AgentBoard（主智能体）+ WorkerAgent（工作智能体）
     WorkerAgent.complete()    → 完成任务（写 output.txt + [ROUND END]）
 """
 
-import json, time, uuid, logging, threading
+import json, time, uuid, logging, threading, hmac, hashlib
 from typing import Optional, Callable, Any
 from enum import Enum
 
@@ -26,6 +26,32 @@ class TaskStatus(str, Enum):
     DONE = "done"
     FAILED = "failed"
     CANCELLED = "cancelled"
+
+
+# ── HMAC 任务签名（Zero Trust：防消息篡改） ──
+
+def _calc_hmac(task_id: str, msg_type: str, task_input: dict) -> str:
+    """计算任务消息的 HMAC-SHA256 签名"""
+    canonical = json.dumps({"task_id": task_id, "type": msg_type, "input": task_input},
+                           sort_keys=True, ensure_ascii=False)
+    return hmac.new(
+        config.HMAC_SECRET.encode("utf-8"),
+        canonical.encode("utf-8"),
+        hashlib.sha256
+    ).hexdigest()
+
+def _verify_task(payload: dict) -> bool:
+    """验证任务消息的 HMAC 签名"""
+    sig = payload.pop("_sig", None)
+    if not sig:
+        return False
+    expected = _calc_hmac(
+        payload.get("task_id", ""),
+        payload.get("type", ""),
+        payload.get("input", {}),
+    )
+    # 常量时间比较防时序攻击
+    return hmac.compare_digest(sig, expected)
 
 
 # ──────────────────────────────────────────────
@@ -93,7 +119,9 @@ class AgentBoard:
         )
 
         # 发布 input + 初始状态
-        self._client.publish(f"board/task/{task_id}/input", msg.to_dict(), retain=True)
+        payload = msg.to_dict()
+        payload["_sig"] = _calc_hmac(task_id, task_type, task_input)
+        self._client.publish(f"board/task/{task_id}/input", payload, retain=True)
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.PENDING.value, retain=True)
 
         # 也发布到 open 索引（待认领列表）
@@ -363,11 +391,17 @@ class WorkerAgent:
     # ── 内部消息处理 ──
 
     def _on_task_input(self, topic: str, payload):
-        """收到任务 input → 判断能力匹配 → 自动认领"""
+        """收到任务 input → 零信任验签 → 能力匹配 → 自动认领"""
         if not self._task_handler:
             return
 
         if not isinstance(payload, dict):
+            return
+
+        # 零信任验签：HMAC 签名验证
+        payload_copy = dict(payload)  # 不修改原数据
+        if not _verify_task(payload_copy):
+            log.warning(f"[{self.agent_id}] 🔒 签名无效，拒绝任务: topic={topic}")
             return
 
         # 提取 task_id 从 topic "board/task/{task_id}/input"

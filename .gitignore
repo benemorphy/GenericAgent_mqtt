@@ -31,6 +31,7 @@ mykey.py
 mykey_internet.py
 mykey_inner*.py
 mykey_template*.py
+agent.env
 
 tasks/
 skills_learning/
