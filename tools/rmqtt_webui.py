@@ -153,6 +153,7 @@ mqtt_client = None
 
 HTML = r"""<!DOCTYPE html>
 <html lang="zh"><head><meta charset="utf-8"><title>rmqtt Web UI</title>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js" onerror="console.warn('ECharts CDN failed')"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
 body{background:#1a1a2e;color:#e0e0e0;margin:0;padding:20px}
@@ -178,7 +179,7 @@ h1{color:#00d2ff;font-size:20px;margin-bottom:16px}
 <div class="card"><h2>Agents (<span id="agent-count">0</span>)</h2><div id="agents"></div></div>
 <div class="card"><h2>Tasks (<span id="task-count">0</span>)</h2><div id="tasks"></div></div>
 </div>
-<div class="card"><h2>Stats History</h2><div id="stats-text" style="font-size:12px;color:#94a3b8;line-height:1.6"></div></div>
+<div class="card"><h2>Stats History</h2><div style="position:relative;height:150px"><canvas id="stats-chart"></canvas></div><div id="stats-info" style="font-size:11px;color:#94a3b8;text-align:center;padding-top:2px"></div></div>
 <div class="card"><h2>Live Log</h2><div class="log-box" id="log"></div></div>
 <div class="card"><h2>Publish</h2>
 <form class="pub-form" onsubmit="pub(event)"><input id="pub-topic" placeholder="agent/board/task/hello/input" value="agent/board/task/test/input"><input id="pub-msg" placeholder='{"msg":"hello"}'><button type="submit">Publish</button></form></div>
@@ -204,11 +205,23 @@ var st=c.connected?'<span style="color:#0f0">&#9679;</span>':'<span style="color
 h+=st+' '+c.clientid+' ('+c.ip_address+':'+c.port+') subs:'+c.subscriptions_cnt+'<br>'});
 ce.innerHTML=h})}
 function fetchStats(){fetch('/api/stats/history').then(function(r){return r.json()}).then(function(d){
-var e=document.getElementById('stats-text');
-if(!e)return;
-if(d.length===0){e.innerHTML='<span style="color:#666">collecting...</span>';return}
-var l=d[d.length-1];
-e.innerHTML='<b>'+d.length+'</b> records | Latest: C:<b>'+l.c+'</b> T:<b>'+l.t+'</b> S:<b>'+l.s+'</b> R:<b>'+l.r+'</b> | '+l.ts.substring(11,19)}).catch(function(){})}
+var info=document.getElementById('stats-info');
+if(info){var l=d[d.length-1];info.innerHTML='<b>'+d.length+'</b> records | Latest: C:<b>'+l.c+'</b> T:<b>'+l.t+'</b> S:<b>'+l.s+'</b> R:<b>'+l.r+'</b> | '+l.ts.substring(11,19)}
+if(typeof echarts==='undefined')return;
+var chart=echarts.getInstanceByDom(document.getElementById('stats-chart'))||echarts.init(document.getElementById('stats-chart'));
+var times=d.map(function(x){return x.ts.substring(11,16)});
+chart.setOption({
+backgroundColor:'transparent',tooltip:{trigger:'axis'},
+legend:{data:['Connections','Topics','Subscriptions','Routes'],textStyle:{color:'#94a3b8'},top:0,itemWidth:10,itemHeight:8},
+grid:{left:35,right:10,bottom:18,top:25},
+xAxis:{type:'category',data:times,axisLabel:{color:'#666',fontSize:9},axisLine:{lineStyle:{color:'#1a1a2e'}}},
+yAxis:{type:'value',min:0,splitLine:{lineStyle:{color:'#1a1a2e'}},axisLabel:{color:'#666',fontSize:9}},
+series:[
+{name:'Connections',type:'line',data:d.map(function(x){return x.c}),smooth:true,symbol:'circle',symbolSize:3,lineStyle:{width:1.5,color:'#00d2ff'},itemStyle:{color:'#00d2ff'}},
+{name:'Topics',type:'line',data:d.map(function(x){return x.t}),smooth:true,symbol:'circle',symbolSize:3,lineStyle:{width:1.5,color:'#ffd93d'},itemStyle:{color:'#ffd93d'}},
+{name:'Subscriptions',type:'line',data:d.map(function(x){return x.s}),smooth:true,symbol:'circle',symbolSize:3,lineStyle:{width:1.5,color:'#22c55e'},itemStyle:{color:'#22c55e'}},
+{name:'Routes',type:'line',data:d.map(function(x){return x.r}),smooth:true,symbol:'circle',symbolSize:3,lineStyle:{width:1.5,color:'#ff6b6b'},itemStyle:{color:'#ff6b6b'}}
+]})}).catch(function(){})}
 fetchStats();
 
 function fetchAgents(){fetch('/api/agents').then(function(r){return r.json()}).then(function(d){ra('agents',d);document.getElementById('agent-count').textContent=Object.keys(d).length})}
