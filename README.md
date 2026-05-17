@@ -233,7 +233,7 @@ The built-in rmqtt broker provides a real-time web dashboard showing all connect
 | 🔄 Auto-Refresh | Configurable interval (1-10s), default 3s |
 
 ```bash
-python frontends/dashboard_mqtt.py
+streamlit run frontends/dashboard_mqtt.py
 ```
 
 ### 🔹 skill_learn_from_cases — Case-Driven Skill Learning CLI
@@ -296,7 +296,7 @@ Use `BBSClientWithPersistence` / `AgentBoardWithPersistence` / `WorkerAgentWithP
 start_all.bat
 ```
 
-This launches: rmqtt broker (port 1883) → MariaDB (optional) → MQTT dashboard (port 8100) → 5 sample worker agents.
+This launches: rmqtt broker (port 1883) → MariaDB (optional) → rmqtt Web UI (port 8100) → MQTT Dashboard (port 8501) → 5 sample worker agents with different capabilities.
 
 ---
 
@@ -518,7 +518,7 @@ python -m tools.skill_learn_from_cases_full cypher_programming_language
 start_all.bat
 ```
 
-启动：rmqtt broker (1883) → MariaDB（可选）→ MQTT 仪表盘 (8100) → 5 个示例 Worker Agent。
+启动：rmqtt broker (1883) → MariaDB（可选）→ rmqtt Web UI (8100) → MQTT Dashboard (8501) → 5 个示例 Worker Agent。
 
 ---
 
