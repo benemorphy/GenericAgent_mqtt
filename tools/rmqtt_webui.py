@@ -178,7 +178,6 @@ h1{color:#00d2ff;font-size:20px;margin-bottom:16px}
 <div class="card"><h2>Agents (<span id="agent-count">0</span>)</h2><div id="agents"></div></div>
 <div class="card"><h2>Tasks (<span id="task-count">0</span>)</h2><div id="tasks"></div></div>
 </div>
-<div class="card"><h2>Stats History</h2><div style="position:relative;height:120px"><canvas id="stats-chart"></canvas></div><div id="stats-history" style="font-size:11px;color:#94a3b8;text-align:center;padding-top:4px"></div></div>
 <div class="card"><h2>Stats History</h2><div id="stats-text" style="font-size:12px;color:#94a3b8;line-height:1.6"></div></div>
 <div class="card"><h2>Live Log</h2><div class="log-box" id="log"></div></div>
 <div class="card"><h2>Publish</h2>
