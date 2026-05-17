@@ -209,6 +209,7 @@ if(!e)return;
 if(d.length===0){e.innerHTML='<span style="color:#666">collecting...</span>';return}
 var l=d[d.length-1];
 e.innerHTML='<b>'+d.length+'</b> records | Latest: C:<b>'+l.c+'</b> T:<b>'+l.t+'</b> S:<b>'+l.s+'</b> R:<b>'+l.r+'</b> | '+l.ts.substring(11,19)}).catch(function(){})}
+fetchStats();
 
 function fetchAgents(){fetch('/api/agents').then(function(r){return r.json()}).then(function(d){ra('agents',d);document.getElementById('agent-count').textContent=Object.keys(d).length})}
 function fetchTasks(){fetch('/api/tasks').then(function(r){return r.json()}).then(function(d){rt('tasks',d);document.getElementById('task-count').textContent=Object.keys(d).length})}
