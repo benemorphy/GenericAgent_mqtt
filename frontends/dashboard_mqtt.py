@@ -166,153 +166,148 @@ class MQTTDataSource:
 
 
 # ── Streamlit UI ──────────────────────────────────────
+# 仅在 streamlit run 模式下执行
+if __name__ == "__main__":
+    import streamlit as st
 
-st.set_page_config(page_title="MQTT Agent Dashboard", page_icon="🤖", layout="wide")
+    st.set_page_config(page_title="MQTT Agent Dashboard", page_icon="🤖", layout="wide")
 
-st.title("🤖 MQTT Agent Dashboard")
-st.caption("实时监控 MQTT BBS 上的 Agent 集群与任务状态")
+    st.title("🤖 MQTT Agent Dashboard")
+    st.caption("实时监控 MQTT BBS 上的 Agent 集群与任务状态")
 
-# 侧边栏配置
-with st.sidebar:
-    st.header("🔌 连接配置")
-    broker_host = st.text_input("Broker 地址", value="127.0.0.1")
-    broker_port = st.number_input("Broker 端口", value=1883, min_value=1, max_value=65535)
-    refresh_rate = st.slider("刷新间隔 (秒)", min_value=1, max_value=30, value=3)
-    st.divider()
-    st.header("📤 发布测试任务")
-    with st.form("publish_task"):
-        task_type = st.text_input("任务类型", value="test_ping")
-        task_target = st.text_input("目标", value="localhost")
-        col1, col2 = st.columns(2)
-        with col1:
-            submitted = st.form_submit_button("🚀 发布", use_container_width=True)
-        with col2:
-            st.form_submit_button("🔄 刷新", use_container_width=True, on_click=lambda: None)
-
-    st.divider()
-    st.caption(f"🕒 最后刷新: {datetime.now().strftime('%H:%M:%S')}")
-
-# 初始化数据源
-if "ds" not in st.session_state:
-    st.session_state.ds = None
-
-if st.session_state.ds is None:
-    try:
-        ds = MQTTDataSource(host=broker_host, port=broker_port)
-        st.session_state.ds = ds
-        st.success(f"✅ 已连接到 {broker_host}:{broker_port}")
-    except Exception as e:
-        st.error(f"❌ 连接失败: {e}")
-        st.info("确保 MQTT Broker 在运行: `rmqtt start --daemon`")
-        st.stop()
-
-ds = st.session_state.ds
-
-# 发布任务
-if submitted:
-    with st.spinner("发布中..."):
-        task_id = ds.publish_task(task_type, {"target": task_target})
-        st.success(f"✅ 任务已发布: {task_id}")
-
-# 获取数据
-agents = ds.get_agents()
-tasks = ds.get_tasks()
-
-# ── 集群概览 ──
-st.header("📊 集群概览")
-total_agents = len(agents)
-online_agents = sum(1 for a in agents.values() if a.get("status") == "online")
-total_tasks = len(tasks)
-done_tasks = sum(1 for t in tasks.values() if t.get("status") in ("completed", "done", "success"))
-pending_tasks = sum(1 for t in tasks.values() if t.get("status") in ("pending", "running", "processing"))
-failed_tasks = sum(1 for t in tasks.values() if t.get("status") in ("failed", "error", "timeout"))
-
-col1, col2, col3, col4, col5 = st.columns(5)
-col1.metric("🤖 Agent 总数", total_agents, delta=f"{online_agents} 在线")
-col2.metric("📋 任务总数", total_tasks)
-col3.metric("✅ 已完成", done_tasks)
-col4.metric("⏳ 进行中", pending_tasks)
-col5.metric("❌ 失败", failed_tasks)
-
-# ── Agent 卡片 ──
-st.header("🃏 Agent 列表")
-if not agents:
-    st.info("暂无 Agent 连接")
-else:
-    cols = st.columns(3)
-    for i, (agent_id, info) in enumerate(sorted(agents.items())):
-        with cols[i % 3]:
-            status = info.get("status", "unknown")
-            status_emoji = {"online": "🟢", "offline": "🔴", "busy": "🟠", "unknown": "⚪"}.get(status, "⚪")
-            caps = info.get("capabilities", [])
-            if isinstance(caps, str):
-                caps = [caps]
-            caps_str = ", ".join(caps[:5]) if caps else "无"
-            connected_at = info.get("connected_at")
-            online_for = ""
-            if connected_at:
-                elapsed = int(time.time() - connected_at)
-                if elapsed < 60:
-                    online_for = f"{elapsed}s"
-                elif elapsed < 3600:
-                    online_for = f"{elapsed // 60}m"
-                else:
-                    online_for = f"{elapsed // 3600}h"
-
-            with st.container(border=True):
-                st.markdown(f"**{status_emoji} {agent_id}** `{status}`")
-                if online_for:
-                    st.caption(f"在线时长: {online_for}")
-                st.caption(f"能力: {caps_str}")
-
-# ── 任务列表 ──
-st.header("📋 任务列表")
-if not tasks:
-    st.info("暂无任务")
-else:
-    # 排序：最新的在前面
-    sorted_tasks = sorted(tasks.items(), key=lambda x: x[1].get("created_at", 0), reverse=True)
-
-    for task_id, info in sorted_tasks:
-        status = info.get("status", "unknown")
-        task_type = info.get("type", "?")
-        agent = info.get("agent", "?")
-        result = info.get("result", "")
-        created = info.get("created_at", 0)
-        updated = info.get("updated_at", 0)
-
-        # 状态颜色
-        status_color = {
-            "completed": "green", "done": "green", "success": "green",
-            "pending": "orange", "running": "blue", "processing": "blue",
-            "failed": "red", "error": "red", "timeout": "red",
-            "cancelled": "gray",
-        }.get(status, "gray")
-
-        with st.expander(f"`{task_id[:20]}...` — **{task_type}** — :{status_color}[{status}] — Agent: {agent}"):
-            col1, col2 = st.columns([3, 1])
+    # 侧边栏配置
+    with st.sidebar:
+        st.header("🔌 连接配置")
+        broker_host = st.text_input("Broker 地址", value="127.0.0.1")
+        broker_port = st.number_input("Broker 端口", value=1883, min_value=1, max_value=65535)
+        refresh_rate = st.slider("刷新间隔 (秒)", min_value=1, max_value=30, value=3)
+        st.divider()
+        st.header("📤 发布测试任务")
+        with st.form("publish_task"):
+            task_type = st.text_input("任务类型", value="test_ping")
+            task_target = st.text_input("目标", value="localhost")
+            col1, col2 = st.columns(2)
             with col1:
-                st.markdown("**输入:**")
-                st.code(json.dumps(info.get("input", {}), indent=2, ensure_ascii=False)[:500])
-                if info.get("result"):
-                    st.markdown("**结果:**")
-                    st.code(json.dumps(result, indent=2, ensure_ascii=False)[:500] if isinstance(result, dict) else str(result)[:500])
-
-                # 日志
-                stdout = info.get("stdout", [])
-                stderr = info.get("stderr", [])
-                if stdout or stderr:
-                    tab1, tab2 = st.tabs(["📤 stdout", "📥 stderr"])
-                    with tab1:
-                        st.code("\n".join(stdout[-20:]) if stdout else "无")
-                    with tab2:
-                        st.code("\n".join(stderr[-20:]) if stderr else "无")
-
+                submitted = st.form_submit_button("🚀 发布", use_container_width=True)
             with col2:
-                if st.button(f"🛑 取消", key=f"cancel_{task_id}", use_container_width=True):
-                    ds.cancel_task(task_id)
-                    st.toast(f"已发送取消信号: {task_id}")
+                st.caption("任务将发送到 AgentBoard")
 
-# 自动刷新
-time.sleep(0.1)  # 避免过度刷新
-st.rerun()
+    # 初始化数据源
+    if "ds" not in st.session_state:
+        try:
+            ds = MQTTDataSource(host=broker_host, port=broker_port)
+            st.session_state.ds = ds
+            st.success(f"✅ 已连接到 {broker_host}:{broker_port}")
+        except Exception as e:
+            st.error(f"❌ 连接失败: {e}")
+            st.info("确保 MQTT Broker 在运行: `rmqtt start --daemon`")
+            st.stop()
+
+    ds = st.session_state.ds
+
+    # 发布任务
+    if submitted:
+        with st.spinner("发布中..."):
+            task_id = ds.publish_task(task_type, {"target": task_target})
+            st.success(f"✅ 任务已发布: {task_id}")
+
+    # 获取数据
+    agents = ds.get_agents()
+    tasks = ds.get_tasks()
+
+    # ── 集群概览 ──
+    st.header("📊 集群概览")
+    total_agents = len(agents)
+    online_agents = sum(1 for a in agents.values() if a.get("status") == "online")
+    total_tasks = len(tasks)
+    done_tasks = sum(1 for t in tasks.values() if t.get("status") in ("completed", "done", "success"))
+    pending_tasks = sum(1 for t in tasks.values() if t.get("status") in ("pending", "running", "processing"))
+    failed_tasks = sum(1 for t in tasks.values() if t.get("status") in ("failed", "error", "timeout"))
+
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("🤖 Agent 总数", total_agents, delta=f"{online_agents} 在线")
+    col2.metric("📋 任务总数", total_tasks)
+    col3.metric("✅ 已完成", done_tasks)
+    col4.metric("⏳ 进行中", pending_tasks)
+    col5.metric("❌ 失败", failed_tasks)
+
+    # ── Agent 卡片 ──
+    st.header("🃏 Agent 列表")
+    if not agents:
+        st.info("暂无 Agent 连接")
+    else:
+        cols = st.columns(3)
+        for i, (agent_id, info) in enumerate(sorted(agents.items())):
+            with cols[i % 3]:
+                status = info.get("status", "unknown")
+                status_emoji = {"online": "🟢", "offline": "🔴", "busy": "🟠", "unknown": "⚪"}.get(status, "⚪")
+                caps = info.get("capabilities", [])
+                if isinstance(caps, str):
+                    caps = [caps]
+                caps_str = ", ".join(caps[:5]) if caps else "无"
+                connected_at = info.get("connected_at")
+                online_for = ""
+                if connected_at:
+                    elapsed = int(time.time() - connected_at)
+                    if elapsed < 60:
+                        online_for = f"{elapsed}s"
+                    elif elapsed < 3600:
+                        online_for = f"{elapsed // 60}m"
+                    else:
+                        online_for = f"{elapsed // 3600}h"
+
+                with st.container(border=True):
+                    st.markdown(f"**{status_emoji} {agent_id}** `{status}`")
+                    if online_for:
+                        st.caption(f"在线时长: {online_for}")
+                    st.caption(f"能力: {caps_str}")
+
+    # ── 任务列表 ──
+    st.header("📋 任务列表")
+    if not tasks:
+        st.info("暂无任务")
+    else:
+        sorted_tasks = sorted(tasks.items(), key=lambda x: x[1].get("created_at", 0), reverse=True)
+
+        for task_id, info in sorted_tasks:
+            status = info.get("status", "unknown")
+            task_type = info.get("type", "?")
+            agent = info.get("agent", "?")
+            result = info.get("result", "")
+            created = info.get("created_at", 0)
+            updated = info.get("updated_at", 0)
+
+            status_color = {
+                "completed": "green", "done": "green", "success": "green",
+                "pending": "orange", "running": "blue", "processing": "blue",
+                "failed": "red", "error": "red", "timeout": "red",
+                "cancelled": "gray",
+            }.get(status, "gray")
+
+            with st.expander(f"`{task_id[:20]}...` — **{task_type}** — :{status_color}[{status}] — Agent: {agent}"):
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.markdown("**输入:**")
+                    st.code(json.dumps(info.get("input", {}), indent=2, ensure_ascii=False)[:500])
+                    if info.get("result"):
+                        st.markdown("**结果:**")
+                        res = result
+                        st.code(json.dumps(res, indent=2, ensure_ascii=False)[:500] if isinstance(res, dict) else str(res)[:500])
+                    # 日志
+                    stdout = info.get("stdout", [])
+                    stderr = info.get("stderr", [])
+                    if stdout or stderr:
+                        tab1, tab2 = st.tabs(["📤 stdout", "📥 stderr"])
+                        with tab1:
+                            st.code("\n".join(stdout[-20:]) if stdout else "无")
+                        with tab2:
+                            st.code("\n".join(stderr[-20:]) if stderr else "无")
+
+                with col2:
+                    if st.button(f"🛑 取消", key=f"cancel_{task_id}", use_container_width=True):
+                        ds.cancel_task(task_id)
+                        st.toast(f"已发送取消信号: {task_id}")
+
+    # 自动刷新
+    time.sleep(0.1)
+    st.rerun()
