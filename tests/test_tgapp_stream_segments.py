@@ -102,6 +102,7 @@ def _install_import_stubs():
             "agentmain": agentmain,
             "chatapp_common": chatapp_common,
             "continue_cmd": continue_cmd,
+            "btw_cmd": btw_cmd,
             "llmcore": llmcore,
         }
     )
