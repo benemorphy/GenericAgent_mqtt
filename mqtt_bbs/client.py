@@ -105,8 +105,8 @@ class BBSClient:
         clean_session: bool = True,
     ):
         self.agent_id = agent_id
-        self.host = host
-        self.port = port
+        self.host = host or config.BROKER_HOST
+        self.port = port or config.BROKER_PORT
         self._prefix = config.TOPIC_PREFIX
 
         # paho 客户端（使用 CallbackAPIVersion.VERSION2 避免弃用警告）

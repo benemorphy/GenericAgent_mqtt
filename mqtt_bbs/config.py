@@ -1,7 +1,7 @@
 """MQTT BBS 默认配置"""
 
 # 公共 EMQX 测试 Broker（无需注册）
-BROKER_HOST = "broker.emqx.io"
+BROKER_HOST = "127.0.0.1"
 BROKER_PORT = 1883
 
 # 主题前缀（多团队隔离用，例如 "team_a/"）
