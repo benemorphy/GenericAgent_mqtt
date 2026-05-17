@@ -12,7 +12,7 @@ MQTT BBS Client 层 — 对标 subagent 文件协议
     stdout/stderr      →  topic/stdout, topic/stderr (流式, QoS=0)
 """
 
-import json, time, uuid, logging
+import json, time, uuid, logging, os
 from typing import Callable, Optional, Any
 from dataclasses import dataclass, field
 
@@ -95,6 +95,8 @@ class BBSClient:
         host: MQTT Broker 地址
         port: MQTT Broker 端口
         clean_session: 是否清理会话（False 可接收离线消息）
+        username: MQTT 用户名（默认从环境变量 MQTT_USERNAME 读取）
+        password: MQTT 密码/JWT Token（默认从环境变量 MQTT_PASSWORD 读取）
     """
 
     def __init__(
@@ -103,11 +105,17 @@ class BBSClient:
         host: str = config.BROKER_HOST,
         port: int = config.BROKER_PORT,
         clean_session: bool = True,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
     ):
         self.agent_id = agent_id
         self.host = host or config.BROKER_HOST
         self.port = port or config.BROKER_PORT
         self._prefix = config.TOPIC_PREFIX
+
+        # 认证凭据（优先参数 > 环境变量）
+        self._username = username or os.environ.get("MQTT_USERNAME")
+        self._password = password or os.environ.get("MQTT_PASSWORD")
 
         # paho 客户端（使用 CallbackAPIVersion.VERSION2 避免弃用警告）
         try:
@@ -137,6 +145,9 @@ class BBSClient:
 
     def connect(self):
         """连接到 MQTT Broker（非阻塞）"""
+        # Zero Trust: 设置认证凭据
+        if self._username:
+            self._client.username_pw_set(self._username, self._password)
         self._client.connect(self.host, self.port, config.KEEPALIVE)
         if not self._loop_started:
             self._client.loop_start()

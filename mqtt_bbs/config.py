@@ -26,6 +26,12 @@ QOS = {
     "claim": 1,     # 认领：至少一次
 }
 
+# HMAC 任务签名密钥（Zero Trust：防消息篡改）
+# 所有 AgentBoard 和 WorkerAgent 共享此密钥
+# 可通过环境变量 MQTT_HMAC_SECRET 覆盖
+import os as _os
+HMAC_SECRET = _os.environ.get("MQTT_HMAC_SECRET", "mqtt_bbs_hmac_secret_2026")
+
 # MariaDB 持久化配置
 DB_CONFIG = {
     "host": "127.0.0.1",
