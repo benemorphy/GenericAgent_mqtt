@@ -28,6 +28,9 @@ model_responses.txt
 
 # Sensitive files (API keys, credentials)
 mykey.py
+mykey_internet.py
+mykey_inner*.py
+mykey_template*.py
 
 tasks/
 
