@@ -1,15 +1,11 @@
 """
-Subagent 集群监控 Dashboard (MQTT 默认 / 文件兼容)
-===================================================
+Subagent 集群监控 Dashboard
+=============================
 基于 Streamlit，实时监控所有活跃 subagent 的运行状态。
 支持：查看进度、阅读日志、远程干预（停止/注入指令）。
 
-默认使用 MQTT BBS 模式订阅任务状态 (127.0.0.1:1883)。
-加 --file 参数回退到传统文件模式 (扫描 temp/*/input.txt)。
-
 启动方式：
-    streamlit run frontends/subagent_dashboard.py            # MQTT 模式（默认）
-    streamlit run frontends/subagent_dashboard.py --file     # 文件模式（兼容旧版）
+    streamlit run frontends/subagent_dashboard.py
 """
 
 import os, sys, glob, time, subprocess, json, re, argparse
@@ -20,34 +16,22 @@ import streamlit as st
 
 # ── MQTT 模式支持 ──
 _MQTT_SOURCE = None
-_MODE = "mqtt"  # "mqtt" | "file"
-_MQTT_BROKER = "127.0.0.1"
-
-# 解析 --broker-host (放在 streamlit arg parse 之前提取)
-_broker_args = [sys.argv[i+1] for i,a in enumerate(sys.argv) if a=='--broker-host']
-if _broker_args:
-    _MQTT_BROKER = _broker_args[0]
-
-if '--file' in sys.argv:
-    _MODE = "file"
-    sys.argv = [a for a in sys.argv if a != '--file']
-    print(f"[Dashboard] 文件模式 (因 --file 参数)")
-else:
+if '--file' not in sys.argv:  # 默认MQTT模式，--file回退文件模式
+    sys.argv.remove('--file') if '--file' in sys.argv else None
     try:
         _dash_root = Path(__file__).resolve().parent.parent
         if str(_dash_root) not in sys.path:
             sys.path.insert(0, str(_dash_root))
         from dashboard_mqtt import MQTTDataSource
-
         @st.cache_resource(ttl=300)
         def _get_mqtt_source():
-            return MQTTDataSource(host=_MQTT_BROKER)
-
+            return MQTTDataSource(
+                host=next((sys.argv[i+1] for i,a in enumerate(sys.argv) if a=='--broker-host'), '127.0.0.1')
+            )
         _MQTT_SOURCE = _get_mqtt_source()
-        print(f"[Dashboard] MQTT模式: 连接 {_MQTT_BROKER}:1883")
+        print(f"[Dashboard] MQTT模式: 连接 rmqtt (127.0.0.1:1883)")
     except Exception as e:
-        print(f"[Dashboard] MQTT模式初始化失败: {e}，降级到文件模式")
-        _MODE = "file"
+        print(f"[Dashboard] MQTT模式初始化失败: {e}")
         _MQTT_SOURCE = None
 
 # ── 路径配置 ──
@@ -598,14 +582,6 @@ def main():
 
     # ── 侧边栏 ──
     with st.sidebar:
-        # ── 模式指示器 ──
-        if _MODE == "mqtt":
-            st.success(f"📡 MQTT 模式 — {_MQTT_BROKER}:1883")
-        else:
-            st.info(f"📁 文件模式 — {TEMP_DIR}")
-        if st.button("🔄 手动刷新", use_container_width=True):
-            st.rerun()
-
         st.markdown("### ⚙️ 控制面板")
 
         # 自动刷新
@@ -614,6 +590,10 @@ def main():
 
         st.divider()
 
+        if st.button("🔄 手动刷新", use_container_width=True):
+            st.rerun()
+
+        st.divider()
         st.markdown("### 🚀 Agent 启动面板")
 
         with st.form("launch_agent_form", clear_on_submit=True):
@@ -682,44 +662,19 @@ def main():
     main_placeholder = st.empty()
 
     with main_placeholder.container():
-        # 收集数据源
-        agent_dirs = get_subagent_dirs() if _MODE != "mqtt" or _MQTT_SOURCE is None else []
-        mqtt_tasks = {}
-        mqtt_agents = {}
-        if _MQTT_SOURCE is not None:
-            try:
-                mqtt_tasks = _MQTT_SOURCE.get_tasks()
-                mqtt_agents = _MQTT_SOURCE.get_agents()
-            except Exception:
-                pass
+        # 获取 subagent 列表
+        agent_dirs = get_subagent_dirs()
 
-        has_file_agents = bool(agent_dirs)
-        has_mqtt_data = bool(mqtt_tasks) or bool(mqtt_agents)
-
-        if not has_file_agents and not has_mqtt_data:
-            if _MODE == "mqtt":
-                st.info("📡 MQTT 模式 — 正在等待 Agent 上线...")
-                st.markdown("""
-                **如何启动 MQTT Agent？**
-                ```bash
-                cd {CODE_ROOT}
-                python agentmain.py  # 默认MQTT模式
-                ```
-                或启动 BoardService 查看公告板消息：
-                ```bash
-                python -m mqtt_bbs.board_service
-                ```
-                """)
-            else:
-                st.info("📭 当前没有活跃的 subagent。启动 subagent 后状态会在此显示。")
-                st.markdown("""
-                **如何启动 subagent？**
-                ```bash
-                cd {CODE_ROOT}
-                python agentmain.py --task 调研员 --input "你是调研员，请搜索..." --bg
-                python agentmain.py --task 程序员 --input "你是程序员，请编写..." --bg
-                ```
-                """)
+        if not agent_dirs:
+            st.info("📭 当前没有活跃的 subagent。启动 subagent 后状态会在此显示。")
+            st.markdown("""
+            **如何启动 subagent？**
+            ```bash
+            cd {CODE_ROOT}
+            python agentmain.py --task 调研员 --input "你是调研员，请搜索..." --bg
+            python agentmain.py --task 程序员 --input "你是程序员，请编写..." --bg
+            ```
+            """)
             if auto_refresh:
                 time.sleep(refresh_interval)
                 st.rerun()
@@ -757,32 +712,6 @@ def main():
             except Exception as e:
                 st.error(f"⚠️ 渲染 agent「{name}」失败: {e}")
             st.divider()
-
-        # ── MQTT 任务显示（如有） ──
-        if mqtt_tasks:
-            st.markdown("### 📡 MQTT 任务流")
-            for tid, t in sorted(mqtt_tasks.items()):
-                status = t.get("status", "?")
-                task_type = t.get("type", "?")
-                inp = t.get("input", "")
-                if isinstance(inp, dict):
-                    inp = inp.get("text", str(inp)[:100])
-                out = t.get("output", "")
-                if isinstance(out, dict):
-                    out = out.get("result", str(out)[:100])
-                with st.expander(f"[{status}] {task_type}: {tid[:16]}..."):
-                    st.text(f"任务ID: {tid}")
-                    st.text(f"类型: {task_type}")
-                    st.text(f"状态: {status}")
-                    if inp:
-                        st.text_area("输入", str(inp)[:500], height=60, key=f"mqtt_in_{tid}")
-                    if out:
-                        st.text_area("输出", str(out)[:500], height=60, key=f"mqtt_out_{tid}")
-
-        if mqtt_agents and not agent_statuses:
-            st.markdown("### 📡 MQTT Agent 在线")
-            for aid, a in sorted(mqtt_agents.items()):
-                st.text(f"  🤖 {aid}: {a.get('status','?')}")
 
     # ── 自动刷新 ──
     if auto_refresh:

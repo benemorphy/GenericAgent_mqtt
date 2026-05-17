@@ -11,15 +11,16 @@
 
 1. **有SOP时**：读SOP原文，提取所有约束（⚠️/禁止/必须/格式要求），按步骤列成**约束清单**存working memory
 1. **无SOP时**：根据任务性质和进度，预估未来会遇到的关键风险点
-2. **启动subagent**（cwd=代码根）：
+2. **启动subagent**（cwd=代码根，默认MQTT模式）：
    ```
-   python agentmain.py --task {name} --verbose
+   python agentmain.py --verbose                    # MQTT BBS 模式（默认）
+   python agentmain.py --task {name} --verbose      # 文件模式（legacy）
    ```
-   input.txt：`用{SOP名}完成{用户任务}`（只给目标，不复述步骤）
+   MQTT模式自动订阅 board/task/+/input 接收任务，input 即任务描述：`用{SOP名}完成{用户任务}`（只给目标，不复述步骤）
 
 ## 监控循环
 
-持续轮询工作agent的输出（MQTT 模式: 订阅 board/task/{id}/output 推送通知；文件模式: 读取 `temp/{task_name}/output.txt`），每发现新输出：
+持续轮询 `temp/{task_name}/output.txt` 的新增内容（sleep间隔读取），每发现新输出：
 
 1. 判断工作agent当前在哪一步，对照约束清单检查（约束记不清时重读SOP原文，禁凭印象）
 2. 可读环境信息（文件/网页/进程）补充判断依据
