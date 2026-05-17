@@ -29,7 +29,7 @@ sse_clients = []
 MAX_LOG = 100
 
 # Broker HTTP API 缓存（由 broker_loop 线程更新）
-broker_cache = {"info": {}, "clients": [], "subs": [], "stats": {}}
+broker_cache = {"info": {}, "clients": [], "subs": [], "stats": {"_init": 1}}
 BROKER_API_HOST = os.environ.get("BROKER_API_HOST", "127.0.0.1")
 BROKER_API_PORT = int(os.environ.get("BROKER_API_PORT", "6060"))
 
@@ -254,6 +254,21 @@ def fetch_db_tasks():
     except Exception:
         pass  # DB not available, will retry later
 
+@get("/api/stats/history")
+def api_stats_history():
+    """返回最近100条 broker 统计时序数据"""
+    import json
+    try:
+        import pymysql
+        c = pymysql.connect(host='127.0.0.1',port=3306,user='root',password='mariadb',database='mqtt_bbs',connect_timeout=2)
+        with c.cursor() as cur:
+            cur.execute("SELECT ts,connections,topics,subscriptions,routes FROM broker_stats ORDER BY ts ASC LIMIT 100")
+            rows = [{"ts":str(r[0]),"c":r[1],"t":r[2],"s":r[3],"r":r[4]} for r in cur.fetchall()]
+        c.close()
+    except:
+        rows = []
+    response.content_type = "application/json"
+    return json.dumps(rows)
 
 def broker_loop():
     """轮询 rmqtt HTTP API (6060) 获取 broker 数据"""
@@ -282,6 +297,19 @@ def broker_loop():
             tick += 1
             if tick % 2 == 0:
                 fetch_db_tasks()
+            if tick % 4 == 0:
+                try:
+                    import pymysql
+                    s = broker_cache.get("stats", {})
+                    if isinstance(s, dict) and len(s) > 1:
+                        c = pymysql.connect(host='127.0.0.1',port=3306,user='root',password='mariadb',database='mqtt_bbs',connect_timeout=2)
+                        with c.cursor() as cur:
+                            cur.execute("INSERT INTO broker_stats(connections,topics,subscriptions,routes) VALUES(%s,%s,%s,%s)",
+                                       (s.get("connections.count",0), s.get("topics.count",0),
+                                        s.get("subscriptions.count",0), s.get("routes.count",0)))
+                        c.close()
+                except:
+                    pass
         except Exception:
             pass
         time.sleep(3)
