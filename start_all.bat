@@ -42,22 +42,30 @@ if %errorlevel% equ 0 (
     echo [OK] Web UI 已启动 (http://localhost:%WEBUI_PORT%)
 )
 
-:: ── 4. Worker Agent（如未运行） ──
-tasklist /fi "username eq %username%" /v 2>nul | findstr /i "worker_agent" >nul
+:: ── 4. MQTT Dashboard（如未运行） ──
+set DASHBOARD_PORT=8501
+netstat -ano | findstr ":%DASHBOARD_PORT% " | findstr "LISTENING" >nul
 if %errorlevel% equ 0 (
-    echo [OK] Worker Agent 已在运行
+    echo [OK] MQTT Dashboard (port %DASHBOARD_PORT%) 已在运行
 ) else (
-    echo [..] 启动 Worker Agent...
-    start "worker-agent" /B /MIN ".venv\Scripts\python.exe" -m mqtt_bbs.examples.worker_agent
-    timeout /t 3 /nobreak >nul
-    echo [OK] Worker Agent 已启动
+    echo [..] 启动 MQTT Dashboard...
+    start "mqtt-dashboard" /B /MIN ".venv\Scripts\streamlit.exe" run frontends/dashboard_mqtt.py --server.port %DASHBOARD_PORT%
+    timeout /t 5 /nobreak >nul
+    echo [OK] MQTT Dashboard 已启动 (http://localhost:%DASHBOARD_PORT%)
 )
+
+:: ── 5. Worker Agents（通过 launcher_mqtt.py 启动5个） ──
+echo [..] 启动 5 个 Worker Agent（scanner, analyzer, reporter, monitor, helper）...
+start "mqtt-launcher" /B /MIN ".venv\Scripts\python.exe" frontends/launcher_mqtt.py --workers 5
+timeout /t 5 /nobreak >nul
+echo [OK] 5 个 Worker Agent 已启动
 
 echo.
 echo ========================================
 echo  ✅ 自主运行环境启动完成！
 echo.
-echo  Web UI:  http://localhost:%WEBUI_PORT%
-echo  Broker:  127.0.0.1:1883
+echo  Web UI:         http://localhost:%WEBUI_PORT%
+echo  MQTT Dashboard: http://localhost:%DASHBOARD_PORT%
+echo  Broker:         127.0.0.1:1883
 echo ========================================
 echo.
