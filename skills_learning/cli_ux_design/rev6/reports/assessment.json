@@ -1,0 +1,11 @@
+{
+  "version": 6,
+  "skill": "cli_ux_design",
+  "knowledge_score": 100.0,
+  "coverage_pct": 100.0,
+  "practical_score": 54,
+  "case_penalty": 0,
+  "final_score": 86,
+  "passed": true,
+  "note": "ui_design_hook.py:54"
+}

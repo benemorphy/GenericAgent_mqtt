@@ -1,0 +1,146 @@
+[
+  {
+    "id": "P_domain_llm_1",
+    "principle": "Cypher 查询基础与图模式匹配",
+    "confidence": 95,
+    "level": "domain"
+  },
+  {
+    "id": "P_gql_shortest_path",
+    "principle": "使用Cypher查询语言进行图模式匹配与关联分析",
+    "confidence": 93,
+    "level": "advanced"
+  },
+  {
+    "id": "P_gql_node_rel",
+    "principle": "设计合理的节点标签与关系类型优化遍历性能",
+    "confidence": 92,
+    "level": "advanced"
+  },
+  {
+    "id": "P_gql_index",
+    "principle": "利用图索引提升Cypher查询性能",
+    "confidence": 91,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "数据建模与节点关系设计",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_001",
+    "principle": "在MATCH子句中始终指定明确的路径模式，避免因缺失关系条件导致笛卡尔积，防止中间结果集爆炸性增长。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_gql_algo",
+    "principle": "使用图算法进行路径分析、社区发现与推荐",
+    "confidence": 89,
+    "level": "advanced"
+  },
+  {
+    "id": "P_gql_apoc",
+    "principle": "采用APOC标准库扩展Neo4j功能",
+    "confidence": 88,
+    "level": "advanced"
+  },
+  {
+    "id": "P_gql_profile",
+    "principle": "优化Cypher查询计划（PROFILE/EXPLAIN）",
+    "confidence": 87,
+    "level": "advanced"
+  },
+  {
+    "id": "P_gql_txn",
+    "principle": "使用事务管理批量写入确保数据一致性",
+    "confidence": 86,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "高级查询：聚合、路径遍历与子查询",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_002",
+    "principle": "使用参数化查询（如$name）代替字符串拼接，以减少查询计划编译开销并允许重复使用查询计划，提高性能。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_003",
+    "principle": "为经常用于过滤的节点属性创建索引，并利用索引加速查询，同时使用合适的过滤条件减少结果集大小。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_pin_version",
+    "principle": "固定版本号避免意外升级",
+    "confidence": 84,
+    "level": "basic"
+  },
+  {
+    "id": "P_domain_1",
+    "principle": "Cypher查询语言核心语法与模式匹配（cypher_programming_l）",
+    "confidence": 83,
+    "level": "domain"
+  },
+  {
+    "id": "P_config_validation",
+    "principle": "部署前验证配置文件正确性",
+    "confidence": 83,
+    "level": "basic"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "索引、约束与查询性能优化",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_004",
+    "principle": "避免全节点遍历，尽量通过标签和索引缩小搜索范围，减少不必要的节点扫描。",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_env_separation",
+    "principle": "使用环境变量/配置文件分离环境差异",
+    "confidence": 79,
+    "level": "basic"
+  },
+  {
+    "id": "P_resource_limits",
+    "principle": "资源限制防止单服务耗尽",
+    "confidence": 75,
+    "level": "basic"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "Cypher 与 Neo4j 集成：事务管理与程序化查询",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_005",
+    "principle": "将多个相关查询合并为一个复杂的Cypher查询，减少与数据库的通信次数，降低网络开销。",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_006",
+    "principle": "确保Cypher查询中所有变量都已正确定义和初始化，避免因变量未定义导致意外扫描整个节点空间。",
+    "confidence": 70,
+    "level": "domain"
+  },
+  {
+    "id": "P_007",
+    "principle": "优先使用Cypher查询语言而非其他方式，因其语法简洁、易读性强且专为图数据优化。",
+    "confidence": 65,
+    "level": "domain"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "version": 31,
+  "skill": "wiki_search",
+  "knowledge_score": 93.1,
+  "coverage_pct": 100.0,
+  "practical_score": 100,
+  "case_penalty": 0,
+  "final_score": 97,
+  "passed": true,
+  "note": "通用验证 5/5"
+}

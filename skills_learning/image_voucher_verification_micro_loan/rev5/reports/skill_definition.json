@@ -1,0 +1,66 @@
+{
+  "name": "image_voucher_verification_micro_loan",
+  "display_name": "Image Voucher Verification Micro Loan",
+  "prerequisites": [
+    {
+      "name": "HTTP/API 基础",
+      "reason": "理解 RESTful API 请求与响应，包括 POST/GET 方法、状态码和 JSON 数据格式，以调用验证和微贷服务。"
+    },
+    {
+      "name": "图像处理基础",
+      "reason": "熟悉图像格式（如 JPEG/PNG）、base64 编码原理，以及如何从用户端获取并处理清晰人脸图像。"
+    },
+    {
+      "name": "编程语言基础（如 Python/JavaScript）",
+      "reason": "能够编写代码实现图像上传、base64 编码、验证请求发送和响应解析，以及微贷业务逻辑。"
+    },
+    {
+      "name": "数据库基础",
+      "reason": "了解如何存储用户提交的草稿（SAVE AND CONTINUE LATER）和验证记录，以便后续编辑或查询。"
+    }
+  ],
+  "description": "Make sure you upload a picture showing your face clearly.\nClicking the SAVE AND CONTINUE LATER button will save your application for editing later.\nClicking the SUBMIT AND PRINT button will submit the；# 英文数字,中文汉字,纯英文,纯数字,任意特殊字符\n# 请保证购买相应服务后请求对应 verify_type\n# verify_type=\"10101\" 单次积分\nprint(base64.b64",
+  "related_tags": [
+    "elixir",
+    "quality",
+    "tdd",
+    "verification",
+    "workflow",
+    "agent",
+    "testing",
+    "discipline",
+    "evidence",
+    "ci-cd"
+  ],
+  "web_summary": "Make sure you upload a picture showing your face clearly.\nClicking the SAVE AND CONTINUE LATER button will save your application for editing later.\nClicking the SUBMIT AND PRINT button will submit the；# 英文数字,中文汉字,纯英文,纯数字,任意特殊字符\n# 请保证购买相应服务后请求对应 verify_type\n# verify_type=\"10101\" 单次积分\nprint(base64.b64",
+  "core_concepts": [
+    "图像清晰度验证：确保上传的人脸图像清晰可见，避免模糊或遮挡导致验证失败。",
+    "验证类型（verify_type）映射：不同业务场景对应不同 verify_type，如 '10101' 表示单次积分验证，需准确匹配。",
+    "base64 编码与传输：将图像转换为 base64 字符串，嵌入请求中传输，注意编码完整性和大小限制。",
+    "多语言字符处理：支持英文、数字、中文汉字及任意特殊字符，确保验证字段能正确解析和匹配。",
+    "草稿保存与提交流程：实现 SAVE AND CONTINUE LATER 功能保存用户进度，以及 SUBMIT AND PRINT 触发最终验证和打印。",
+    "微贷业务逻辑：结合图像验证结果，判断用户信用或资格，执行小额贷款发放或积分扣除。"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "上传的图像不清晰或包含多张人脸，导致验证失败。",
+      "advice": "在客户端和服务器端添加图像质量检测（如人脸检测、清晰度评分），提示用户重新拍摄或上传符合要求的照片。"
+    },
+    {
+      "pitfall": "verify_type 参数错误或未按文档要求设置，如误用 '10101' 用于其他场景。",
+      "advice": "严格遵循文档中 verify_type 的映射表，并在请求前进行参数校验，确保类型与购买的服务一致。"
+    },
+    {
+      "pitfall": "base64 编码时忽略换行符或包含额外空格，导致解码失败。",
+      "advice": "使用标准 base64 编码库，去除换行符和空格，并在服务器端进行解码验证，确保数据完整性。"
+    },
+    {
+      "pitfall": "未处理特殊字符（如中文或符号）导致验证请求被拒绝或解析错误。",
+      "advice": "对请求参数进行 URL 编码或使用 JSON 格式传递，确保所有字符（包括特殊符号）被正确转义和传输。"
+    },
+    {
+      "pitfall": "草稿保存功能未正确实现，用户数据丢失或无法恢复。",
+      "advice": "使用持久化存储（如数据库）保存草稿，关联用户会话或账户，并提供恢复接口，确保 SAVE AND CONTINUE LATER 可靠。"
+    }
+  ]
+}

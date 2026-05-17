@@ -1,0 +1,235 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "giuseppe-trisciuoglio/developer-kit/spring-data-neo4j",
+    "description": "Comprehensive guide for setting up and using Spring Data Neo4j in Spring Boot applications, covering entity mapping, repository patterns, custom Cypher queries, reactive operations, and integration testing with Neo4j Harness.",
+    "tags": [
+      "spring-boot",
+      "neo4j",
+      "graph-database",
+      "spring-data",
+      "java"
+    ],
+    "score": 0.646,
+    "relevance": "high"
+  },
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "coding-agents-and-ides/people-strategy",
+    "description": "A people relationship management agent skill with persistent graph-based storage using SQLite database for personal CRM and network mapping.",
+    "tags": [
+      "crm",
+      "relationships",
+      "sqlite",
+      "graph",
+      "networking"
+    ],
+    "score": 0.611,
+    "relevance": "high"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Introduction",
+    "url": "https://dev.to/mangesh28/neo4j-fundamentals-introduction-to-graph-databases-e78",
+    "snippet": "Best Practices for Neo4j Beginners\nAs you start working with Neo4j, keep these best practices in mind:\n- Model for queries: Design your graph to optimize for the questions you'll ask\n- Use meaningful labels: Clear labels make queries more intuitive\n- Be consistent with relationships: Standardize rel"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Cypher query language for Neo4j graph database",
+    "url": "https://arghya.xyz/articles/neo4j-graph-database-2/",
+    "snippet": "Patterns in Cypher\nPattern contains the data-matching logic, based on which data is either retrieved or manipulated in neo4j database.\nPatterns are like ASCII-art\n, i.e. representation of the actual (part of) graph with ASCII characters.\nThe above shows a sample Cypher query, where the (:Book) -[r]-"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Graph Database",
+    "url": "https://siamcomputing.com/general/neo4j-graph-database/",
+    "snippet": "Best Practices in Neo4j\n- Use a Rich Data Model: The Rich Data Model includes a more associated understanding of structured data, expressive power, and fast traversals.\nIt allows modeling a database with a graph database that enables to translate drawing into a few expressions, adding some condition"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Neo4j Graph Data Modelling: Design efficient and flexible databases by optimizing the power of Neo4j Profile Icon",
+    "url": "https://www.packtpub.com/product/neo4j-graph-data-modeling/9781784393441",
+    "snippet": "Left arrow icon Right arrow icon\nTranslate a problem domain from a whiteboard to your database\nMake design decisions based on the nature of data and how it is going to be used\nUse Cypher to create and query data\nEvolve your database in stages\nOptimize the performance of your application with data de"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Neo4j Cypher 笔记",
+    "url": "https://cloud.tencent.cn/developer/information/Neo4j%20Cypher%20-%E6%8C%89%E9%A1%BA%E5%BA%8F%E5%88%86%E5%88%AB%E8%8E%B7%E5%8F%96%E5%A4%9A%E4%B8%AA%E8%B7%AF%E5%BE%84%E4%B8%8A%E7%9A%84%E8%8A%82%E7%82%B9",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "SQErzo",
+    "url": "https://github.com/BBVA/sqerzo",
+    "snippet": "Some references I used:\n- https://medium.com/neo4j/cypher-query-optimisations-fe0539ce2e5c\n- https://hub.packtpub.com/advanced-cypher-tricks/\n- https://gist.github.com/jexp/caeb53acfe8a649fecade4417fb8876a\nSQErzo is being developed by BBVA-Labs Security team members.\nContributions are of course welc"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "一种优化Cypher查询语言在图数据库中的执行性能的方法",
+    "url": "https://cloud.tencent.com.cn/developer/information/%E5%9F%BA%E4%BA%8E%E6%80%A7%E8%83%BD-%E7%A4%BE%E4%BC%9A%E5%9B%BE%E7%9A%84Cypher%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96",
+    "snippet": "3、慢查询的优化案例 1、函数Max()的优化 用途：查询最后支付时间-优化max（）函数 语句： select max(payment_date) from payment; ?...\n可以看到显示的执行计划，并不是很高效，可以拖慢服务器的效率，如何优化了？\n创建索引 create index inx_paydate on payment(payment_date); ? ?...\n索引是顺序操作的，不需要扫描表，执行效率就会比较恒定， 2、函数Count()的优化 需求：在一条SQL中同时查处2006年和2007年电影的数量 错误的方式： 语句： select count(release_"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Query tuning",
+    "url": "https://neo4j.com/docs/cypher-manual/current/planning-and-tuning/query-tuning/",
+    "snippet": "Each Cypher query gets optimized and transformed into an execution plan by the Cypher query planner.\nTo minimize the resources used for this, try to use parameters instead of literals when possible.\nThis allows Cypher to re-use queries instead of having to parse and build new execution plans.\nTo rea"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Spring Data Neo4j中Cypher查询的高级使用方法和优化策略",
+    "url": "https://www.yicaiai.com/news/article/674f6f4c4ddd79f11a59f5d9",
+    "snippet": "此外，还可以使用AOP（面向切面编程）技术来记录查询的执行时间和频率，以便进一步分析和优化。\n在实际项目中，结合多种优化策略可以达到最佳效果。\n以下是一个综合案例，展示了如何通过模块化查询、参数化查询、索引和监控来优化Cypher查询：\n通过这些最佳实践，开发者可以有效地管理和优化Cypher查询，提升系统的整体性能和用户体验。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Neo4j Cypher查询优化技巧的常见问答Q&A",
+    "url": "https://yun123.io/cypher-query-optimization-tips/",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Neo4j Database: Use Cases and Advantages For Your Project",
+    "url": "https://apiko.com/blog/neo4j-database-advantages/",
+    "snippet": "Now they don't just retrieve the object, but also the family of objects that is closely related to that object.\nNeo4j - a graph database for scalable projects\nNeo4j is the most popular graph database used by both enterprises and startups.\nLet’s discover why it's so popular and what projects it is su"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Neo4j图数据库",
+    "url": "https://juejin.cn/post/7127150470597967908",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Neo4j - A Graph Project Story",
+    "url": "https://www.bookgolden.ir/product/13651/%DA%A9%D8%AA%D8%A7%D8%A8-Neo4j-A-Graph-Project-Story",
+    "snippet": "We focus on methodology, integrations with existing systems, performance, monitoring and security.\nAs experts from the Neo4j community, the authors have chosen an unusual format to transmit their technical know-how: they tell you a story, a graph project story, where the protagonists are members of "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Neo4j : Graph Database Introduction",
+    "url": "https://helicaltech.com/neo4j-graph-database/",
+    "snippet": "Neo4j : Graph Database Introduction\n- NoSQL graph database\n- Usecases : include matchmaking, network management, software analytics, scientific research, routing, organizational and project management, recommendations, social networks, and more.\n- Neo4j implements the Property Graph Model efficientl"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "NoSQL Databases",
+    "url": "https://datadevblog.com/top-nosql-databases-2025/",
+    "snippet": "3.6 Neo4j (Graph Database)\nNeo4j is a native graph database designed to store, manage, and query highly interconnected data in terms of nodes, relationships, and properties.\nIt relies on a graph model at its core, and as such, it is particularly well-suited for applications where relationships betwe"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "common mistake",
+    "url": "https://dictionary.cambridge.org/zhs/example/%E8%8B%B1%E8%AF%AD/common-mistake",
+    "snippet": "It is a common mistake to give physical time universal features.\nA common mistake is to think of this last phase of the bad bank as a kind of investment company.\nA common mistake occurs when the given mode is thought of as major, given that the tonic chord is major.\nA common mistake made when just l"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Three Common Cryptographic Failures and How to Avoid Them",
+    "url": "https://securance.com/news/common-cryptographic-vulnerabilities",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Common Mistakes in Data Encryption Practices and How to Avoid Them",
+    "url": "https://supportstack.com/it-security/common-mistakes-in-data-encryption-practices-and-how-to-avoid-them/",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Top 10 加密错误列表",
+    "url": "https://developer.aliyun.com/article/218618",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "应避免的常见错误",
+    "url": "https://developer.aliyun.com/article/743527",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Query tuning - Cypher Manual",
+    "url": "https://qubitpi.github.io/docs-cypher/cypher-manual/5/planning-and-tuning/query-tuning/",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "优化Cypher查询",
+    "url": "https://cloud.tencent.com.cn/developer/information/%E4%BC%98%E5%8C%96Cypher%E6%9F%A5%E8%AF%A2-article",
+    "snippet": "优化Cypher查询\nCypher查询优化是指针对Neo4j图数据库中的Cypher查询语句进行性能优化的过程。\nCypher是一种图查询语言，用于在图数据库中执行复杂的查询操作。\n优化Cypher查询的目标是提高查询性能、减少资源消耗，并且保持查询结果的准确性。\n以下是一些优化Cypher查询的常用技巧和方法：\n在腾讯云的生态系统中，推荐使用TencentDB for Neo4j作为Neo4j图数据库的托管服务。\nTencentDB for Neo4j提供了高性能、高可用的图数据库服务，支持Cypher查询优化和性能调优。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Things You Didn’t Know About Cypher Query Language",
+    "url": "https://www.tigergraph.com/glossary/cypher-query-language/",
+    "snippet": "Best Practices for Using Cypher Query Language\nTo optimize Cypher, users should:\n- Use indexing efficiently – Index frequently queried nodes to speed up lookups.\n- Optimize query patterns – Reduce unnecessary relationship traversals.\n- Avoid deep pattern matching – Cypher slows down with complex mul"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "How can I optimize my Cypher Queries?",
+    "url": "https://community.neo4j.com/t/how-can-i-optimize-my-cypher-queries/114",
+    "snippet": "michael.hunger\n(Michael Hunger)\n1\nWhat should I do if my Cypher query is slower than expected, or uses more memory or CPU than I have?\nI'm running my queries with Neo4j Browser, copied from my application.\nWhat should I do?\nAre there any good practices / pointers?\nmichael.hunger\n(Michael Hunger)\n2\nT"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Neo4j: The Definitive Guide: Hands-On Recipes for Production Ready Graph Implementations",
+    "url": "https://mvnrepository.com/artifact/org.neo4j/neo4j",
+    "snippet": "| ![Graph Algorithms for Data Science: With examples in Neo4j](/img/6b352049a758e6175729bd9ba0a94ac4) | Graph Algorithms for Data Science: With examples in Neo4j (2024) by Bratanic, Tomaž\n|\n| ![Graph Data Processing with Cypher: A practical guide to building graph traversal queries using the Cypher "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Neo4j Graph Algorithms: (1) Path Finding Algorithms",
+    "url": "https://data-xtractor.com/blog/graphs/neo4j-graph-algorithms-path-finding/",
+    "snippet": "2. Depth-First Search (DFS) Algorithm\nThe DFS algorithm is another graph traversal algorithm, used in other more advanced algorithms.\nThe query below returns another order of traversal for our graph, something like [A, C, E, F, D, B].\nIt also starts from the node mentioned as start node (A), but the"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Graph Algorithms in Neo4j: Graph Algorithms in Practice",
+    "url": "https://neo4j.com/blog/graph-data-science/graph-algorithms-in-neo4j-graph-algorithms-in-practice/",
+    "snippet": "Conclusion\nGraph algorithms are the powerhouse behind the analysis of real-world networks – from identifying fraud rings and optimizing the location of public services to evaluating the strength of a group and predicting the spread of disease or ideas.\nIn this series, you’ve learned about how graph "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "O’Reilly’s Graph Algorithms: Practical Examples in Apache Spark and Neo4j",
+    "url": "https://neo4j.com/videos/oreillys-graph-algorithms-practical-examples-in-apache-spark-and-neo4j/",
+    "snippet": "O’Reilly’s Graph Algorithms: Practical Examples in Apache Spark and Neo4j\nWhether you are building dynamic network models or forecasting real-world behavior, this book illustrates how graph algorithms deliver value: from finding vulnerabilities and bottlenecks to detecting communities and improving "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "manual-portuguese/introduction/what-is-a-graphdb.asciidoc at master · neo4j-contrib/manual-portuguese",
+    "url": "https://github.com/neo4j-contrib/manual-portuguese/blob/master/introduction/what-is-a-graphdb.asciidoc",
+    "snippet": "> Traversal [fillcolor=\"NODEHIGHLIGHT\"] \"Graph\" [fillcolor=\"NODE2HIGHLIGHT\"] Paths [fillcolor=\"NODE2HIGHLIGHT\"] Algorithm [fillcolor=\"NODE2HIGHLIGHT\"] Relationships -> Nodes [label=\"organize\"] \"Graph\" -> Nodes [label=\"records data in\"] \"Graph\" -> Relationships [label=\"records data in\"] Traversal -> "
+  }
+]

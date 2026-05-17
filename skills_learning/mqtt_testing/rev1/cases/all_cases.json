@@ -1,0 +1,52 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "thebushidocollective/bun-testing",
+    "description": "Skill for writing tests with Bun's built-in test runner, covering test organization, assertions, mocking, and snapshot testing using Bun's fast test infrastructure.",
+    "tags": [
+      "bun",
+      "testing",
+      "javascript",
+      "typescript",
+      "test-runner"
+    ],
+    "score": 0.67,
+    "relevance": "high"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "API testing",
+    "url": "https://en.wikipedia.org/wiki/API_testing",
+    "snippet": "8583, MQTT, FIX, RMI, SMTP, TIBCO Rendezvous, and FIX. API Testing is recognised as being more suitable for test automation and continuous testing (especially"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Comparison of MQTT implementations",
+    "url": "https://en.wikipedia.org/wiki/Comparison_of_MQTT_implementations",
+    "snippet": "MQTT is an ISO standard (ISO/IEC PRF 20922) publish–subscribe-based messaging protocol. It works on top of the Internet protocol suite TCP/IP. It is designed"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Manufacturing execution system",
+    "url": "https://en.wikipedia.org/wiki/Manufacturing_execution_system",
+    "snippet": "traditional hierarchy. Systems increasingly utilize IIoT protocols like MQTT (often with Sparkplug B) to transmit lightweight data to cloud-based analytics"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Software load testing",
+    "url": "https://en.wikipedia.org/wiki/Software_load_testing",
+    "snippet": "The term load testing or stress testing is used in different ways in the professional software testing community. Load testing generally refers to the"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Telemetry",
+    "url": "https://en.wikipedia.org/wiki/Telemetry",
+    "snippet": "satellite Instrumentation Machine to Machine (M2M) MQ Telemetry Transport (MQTT) Portable telemetry Reconnaissance satellite, tapping of communications routing"
+  }
+]

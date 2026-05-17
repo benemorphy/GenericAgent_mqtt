@@ -1,0 +1,11 @@
+{
+  "version": 7,
+  "skill": "image_voucher_verification_micro_loan",
+  "knowledge_score": 83.3,
+  "coverage_pct": 100.0,
+  "practical_score": 85,
+  "case_penalty": 5,
+  "final_score": 84,
+  "passed": true,
+  "note": "document_check.py:85"
+}

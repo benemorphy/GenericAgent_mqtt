@@ -1,0 +1,24 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "tencentcloudbase/skills/ui-design",
+    "description": "A comprehensive UI design skill that guides AI coding assistants through a structured design process to create high-fidelity, visually distinctive frontend prototypes while strictly avoiding generic AI aesthetics.",
+    "tags": [
+      "ui",
+      "frontend",
+      "design",
+      "tailwind",
+      "prototyping"
+    ],
+    "score": 0.751,
+    "relevance": "high"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "History of the Internet",
+    "url": "https://en.wikipedia.org/wiki/History_of_the_Internet",
+    "snippet": "service providers, including MCI, PSI Net and Sprint. As a result, when the handoff was complete, Sprint and its Washington DC Network Access Points began"
+  }
+]

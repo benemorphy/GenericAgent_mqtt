@@ -1,0 +1,112 @@
+[
+  {
+    "id": "P_pin_version",
+    "principle": "固定版本号避免意外升级",
+    "category": "production",
+    "confidence": 98,
+    "evidence_count": 6
+  },
+  {
+    "id": "P_env_separation",
+    "principle": "使用环境变量/配置文件分离环境差异",
+    "category": "production",
+    "confidence": 97,
+    "evidence_count": 6
+  },
+  {
+    "id": "P_domain_llm_1",
+    "principle": "生产级Docker Compose配置优化：环境变量、资源限制与健康检查",
+    "confidence": 92,
+    "level": "domain"
+  },
+  {
+    "id": "P_001",
+    "principle": "在Docker Compose生产部署中，应使用明确的镜像标签（如版本号或Git提交哈希），而非latest标签，以确保部署的可重复性和可追溯性。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "多环境管理与部署策略：开发、测试、生产环境的Compose文件分离与覆盖",
+    "confidence": 88,
+    "level": "domain"
+  },
+  {
+    "id": "P_003",
+    "principle": "使用Docker Compose时，应将敏感信息（如密码、API密钥）通过环境变量或Docker Secrets管理，避免硬编码在配置文件中。",
+    "confidence": 88,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "Docker Compose与CI/CD集成：自动化构建、测试与部署流水线",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_002",
+    "principle": "生产环境下的Docker Compose文件应配置资源限制（如CPU和内存），防止单个容器耗尽主机资源，保障服务稳定性。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_007",
+    "principle": "在Docker Compose中，应将持久化数据（如数据库文件）挂载到命名卷（named volumes）而非绑定挂载，以简化备份和迁移。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_004",
+    "principle": "生产部署中应为每个服务配置健康检查（healthcheck），以便Docker Compose自动检测服务状态并重启异常容器。",
+    "confidence": 82,
+    "level": "domain"
+  },
+  {
+    "id": "P_skill_basics",
+    "principle": "掌握 Docker Compose Production 核心概念和最佳实践",
+    "confidence": 80,
+    "level": "basic"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "生产环境中的网络与安全配置：网络隔离、TLS加密与密钥管理",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_006",
+    "principle": "生产环境中应启用日志驱动（如json-file或syslog），并配置日志轮转策略，避免日志文件无限增长导致磁盘空间耗尽。",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_009",
+    "principle": "Docker Compose生产配置中应显式设置网络模式（如自定义bridge网络），避免使用默认网络，以增强服务隔离和安全性。",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "日志收集、监控与故障恢复：使用Docker Compose集成日志驱动、Prometheus和自动重启策略",
+    "confidence": 78,
+    "level": "domain"
+  },
+  {
+    "id": "P_008",
+    "principle": "生产部署应使用多阶段构建（multi-stage builds）优化镜像大小，减少攻击面并提升部署速度。",
+    "confidence": 78,
+    "level": "advanced"
+  },
+  {
+    "id": "P_005",
+    "principle": "Docker Compose文件应使用版本3或更高版本，以支持swarm模式或编排工具（如Kubernetes）的兼容性，便于扩展。",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_010",
+    "principle": "生产环境应使用Docker Compose的depends_on条件（如condition: service_healthy）确保服务启动顺序，避免依赖服务未就绪导致错误。",
+    "confidence": 72,
+    "level": "advanced"
+  }
+]

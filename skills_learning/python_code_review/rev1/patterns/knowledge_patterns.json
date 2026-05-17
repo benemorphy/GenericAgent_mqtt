@@ -1,0 +1,110 @@
+[
+  {
+    "id": "P_env_separation",
+    "principle": "Use environment variables / config files to separate environments",
+    "confidence": 89,
+    "level": "basic"
+  },
+  {
+    "id": "P_pin_version",
+    "principle": "Pin dependency versions to avoid unexpected upgrades",
+    "confidence": 94,
+    "level": "basic"
+  },
+  {
+    "id": "P_resource_limits",
+    "principle": "Set resource limits to prevent single service starvation",
+    "confidence": 85,
+    "level": "basic"
+  },
+  {
+    "id": "P_config_validation",
+    "principle": "Validate configuration files before deployment",
+    "confidence": 93,
+    "level": "basic"
+  },
+  {
+    "id": "P_unit_test",
+    "principle": "Write unit tests for core business logic",
+    "confidence": 87,
+    "level": "basic"
+  },
+  {
+    "id": "P_integration_test",
+    "principle": "Use integration tests to verify component interactions",
+    "confidence": 85,
+    "level": "basic"
+  },
+  {
+    "id": "P_secret_mgmt",
+    "principle": "Never hardcode secrets; use secret management tools",
+    "confidence": 95,
+    "level": "basic"
+  },
+  {
+    "id": "P_least_privilege",
+    "principle": "Apply principle of least privilege for service accounts",
+    "confidence": 90,
+    "level": "basic"
+  },
+  {
+    "id": "P_tls",
+    "principle": "Enable TLS/SSL for all service communications",
+    "confidence": 88,
+    "level": "basic"
+  },
+  {
+    "id": "P_db_migration",
+    "principle": "Use database migrations for schema changes",
+    "confidence": 90,
+    "level": "basic"
+  },
+  {
+    "id": "P_db_index",
+    "principle": "Add indexes for frequently queried columns",
+    "confidence": 88,
+    "level": "basic"
+  },
+  {
+    "id": "P_connection_pool",
+    "principle": "Use connection pooling to manage database connections",
+    "confidence": 85,
+    "level": "basic"
+  },
+  {
+    "id": "P_domain_1",
+    "principle": "Python code organization & packaging best practices",
+    "confidence": 78,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_2",
+    "principle": "Deployment automation & release management best practices",
+    "confidence": 72,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_3",
+    "principle": "Workflow automation & task scheduling patterns",
+    "confidence": 72,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_4",
+    "principle": "Database schema design & query optimization",
+    "confidence": 72,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_5",
+    "principle": "Continuous integration pipeline configuration",
+    "confidence": 72,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_6",
+    "principle": "Config related best practices (python_code_review)",
+    "confidence": 72,
+    "level": "domain"
+  }
+]

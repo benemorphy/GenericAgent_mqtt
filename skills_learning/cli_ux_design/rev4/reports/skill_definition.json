@@ -1,0 +1,62 @@
+{
+  "name": "cli_ux_design",
+  "display_name": "Cli Ux Design",
+  "prerequisites": [
+    {
+      "name": "命令行基础",
+      "reason": "理解终端操作、常用命令（如ls、grep）及Unix哲学，为设计CLI奠定基础。"
+    },
+    {
+      "name": "编程语言基础",
+      "reason": "至少熟悉一种语言（如Python、Go），用于实现CLI逻辑和参数解析。"
+    },
+    {
+      "name": "用户界面设计原则",
+      "reason": "了解可用性、一致性、反馈等基本UX概念，以应用于命令行环境。"
+    }
+  ],
+  "description": "primary design goal is to be a highly feature rich FTP server, exposing a large amount of configuration options to the user. AIX BSD/OS DG/UX Digital；marks. HP-UX 11i V3 Release B.11.31 remains registered as UNIX 03 compliant on HPE Integrity Servers despite the end of support for HP-UX by HPE. Prev",
+  "related_tags": [
+    "nodejs",
+    "command-line",
+    "developer-tools",
+    "terminal",
+    "cli",
+    "ui-patterns",
+    "design",
+    "accessibility",
+    "best-practices",
+    "ux"
+  ],
+  "wiki_summary": "primary design goal is to be a highly feature rich FTP server, exposing a large amount of configuration options to the user. AIX BSD/OS DG/UX Digital；marks. HP-UX 11i V3 Release B.11.31 remains registered as UNIX 03 compliant on HPE Integrity Servers despite the end of support for HP-UX by HPE. Prev",
+  "core_concepts": [
+    "命令结构与命名：遵循POSIX/GNU惯例，使用动词-名词模式，保持命令名简短且语义明确。",
+    "参数与选项设计：区分位置参数、可选参数、标志（如--verbose），支持短选项（-v）和长选项（--verbose），并考虑默认值。",
+    "输出格式化与可读性：使用表格、颜色、对齐等方式呈现数据，支持机器可读输出（如JSON）。",
+    "错误处理与反馈：提供清晰、可操作的错误信息，包括错误码、上下文及修复建议。",
+    "帮助系统与文档：内置--help输出，包含用法、示例和详细说明，支持man页面或在线文档。",
+    "可组合性与管道：设计输出易于被其他命令处理（如grep、awk），遵循Unix管道哲学。"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "过度设计选项，导致用户困惑。例如，为每个配置项都创建独立参数，使CLI臃肿难用。",
+      "advice": "优先使用配置文件或环境变量管理复杂设置，仅暴露最常用选项为参数，并分组显示帮助信息。"
+    },
+    {
+      "pitfall": "忽略错误处理，输出模糊信息如“Error occurred”。",
+      "advice": "提供具体错误原因、位置及修复建议，使用退出码区分错误类型，并支持--debug模式。"
+    },
+    {
+      "pitfall": "输出格式混乱，难以阅读或解析。例如，混合文本与数据，无对齐或分隔符。",
+      "advice": "统一输出格式，使用表格、缩进或JSON，并支持--format选项让用户选择。"
+    },
+    {
+      "pitfall": "帮助文档不完整或过时，用户无法快速上手。",
+      "advice": "自动生成帮助内容，包含示例、参数说明和常见用例，并定期更新以匹配功能变更。"
+    },
+    {
+      "pitfall": "忽视跨平台兼容性，如路径分隔符、换行符差异。",
+      "advice": "测试在Linux、macOS和Windows（如WSL）上的行为，使用标准库处理平台差异。"
+    }
+  ]
+}

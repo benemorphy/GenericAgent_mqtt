@@ -1,0 +1,58 @@
+[
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Test strategy",
+    "url": "https://en.wikipedia.org/wiki/Test_strategy",
+    "snippet": "A test strategy is an outline that describes the testing approach of the software development cycle. The purpose of a test strategy is to provide a rational"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Software testing",
+    "url": "https://en.wikipedia.org/wiki/Software_testing",
+    "snippet": "determine what aspects of a design are testable and with what parameters those tests work. Test planning: test strategy, test plan, testbed creation. Since many"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Test plan",
+    "url": "https://en.wikipedia.org/wiki/Test_plan",
+    "snippet": "contains a detailed understanding of the eventual workflow. A test plan documents the strategy that will be used to verify and ensure that a product or system"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Test construction strategies",
+    "url": "https://en.wikipedia.org/wiki/Test_construction_strategies",
+    "snippet": "Test construction strategies are the various ways that items in a psychological measure are created and decided upon. They are most often associated with"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "A/B testing",
+    "url": "https://en.wikipedia.org/wiki/A/B_testing",
+    "snippet": "segmented strategy as a result of the A/B test, sending variant B to men and variant A to women in the future. In this example, a segmented strategy would"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Confirmation bias",
+    "url": "https://en.wikipedia.org/wiki/Confirmation_bias",
+    "snippet": "positive tests in itself is not a bias, since positive tests can be highly informative. However, in combination with other effects, this strategy can confirm"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Test effort",
+    "url": "https://en.wikipedia.org/wiki/Test_effort",
+    "snippet": "testobject, test infrastructure, skills of staff members, quality goals and test strategy. To analyse all factors is difficult, because most of the factors influence"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Acceptance test-driven development",
+    "url": "https://en.wikipedia.org/wiki/Acceptance_test-driven_development",
+    "snippet": "overall testing strategy. They are the customer/user oriented tests that demonstrate the business intent of a system. Depending on your test strategy, you"
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "giuseppe-trisciuoglio/developer-kit/spring-data-neo4j",
+    "description": "Comprehensive guide for setting up and using Spring Data Neo4j in Spring Boot applications, covering entity mapping, repository patterns, custom Cypher queries, reactive operations, and integration testing with Neo4j Harness.",
+    "tags": [
+      "spring-boot",
+      "neo4j",
+      "graph-database",
+      "spring-data",
+      "java"
+    ],
+    "score": 0.646,
+    "relevance": "high"
+  },
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "coding-agents-and-ides/people-strategy",
+    "description": "A people relationship management agent skill with persistent graph-based storage using SQLite database for personal CRM and network mapping.",
+    "tags": [
+      "crm",
+      "relationships",
+      "sqlite",
+      "graph",
+      "networking"
+    ],
+    "score": 0.611,
+    "relevance": "high"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Graph database",
+    "url": "https://en.wikipedia.org/wiki/Graph_database",
+    "snippet": "SQL-like query language used in ArangoDB for both documents and graphs Cypher Query Language (Cypher): a graph query declarative language for Neo4j that enables"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Neo4j",
+    "url": "https://en.wikipedia.org/wiki/Neo4j",
+    "snippet": "is most know for creating the Neo4j Graph database, a graph database management system (GDBMS). The data elements Neo4j stores are nodes, edges connecting"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Cypher (query language)",
+    "url": "https://en.wikipedia.org/wiki/Cypher_%28query_language%29",
+    "snippet": "while working for Neo4j, Inc. (formerly Neo Technology) in 2011. Cypher was originally intended to be used with the graph database Neo4j, but was opened"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Graph Query Language",
+    "url": "https://en.wikipedia.org/wiki/Graph_Query_Language",
+    "snippet": "single label; Cypher allows nodes to have zero to many labels, but relationships only have a single label (called a reltype). Neo4j&#039;s database supports undocumented"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Query language",
+    "url": "https://en.wikipedia.org/wiki/Query_language",
+    "snippet": "query language for the Neo4j graph database. DMX is a query language for data mining models. Datalog is a query language for deductive databases. F-logic"
+  }
+]

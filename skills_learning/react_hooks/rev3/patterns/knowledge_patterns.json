@@ -1,0 +1,38 @@
+[
+  {
+    "id": "P_react_hooks",
+    "principle": "使用函数组件 + Hooks 替代类组件",
+    "confidence": 90,
+    "level": "advanced"
+  },
+  {
+    "id": "P_react_component",
+    "principle": "合理拆分组件保持单一职责",
+    "confidence": 88,
+    "level": "advanced"
+  },
+  {
+    "id": "P_react_typescript",
+    "principle": "使用 TypeScript 提升代码健壮性",
+    "confidence": 87,
+    "level": "advanced"
+  },
+  {
+    "id": "P_react_memo",
+    "principle": "使用 React.memo/useMemo 避免不必要渲染",
+    "confidence": 86,
+    "level": "advanced"
+  },
+  {
+    "id": "P_react_state",
+    "principle": "状态管理: 避免 prop drilling，使用 Context/Redux",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_react_lazy",
+    "principle": "代码分割 + 懒加载优化首屏性能",
+    "confidence": 85,
+    "level": "advanced"
+  }
+]

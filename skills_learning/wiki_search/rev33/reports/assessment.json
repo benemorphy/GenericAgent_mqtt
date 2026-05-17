@@ -1,0 +1,11 @@
+{
+  "version": 33,
+  "skill": "wiki_search",
+  "knowledge_score": 91.7,
+  "coverage_pct": 100.0,
+  "practical_score": 100,
+  "case_penalty": 0,
+  "final_score": 97,
+  "passed": true,
+  "note": "LLM验证 5/5"
+}

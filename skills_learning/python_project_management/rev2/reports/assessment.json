@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "skill": "python_project_management",
+  "knowledge_score": 90.9,
+  "coverage_pct": 100.0,
+  "practical_score": 100,
+  "case_penalty": 5,
+  "final_score": 91,
+  "passed": true,
+  "note": "LLM验证 5/5"
+}

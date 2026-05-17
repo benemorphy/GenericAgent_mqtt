@@ -1,0 +1,62 @@
+{
+  "name": "cypher_programming_language",
+  "display_name": "Cypher Programming Language",
+  "prerequisites": [
+    {
+      "name": "图数据库基础",
+      "reason": "理解节点、关系、属性等图数据模型概念，是学习Cypher的前提。"
+    },
+    {
+      "name": "SQL基础",
+      "reason": "熟悉SELECT、WHERE等查询语法有助于类比理解Cypher的声明式风格。"
+    },
+    {
+      "name": "编程逻辑",
+      "reason": "掌握变量、条件、循环等基本编程概念，便于理解路径匹配和聚合操作。"
+    }
+  ],
+  "description": "Because of this, Cypher has been adopted well beyond Neo4j through the openCypher initiative, and it influenced standards like SQL:2023 Graph and the emerging ISO Graph Query Language (GQL).\nToday, Cy；Cypher produces RDF graph and SeRQL query representations of sentences, clauses, phrases and questi",
+  "related_tags": [
+    "programming",
+    "version-management",
+    "recipes",
+    "multilingual",
+    "code-generation",
+    "code-style",
+    "dsl",
+    "systems-programming",
+    "conventions",
+    "loops"
+  ],
+  "web_summary": "Because of this, Cypher has been adopted well beyond Neo4j through the openCypher initiative, and it influenced standards like SQL:2023 Graph and the emerging ISO Graph Query Language (GQL).\nToday, Cy；Cypher produces RDF graph and SeRQL query representations of sentences, clauses, phrases and questi",
+  "core_concepts": [
+    "节点和关系模式：使用(node)-[:RELATION]->(node)语法表示图结构。",
+    "MATCH语句：通过模式匹配从图中检索数据，支持多步路径。",
+    "WHERE子句：过滤匹配结果，支持属性、关系类型和路径条件。",
+    "CREATE和MERGE：创建节点和关系，MERGE避免重复。",
+    "RETURN和聚合：返回结果并支持COUNT、SUM、COLLECT等聚合函数。",
+    "路径变量：用变量捕获路径，进行长度或模式遍历（如最短路径）。"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "忽略方向导致查询结果为空或错误。",
+      "advice": "始终明确指定关系方向（如->或<-），除非使用无向匹配（如-[r]-）。"
+    },
+    {
+      "pitfall": "在MATCH中过度使用笛卡尔积，导致性能下降。",
+      "advice": "尽量使用关联条件（如WHERE a.id = b.id）或路径模式来减少组合爆炸。"
+    },
+    {
+      "pitfall": "混淆节点标签和关系类型，导致语法错误。",
+      "advice": "节点标签用冒号前缀（:Person），关系类型用方括号内冒号（[:KNOWS]）。"
+    },
+    {
+      "pitfall": "忘记处理空值或缺失属性，导致查询异常。",
+      "advice": "使用IS NULL/IS NOT NULL检查，或使用COALESCE提供默认值。"
+    },
+    {
+      "pitfall": "在复杂路径中未使用变量，导致无法引用中间节点。",
+      "advice": "为路径中的每个节点和关系分配变量（如(a)-[r]->(b)），便于后续操作。"
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+[
+  {
+    "id": "P_doc_multi_verify",
+    "principle": "建立多维度凭证真实性交叉验证流程",
+    "confidence": 95,
+    "level": "advanced"
+  },
+  {
+    "id": "P_img_preprocess",
+    "principle": "实施图像预处理提升识别准确率（降噪/归一化/增强）",
+    "confidence": 95,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_1",
+    "principle": "Satellite Image Preprocessing (几何校正、辐射定标与大气校正)",
+    "confidence": 95,
+    "level": "domain"
+  },
+  {
+    "id": "P_doc_security_feat",
+    "principle": "使用防伪特征检测（水印/微印/安全线）验证凭证真伪",
+    "confidence": 94,
+    "level": "advanced"
+  },
+  {
+    "id": "P_img_dl",
+    "principle": "采用深度学习模型进行图像分类与检测",
+    "confidence": 94,
+    "level": "advanced"
+  },
+  {
+    "id": "P_doc_integrity",
+    "principle": "实施凭证图像完整性校验（哈希/数字签名）",
+    "confidence": 93,
+    "level": "advanced"
+  },
+  {
+    "id": "P_img_ocr",
+    "principle": "使用OCR技术提取图像中的文本信息",
+    "confidence": 93,
+    "level": "advanced"
+  },
+  {
+    "id": "P_doc_extract",
+    "principle": "设计凭证要素标准化提取与比对框架",
+    "confidence": 92,
+    "level": "advanced"
+  },
+  {
+    "id": "P_img_integrity",
+    "principle": "建立图像防篡改校验机制",
+    "confidence": 92,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "Multispectral and Hyperspectral Image Analysis (多光谱与高光谱影像分析)",
+    "confidence": 92,
+    "level": "domain"
+  },
+  {
+    "id": "P_img_quality",
+    "principle": "设计图像质量自动评估与筛选机制",
+    "confidence": 91,
+    "level": "advanced"
+  },
+  {
+    "id": "P_doc_review",
+    "principle": "建立识别失败的人工复核与异常流转机制",
+    "confidence": 90,
+    "level": "advanced"
+  },
+  {
+    "id": "P_001",
+    "principle": "利用多时相卫星影像进行变化检测，通过比较同一区域不同时间点的图像来识别动态现象，如臭氧空洞的演变。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_005",
+    "principle": "构建卫星影像时间序列数据集，通过分析时间维度的光谱和纹理变化，监测地表动态过程。",
+    "confidence": 90,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "Land Cover and Land Use Classification (土地覆盖与土地利用分类)",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_doc_unified",
+    "principle": "支持多类型凭证的统一鉴定引擎架构",
+    "confidence": 88,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "Change Detection and Time Series Analysis (变化检测与时间序列分析)",
+    "confidence": 88,
+    "level": "domain"
+  },
+  {
+    "id": "P_002",
+    "principle": "在卫星图像解译中，结合上下文和已知地物特征进行视觉分析，以识别和分类图像中的目标。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_004",
+    "principle": "利用多光谱成像技术，通过多个离散波段的数据融合，增强对军事目标、植被或地质特征的识别能力。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "Object-Based Image Analysis (面向对象影像分析)",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_1",
+    "principle": "图像采集与预处理最佳实践（卫星图像鉴定）",
+    "confidence": 83,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_2",
+    "principle": "鉴定流程与判定标准（卫星图像鉴定）",
+    "confidence": 83,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_3",
+    "principle": "卫星影像几何校正与预处理（卫星图像鉴定）",
+    "confidence": 83,
+    "level": "domain"
+  },
+  {
+    "id": "P_config_validation",
+    "principle": "部署前验证配置文件正确性",
+    "confidence": 83,
+    "level": "basic"
+  },
+  {
+    "id": "P_003",
+    "principle": "采用高光谱成像技术，通过分析连续窄波段的光谱信息，实现化学物质和材料的精确检测与识别。",
+    "confidence": 80,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_4",
+    "principle": "评估相关技术与最佳实践（卫星图像鉴定）",
+    "confidence": 77,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_5",
+    "principle": "gis相关技术与最佳实践（卫星图像鉴定）",
+    "confidence": 77,
+    "level": "domain"
+  }
+]

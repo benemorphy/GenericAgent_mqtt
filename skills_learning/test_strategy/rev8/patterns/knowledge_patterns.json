@@ -1,0 +1,74 @@
+[
+  {
+    "id": "P_domain_llm_1",
+    "principle": "Test strategy: 定义测试范围、目标与资源分配的高层计划",
+    "confidence": 95,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "Test plan: 详细描述测试活动、时间表与交付物的文档",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_001",
+    "principle": "测试策略应作为软件开发周期中测试方法的总体框架，明确测试目标、范围和资源分配。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "Test construction strategies: 设计测试用例的方法，如等价类划分与边界值分析",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_002",
+    "principle": "测试策略需与测试计划紧密关联，测试计划应详细记录策略的执行流程和工作流。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_003",
+    "principle": "测试策略应基于质量目标、测试对象、基础设施和人员技能等因素综合制定，以平衡测试投入与效果。",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_006",
+    "principle": "验收测试驱动开发中，测试策略应以客户/用户导向的测试为核心，展示系统的业务意图。",
+    "confidence": 80,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "A/B testing: 对比两个版本以评估效果差异的实验方法",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_004",
+    "principle": "在A/B测试中，测试策略可包含分段策略，即根据测试结果对不同用户群体应用不同变体。",
+    "confidence": 75,
+    "level": "advanced"
+  },
+  {
+    "id": "P_007",
+    "principle": "测试策略需明确设计中的可测试性方面，并确定测试参数，以指导测试床的创建。",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "Acceptance test-driven development: 通过验收测试驱动开发流程的实践",
+    "confidence": 70,
+    "level": "domain"
+  },
+  {
+    "id": "P_005",
+    "principle": "测试策略应避免确认偏误，即不应仅依赖正向测试结果，需结合其他测试方法确保全面性。",
+    "confidence": 70,
+    "level": "advanced"
+  }
+]

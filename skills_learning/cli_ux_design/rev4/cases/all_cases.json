@@ -1,0 +1,72 @@
+[
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Codex (AI agent)",
+    "url": "https://en.wikipedia.org/wiki/Codex_%28AI_agent%29",
+    "snippet": "fixing bugs, released in April 2025 as Codex CLI. Codex is available through ChatGPT&#039;s web app, the Codex CLI, a desktop app for Windows and macOS, and several"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "List of CLI languages",
+    "url": "https://en.wikipedia.org/wiki/List_of_CLI_languages",
+    "snippet": "CLI languages are computer programming languages that are used to produce libraries and programs that conform to the Common Language Infrastructure (CLI)"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Command-line interface",
+    "url": "https://en.wikipedia.org/wiki/Command-line_interface",
+    "snippet": "A command-line interface (CLI), also known as a command-line shell, is a means of interacting with software via commands – each formatted as a line of"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "C++/CLI",
+    "url": "https://en.wikipedia.org/wiki/C%2B%2B/CLI",
+    "snippet": "C++/CLI is a variant of the C++ programming language, modified for Common Language Infrastructure. It has been part of Visual Studio 2005 and later, and"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Climate fiction",
+    "url": "https://en.wikipedia.org/wiki/Climate_fiction",
+    "snippet": "Climate fiction (sometimes shortened to cli-fi) is literature that deals with climate change. Generally speculative in nature but inspired by climate"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "ProFTPD",
+    "url": "https://en.wikipedia.org/wiki/ProFTPD",
+    "snippet": "primary design goal is to be a highly feature rich FTP server, exposing a large amount of configuration options to the user. AIX BSD/OS DG/UX Digital"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Single UNIX Specification",
+    "url": "https://en.wikipedia.org/wiki/Single_UNIX_Specification",
+    "snippet": "marks. HP-UX 11i V3 Release B.11.31 remains registered as UNIX 03 compliant on HPE Integrity Servers despite the end of support for HP-UX by HPE. Previous"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Error message",
+    "url": "https://en.wikipedia.org/wiki/Error_message",
+    "snippet": "interface (CLI), an error message may be printed to a standard stream. A program may write an error message to a log file. The proper design of error messages"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Open Database Connectivity",
+    "url": "https://en.wikipedia.org/wiki/Open_Database_Connectivity",
+    "snippet": "ODBC and the SAG/CLI) SDK and associated drivers for PROGRESS, Sybase, Oracle, and other DBMS, for use on Unix-like OS (AIX, HP-UX, Solaris, Linux, etc"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Graphical user interface",
+    "url": "https://en.wikipedia.org/wiki/Graphical_user_interface",
+    "snippet": "reaction to the perceived steep learning curve of command-line interfaces (CLIs), which require commands to be typed on a computer keyboard. The actions"
+  }
+]

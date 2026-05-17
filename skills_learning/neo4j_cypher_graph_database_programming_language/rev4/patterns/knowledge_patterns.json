@@ -1,0 +1,92 @@
+[
+  {
+    "id": "P_domain_llm_1",
+    "principle": "基础语法与查询模式：掌握MATCH、RETURN、WHERE等核心子句，构建节点与关系的匹配模式",
+    "confidence": 95,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "数据建模与模式设计：设计节点标签、关系类型和属性，优化图结构以支持高效查询",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_001",
+    "principle": "设计图模型时优先考虑查询模式：根据实际查询需求设计节点、关系和属性，而非先建模再适配查询。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_004",
+    "principle": "为经常用于过滤、排序或聚合的属性创建索引，以加速查询执行。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_003",
+    "principle": "在Cypher查询中优先使用参数化查询而非字面量，以利用查询计划缓存并防止注入。",
+    "confidence": 88,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "高级查询与聚合：使用WITH、ORDER BY、聚合函数和子查询实现复杂数据分析和路径遍历",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_002",
+    "principle": "使用有意义的标签和关系类型名称，避免模糊或通用命名，以提升查询可读性和性能。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_005",
+    "principle": "使用PROFILE或EXPLAIN分析查询执行计划，识别慢查询并优化模式匹配和过滤顺序。",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "索引与性能优化：创建索引、使用PROFILE分析查询计划，优化Cypher执行效率",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_007",
+    "principle": "在Spring Data Neo4j中，使用Repository模式封装Cypher查询，并通过AOP监控查询执行时间和频率以辅助优化。",
+    "confidence": 80,
+    "level": "advanced"
+  },
+  {
+    "id": "P_009",
+    "principle": "将复杂查询拆分为模块化子查询，便于复用和维护，同时结合参数化查询和索引提升整体性能。",
+    "confidence": 78,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "图算法与数据操作：应用最短路径、社区检测等图算法，以及CREATE、MERGE、DELETE等数据变更操作",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_006",
+    "principle": "避免在Cypher中使用max()等聚合函数对无索引的大数据集操作，应预先创建索引或改用其他查询模式。",
+    "confidence": 75,
+    "level": "advanced"
+  },
+  {
+    "id": "P_008",
+    "principle": "使用丰富的数据模型（Rich Data Model）表达业务语义，增强图的表达能力和遍历效率。",
+    "confidence": 70,
+    "level": "domain"
+  },
+  {
+    "id": "P_010",
+    "principle": "在Cypher模式匹配中使用ASCII艺术风格表示节点和关系，确保模式清晰且与数据逻辑一致。",
+    "confidence": 65,
+    "level": "domain"
+  }
+]

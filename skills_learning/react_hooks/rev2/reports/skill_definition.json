@@ -1,0 +1,18 @@
+{
+  "name": "react_hooks",
+  "display_name": "React Hooks",
+  "prerequisites": [],
+  "description": "Comprehensive guide for building AI-powered React UIs using Vercel AI SDK v6 hooks (useChat, useCompletion, useObject), covering migration from v4/v5, streaming patterns, tool approval workflows, and ",
+  "related_tags": [
+    "react",
+    "optimization",
+    "streaming",
+    "patterns",
+    "nextjs",
+    "frontend",
+    "chat-ui",
+    "vercel",
+    "ai-sdk",
+    "hooks"
+  ]
+}

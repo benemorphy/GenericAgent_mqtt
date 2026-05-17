@@ -1,0 +1,128 @@
+[
+  {
+    "id": "P_domain_llm_1",
+    "principle": "构建高效搜索查询（使用布尔运算符、通配符和精确短语）",
+    "confidence": 95,
+    "level": "domain"
+  },
+  {
+    "id": "P_search_boolean",
+    "principle": "使用布尔运算符（AND/OR/NOT）组合搜索条件优化检索精度",
+    "confidence": 93,
+    "level": "advanced"
+  },
+  {
+    "id": "P_search_filters",
+    "principle": "利用高级搜索过滤器（日期范围、站点限定、文件类型）缩小结果范围",
+    "confidence": 91,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "利用高级搜索过滤器（按日期、站点、文件类型等筛选结果）",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "评估搜索结果的可信度与权威性（识别来源、验证信息）",
+    "confidence": 88,
+    "level": "domain"
+  },
+  {
+    "id": "P_search_exact",
+    "principle": "构建高效搜索查询时优先使用精确短语匹配（引号）和通配符",
+    "confidence": 88,
+    "level": "advanced"
+  },
+  {
+    "id": "P_search_pagination",
+    "principle": "实现分页和游标机制处理大规模搜索结果集",
+    "confidence": 88,
+    "level": "advanced"
+  },
+  {
+    "id": "P_search_multistep",
+    "principle": "使用多步骤过滤工作流（先搜索再筛选层级下钻）提升结果精准度",
+    "confidence": 86,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "优化搜索策略与迭代（从宽泛到精准，利用相关搜索和反向链接）",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_search_cache",
+    "principle": "实现搜索结果的缓存机制减少重复请求提升响应速度",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_pin_version",
+    "principle": "固定版本号避免意外升级",
+    "confidence": 84,
+    "level": "basic"
+  },
+  {
+    "id": "P_search_suggest",
+    "principle": "设计搜索建议和自动补全功能提升用户体验",
+    "confidence": 83,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "掌握特定领域搜索技巧（如学术、专利、新闻数据库）",
+    "confidence": 82,
+    "level": "domain"
+  },
+  {
+    "id": "P_search_spell",
+    "principle": "处理搜索关键词的拼写纠错和同义词扩展提升召回率",
+    "confidence": 81,
+    "level": "advanced"
+  },
+  {
+    "id": "P_env_separation",
+    "principle": "使用环境变量/配置文件分离环境差异",
+    "confidence": 79,
+    "level": "basic"
+  },
+  {
+    "id": "P_domain_4",
+    "principle": "rest相关技术与最佳实践（wiki_search）",
+    "confidence": 77,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_5",
+    "principle": "http相关技术与最佳实践（wiki_search）",
+    "confidence": 77,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_1",
+    "principle": "wiki_search核心概念与术语体系",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_2",
+    "principle": "wiki_search常见场景与解决方案",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_3",
+    "principle": "wiki_search工具链与环境搭建",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_resource_limits",
+    "principle": "资源限制防止单服务耗尽",
+    "confidence": 75,
+    "level": "basic"
+  }
+]

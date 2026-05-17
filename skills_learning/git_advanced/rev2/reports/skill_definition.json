@@ -1,0 +1,62 @@
+{
+  "name": "git_advanced",
+  "display_name": "Git Advanced",
+  "prerequisites": [
+    {
+      "name": "Git基础",
+      "reason": "需要熟悉常用命令如commit、push、pull、branch、merge，以及基本的工作流程。"
+    },
+    {
+      "name": "GitHub基础",
+      "reason": "了解仓库创建、Pull Request、Issue等基本协作功能。"
+    },
+    {
+      "name": "命令行操作",
+      "reason": "熟练使用终端或命令行界面，因为高级Git操作和Agt工具依赖命令行。"
+    }
+  ],
+  "description": "Take your Git and GitHub skills to an advanced level with this hands-on course designed for developers who want to streamline their workflow and collaborate more effectively.\nThrough 10 focused module；Advanced Git Tool - Agt is a commandline advanced git tool for searching and querying information a",
+  "related_tags": [
+    "cherry-pick",
+    "branch-management",
+    "rebase",
+    "worktrees",
+    "performance",
+    "sparse-checkout",
+    "worktree",
+    "monorepo",
+    "version-control",
+    "collaboration"
+  ],
+  "web_summary": "Take your Git and GitHub skills to an advanced level with this hands-on course designed for developers who want to streamline their workflow and collaborate more effectively.\nThrough 10 focused module；Advanced Git Tool - Agt is a commandline advanced git tool for searching and querying information a",
+  "core_concepts": [
+    "交互式变基（Interactive Rebase）与提交历史整理",
+    "高级分支策略（如Git Flow、GitHub Flow）",
+    "子模块（Submodule）与子树（Subtree）管理",
+    "Git钩子（Hooks）自动化与自定义脚本",
+    "GitHub Actions CI/CD工作流配置",
+    "Git性能优化与大型仓库管理技巧"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "滥用变基导致协作冲突",
+      "advice": "仅在个人分支或确认无他人依赖时使用变基，公共分支应优先使用合并。"
+    },
+    {
+      "pitfall": "忽略子模块更新导致构建失败",
+      "advice": "定期运行git submodule update --remote，并在CI中检查子模块状态。"
+    },
+    {
+      "pitfall": "Git钩子脚本未测试导致意外行为",
+      "advice": "在独立环境中测试钩子脚本，使用钩子管理工具如husky确保一致性。"
+    },
+    {
+      "pitfall": "大型仓库中频繁git status或log导致性能下降",
+      "advice": "使用git sparse-checkout或浅克隆（shallow clone）减少数据量，并利用git blame --ignore-revs优化历史查询。"
+    },
+    {
+      "pitfall": "GitHub Actions中错误配置触发条件导致无限循环",
+      "advice": "明确指定on.push.branches或paths过滤，并添加concurrency限制防止重复运行。"
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "wshobson/agents/python-performance-optimization",
+    "description": "Comprehensive guide to profiling, analyzing, and optimizing Python code for better performance, covering CPU profiling, memory optimization, caching, parallelization, database tuning, and implementation best practices.",
+    "tags": [
+      "python",
+      "performance",
+      "profiling",
+      "optimization",
+      "memory"
+    ],
+    "score": 0.761,
+    "relevance": "high"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Optimize asyncio.gather()",
+    "url": "https://github.com/python/cpython/issues/76536",
+    "snippet": "GitHub fields:\nassignee = 'https://github.com/1st1'\nclosed_at = <Date 2017-12-19.12:20:10.931>\ncreated_at = <Date 2017-12-18.02:41:07.785>\nlabels = ['expert-asyncio', '3.7', 'performance']\ntitle = 'Optimize asyncio.gather()'\nupdated_at = <Date 2017-12-19.12:20:10.930>\nuser = 'https://github.com/1st1"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Proposal: Optimization for asyncio.to_thread",
+    "url": "https://github.com/python/cpython/issues/136157#%3A~%3Atext%3DProposal%3A-%2Casyncio.%2Cthe%20target%20function%20with%20functools.",
+    "snippet": "- Original Implementation Best Time: 21.0525s (23,750 ops/sec)\n- Optimized Implementation Best Time: 20.0661s (24,918 ops/sec)\n- Theoretical Max Performance Improvement: 4.69%\nThis benchmark demonstrates that the optimization provides a tangible speedup by reducing overhead in the most common execut"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "I came into a network I/O bound optimization problem and manage to solve it using Multi-threading solution here. In the middle of research, I came into Asyncio — Asynchronous I/O library in Python, which brings into the question it may be a better solution.",
+    "url": "https://dev.to/mervynlee94/multi-threading-vs-event-loop-in-python-1h4h",
+    "snippet": "# you now have all response bodies in this variable\nfor res in responses:\nresult += json.loads(res.decode(\"utf-8\"))\nloop = asyncio.get_event_loop()\nfuture = asyncio.ensure_future(run())\nloop.run_until_complete(future)\nResult\nThe time taken for 6000 pages(calls) of API took around 6 minutes for both "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Optimizing Python Performance with Async/Await and Concurrency",
+    "url": "https://www.inexture.com/python-async-await-concurrency-optimization/",
+    "snippet": "- Web Scraping: - aiohttpenables fetching 1000+ pages concurrently.\n- Data Pipelines: Async helps handle file I/O while performing transformations.\n- Chatbots & Realtime Apps: Async supports WebSocket handling with minimal latency.\nIf you’re building complex apps, partnering with an expert Python de"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Using Python's Asyncio for Concurrency: Best Practices and Real-World Applications",
+    "url": "https://pythonprograming.com/blog/using-pythons-asyncio-for-concurrency-best-practices-and-real-world-applications",
+    "snippet": "# CPU-bound example\nimport asyncio\nfrom concurrent.futures import ProcessPoolExecutor\ndef cpu_heavy(n):\n# heavy computation\nreturn sum(ii for i in range(n))\nasync def main():\nloop = asyncio.get_running_loop()\nwith ProcessPoolExecutor() as pool:\nresult = await loop.run_in_executor(pool, cpu_heavy, 10"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Examples of production-ready patterns demonstrating distributed async await and durable execution",
+    "url": "https://github.com/resonatehq-examples",
+    "snippet": "- 📘 Official Docs\n- 🧠 Distributed Async Await Explained\n- 📖 SEAA (Systems Engineering for Agentic Applications)\n- TypeScript SDK - npm install @resonatehq/sdk\n- Python SDK - pip install resonate-sdk\n- 💬 Discord - Ask questions, share patterns\n- 🐛 Issues - Report bugs or request examples\n- 🌐 Website "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Concurrency and async / await",
+    "url": "https://fastapi.tiangolo.com/async/#%3A~%3Atext%3DWith%20FastAPI%20you%20can%20take%2Cthose%20in%20Machine%20Learning%20systems.",
+    "snippet": "Starlette (and FastAPI) are based on AnyIO, which makes it compatible with both Python's standard library asyncio and Trio.\nIn particular, you can directly use AnyIO for your advanced concurrency use cases that require more advanced patterns in your own code.\nAnd even if you were not using FastAPI, "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Async programming in Python enables efficient concurrent code",
+    "url": "https://oneuptime.com/blog/post/2026-01-28-create-async-functions-python/view",
+    "snippet": "# wait_examples.py\n# Advanced waiting patterns\nimport asyncio\nasync def task(name: str, duration: float) -> str:\nawait asyncio.sleep(duration)\nreturn f\"{name} completed in {duration}s\"\nasync def main():\ntasks = [\nasyncio.create_task(task(\"A\", 2)),\nasyncio.create_task(task(\"B\", 1)),\nasyncio.create_ta"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "使用Async和Await的异步编程",
+    "url": "https://cloud.tencent.com.cn/developer/information/%E9%80%9A%E8%BF%87await%E7%AD%89%E5%BE%85async.each%E5%AE%8C%E6%88%90%EF%BC%8C%E7%84%B6%E5%90%8E%E5%86%8D%E7%BB%A7%E7%BB%AD",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python 异步: 常见错误（22）",
+    "url": "https://juejin.cn/post/7218916720332668986",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "asyncio常见误区 | Jove's Blog · Issue #3 · JoveYu/blog-publish",
+    "url": "https://github.com/JoveYu/blog-publish/issues/3",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "How to Run Python Async Functions with asyncio.run() and await",
+    "url": "https://docs.bswen.com/blog/2026-04-14-how-to-run-python-async-functions/",
+    "snippet": "# Entry pointasyncio.run(process())Without await, the inner coroutine is created but never executed:\nasync def process_wrong():    data = fetch_data()  # WRONG: creates coroutine, doesn't run it    # data is a coroutine object, not \"data fetched\"    return data.upper()  # This will failUsing the asy"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Asynchronous Programming in Python: Mastering Async and Await",
+    "url": "https://30dayscoding.com/blog/asynchronous-programming-in-python-mastering-async-and-await#%3A~%3Atext%3DThe%20%60asyncio%60%20library%20is%20the%2C%2C%20event%20loops%2C%20and%20tasks.",
+    "snippet": "Common Pitfalls and Troubleshooting\nAsynchronous programming can be complex, and common pitfalls can lead to performance issues, deadlocks, and other problems.\nHere are some common pitfalls to watch out for:\nAvoid using nested `await` expressions, as they can lead to performance issues and make the "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Async Context Managers in Python: A Deep Dive",
+    "url": "https://dev.to/hevalhazalkurt/understanding-async-context-managers-in-python-1928",
+    "snippet": "Common Pitfalls\n| Pitfall | Explanation |\n|---|---|\n| Forgetting await | __aenter__and__aexit__are coroutines.\nYou mustawaitthem usingasync with.\n|\n| Blocking calls inside async with | Avoid using synchronous (blocking) code inside async blocks.\nIt kills concurrency.\n|\n| Not releasing resources | If"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Take a modern Python codebase to the next level of performance.",
+    "url": "https://github.com/omnilib/aiomultiprocess",
+    "snippet": "Take a modern Python codebase to the next level of performance.\nOn their own, AsyncIO and multiprocessing are useful, but limited: AsyncIO still can't exceed the speed of GIL, and multiprocessing only works on one task at a time.\nBut together, they can fully realize their true potential.\naiomultipro"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python’s asyncio: A Comprehensive Guide",
+    "url": "https://shivlab.com/blog/python-asyncio-boosts-business-efficiency/",
+    "snippet": "Combining Multiprocessing and Asyncio for Maximum Efficiency\nAsyncio is ideal for I/O-bound tasks, while multiprocessing excels at CPU-bound tasks.\nCombining the two enables businesses to achieve the best performance for complex applications.\nExample:\npython\nimport asyncio\nfrom multiprocessing impor"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Mastering Multitasking in Python: Asynchronous, Threaded, and Multiprocessing Approaches",
+    "url": "https://dev.to/aliardakani/decoding-the-multitasking-matrix-async-vs-threads-vs-processes-3gae",
+    "snippet": "Comparison\nParallelism\n- Asyncio uses a single thread and event loop so no parallelism.\nThreads are limited by the GIL for CPU work.\nMultiprocessing fully utilizes multiple CPUs for parallelism.\nOverhead\n- Asyncio and threads have low overhead, just a function and lightweight threading.\nProcesses ha"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python并发三剑客：threading, multiprocessing, asyncio的对比与选择",
+    "url": "https://runebook.dev/zh/docs/python/library/threading/reference",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "How to Connect and Work with a SQL Database in Python",
+    "url": "https://airbyte.com/data-engineering-resources/sql-database-in-python#%3A~%3Atext%3DPython%20supports%20various%20database%20drivers%2Cdelete%20operations%20on%20your%20database.",
+    "snippet": "# Multiple concurrent queries\ntasks = [\nquery_with_pool(pool, 'SELECT * FROM orders WHERE customer_id = $1', i)\nfor i in range(1, 11)\n]\nresults = await asyncio.gather(*tasks)\nawait pool.close()\nPerformance Benefits and Use Cases\nAsynchronous operations deliver substantial performance improvements fo"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python web开发中的异步IO性能优化技巧",
+    "url": "https://www.php.cn/faq/561206.html",
+    "snippet": "import asyncio import aiomysql async def test_example(): async with aiomysql.create_pool(host='localhost', user='root', password='', db='test', charset='utf8mb4', autocommit=True) as pool: async with pool.acquire() as conn: async with conn.cursor() as cur: await cur.execute(\"select id, name from tb_"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Boosting Python FastAPI Performance: Tips and Tricks for 2025",
+    "url": "https://toxigon.com/python-fastapi-performance-tuning",
+    "snippet": "or aiohttp\n.\nHere's a quick example:\nimport httpx async def fetch_data(url: str): async with httpx.AsyncClient() as client: response = await client.get(url) return response.json()\nDatabase Optimization\nDatabase access is often a major bottleneck in web applications.\nTo optimize this, you should use "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "使用Python的asyncpg库高效处理异步PostgreSQL数据库操作的最佳实践",
+    "url": "https://www.oryoy.com/news/shi-yong-python-de-asyncpg-ku-gao-xiao-chu-li-yi-bu-postgresql-shu-ju-ku-cao-zuo-de-zui-jia-shi-jian.html",
+    "snippet": "性能优化\n预编译SQL语句\n预编译SQL语句可以提高查询效率，减少SQL解析时间。\nasync def prepare_statement():\nconn = await asyncpg.connect(user='username', password='password',\ndatabase='database_name', host='127.0.0.1')\nawait conn.prepare('SELECT * FROM my_table WHERE id = $1')\nrows = await conn.fetch('SELECT * FROM my_table WHERE id "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "使用Python异步库aiomysql提升数据库操作性能的最佳实践",
+    "url": "https://www.oryoy.com/news/shi-yong-python-yi-bu-ku-aiomysql-ti-sheng-shu-ju-ku-cao-zuo-xing-neng-de-zui-jia-shi-jian.html",
+    "snippet": "# 异步操作\nasync def async_fetch_data():\npool = await aiomysql.create_pool(\nhost='127.0.0.1',\nport=3306,\nuser='yourusername',\npassword='yourpassword',\ndb='yourdatabase',\nloop=asyncio.get_event_loop()\n)\nasync with pool.acquire() as conn:\nasync with conn.cursor() as cur:\nawait cur.execute(\"SELECT * FROM y"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker image for Uvicorn managed by Gunicorn for high-performance Starlette web applications in Python",
+    "url": "https://github.com/tiangolo/uvicorn-gunicorn-starlette-docker",
+    "snippet": "For example, if your main Python file has something like:\nfrom starlette.applications import Starlette\nfrom starlette.responses import JSONResponse\napi = Starlette()\n@api.route(\"/\")\nasync def homepage(request):\nreturn JSONResponse({\"message\": \"Hello World!\"})In this case api would be the variable wi"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker image with Uvicorn managed by Gunicorn for high-performance FastAPI web applications in Python 3.6 and above",
+    "url": "https://github.com/dvglab/uvicorn-gunicorn-fastapi-docker",
+    "snippet": "Read more about it all in the FastAPI documentation about: FastAPI in Containers - Docker.\nUvicorn is a lightning-fast \"ASGI\" server.\nIt runs asynchronous Python web code in a single process.\nYou can use Gunicorn to start and manage multiple Uvicorn worker processes.\nThat way, you get the best of co"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "USING ASYNCHRONOUS PROGRAMMING IN PYTHON TO IMPROVE APPLICATION PERFORMANCE",
+    "url": "https://inlibrary.uz/index.php/tajet/article/view/52176",
+    "snippet": "Network Support\nAsynchronous programming is ideal for handling large numbers of network\nor API requests, as it manages connections and data without blocking.\nScalability\nAsynchronous applications are easier to scale, as they can efficiently handle\nnumerous concurrent connections and tasks.\nOne  of  "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "FastAPI: A Python Framework For High-Performance Web APIs",
+    "url": "https://www.siddhatech.com/fastapi-python-framework/",
+    "snippet": "1. Speed and Efficiency\nFastAPI is designed to handle high-traffic loads and run at the most optimal speed.\nIt can achieve such incredible speed on the basis of its high-performance libraries such as Pydantic and Uvicorn.\nAs FastAPI uses Python as its programming language, it can also benefit from i"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python in the Backend in 2025: Leveraging Asyncio and FastAPI for High-Performance Systems",
+    "url": "https://www.nucamp.co/blog/coding-bootcamp-backend-with-python-2025-python-in-the-backend-in-2025-leveraging-asyncio-and-fastapi-for-highperformance-systems#%3A~%3Atext%3DThe%20combination%20of%20FastAPI%20and%2Cwhatever%20you%20throw%20at%20them.",
+    "snippet": "Table of Contents\n- Understanding FastAPI: The Modern Python Framework\n- Asyncio: Enhancing Python’s Performance for Real-Time Applications\n- Key Use Cases for FastAPI and Asyncio in Backend Systems\n- Challenges and Learning Curve of Asynchronous Programming\n- Future Trends: Async-First Frameworks a"
+  }
+]

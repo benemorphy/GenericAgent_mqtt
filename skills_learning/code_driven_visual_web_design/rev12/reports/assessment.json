@@ -1,0 +1,11 @@
+{
+  "version": 12,
+  "skill": "code_driven_visual_web_design",
+  "knowledge_score": 90.0,
+  "coverage_pct": 100.0,
+  "practical_score": 100,
+  "case_penalty": 15,
+  "final_score": 81,
+  "passed": true,
+  "note": "通用验证 5/5"
+}

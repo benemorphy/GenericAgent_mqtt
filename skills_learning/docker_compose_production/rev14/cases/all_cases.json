@@ -1,0 +1,220 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "josiahsiegel/claude-plugin-marketplace/docker-best-practices",
+    "description": "A comprehensive reference guide for Docker best practices covering image building, container runtime, Docker Compose, production deployment, security, performance, and platform-specific considerations.",
+    "tags": [
+      "docker",
+      "containers",
+      "devops",
+      "security",
+      "dockerfile"
+    ],
+    "score": 0.733,
+    "relevance": "high"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker MasterClass : Docker – Compose – SWARM – DevOps 2024",
+    "url": "https://coursecouponclub.com/docker-de-zero-a-heros/",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker 在生产环境中的最佳实践",
+    "url": "https://wawayu-dev.github.io/posts/2024/09/docker-%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E4%BB%8E-dockerfile-%E5%88%B0%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83/",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker Compose核心概念、使用方法及最佳实践",
+    "url": "https://developer.aliyun.com/article/1556692",
+    "snippet": "开发与生产环境一致性\n环境隔离：通过不同的docker-compose配置文件（如docker-compose.dev.yml、docker-compose.prod.yml），确保不同环境下的配置一致性和灵活性。\n持续集成与部署：结合GitLab CI/CD、Jenkins等工具，实现自动化测试和部署。\n性能优化与资源管理\n资源限制：利用cpu_shares、mem_limit等参数，合理分配各服务资源，防止资源争抢。\n日志与监控：集成ELK Stack（Elasticsearch、Logstash、Kibana）或Prometheus+Grafana，实现日志收集与性能监控。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "使用docker-compose在生产环境中部署docker容器",
+    "url": "https://cloud.tencent.com.cn/developer/information/%E4%BD%BF%E7%94%A8docker-compose%E5%9C%A8%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E4%B8%AD%E9%83%A8%E7%BD%B2docker%E5%AE%B9%E5%99%A8",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "深入探讨 Docker Compose 的高级用法",
+    "url": "https://developer.aliyun.com/article/1632859",
+    "snippet": "4. 数据卷的最佳实践\n使用数据卷时，合理配置数据卷的驱动和权限，可以提高性能和安全性。\nservices:\napp:\nimage: my-app\nvolumes:\n- my-data:/var/www\nvolumes:\nmy-data:\ndriver: local\ndriver_opts:\ntype: none\no: bind\ndevice: ./data\n实施 Docker Compose 的最佳实践\n1. 版本控制\n将 docker-compose.yml\n文件纳入版本控制，以便跟踪配置的变更历史。\n2. 环境一致性\n使用 Docker Compose 确保开发、测试和生产环境的一致性。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Kubernetes 和 Docker Compose 的本质区别",
+    "url": "https://developer.aliyun.com/article/1646902",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "比较Docker Compose和Kubernetes：容器编排工具的选择",
+    "url": "https://bbs.huaweicloud.com/blogs/400894",
+    "snippet": "比较与对比：\n- 复杂性： - Docker Compose相对较简单，适合单机和本地开发环境的使用。\n它通过一个简单的命令即可启动和管理多个容器。\n- Kubernetes更复杂，适合于构建分布式、高可用的生产环境。\n它需要更多的配置和资源，以及对集群的管理和维护。\n- 扩展性： - Docker Compose适用于小规模的项目或单机环境，它缺乏横向扩展能力。\n当容器数量增加时，可能需要手动管理多个Compose文件。\n- Kubernetes具有强大的扩展能力，可以轻松处理大规模的容器集群。\n它提供了自动扩展、负载均衡和容器调度等功能。\n- 生态系统： - Docker Compose是"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "比较 Docker Compose 和 Kubernetes，探索灵活的容器化应用部署",
+    "url": "https://bbs.huaweicloud.com/blogs/425935",
+    "snippet": "- 服务发现与负载均衡：内置了服务发现和负载均衡功能，简化了微服务架构的实现。\nDocker Compose 与 Kubernetes 比较\n虽然 Docker Compose 和 Kubernetes 都用于容器编排，但它们在功能和适用场景上有所不同。\n适用场景：Docker Compose 更适用于单机开发环境或小规模部署，而 Kubernetes 则更适合于大规模生产环境的容器编排和管理。\n自动化程度：Kubernetes 提供了更高级的自动化管理功能，包括自动扩展、服务发现和负载均衡，而 Docker Compose 更偏向于手动管理和简单部署。\n复杂性：Kubernetes 的配置和"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "容器编排大战：Docker Compose vs Kubernetes，哪个更适合你的应用？",
+    "url": "https://www.ifb.me/blog/backend/docker-compose-vs-k8s",
+    "snippet": "总结对比\n- 使用场景：Docker-compose 适用于开发和测试环境，而 Kubernetes 更适用于生产环境。\n- 功能和复杂性：Docker-compose 提供了基础的容器编排功能，易于使用；Kubernetes 提供了更高级的功能，但相应地更复杂。\n- 规模适应性：Docker-compose 更适合小规模部署，Kubernetes 则适应大规模、多节点的环境。\n- 可靠性和可扩展性：Kubernetes 在高可用性和可扩展性方面远超 Docker-compose。\n综上所述，在选择使用 Docker-compose 还是 Kubernetes 时，关键在于考虑项目的规模、复杂"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker Compose vs. Kubernetes: A Comparative Analysis",
+    "url": "https://www.kaaiot.com/iot-knowledge-base/docker-compose-vs-kubernetes-differences-and-use-cases#%3A~%3Atext%3DNo%2C%20Docker%20Compose%20and%20Kubernetes%2Cmanaging%20containerized%20applications%20across%20clusters.",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "AI Tutor",
+    "url": "https://github.com/ly-rrrrr/ai-tutor",
+    "snippet": "git pull\nsg docker -c 'docker compose --env-file .env.production -f docker-compose.yml build app'\nsg docker -c 'docker compose --env-file .env.production -f docker-compose.yml run --rm app pnpm db:deploy'\nsg docker -c 'docker compose --env-file .env.production -f docker-compose.yml up -d'\ncurl -I ht"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker",
+    "url": "https://docs.haystack.deepset.ai/docs/docker",
+    "snippet": "expose:\n- 6333\n- 6334\nconfigs:\n- source: qdrant_config\ntarget: /qdrant/config/production.yaml\nvolumes:\n- ./qdrant_data:/qdrant_data\nhayhooks:\nimage: deepset/hayhooks:main\nports:\n- \"1416:1416\"\nvolumes:\n- ./pipelines:/pipelines\nconfigs:\nqdrant_config:\ncontent: |\nlog_level: INFO\nFor a functional exampl"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Add Docker and Docker Compose setup for easy deployment · murtaza-nasir/speakr@3495994",
+    "url": "https://github.com/murtaza-nasir/speakr/commit/3495994e1a84f8fb054e6338fffb96e312b28e03",
+    "snippet": "|  | 129 | + | |\n|  | 130 | + | |\n|  | 131 | + | |\n|  | 132 | + | |\n|  | 133 | + | |\n|  | 134 | + | |\n|  | 135 | + | |\n|  | 136 | + | |\n|  | 137 | + | |\n|  | 138 | + | |\n|  | 139 | + | |\n|  | 140 | + | |\n|  | 141 | + | |\n|  | 142 | + | |\n|  | 143 | + | |\n|  | 144 | + | |\n|  | 145 | + | |\n|  | 146 | "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker Compose 与 CI/CD 集成",
+    "url": "https://www.hxstrive.com/subject/docker_compose/3113.htm",
+    "snippet": "例如，创建一个 docker-compose-prod.yml 文件，定义生产环境的服务和资源限制。\n使用适当的部署工具（如 Ansible、Chef 或 Kubernetes）将 Docker Compose 文件部署到生产环境的服务器上。\n或者，可以使用 Docker Swarm 在生产环境中管理容器集群，并使用 docker stack deploy 命令部署 Docker Compose 文件定义的服务。\n（1）版本控制：确保对 Docker Compose 文件和相关的配置文件进行版本控制，以便在出现问题时可以回滚到以前的版本。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "在生产中使用Django-Q",
+    "url": "https://cloud.tencent.cn/developer/information/%E5%9C%A8%E7%94%9F%E4%BA%A7%E4%B8%AD%E4%BD%BF%E7%94%A8Django-Q",
+    "snippet": "Docker系列教程27-在生产环境中使用Docker Compose\n编者按：这是一篇翻译，原文详见：https://docs.docker.com/compose/production/ 在development中使用Compose定义应用程序时，可使用此定义，在不同环境...一旦获得了第二个配置文件，可使用 -f 选项告诉Compose： docker-compose -f docker-compose.yml -f production.yml up -d 请参阅 Using...例如，重新部署名为 web 的服务，可使用： $ docker-compose build web $ d"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker Compose：从零基础到实战应用的全面指南",
+    "url": "https://juejin.cn/post/7306756690727747610",
+    "snippet": "10. 安全实践\n- 定期扫描镜像以发现安全漏洞。\n- 在生产环境中，考虑使用 Docker Compose 以只读模式运行容器。\nDocker Compose 常见陷阱和解决方案\n在使用 Docker Compose 时，用户可能会遇到一系列常见的问题。\n以下是一些典型问题及其解决方案：\n1. 容器无法相互通信\n- 问题：在 Docker Compose 中定义的服务之间无法正确通信。\n- 解决方案：\n- 确保所有服务都定义在同一个网络中。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker Compose 常见错误及解决方案",
+    "url": "https://cloud.tencent.cn/developer/information/Docker%20Compose%E4%B8%AD%E5%AD%98%E5%9C%A8%E6%97%A0%E6%95%88%E7%B1%BB%E5%9E%8B%E9%94%99%E8%AF%AF",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker Compose 5种常见错误",
+    "url": "https://cloud.tencent.com.cn/developer/information/Docker%20Compose%E4%B8%AD%E5%AD%98%E5%9C%A8%E6%97%A0%E6%95%88%E7%B1%BB%E5%9E%8B%E9%94%99%E8%AF%AF",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "如何解决 Docker Compose 中的常见错误和问题",
+    "url": "https://www.webkt.com/article/3710",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Common Docker Compose Mistakes",
+    "url": "https://new.qq.com/omn/20210122/20210122A06LL700.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Using Docker and Docker Compose to Build Reproducible Data Engineering Environments",
+    "url": "https://dev.to/augo_amos/containerization-for-data-engineering-a-practical-guide-with-docker-and-docker-compose-241n",
+    "snippet": "8. Scaling & Extending the Setup\nAs your data needs grow, Docker Compose makes scaling straightforward:\n- Scale services: docker compose up --scale spark-worker=3to add multiple Spark workers\n- Production deployment: Consider Kubernetes or AWS ECS for orchestration at scale\n- CI/CD integration: Auto"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "How to scale Docker Containers with Docker-Compose",
+    "url": "https://brianchristner.io/how-to-scale-a-docker-container-with-docker-compose/",
+    "snippet": "It also simplifies orchestration in development and production environments.\nHow do you manage and monitor scaled Docker containers?After scaling Docker containers with Docker Compose, you can manage and monitor them using various tools like Docker CLI commands ( docker ps ,\ndocker logs\n), or more a"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker Compose Advanced Techniques: A Comprehensive Guide to Production Deployments",
+    "url": "https://dev.to/rajeshgheware/docker-compose-advanced-techniques-a-comprehensive-guide-to-production-deployments-1goi",
+    "snippet": "You can scale services by configuring the deploy section in your compose file, specifying the number of replicas and resource limits for each service.\nQ: How can I monitor my Docker Compose services?\nIntegrate monitoring tools like Prometheus and Grafana into your Docker Compose setup to collect and"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Docker Compose とは：開発環境構築の救世主",
+    "url": "https://dexall.co.jp/articles/?p=3376",
+    "snippet": "volumes:\n- db_data:/var/lib/mysql\nvolumes:\ndb_data:\n本番環境用（docker-compose.prod.yaml）:\nservices:\napp:\nbuild:\ntarget: production\nenvironment:\n- NODE_ENV=production\ndeploy:\nreplicas: 3\nupdate_config:\nparallelism: 1\ndelay: 10s\nrestart: always\ndb:\nenvironment:\n- MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}\nvol"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Global Architecture",
+    "url": "https://smartplatform.readthedocs.io/en/latest/architecture.html",
+    "snippet": "2.3.2.\nTest and Production¶\nIn order to provide a continuous/uninterrupted service both a Test and Production deployment has been setup.\nFor local development on PC/Mac/Linux a Vagrant environment with Docker can be setup.\nThe challenge is to monitor services contained in Docker.\nMonitoring is based"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Building a Production-Ready CI/CD Pipeline Using Jenkins, Docker Compose, and Traefik on a Single Linux Server",
+    "url": "https://www.freecodecamp.org/news/build-production-ready-ci-cd-pipeline-for-monorepo-based-microservices-system/",
+    "snippet": "# Linux user that owns the project tree\nsudo adduser developer\n# Docker engine + Compose plugin\ncurl -fsSL https://get.docker.com | sh\nsudo usermod -aG docker developer\n# Sanity check Compose v2\ndocker compose version\n# -> Docker Compose version v2.x.y\n# Find where the Compose plugin binary lives — "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "How to Deploy with Docker Compose",
+    "url": "https://moss.sh/reviews/how-to-deploy-with-docker-compose/",
+    "snippet": "Compose remains ideal for development, CI integration, and smaller production workloads that need simplicity over complexity.\nIntegrating Compose into CI/CD Pipelines\nCI/CD integration is where Compose demonstrates real productivity gains.\nTypical workflows:\n- CI uses Compose to run an integration t"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "GitHub - nickjj/docker-django-example: A production ready example Django app that's using Docker and Docker Compose.",
+    "url": "https://github.com/nickjj/docker-django-example",
+    "snippet": "after you've upped the project.\nYou'll want to run docker compose build since it will use any existing lock\nfiles if they exist.\nYou can also check out the complete CI test pipeline in\nthe run file\nunder the ci:test function.\nThis is usually a non-issue since you'll be pulling down pre-built images "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "How to Deploy Apps with Docker Compose in 2025",
+    "url": "https://dokploy.com/zh-Hans/blog/how-to-deploy-apps-with-docker-compose-in-2025",
+    "snippet": "Integrating Docker Compose with CI/CD Pipelines\nIntegrating Docker Compose into your CI/CD pipeline streamlines testing and deployment.\nWith tools like GitHub Actions, you can automate these processes for consistency and reliability.\nA typical CI/CD workflow starts with building and testing your app"
+  }
+]

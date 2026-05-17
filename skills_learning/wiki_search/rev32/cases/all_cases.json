@@ -1,0 +1,221 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "search-and-research/tarkov-api",
+    "description": "Security-focused Tarkov.dev and EFT Wiki operations for Escape from Tarkov players, enabling item lookups, price checks, ammo comparisons, quest tracking, and raid planning.",
+    "tags": [
+      "gaming",
+      "api",
+      "tarkov",
+      "data-lookup",
+      "security-focused"
+    ],
+    "score": 0.87,
+    "relevance": "high"
+  },
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "search-and-research/wiki-retriever",
+    "description": "AI agent for knowledge base document retrieval that searches wiki files and returns relevant documents through a multi-step filtering workflow.",
+    "tags": [
+      "wiki",
+      "retrieval",
+      "knowledge-base",
+      "document-search",
+      "file-filtering"
+    ],
+    "score": 0.656,
+    "relevance": "high"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "GitHub - tecwindow/WikiSearch: With this program, you can search or browse any Wikipedia article.",
+    "url": "https://github.com/tecwindow/WikiSearch",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "GitHub - wlib/wik: Quick and easy Wikipedia searches",
+    "url": "https://github.com/wlib/wik",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Introduction to Wikipedia Search API",
+    "url": "https://www.wikilocation.org/how-to-use-wikipedia-search-api/",
+    "snippet": "Explore these endpoints to enhance the functionality and usefulness of your application.\nConclusion\nIn this tutorial, we have covered the basics of using the Wikipedia Search API.\nWe learned how to obtain an API key, construct search queries, make requests, and handle the API response.\nAdditionally,"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "近几天的Google搜索经验",
+    "url": "https://www.cnblogs.com/simplelearner/p/17101480.html",
+    "snippet": "2. 搜索教程文章时，使用关键词：学习内容+wiki tutorial.\neg:关键词：ros wiki tutorial 结果：http://wiki.ros.org/ROS/Tutorials\n3. 英文翻译插件：Immersive Translate\nwiki页面： https://immersive-translate.owenyoung.com/installation\n4. Google搜索插件：IGuge\n更多有关wall的内容需要付费，可搭配v2，sr订阅使用\n官方页面：https://iguge.xyz/\n6. bug搜索技巧：\n1. Google直接搜索\n2. GitHub"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "WikiSearch",
+    "url": "https://k.qinghou.cn/sousuogongju/2151318.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "维基百科搜索",
+    "url": "https://support.ptc.com/help/thingworx/platform/r9/zh_CN/ThingWorx/Help/Integration_Orchestration/DeveloperTools/WikipediaSearch.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Wikipedia.Search",
+    "url": "http://help.tabledi.com/docs/formulas/wikipedia-search/",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "6 Ways to Search wikiHow - wikiHow",
+    "url": "https://www.wikihow.com/Search-wikiHow",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Guide to getting started on Wiki How To",
+    "url": "https://how-to.fandom.com/wiki/Guide_to_getting_started_on_Wiki_How_To",
+    "snippet": "Search for what you're looking for[]\nWhen using the search function on Wikihowto, the easiest way to find what you are looking for is to search for the name of the object that you are interested in, rather than trying to guess the exact name of the howtos or guides about that object.\nFor example, if"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "MATLAB Style Guide Wiki access and search function",
+    "url": "https://support.mathworks.com/matlabcentral/fileexchange/40795-matlab-style-guide-wiki-access-and-search-function",
+    "snippet": "Examples:\nstyleguide naming conventions\nsearches the style guide for \"naming+conventions.\"\nstyleguide -browser\nopens the style guide in the system web browser\n[stat,h] = styleguide;\nopens the style guide.\nUse close(h) to close the browser window.\nThe content is primarily from Richard Johnson's \"MATL"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Wiki Guides are designed as combined FAQs and Guides for how to create the best pages you can do",
+    "url": "http://igoaddons.eu.org/index.php?title=Help%3AWiki_Guides",
+    "snippet": "Wiki Guides are designed as combined FAQs and Guides for how to create the best pages you can do.\nDon't be put off by the fact that some of them are quite long, as they go through every section of a page, with examples.\nWhere to start?\nThe most difficult thing sometimes with something as in-depth as"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Select and Search",
+    "url": "https://gn1.genenetwork.org/",
+    "snippet": "Select and Search\n______________________________________________________\nQuick HELP Examples and\nUser's Guide\nYou can also use advanced commands.\nCopy these simple examples\ninto the Get Any or Combined search fields:\n- POSITION=(chr1 25 30) finds genes, markers, or transcripts on chromosome 1 betwee"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "GitHub - worleydl/imgui-dev: Dear ImGui: Bloat-free Graphical User interface for C++ with minimal dependencies",
+    "url": "https://github.com/worleydl/imgui-dev/",
+    "snippet": "See: Frequently Asked Questions (FAQ) where common questions are answered.\nSee: Getting Started and Wiki for many links, references, articles.\nSee: Articles about the IMGUI paradigm to read/learn about the Immediate Mode GUI paradigm.\nSee: Upcoming Changes.\nSee: Dear ImGui Test Engine + Test Suite f"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Getting Started With Wiki",
+    "url": "http://www.deeknow.com/wiki/view.pl/GettingStartedWithWiki",
+    "snippet": "Getting Started With Wiki | |\nA Wiki Web is a collaborative web site that can be edited by anyone.\nWikis are great for building up a wealth of information about a subject by pooling the substantial resources in the community.\nA Wiki can be used to help generate new ideas or document existing ones.\nB"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Knowledge Base",
+    "url": "http://help.mementodatabase.com/?ht_kb_category=getting-started",
+    "snippet": "Menu\nWIKI\nForum\nUser voice\nKnowledge Base\nSearch For\nSearch\nHome\nDesktop app\nGetting started\nGetting started\n3 Articles\nGo to the basics: why and how to use Memento Database Desktop and where to start.\nOverview\n172\n14086\nRegistration\n-6\n9456\nWelcome page\n15\n6643"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Getting Started on Free Web Searching",
+    "url": "https://tesd.libguides.com/c.php?g=394720&p=2681988",
+    "snippet": "Getting Started on Free Web Searching\nGetting Started\nSearch engines search electronically whereas most search directories use human editors to exclude irrelevant sites and include beneficial ones.\nWikis invite contributors to write and edit articles mostly without authorship.\nUnderstanding the plus"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Wiki：入门",
+    "url": "https://learn.microsoft.com/zh-cn/archive/technet-wiki/9476.wiki",
+    "snippet": "若要开始使用 Wiki，您可以查看内容，也可以通过向现有文章添加信息、更新内容或添加新页和存根文章，作出您的贡献。\n本文内容：\n观看这个来自 Sean Jenkin 的时长仅 1 分钟的精练视频：\n如果要查找和阅读内容\n在 Wiki 中查找内容很简单！\n查找信息\n- 使用搜索。 - **\n注意：**此搜索的范围是 Wiki，而非 TechNet/MSDN/Internet。-\n浏览产品和相关主题的列表，找到与您正在寻找的产品有关的信息。-\n浏览文章名录，这里将列出针对各产品的重要主题。-\n使用标记。-\n监视内容以获得最新信息。-\n检查存根。\n↑ 返回页首\n如果想要贡献\n社区需要您的支持。\n您可"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Futures2019: HelpForBeginners",
+    "url": "https://www.eao.hawaii.edu/EAO-Futures-Discussion-2019/HelpForBeginners",
+    "snippet": "Good starting points to explore a wiki are\nRecentChanges: see where people are currently working\nFindPage: search or browse the database in various ways\nTitleIndex: a list of all pages in the wiki\nWordIndex: a list of all words that are part of page title (thus, a list of the concepts in a wiki)\nSit"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Learn Wiki by Doing Wiki",
+    "url": "http://ward.fed.wiki.org/learn-wiki-by-doing-wiki.html",
+    "snippet": "Search\nTry search for simple word.\nTry empty search.\nDrag reference from search result.\nFind List of Lists of Sites.\nGrow neighborhood and repeat search.\nClick flag to leave neighborhood.\nFind Track Changes in How To Wiki.\nObserve neighborhood activity.\nClick more pages.\n(Neighborhood can grow.)\nCla"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "wiki学习：初学者的入门指南与实用技巧",
+    "url": "https://www.imooc.com/article/356610",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "サルでもわかる Wiki 入門 〜チームの情報を共有しよう〜",
+    "url": "https://nulab.com/ja/blog/nulab/wiki-guide/",
+    "snippet": "特長1.\n初心者向けの解説とハンズオンがセットに！\nWiki を使ったことがない初心者の方、および Wiki を使っているが使いこなせていないと感じている方に向けて、Wiki の使い方を段階的に解説します。\n前半の「入門編」は初心者向けの解説、後半の「実践編」は実際に Wiki を操作しながら基本機能を学ぶハンズオン資料です。\n- 入門編\n- Wiki の基本機能および一般的な使い方を解説します。また、他の情報共有ツールと比べた Wiki のメリット、デメリットを解説します。\n- 実践編\n- Wiki の基本機能を触りながら学ぶためのチュートリアルや、コピー＆ペーストで利用できるテンプレートを"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Creating New Pages",
+    "url": "https://sites.esm.psu.edu/wiki/creating_new_pages",
+    "snippet": "Creating New Pages\nFor more detailed instructions and syntax, see the Wiki Syntax page\nUsing the ESM Wiki is easy–that's the idea–but there are a few things that are not intuitive.\nHere are some best practices for creating new pages.\nTo get a new page\nCreate a link on an existing page, using keyword"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Best Practices for Search Results",
+    "url": "http://www.woshipm.com/pd/599025.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "企业维基百科十大最佳实践",
+    "url": "https://www.baklib.com/blog/baklib-wiki-best-practices",
+    "snippet": "3. 利用关键词和标签优化搜索\n企业Wiki必须专注于一件事——可搜索性。\n毕竟，如果员工总是费尽周折寻找零散的文件，就失去了使用这类软件的初衷。\n鼓励员工在存储重要文件时使用特定的关键词和标签，可以使文件更容易被他人找到，并促进更快速的搜索。\nBaklib 不仅支持强大的全文检索，还允许您为内容添加灵活的标签和分类，结合其内置的 AI 助手，能够智能理解和关联内容，极大提升知识查找效率。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Search Results Design: Best Practices and Design Patterns",
+    "url": "https://www.cnblogs.com/Mijie/archive/2010/11/10/1874458.html",
+    "snippet": "New York Times\nNYTimes.com (above), in addition to some common filtering options, includes the author name and/or section in which each search result appears.\nThe Wall Street Journal\nThe Wall Street Journal’s search results page (above) includes a “save this” link next to each search result.\nThis op"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "How to get a wiki database into search engines?",
+    "url": "https://sidsprojectimpact.com/thread/how-to-get-a-wiki-database-into-search-engines",
+    "snippet": "Additionally, consider implementing the following best practices to optimize your wiki's visibility in search engines:\n- Optimize page URLs: Use descriptive keywords in the URLs of your wiki pages to make them more search engine-friendly.\nUse hyphens to separate words for better readability.\n- Optim"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "About ExPetDB",
+    "url": "https://traceds.caltech.edu/#%3A~%3Atext%3DThe%20Library%20of%20Experimental%20Phase%2Cliquid%2C%20solid%20and%20fluid%20phases.",
+    "snippet": "These videos are out of date but may still be useful:\n- Simple search video tutorial: Quick search options, and how to view search results\n- Advanced search video tutorial: Configure complex search\nDatabase sources and vocabulary can be found here (requires login) and on the PyLEPR wiki:\n- Database "
+  }
+]

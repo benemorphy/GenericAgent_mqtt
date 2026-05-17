@@ -1,0 +1,74 @@
+[
+  {
+    "id": "P_db_index",
+    "principle": "合理设计索引提升查询性能",
+    "confidence": 92,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_conn_pool",
+    "principle": "使用连接池管理数据库连接",
+    "confidence": 90,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_n_plus_one",
+    "principle": "避免 N+1 查询问题",
+    "confidence": 90,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_explain",
+    "principle": "使用 EXPLAIN 分析查询执行计划",
+    "confidence": 90,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_transaction",
+    "principle": "使用事务保证数据一致性(ACID)",
+    "confidence": 90,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_backup",
+    "principle": "定期备份和验证恢复流程",
+    "confidence": 88,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_join",
+    "principle": "正确使用 JOIN 类型避免笛卡尔积",
+    "confidence": 88,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_migration",
+    "principle": "使用 ORM 管理数据库迁移",
+    "confidence": 87,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_batch",
+    "principle": "分批处理大数据量操作避免锁表",
+    "confidence": 86,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_read_write",
+    "principle": "读写分离提升吞吐量",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_window",
+    "principle": "窗口函数优化分组聚合查询",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_db_cte",
+    "principle": "合理使用 CTE 代替子查询提升可读性",
+    "confidence": 83,
+    "level": "advanced"
+  }
+]

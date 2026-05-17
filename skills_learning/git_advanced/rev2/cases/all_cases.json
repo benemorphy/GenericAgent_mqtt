@@ -1,0 +1,157 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "wshobson/agents/git-advanced-workflows",
+    "description": "Comprehensive reference for advanced Git techniques including interactive rebase, cherry-picking, bisect, worktrees, and reflog to maintain clean history, collaborate effectively, and recover from mistakes.",
+    "tags": [
+      "git",
+      "version-control",
+      "rebase",
+      "cherry-pick",
+      "bisect"
+    ],
+    "score": 0.751,
+    "relevance": "high"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Why branching strategies matter",
+    "url": "https://graphite.dev/guides/advanced-git-branching-strategies",
+    "snippet": "Table of contents\n- Why branching strategies matter\n- Core branching strategies\n- Choosing the right strategy\n- Managing multiple branches\n- Best practices for advanced Git workflows\n- Graphite CLI for stacked pull requests\n- CI/CD alignment\n- Conclusion\nWhy branching strategies matter\nFor complex p"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Mastering Git for Efficient Version Control",
+    "url": "https://codabase.io/4701/21-ways-to-master-version-control-with-git/",
+    "snippet": "With a solid understanding of Git’s core features and a commitment to continuous learning, you’ll become a Git expert in no time.\nUnlock the Full Potential of Git: Advanced Techniques and Best Practices\nIn this article, we’ve covered essential Git best practices that can help you become more efficie"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Demystifying Advanced Git Commands: A Simple Guide",
+    "url": "https://dev.to/ak_23/branching-strategy-guide-24d6",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "几种常用的 Git 分支策略",
+    "url": "https://developer.aliyun.com/article/1608451",
+    "snippet": "4. Forking 工作流\n- 分支结构：每个开发者都有自己的仓库和\nmaster\n分支。 -\n工作流程：通过 Fork 项目仓库开始工作，创建特性分支进行开发，完成后通过 Pull Request 将更改合并到上游仓库。\n- 适用场景：开源项目，有大量贡献者。\n实践 Git 分支策略的最佳技巧\n1. 保持\nmaster\n分支的稳定性始终确保 master\n分支处于可部署状态。\n2. 及时合并和清理\n定期合并更改并清理不再需要的分支，避免分支过多导致混乱。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "深入掌握Git分支管理的核心技巧",
+    "url": "https://juejin.cn/post/7472334642974195724",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Git高级工作流：Rebase与Merge的正确使用场景解析",
+    "url": "https://www.cnblogs.com/dblens/p/19566698",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Git Merge 与 Rebase 的区别及合并建议",
+    "url": "https://juejin.cn/post/7457572013168492571",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Git Rebase和Merge",
+    "url": "https://www.cnblogs.com/xyfhsy/p/17975361",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Git Rebase vs Git Merge: A Comprehensive Guide",
+    "url": "https://arifszn.com/blog/git-rebase-vs-git-merge-a-comprehensive-guide",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Git Merge VS Git Rebase: 如何优雅地合并分支？",
+    "url": "https://blog.pushihao.com/article/7c1b7e45.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Git merge 解决冲突",
+    "url": "https://www.cnblogs.com/appinn/p/17833011.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Advanced Merging",
+    "url": "https://git-scm.com/book/sv/v2/Git-Tools-Advanced-Merging",
+    "snippet": "7.8 Git Tools - Advanced Merging\nAdvanced Merging\nMerging in Git is typically fairly easy.\nSince Git makes it easy to merge another branch multiple times, it means that you can have a very long lived branch but you can keep it up to date as you go, solving small conflicts often, rather than be surpr"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "掌握 Git：处理合并冲突",
+    "url": "https://www.tempmail.us.com/zh/git-command-line/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3-git-%E5%AD%98%E5%82%A8%E5%BA%93%E4%B8%AD%E7%9A%84%E5%90%88%E5%B9%B6%E5%86%B2%E7%AA%81",
+    "snippet": "# Step 3: Commit the resolved conflicts\ndef commit_resolution():\nsubprocess.run([\"git\", \"commit\", \"-m\", \"Automated conflict resolution\"])\nif check_merge_conflicts():\nauto_resolve_conflicts()\ncommit_resolution()\n处理合并冲突的高级策略\n除了基本的冲突解决之外，还有一些高级策略可以显着简化流程。\n其中一种策略是使用 git rerere （重用记录的分辨率）。\n此功能会记录您之前如何解决冲"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "高级合并",
+    "url": "https://www.w3cschool.cn/lvmihi/vd7i4ozt.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Resolve merge conflicts",
+    "url": "https://msdn.microsoft.com/zh-tw/library/dd286559.aspx",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "git常见问题",
+    "url": "https://www.cnblogs.com/lpcyj/p/14139315.html",
+    "snippet": "问题现象:\n一.会提示\nYou are in 'detached HEAD' state.\nYou can look around, make experimental changes and commit them,\nand you can discard any commits you make in this state without impacting any branches by switching back to a branch.\nIf you want to create a new branch to retain commits you create,\nyou may "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Git之detached HEAD",
+    "url": "https://www.cnblogs.com/0xcafedaddy/p/6165539.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Understanding the Git Head and Detached HEAD",
+    "url": "https://www.gyata.ai/git/git-head-detached/",
+    "snippet": "Common Error-Prone Cases\nOne of the most common error-prone cases when dealing with a detached HEAD is losing commits.\nIf you make commits when the HEAD is detached and then checkout to another branch without creating a new branch for these commits, those commits will become unreachable.\nThey will e"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "If git was to rename detached HEAD",
+    "url": "https://stackoverflow.com/questions/3965676/why-did-my-git-repo-enter-a-detached-head-state",
+    "snippet": "By nothing more I mean the head isn't pointing to any branch.\nIt's just directly pointing to a commit.\nAs a result of all this, anytime you checkout a commit (without using the branch name to checkout), even if that commit was the latest commit of your main branch, you're still in a detached HEAD be"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Git 提交时的 Detached HEAD 问题",
+    "url": "https://juejin.cn/post/7102429431133634568#%3A~%3Atext%3D2.%20Detached%20HEAD%20%E5%90%AB%E4%B9%89%26text%3DDetached%20Head%EF%BC%8C%E6%8C%87HEAD%20%E5%A4%84%E4%BA%8E%2C%E8%80%8C%E4%B8%8D%E6%98%AF%E6%8C%87%E5%90%91%E5%85%B7%E4%BD%93%E5%88%86%E6%94%AF%E3%80%82",
+    "snippet": "4. 总结\n对于 Git 使用过程中出现的 Detached HEAD 问题，通常是因为操作导致 HEAD 没有指向具体的分支，而是指向了远程分支的 commitId 或本地历史版本 commitId，最终导致在此情况下发生的修改不能正确提交。\n可以通过在本地创建分支的方法，将修改设置到具体分支上，并将分支合并到最终需要的分支上，以此委婉的完成修改。\n另外，如果确定最新提交记录不再需要，可以使用 git reset 命令回滚到指定版本来进行修改，而不是使用 git checkout [commitId]。"
+  }
+]

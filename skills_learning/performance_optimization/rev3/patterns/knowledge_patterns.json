@@ -1,0 +1,68 @@
+[
+  {
+    "id": "P_domain_llm_1",
+    "principle": "Web performance optimization (优化网页加载速度、渲染性能与资源管理)",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_001",
+    "principle": "性能优化应基于明确的目标和度量指标，如网页加载速度或算法收敛时间，避免无方向性的调整。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "Code-level optimization (优化算法、数据结构与编译器选项以提升执行效率)",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_002",
+    "principle": "采用元优化方法，即使用一个优化器来调优另一个优化器的参数，可提升整体优化效果。",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_004",
+    "principle": "程序优化应聚焦于修改软件系统的特定方面（如算法、数据结构或代码路径），以提升效率而非改变功能。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "Database query optimization (优化SQL查询、索引与缓存策略以加速数据访问)",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_003",
+    "principle": "在优化过程中引入自适应机制，如模糊逻辑或贝叶斯优化，以动态调整参数应对噪声和不确定性。",
+    "confidence": 80,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "System-level optimization (优化内存管理、I/O操作与并发处理以提升整体系统性能)",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_005",
+    "principle": "超参数优化需要建立基准测试集，用于公平比较不同优化方法的性能。",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "Network optimization (优化网络协议、负载均衡与内容分发以减少延迟)",
+    "confidence": 70,
+    "level": "domain"
+  },
+  {
+    "id": "P_006",
+    "principle": "性能优化可结合硬件架构特性，如精简指令集设计，以增强计算效率。",
+    "confidence": 70,
+    "level": "domain"
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "name": "neo4j_cypher_graph_database_programming_language",
+  "display_name": "Neo4J Cypher Graph Database Programming Language",
+  "prerequisites": [
+    {
+      "name": "基本数据库概念",
+      "reason": "理解数据库的基本术语（如表、记录、索引）有助于对比关系型数据库与图数据库的差异，更快掌握图数据模型。"
+    },
+    {
+      "name": "SQL 基础",
+      "reason": "Cypher 语法与 SQL 有相似之处（如 WHERE、RETURN、ORDER BY），熟悉 SQL 可降低学习曲线，但需注意图查询的独特模式。"
+    },
+    {
+      "name": "图论基础",
+      "reason": "了解节点、边、路径、有向图等图论概念，能帮助理解 Cypher 如何建模和遍历图结构。"
+    },
+    {
+      "name": "编程基础",
+      "reason": "具备变量、函数、条件逻辑等编程概念，便于编写复杂的 Cypher 查询和脚本。"
+    }
+  ],
+  "description": "SQL-like query language used in ArangoDB for both documents and graphs Cypher Query Language (Cypher): a graph query declarative language for Neo4j that enables；is most know for creating the Neo4j Graph database, a graph database management system (GDBMS). The data elements Neo4j stores are nodes, e",
+  "related_tags": [
+    "relationships",
+    "graph",
+    "benzinga",
+    "spring-data",
+    "crm",
+    "sqlite",
+    "query",
+    "database",
+    "networking",
+    "spring-boot"
+  ],
+  "wiki_summary": "SQL-like query language used in ArangoDB for both documents and graphs Cypher Query Language (Cypher): a graph query declarative language for Neo4j that enables；is most know for creating the Neo4j Graph database, a graph database management system (GDBMS). The data elements Neo4j stores are nodes, e",
+  "core_concepts": [
+    "节点（Node）与标签（Label）：节点是图数据的基本实体，标签用于分类节点，如 (:Person) 或 (:Movie)。",
+    "关系（Relationship）与类型（Type）：关系连接节点并具有方向，类型描述关系语义，如 [:ACTED_IN] 或 [:FRIENDS_WITH]。",
+    "属性（Property）：节点和关系可以拥有键值对属性，用于存储具体数据，如 {name: 'Alice', age: 30}。",
+    "模式匹配（Pattern Matching）：使用 ASCII-art 语法描述图结构，如 MATCH (a:Person)-[:KNOWS]->(b:Person) 查找朋友关系。",
+    "路径（Path）与遍历：通过长度、方向、类型等条件遍历图，支持可变长度路径，如 (a)-[:KNOWS*1..3]->(b)。",
+    "聚合与函数：使用 COUNT、SUM、COLLECT 等聚合函数，以及节点/关系函数（如 labels()、type()）处理查询结果。"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "忽略关系方向导致查询结果为空或错误",
+      "advice": "Cypher 中关系默认有方向，务必明确箭头指向。若需双向匹配，使用无箭头语法 (a)-[:REL]-(b) 或同时指定两个方向。"
+    },
+    {
+      "pitfall": "在 MATCH 子句中过度使用笛卡尔积导致性能低下",
+      "advice": "避免无限制的 MATCH 组合，尽量通过 WHERE 或模式约束缩小范围。使用 EXPLAIN 或 PROFILE 分析查询计划，优化索引。"
+    },
+    {
+      "pitfall": "混淆 CREATE 与 MERGE 的语义",
+      "advice": "CREATE 无条件创建新节点/关系，可能产生重复；MERGE 会先检查是否存在，避免重复。根据业务需求选择：插入新数据用 CREATE，确保唯一性用 MERGE。"
+    },
+    {
+      "pitfall": "忘记为频繁查询的字段创建索引",
+      "advice": "对标签和属性组合（如 :Person(name)）创建索引，可大幅提升 MATCH 和 WHERE 性能。使用 CREATE INDEX FOR (n:Person) ON (n.name) 语法。"
+    },
+    {
+      "pitfall": "在大型图上使用无限制的可变长度路径",
+      "advice": "可变长度路径（如 (a)-[*]-(b)）可能遍历整个图，导致内存溢出。始终指定最大深度（如 [*1..5]），并考虑使用 LIMIT 限制结果数。"
+    }
+  ]
+}

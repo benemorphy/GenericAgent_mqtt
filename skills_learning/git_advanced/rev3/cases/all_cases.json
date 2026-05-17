@@ -1,0 +1,52 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "wshobson/agents/git-advanced-workflows",
+    "description": "Comprehensive reference for advanced Git techniques including interactive rebase, cherry-picking, bisect, worktrees, and reflog to maintain clean history, collaborate effectively, and recover from mistakes.",
+    "tags": [
+      "git",
+      "version-control",
+      "rebase",
+      "cherry-pick",
+      "bisect"
+    ],
+    "score": 0.751,
+    "relevance": "high"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Git",
+    "url": "https://en.wikipedia.org/wiki/Git",
+    "snippet": "Git (/ɡɪt/ ) is a distributed version control software system that is capable of managing versions of source code or data. It is often used to control"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "GIT quotient",
+    "url": "https://en.wikipedia.org/wiki/GIT_quotient",
+    "snippet": "In algebraic geometry, an affine GIT quotient, or affine geometric invariant theory quotient, of an affine scheme X = Spec ⁡ A {\\displaystyle X=\\operatorname"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Linux kernel version history",
+    "url": "https://en.wikipedia.org/wiki/Linux_kernel_version_history",
+    "snippet": "Git Hosting - davej-history.git/blob - drivers/char/random.c&quot;. repo.or.cz. Retrieved 29 March 2024. &quot;Import 1.3.51 - kernel/git/history/history.git -"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Alsamixer",
+    "url": "https://en.wikipedia.org/wiki/Alsamixer",
+    "snippet": "Retrieved 2025-01-28. &quot;git.alsa-project.org Git - alsa-utils.git/summary&quot;. git.alsa-project.org. Retrieved 2025-01-28. Alsamixer - Advanced Linux Sound Architecture"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Advanced Vector Extensions",
+    "url": "https://en.wikipedia.org/wiki/Advanced_Vector_Extensions",
+    "snippet": "Wikibooks has a book on the topic of: X86 Assembly/AVX, AVX2, FMA3, FMA4 Advanced Vector Extensions (AVX, also known as Gesher New Instructions and then"
+  }
+]

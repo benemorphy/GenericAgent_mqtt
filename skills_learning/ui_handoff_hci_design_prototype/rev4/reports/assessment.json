@@ -1,0 +1,11 @@
+{
+  "version": 4,
+  "skill": "ui_handoff_hci_design_prototype",
+  "knowledge_score": 100.0,
+  "coverage_pct": 100.0,
+  "practical_score": 54,
+  "case_penalty": 15,
+  "final_score": 71,
+  "passed": true,
+  "note": "ui_design_hook.py:54"
+}

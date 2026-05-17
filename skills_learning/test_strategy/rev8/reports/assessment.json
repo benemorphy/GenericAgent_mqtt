@@ -1,0 +1,11 @@
+{
+  "version": 8,
+  "skill": "test_strategy",
+  "knowledge_score": 100.0,
+  "coverage_pct": 100.0,
+  "practical_score": 80,
+  "case_penalty": 0,
+  "final_score": 94,
+  "passed": true,
+  "note": "LLM验证 4/5"
+}

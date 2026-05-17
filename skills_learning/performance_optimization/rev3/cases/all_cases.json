@@ -1,0 +1,44 @@
+[
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Web performance",
+    "url": "https://en.wikipedia.org/wiki/Web_performance",
+    "snippet": "Web performance refers to the speed in which web pages are downloaded and displayed on the user&#039;s web browser. Web performance optimization (WPO), or"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Particle swarm optimization",
+    "url": "https://en.wikipedia.org/wiki/Particle_swarm_optimization",
+    "snippet": "by using another overlaying optimizer, a concept known as meta-optimization, or even fine-tuned during the optimization, e.g., by means of fuzzy logic"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Program optimization",
+    "url": "https://en.wikipedia.org/wiki/Program_optimization",
+    "snippet": "In computer science, program optimization, code optimization, or software optimization is the process of modifying a software system to make some aspect"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Meta-optimization",
+    "url": "https://en.wikipedia.org/wiki/Meta-optimization",
+    "snippet": "Meta-optimization from numerical optimization is the use of one optimization method to tune another optimization method. Meta-optimization is reported"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Hyperparameter optimization",
+    "url": "https://en.wikipedia.org/wiki/Hyperparameter_optimization",
+    "snippet": "against which to compare the performance of new hyperparameter optimization methods. Bayesian optimization is a global optimization method for noisy black-box"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "PowerPC",
+    "url": "https://en.wikipedia.org/wiki/PowerPC",
+    "snippet": "PowerPC (with the backronym Performance Optimization With Enhanced RISC – Performance Computing, sometimes abbreviated as PPC) is a reduced instruction"
+  }
+]

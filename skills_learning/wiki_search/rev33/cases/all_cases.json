@@ -1,0 +1,74 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "search-and-research/tarkov-api",
+    "description": "Security-focused Tarkov.dev and EFT Wiki operations for Escape from Tarkov players, enabling item lookups, price checks, ammo comparisons, quest tracking, and raid planning.",
+    "tags": [
+      "gaming",
+      "api",
+      "tarkov",
+      "data-lookup",
+      "security-focused"
+    ],
+    "score": 0.87,
+    "relevance": "high"
+  },
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "search-and-research/wiki-retriever",
+    "description": "AI agent for knowledge base document retrieval that searches wiki files and returns relevant documents through a multi-step filtering workflow.",
+    "tags": [
+      "wiki",
+      "retrieval",
+      "knowledge-base",
+      "document-search",
+      "file-filtering"
+    ],
+    "score": 0.656,
+    "relevance": "high"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Google SearchWiki",
+    "url": "https://en.wikipedia.org/wiki/Google_SearchWiki",
+    "snippet": "SearchWiki was a Google Search feature which allowed logged-in users to annotate and re-order search results. The annotations and modified order only applied"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Wiki",
+    "url": "https://en.wikipedia.org/wiki/Wiki",
+    "snippet": "called WikiWikiWeb – wiki being a Hawaiian word meaning &#039;quick&#039; (pronounced [ˈviti]). Wikis are powered by wiki software, also known as wiki engines"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "MediaWiki",
+    "url": "https://en.wikipedia.org/wiki/MediaWiki",
+    "snippet": "MediaWiki is a free and open-source wiki software system originally developed by Magnus Manske and released for use on Wikipedia on January 25, 2002,"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "FamilySearch Research Wiki",
+    "url": "https://en.wikipedia.org/wiki/FamilySearch_Research_Wiki",
+    "snippet": "The FamilySearch Research Wiki (formerly also known as the FamilySearch Wiki or the Family History Research Wiki) is a website containing reference information"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Wiki.js",
+    "url": "https://en.wikipedia.org/wiki/Wiki.js",
+    "snippet": "Wiki.js is a wiki engine running on Node.js and written in JavaScript. It is free software released under the Affero GNU General Public License. It is"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "List of wiki software",
+    "url": "https://en.wikipedia.org/wiki/List_of_wiki_software",
+    "snippet": "is a list of wiki software programs. They are grouped by use case: standard wiki programs, personal wiki programs, hosted-only wikis, wiki-based content"
+  }
+]

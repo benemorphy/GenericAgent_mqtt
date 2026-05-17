@@ -1,0 +1,149 @@
+[
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "GitHub - alekras/mqtt_client: MQTT client is designed for communication in Machine to Machine (M2M) and Internet of Things (IoT) contexts and implements MQTT protocol versions 3.1, 3.1.1 and 5.0. The client is written in Erlang and tested with MQTT servers like Mosquitto and RabbitMQ.",
+    "url": "https://github.com/alekras/mqtt_client",
+    "snippet": "We will test the client from Erlang shell:\nerl -pa _build/default/lib/*/ebin\nErlang/OTP 24 [erts-12.3.2.15] [source] [64-bit] [smp:8:8] [ds:8:8:10] [async-threads:1] [jit] [dtrace]\nEshell V12.3.2.15  (abort with ^G)\n1>After we start Erlang shell for testing we need to start application 'mqtt_client'"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "MQTT client library and command line tools implemented in Erlang that supports MQTT v5.0/3.1.1/3.1.",
+    "url": "https://github.com/emqx/emqtt/tree/v1.2.0",
+    "snippet": "[-V [<protocol_version>]] [-u <username>]\n[-P <password>] [-C <clientid>] [-k [<keepalive>]]\n[-t <topic>] [-q [<qos>]] [--help <help>]\n[--will-topic <will_topic>]\n[--will-payload <will_payload>]\n[--will-qos [<will_qos>]]\n[--will-retain [<will_retain>]]\n[--enable-websocket [<enable_websocket>]]\n[--en"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Erlang SDK",
+    "url": "https://docs.emqx.com/en/emqx/latest/emqx-ai/sdks/mcp-sdk-erlang.html",
+    "snippet": "Erlang SDK\nThis document demonstrates how to use the MCP over MQTT Erlang SDK to create a simple MCP over MQTT server and client.\nExample\nCreate a Simple MCP Client\nerlang\n-module(mcp_mqtt_erl_client_demo).\n-behaviour(mcp_mqtt_erl_client_session).\n-export([\nclient_name/0,\nclient_version/0,\nclient_ca"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "MQTT Erlang 客户端库",
+    "url": "https://www.emqx.io/docs/zh/v4.4/development/erlang.html",
+    "snippet": "MQTT Erlang 客户端库\nemqtt 是开源 MQTT Broker EMQX 官方提供的客户端库，适用于 Erlang 语言。\nErlang 生态有多个 MQTT Broker 实现，如通过插件支持 MQTT 的 RabbitMQ ，VerenMQ、EMQX 等。但受限于语言小众性，可用的 MQTT 客户端库几乎没有选择的余地，MQTT 社区收录的 Erlang 客户端库中 emqtt 是最佳选择。\nemqtt 完全由 Erlang 实现，完成整支持 MQTT v3.1.1 和 MQTT v5.0 协议版本，支持 SSL 单双向认证与 WebSocket 连接。另一款 MQTT 基准"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Erlang RabbitMQ Client library",
+    "url": "https://www.rabbitmq.com/erlang-client-user-guide.html",
+    "snippet": "with the\nparameter set to an #amqp_params_network\nrecord.\nDirect (Erlang Distribution) Client\nAlternatively, Erlang distribution connections can be used instead of separate TCP connections.\nThis communication method assumes that the application that uses the client runs on the same Erlang cluster as"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "The most scalable and reliable MQTT broker for AI, IoT, IIoT and connected vehicles",
+    "url": "https://github.com/topics/m2m",
+    "snippet": "The most scalable and reliable MQTT broker for AI, IoT, IIoT and connected vehicles\n-\nUpdated\nMay 27, 2025\n- Erlang\nThe most scalable and reliable MQTT broker for AI, IoT, IIoT and connected vehicles\nA distributed MQTT message broker based on Erlang/OTP.\nBuilt for high quality & Industrial use cases"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "The most scalable open-source MQTT broker for IoT, IIoT, and connected vehicles",
+    "url": "https://github.com/topics/broker",
+    "snippet": "The most scalable open-source MQTT broker for IoT, IIoT, and connected vehicles\nUpdated\nMar 21, 2025 - Erlang\nHere are 611 public repositories matching this topic...\nThe most scalable open-source MQTT broker for IoT, IIoT, and connected vehicles\nEclipse Mosquitto - An open source MQTT broker\nAlgorit"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "emqttd - Erlang MQTT Broker",
+    "url": "https://emqtt.io/docs/v1/index.html",
+    "snippet": "emqttd - Erlang MQTT Broker¶\nemqttd(Erlang MQTT Broker) is a massively scalable and clusterable MQTT V3.1/V3.1.1 broker written in Erlang/OTP.\nemqttd is fully open source and licensed under the Apache Version 2.0.\nemqttd implements both MQTT V3.1 and V3.1.1 protocol specifications, and supports WebS"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "EMQ - Erlang MQTT Broker",
+    "url": "https://emqtt.io/docs/v2/index.html",
+    "snippet": "EMQ - Erlang MQTT Broker¶\nEMQ(Erlang MQTT Broker) is a distributed, massively scalable, highly extensible MQTT message broker written in Erlang/OTP.\nNote\nAdopt a shortened project name since 2.0 release: EMQ\nEMQ is fully open source and licensed under the Apache Version 2.0.\nEMQ implements both MQTT"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "What Is an MQTT Broker?",
+    "url": "https://dev.to/emqx/mqtt-broker-how-it-works-popular-options-and-quickstart-4lgo",
+    "snippet": "EMQX: World’s Most Scalable MQTT Broker\nEMQX is one of the most popular MQTT brokers and has 11.5k stars on GitHub.\nThe EMQX project was launched in 2012 and is licensed under Apache version 2.0.\nEMQX is written in Erlang/OTP, a programming language for building massively scalable soft real-time sys"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "MQTT的Erlang客户端：emqttc",
+    "url": "https://m.open-open.com/lib/view/open1439889401333.html",
+    "snippet": "MQTT的Erlang客户端：emqttc\nemqttc 是一个 Erlang 的 MQTT 客户端，支持 MQTT V3.1/V3.1.1 协议规范。支持并行连接和连接自动恢复。要求 Erlang R17+.\n特性：\n-\n支持 MQTT V3.1/V3.1.1 协议\n-\nQoS0, QoS1, QoS2 发布和订阅\n-\nTCP/SSL Socket 支持\n-\n自动重连\n-\nKeepalive 和 ping/pong\n示例：\n%% connect to broker\n{ok, C} = emqttc:start_link([{host, \"localhost\"}, {client_id, <<"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "VerneMQ",
+    "url": "https://knowledge.zhaoweiguo.com/build/html/tool/mqtts/broker_vernemq",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Introduction to the Commonly Used MQTT Client Library",
+    "url": "https://www.emqx.com/en/blog/introduction-to-the-commonly-used-mqtt-client-library",
+    "snippet": "emqtt : Erlang MQTT Client Library Provided by EMQ\nemqtt is a client library officially provided by EMQ of the open source MQTT Broker EMQX, which is applicable for the Erlang language.\nThe Erlang ecosystem has several MQTT Broker implementations, such as RabbitMQ, VerenMQ, EMQX, etc. that support M"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "EMQ (Erlang MQTT Broker) is an open source MQTT broker written in Erlang/OTP",
+    "url": "http://emq-docs-en.readthedocs.io/en/latest/getstarted.html",
+    "snippet": "## Maximum number of concurrent clients\nlistener.tcp.max_clients = 1000000\nTest Client¶\nsysctl -w net.ipv4.ip_local_port_range=\"500 65535\"\necho 1000000 > /proc/sys/fs/nr_open\nulimit -n 100000\nMQTT Client Libraries¶\nGitHub: https://github.com/emqtt\n| | |\n| ---|---|\n| emqttc | Erlang MQTT Client |\n| e"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "EMQX 常见问题",
+    "url": "https://zhuanlan.zhihu.com/p/630192604",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "mosquitto clients don't interoperate with other MQTT brokers",
+    "url": "https://bugs.launchpad.net/mosquitto/%20bug/619487",
+    "snippet": "[hang / never returns]\nso it looks like either the mosquitto client is waiting for an ack that is never being received, or for something to be closed, or that the Erlang broker is, well, broken (perfectly possible, of course!).\n...\nactually the more I look at this, the more it looks like the Erlang "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "某个客户端意外断开连接，其它客户端正常",
+    "url": "https://askemq.com/t/topic/9941",
+    "snippet": "2024-10-31T23:29:23.333603+08:00 [error] mfa: emqx_connection:serialize_and_inc_stats_fun/1, line: 854, peername: 10.111.55.70:38950, clientid: smart-city_in, exception: badarg, input_packet: {mqtt_packet,{mqtt_packet_header,3,false,0,false},{mqtt_packet_publish,<<36,83,89,83,47,98,114,111,107,101,1"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "客户端连接常见问题",
+    "url": "https://help.aliyun.com/document_detail/2840355.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "emqttd (Erlang MQTT Broker)",
+    "url": "https://www.emqtt.io/docs/getstarted.html",
+    "snippet": "Format is 'burst, rate', Unit is KB/Sec\n%% {rate_limit, \"100,10\"} %% 100K burst, 10K rate\n]},\n...\nTest Client¶\nsysctl -w net.ipv4.ip_local_port_range=\"500 65535\"\necho 1000000 > /proc/sys/fs/nr_open\nulimit -n 100000\nMQTT Client Libraries¶\nGitHub: https://github.com/emqtt\n| | |\n| ---|---|\n| emqttc | E"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "RabbitMQ",
+    "url": "https://doc.dc3.site/docs/cluster/rabbitmq.html",
+    "snippet": "# mqtt.tcp_listen_options.exit_on_close = true\n# mqtt.tcp_listen_options.send_timeout = 120\n## TLS listener settings\n## ## See https://rabbitmq.com/mqtt.html and https://rabbitmq.com/ssl.html for details.\nmqtt.listeners.ssl.default = 5060\nssl_options.password = dc3-server\nssl_options.cacertfile = /d"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "erlang Performance Tuning",
+    "url": "https://www.cnblogs.com/bozhang/articles/3115256.html",
+    "snippet": "erlang Performance Tuning\n可以参考ejabberd的调优方式\nPerformance Tuning\nstrict warning: Only variables should be passed by reference in /opt/www/badlop/modules/book/book.module on line 559.\nSubmitted by badlop on Wed, 2005-01-26 21:32\nThis page lists several tricks to tune your ejabberd and Erlang installati"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Web design",
+    "url": "https://en.wikipedia.org/wiki/Web_design",
+    "snippet": "include web graphic design; user interface design (UI design); authoring, including standardised code and proprietary software; user experience design (UX"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Test-driven development",
+    "url": "https://en.wikipedia.org/wiki/Test-driven_development",
+    "snippet": "Test-driven development (TDD) is a way of writing code that involves writing an automated unit-level test case that fails, then writing just enough code to"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Visual Studio",
+    "url": "https://en.wikipedia.org/wiki/Visual_Studio",
+    "snippet": "both native code and managed code. Visual Studio includes a code editor supporting IntelliSense (the code completion component) as well as code refactoring"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "User experience design",
+    "url": "https://en.wikipedia.org/wiki/User_experience_design",
+    "snippet": "and mental models. Visual design, also commonly known as graphic design, user interface design, communication design, and visual communication, represents"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Infrastructure as code",
+    "url": "https://en.wikipedia.org/wiki/Infrastructure_as_code",
+    "snippet": "was born. The thought of modeling infrastructure with code, and then having the ability to design, implement, and deploy application infrastructure with"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "KPI-driven code analysis",
+    "url": "https://en.wikipedia.org/wiki/KPI-driven_code_analysis",
+    "snippet": "KPI driven code analysis (KPI = key performance indicator) is a method of analyzing software source code and source code related IT systems to gain insight"
+  }
+]

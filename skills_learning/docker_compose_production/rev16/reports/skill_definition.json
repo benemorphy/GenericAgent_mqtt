@@ -1,0 +1,66 @@
+{
+  "name": "docker_compose_production",
+  "display_name": "Docker Compose Production",
+  "prerequisites": [
+    {
+      "name": "Docker 基础",
+      "reason": "理解容器化概念、镜像构建、容器运行和网络是使用 Compose 的前提。"
+    },
+    {
+      "name": "Docker Compose 基础",
+      "reason": "熟悉 docker-compose.yml 语法、服务定义、卷挂载和端口映射等基本用法。"
+    },
+    {
+      "name": "Linux 命令行基础",
+      "reason": "生产环境通常运行在 Linux 上，需要掌握文件权限、进程管理和网络配置等操作。"
+    },
+    {
+      "name": "网络与安全基础",
+      "reason": "了解 TCP/IP、DNS、TLS/SSL 和防火墙规则，以保障生产环境的安全通信。"
+    }
+  ],
+  "description": "Hamptons, Dockers Waterside Restaurant on Dune Road in Quogue, and the Bahamas, and it concluded on August 27 that year. Aaron Zigman composed the score",
+  "related_tags": [
+    "containerization",
+    "typescript",
+    "multi-stage",
+    "devops",
+    "production",
+    "compose",
+    "docker",
+    "yaml",
+    "deployment",
+    "security"
+  ],
+  "wiki_summary": "Hamptons, Dockers Waterside Restaurant on Dune Road in Quogue, and the Bahamas, and it concluded on August 27 that year. Aaron Zigman composed the score",
+  "core_concepts": [
+    "生产环境配置管理：使用环境变量、.env 文件和 secrets 管理敏感信息，避免硬编码。",
+    "服务健康检查与重启策略：配置 healthcheck 和 restart 策略，确保服务自动恢复。",
+    "日志与监控集成：将容器日志输出到集中式日志系统（如 ELK），并集成 Prometheus 等监控工具。",
+    "滚动更新与零停机部署：利用 Compose 的 scale 和 update 功能实现平滑升级。",
+    "资源限制与性能优化：通过 CPU、内存限制和卷优化，防止资源争抢和性能下降。",
+    "多环境差异化配置：使用 profiles 或多个 Compose 文件覆盖开发、测试和生产设置。"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "在生产环境中使用默认的 bridge 网络，导致容器间通信受限或 IP 变化。",
+      "advice": "始终创建自定义网络（如 overlay 或 bridge），并使用服务名进行通信，确保稳定性和可发现性。"
+    },
+    {
+      "pitfall": "将敏感信息（如数据库密码）直接写在 docker-compose.yml 中。",
+      "advice": "使用 Docker secrets 或环境变量文件（.env），并确保文件权限严格，避免泄露。"
+    },
+    {
+      "pitfall": "忽略容器日志的持久化和轮转，导致磁盘空间被日志填满。",
+      "advice": "配置日志驱动（如 json-file 或 syslog），并设置 max-size 和 max-file 参数，或使用外部日志系统。"
+    },
+    {
+      "pitfall": "未设置资源限制，导致单个容器耗尽主机资源。",
+      "advice": "为每个服务设置 CPU 和内存限制（deploy.resources），并监控资源使用情况。"
+    },
+    {
+      "pitfall": "直接使用 latest 标签或未指定镜像版本，导致部署不一致。",
+      "advice": "始终使用明确的镜像版本标签（如 v1.2.3），并配合 CI/CD 流程管理镜像更新。"
+    }
+  ]
+}

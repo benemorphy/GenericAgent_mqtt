@@ -1,0 +1,60 @@
+{
+  "name": "ui_handoff_hci_design_prototype",
+  "display_name": "Ui Handoff Hci Design Prototype",
+  "prerequisites": [
+    {
+      "name": "UI/UX 设计基础",
+      "reason": "理解用户界面设计原则和用户体验流程，是创建有效设计规范的前提。"
+    },
+    {
+      "name": "Figma 工具熟练度",
+      "reason": "Figma 是主流设计协作工具，需掌握其标注、组件和原型功能以生成交接文档。"
+    },
+    {
+      "name": "前端开发基础（HTML/CSS）",
+      "reason": "了解前端实现方式有助于生成开发者易理解的组件文档和规范。"
+    },
+    {
+      "name": "设计系统概念",
+      "reason": "熟悉设计系统（如原子设计）有助于组织组件文档和保持一致性。"
+    }
+  ],
+  "description": "UI Handoff HCI Design Prototype 技能专注于创建高效的设计交接规范，包括 Figma 标注和开发者就绪的组件文档。学习此技能可确保设计到开发的平滑过渡，减少沟通误差，提升产品实现质量。适合希望优化设计交付流程的 UI/UX 设计师和前端开发者。",
+  "related_tags": [
+    "css",
+    "handoff",
+    "prototyping",
+    "design",
+    "accessibility",
+    "aesthetics",
+    "tailwind",
+    "ui",
+    "web-design",
+    "frontend"
+  ],
+  "core_concepts": [
+    "设计交接规范（Design Handoff Specification）：定义设计交付物标准，包括标注、间距、颜色、字体等细节。",
+    "Figma 标注与注释：使用 Figma 的标注工具（如 Auto Layout、Variants）和插件（如 Zeplin）生成清晰注释。",
+    "开发者就绪组件文档：创建包含代码片段、状态、交互和变体的组件文档，便于开发者直接使用。",
+    "交互原型与状态映射：在原型中定义交互状态（如 hover、active、disabled），并映射到组件文档。",
+    "版本控制与协作流程：管理设计文件版本，确保与开发者同步更新，避免混乱。"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "忽略响应式设计标注，导致开发者无法适配不同屏幕尺寸。",
+      "advice": "在 Figma 中使用约束和自动布局，明确标注断点和弹性规则。"
+    },
+    {
+      "pitfall": "组件文档缺乏交互状态描述，开发者自行猜测行为。",
+      "advice": "为每个组件提供完整的状态图（如默认、悬停、点击、禁用），并附上原型链接。"
+    },
+    {
+      "pitfall": "标注过于模糊或缺失关键尺寸（如间距、边距）。",
+      "advice": "使用 Figma 的测量工具精确标注所有间距，并统一单位（如 px 或 rem）。"
+    },
+    {
+      "pitfall": "设计规范与开发实现不一致，导致返工。",
+      "advice": "定期与开发者对齐规范，使用设计令牌（Design Tokens）确保颜色、字体等一致。"
+    }
+  ]
+}

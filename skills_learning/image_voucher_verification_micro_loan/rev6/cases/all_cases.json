@@ -1,0 +1,52 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "coding-agents-and-ides/verification-before-completion",
+    "description": "Mandates running verification commands and confirming output before making any completion, success, or satisfaction claims in coding work",
+    "tags": [
+      "verification",
+      "testing",
+      "quality-assurance",
+      "workflow",
+      "best-practices"
+    ],
+    "score": 0.596,
+    "relevance": "high"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Presidency of Javier Milei",
+    "url": "https://en.wikipedia.org/wiki/Presidency_of_Javier_Milei",
+    "snippet": "amount of the voucher is 27,000 Argentine pesos (32 USD). As of 10 May, a total of 1 million Argentine students would be covered by the voucher, at a cost"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Neoliberalism in Peru",
+    "url": "https://en.wikipedia.org/wiki/Neoliberalism_in_Peru",
+    "snippet": "eliminating price controls and limiting subsidies for the poor through a voucher system inspired by the United States plan. The system did not achieve the"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Nintendo Switch 2",
+    "url": "https://en.wikipedia.org/wiki/Nintendo_Switch_2",
+    "snippet": "subscribers. Switch 2 exclusive games cannot be purchased using earlier Game Vouchers that had been available on the original Switch. A voice chat service known"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "2025 in the United Kingdom",
+    "url": "https://en.wikipedia.org/wiki/2025_in_the_United_Kingdom",
+    "snippet": "allow parents to buy formula milk using supermarket loyalty points and vouchers. An independent review into the 2019 death of Harry Dunn finds that the"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Orania",
+    "url": "https://en.wikipedia.org/wiki/Orania",
+    "snippet": "monetary system, called the Ora, based on the idea of discount shopping vouchers. Orania launched its own chequebook in 2007. The enclave is currently working"
+  }
+]

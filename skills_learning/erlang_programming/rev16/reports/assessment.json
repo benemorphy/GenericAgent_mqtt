@@ -1,0 +1,11 @@
+{
+  "version": 16,
+  "skill": "erlang_programming",
+  "knowledge_score": 100.0,
+  "coverage_pct": 100.0,
+  "practical_score": 100,
+  "case_penalty": 15,
+  "final_score": 85,
+  "passed": true,
+  "note": "通用验证 3/3"
+}

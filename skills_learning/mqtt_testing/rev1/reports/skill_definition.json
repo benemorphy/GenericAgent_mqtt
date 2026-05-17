@@ -1,0 +1,18 @@
+{
+  "name": "mqtt_testing",
+  "display_name": "Mqtt Testing",
+  "prerequisites": [],
+  "description": "Testing patterns for React with Jest and React Testing Library, covering Zustand stores, React Query, custom hooks, and component testing.",
+  "related_tags": [
+    "mocking",
+    "async",
+    "asyncio",
+    "python",
+    "zustand",
+    "frontend",
+    "typescript",
+    "specification",
+    "mqtt",
+    "pytest"
+  ]
+}

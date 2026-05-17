@@ -1,0 +1,37 @@
+[
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Weather satellite",
+    "url": "https://en.wikipedia.org/wiki/Weather_satellite",
+    "snippet": "monitored daily from satellite images. The Antarctic ozone hole is mapped from weather satellite data. Collectively, weather satellites flown by the U.S."
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Aerial photographic and satellite image interpretation",
+    "url": "https://en.wikipedia.org/wiki/Aerial_photographic_and_satellite_image_interpretation",
+    "snippet": "photographic and satellite image interpretation, or just image interpretation when in context, is the act of examining photographic images, particularly"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Satellite Image Time Series",
+    "url": "https://en.wikipedia.org/wiki/Satellite_Image_Time_Series",
+    "snippet": "Satellite Image Time Series (SITS) is a set of satellite images taken from the same scene at different times. A SITS makes use of different satellite"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Hyperspectral imaging",
+    "url": "https://en.wikipedia.org/wiki/Hyperspectral_imaging",
+    "snippet": " Lagueux, P., et al., &quot;Chemical agent detection and identification with a hyperspectral imaging infrared sensor,&quot; Deprecated link archived 2012-07-13"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Multispectral imaging",
+    "url": "https://en.wikipedia.org/wiki/Multispectral_imaging",
+    "snippet": "developed for military target identification and reconnaissance. Early space-based imaging platforms incorporated multispectral imaging technology to map details"
+  }
+]

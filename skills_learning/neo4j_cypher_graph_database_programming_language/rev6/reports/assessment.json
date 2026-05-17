@@ -1,0 +1,11 @@
+{
+  "version": 6,
+  "skill": "neo4j_cypher_graph_database_programming_language",
+  "knowledge_score": 100.0,
+  "coverage_pct": 100.0,
+  "practical_score": 100,
+  "case_penalty": 5,
+  "final_score": 95,
+  "passed": true,
+  "note": "neo4j_hook.py:100"
+}

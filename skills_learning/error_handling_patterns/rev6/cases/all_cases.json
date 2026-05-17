@@ -1,0 +1,37 @@
+[
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Exception handling",
+    "url": "https://en.wikipedia.org/wiki/Exception_handling",
+    "snippet": "exception handling such as C, routines would need to signal the error in some other way, such as the common return code and errno pattern. Taking a broad"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Visitor pattern",
+    "url": "https://en.wikipedia.org/wiki/Visitor_pattern",
+    "snippet": "and generate a compiler error if a new object type is defined which the visitor does not yet handle. The Visitor design pattern is one of the twenty-three"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Type I and type II errors",
+    "url": "https://en.wikipedia.org/wiki/Type_I_and_type_II_errors",
+    "snippet": "Type I error, or a false positive, is the incorrect rejection of a true null hypothesis in statistical hypothesis testing. A type II error, or a false"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Exception handling syntax",
+    "url": "https://en.wikipedia.org/wiki/Exception_handling_syntax",
+    "snippet": "Exception handling syntax is the set of keywords and/or structures provided by a computer programming language to allow exception handling, which separates"
+  },
+  {
+    "source": "wikipedia",
+    "type": "wiki_entry",
+    "title": "Publish–subscribe pattern",
+    "url": "https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern",
+    "snippet": "logic or the structure of the published data. Compared to synchronous patterns like RPC and point-to-point messaging, publish–subscribe provides the highest"
+  }
+]

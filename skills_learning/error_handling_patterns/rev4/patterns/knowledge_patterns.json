@@ -1,0 +1,68 @@
+[
+  {
+    "id": "P_domain_llm_1",
+    "principle": "Exception handling syntax (try-catch-finally patterns)",
+    "confidence": 95,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "Error return codes and result types (e.g., Result<T, E> pattern)",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_001",
+    "principle": "在缺乏内置异常处理机制的语言（如C语言）中，应使用返回码和errno模式来传递错误信号，这是一种常见的错误处理模式。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "Graceful degradation and fallback strategies",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_002",
+    "principle": "使用Visitor模式可以在编译时检测到未处理的新对象类型，从而生成编译器错误，确保类型处理的完整性。",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_003",
+    "principle": "在统计假设检验中，需要区分第一类错误（假阳性，错误拒绝真实零假设）和第二类错误（假阴性），以正确评估测试结果。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "Error propagation and logging best practices",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_004",
+    "principle": "异常处理语法应提供关键字和结构，将错误处理代码与正常逻辑分离，以提高代码清晰度和可维护性。",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "Recovery and retry patterns (e.g., circuit breaker)",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_005",
+    "principle": "在C语言等无异常机制的语言中，可以使用goto语句实现错误处理模式，集中处理资源清理和错误退出。",
+    "confidence": 75,
+    "level": "advanced"
+  },
+  {
+    "id": "P_006",
+    "principle": "发布-订阅模式通过解耦发布者和订阅者，提供比同步模式（如RPC和点对点消息）更高的灵活性和可扩展性，适用于错误通知和事件驱动架构。",
+    "confidence": 70,
+    "level": "advanced"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "P_domain_llm_1",
+    "principle": "Python 虚拟环境管理 (Virtualenv, Poetry)",
+    "confidence": 95,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "Python 包依赖管理 (Pip, Pipenv, Conda)",
+    "confidence": 92,
+    "level": "domain"
+  },
+  {
+    "id": "P_001",
+    "principle": "使用 pip 作为 Python 项目的标准包管理工具，确保依赖安装和管理的统一性。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "Python 项目结构规范 (Cookiecutter, PyPA 指南)",
+    "confidence": 88,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "Python 自动化构建与测试 (Tox, Nox, Pytest)",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_003",
+    "principle": "遵循 Python 版本的年度发布周期和五年支持政策，确保项目兼容性和长期维护。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "Python 项目文档与发布 (Sphinx, PyPI, Twine)",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_002",
+    "principle": "选择 Django 等成熟框架构建项目管理系统，以利用其内置功能和社区支持。",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_004",
+    "principle": "采用 Anaconda 等发行版作为数据科学和 AI 项目的环境管理平台，简化依赖配置。",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_005",
+    "principle": "参考 PMBOK 标准术语和指南，规范项目管理流程和文档。",
+    "confidence": 70,
+    "level": "domain"
+  },
+  {
+    "id": "P_006",
+    "principle": "使用 AGPL-3.0 等开源许可证发布项目管理软件，明确版权和分发条款。",
+    "confidence": 65,
+    "level": "advanced"
+  },
+  {
+    "id": "P_007",
+    "principle": "集成 pip 和 Calibre 等工具，扩展 Python 软件的功能和可管理性。",
+    "confidence": 60,
+    "level": "advanced"
+  }
+]

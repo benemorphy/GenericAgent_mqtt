@@ -1,0 +1,164 @@
+[
+  {
+    "id": "P_domain_llm_1",
+    "principle": "Git Rebase 与 Merge 的高级策略：理解何时使用 Rebase 来保持线性历史，何时使用 Merge 保留分支上下文，以及交互式 Rebase 进行提交整理。",
+    "confidence": 95,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "Git 工作流模式与分支策略：深入理解 Git Flow、GitHub Flow、GitLab Flow 等模式，以及如何根据项目规模选择合适的分支策略。",
+    "confidence": 92,
+    "level": "domain"
+  },
+  {
+    "id": "P_git_cicd",
+    "principle": "使用 CI/CD 自动化测试和部署",
+    "confidence": 90,
+    "level": "advanced"
+  },
+  {
+    "id": "P_001",
+    "principle": "保持主分支（如master）始终处于可部署状态，所有开发在特性分支上进行，通过Pull Request合并前确保代码稳定。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "Git 高级调试与历史重写：使用 bisect 进行二分查找定位 bug，利用 filter-branch 或 git-filter-repo 清理敏感数据或重构历史。",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_git_branch",
+    "principle": "使用 Git Flow 或 Trunk-Based 分支策略",
+    "confidence": 88,
+    "level": "advanced"
+  },
+  {
+    "id": "P_003",
+    "principle": "根据项目规模和协作需求选择合适的分支策略（如Git Flow、GitHub Flow、Forking工作流），开源项目推荐Forking工作流以隔离贡献者仓库。",
+    "confidence": 88,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "Git 钩子与自动化工作流：利用 pre-commit、pre-push 等钩子实现代码检查、测试自动化和部署触发，提升团队协作效率。",
+    "confidence": 88,
+    "level": "domain"
+  },
+  {
+    "id": "P_git_conflict",
+    "principle": "解决合并冲突的策略和技巧",
+    "confidence": 87,
+    "level": "advanced"
+  },
+  {
+    "id": "P_git_review",
+    "principle": "PR/MR 代码审查流程",
+    "confidence": 86,
+    "level": "advanced"
+  },
+  {
+    "id": "P_git_commit",
+    "principle": "提交信息规范(Conventional Commits)",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_002",
+    "principle": "使用交互式rebase（interactive rebase）整理提交历史，在合并到主分支前压缩、重排或修改提交，以维护清晰线性的历史。",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_004",
+    "principle": "在合并分支时，优先使用rebase保持线性历史（适用于个人或私有分支），而merge保留上下文（适用于公共分支或协作场景），避免在共享分支上rebase。",
+    "confidence": 85,
+    "level": "advanced"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "Git 子模块与子树管理：掌握在大型项目中管理外部依赖和共享代码库的方法，包括子模块的添加、更新、冲突解决及子树合并。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_git_hooks",
+    "principle": "使用 git hooks 自动化代码检查",
+    "confidence": 84,
+    "level": "advanced"
+  },
+  {
+    "id": "P_git_tag",
+    "principle": "git tag 版本标记与发布管理",
+    "confidence": 83,
+    "level": "advanced"
+  },
+  {
+    "id": "P_git_rebase",
+    "principle": "使用 rebase 保持提交历史整洁",
+    "confidence": 82,
+    "level": "advanced"
+  },
+  {
+    "id": "P_git_stash",
+    "principle": "git stash 暂存未完成的工作",
+    "confidence": 82,
+    "level": "advanced"
+  },
+  {
+    "id": "P_009",
+    "principle": "及时合并特性分支到主分支，避免长期分支导致冲突累积，保持集成频率高。",
+    "confidence": 82,
+    "level": "domain"
+  },
+  {
+    "id": "P_git_cherry",
+    "principle": "cherry-pick 选择性合并特定提交",
+    "confidence": 80,
+    "level": "advanced"
+  },
+  {
+    "id": "P_005",
+    "principle": "利用cherry-pick选择性地将特定提交应用到其他分支，避免合并整个分支，适用于修复补丁或功能移植。",
+    "confidence": 80,
+    "level": "advanced"
+  },
+  {
+    "id": "P_008",
+    "principle": "掌握reflog（引用日志）以恢复误操作（如丢失的提交或分支），作为安全网应对意外情况。",
+    "confidence": 80,
+    "level": "advanced"
+  },
+  {
+    "id": "P_git_bisect",
+    "principle": "git bisect 二分查找引入 bug 的提交",
+    "confidence": 78,
+    "level": "advanced"
+  },
+  {
+    "id": "P_git_submodule",
+    "principle": "子模块管理(submodule)多仓库项目",
+    "confidence": 76,
+    "level": "advanced"
+  },
+  {
+    "id": "P_006",
+    "principle": "使用git bisect进行二分查找，快速定位引入bug的提交，提高调试效率。",
+    "confidence": 75,
+    "level": "advanced"
+  },
+  {
+    "id": "P_010",
+    "principle": "在解决合并冲突时，使用图形化工具或手动编辑，确保冲突解决后测试通过，并优先使用merge而非rebase处理公共分支冲突。",
+    "confidence": 75,
+    "level": "advanced"
+  },
+  {
+    "id": "P_007",
+    "principle": "利用git worktree同时检出多个分支的工作目录，便于并行开发或测试不同分支，无需频繁切换。",
+    "confidence": 70,
+    "level": "advanced"
+  }
+]

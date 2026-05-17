@@ -1,0 +1,11 @@
+{
+  "version": 13,
+  "skill": "build_mqtt_client_with_erlang",
+  "knowledge_score": 100.0,
+  "coverage_pct": 100.0,
+  "practical_score": 0,
+  "case_penalty": 0,
+  "final_score": 70,
+  "passed": true,
+  "note": "ui_design_hook.py:err"
+}

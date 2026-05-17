@@ -1,0 +1,11 @@
+{
+  "version": 8,
+  "skill": "python_async_optimization",
+  "knowledge_score": 100.0,
+  "coverage_pct": 100.0,
+  "practical_score": 100,
+  "case_penalty": 0,
+  "final_score": 100,
+  "passed": true,
+  "note": "python_async.py:100"
+}

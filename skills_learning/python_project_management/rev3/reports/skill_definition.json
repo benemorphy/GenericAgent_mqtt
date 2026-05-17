@@ -1,0 +1,57 @@
+{
+  "name": "python_project_management",
+  "display_name": "Python Project Management",
+  "prerequisites": [
+    {
+      "name": "Python基础",
+      "reason": "需要理解Python语法、模块和包的基本概念，以便管理项目依赖和编写构建脚本。"
+    },
+    {
+      "name": "命令行操作",
+      "reason": "项目管理工具通常通过命令行使用，熟悉终端操作是必要的。"
+    },
+    {
+      "name": "版本控制基础（如Git）",
+      "reason": "项目管理涉及代码版本控制，了解Git的基本操作有助于协作和发布管理。"
+    }
+  ],
+  "description": "CoffeeScript; backend, in Django and Python. Taiga is released under the AGPL-3.0-or-later license. Taiga is a project management application that can handle both；pip (also known by Python 3&#039;s alias pip3) is a package manager (package management system) written in Python and is used to install ",
+  "related_tags": [
+    "dependencies",
+    "development",
+    "python",
+    "uv",
+    "package-manager",
+    "virtual-environment",
+    "rust",
+    "workflow",
+    "package-management"
+  ],
+  "wiki_summary": "CoffeeScript; backend, in Django and Python. Taiga is released under the AGPL-3.0-or-later license. Taiga is a project management application that can handle both；pip (also known by Python 3&#039;s alias pip3) is a package manager (package management system) written in Python and is used to install ",
+  "core_concepts": [
+    "依赖管理：使用pip和requirements.txt或Pipfile管理项目依赖，确保环境一致性。",
+    "虚拟环境：利用venv或virtualenv隔离项目依赖，避免版本冲突。",
+    "项目结构：遵循Python项目标准结构（如src布局），提高可读性和可维护性。",
+    "自动化构建：使用Makefile或tox自动化测试、打包和部署流程。",
+    "项目生命周期：从开发、测试到发布，使用工具如setuptools和twine管理版本和分发。",
+    "协作工具集成：结合Taiga等项目管理应用，跟踪任务和迭代进度。"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "忽略虚拟环境，导致全局Python环境混乱，依赖版本冲突。",
+      "advice": "始终为每个项目创建独立的虚拟环境，并记录依赖到requirements.txt。"
+    },
+    {
+      "pitfall": "硬编码路径或配置，使项目在不同环境中无法运行。",
+      "advice": "使用环境变量或配置文件（如.env）管理敏感信息和路径，保持代码可移植。"
+    },
+    {
+      "pitfall": "未使用版本锁定，导致依赖更新后项目崩溃。",
+      "advice": "在requirements.txt中固定依赖版本，或使用pip freeze生成锁定文件。"
+    },
+    {
+      "pitfall": "忽视项目文档和结构规范，导致新成员难以理解。",
+      "advice": "遵循Python社区标准（如PEP 8和项目结构指南），并编写README和贡献指南。"
+    }
+  ]
+}

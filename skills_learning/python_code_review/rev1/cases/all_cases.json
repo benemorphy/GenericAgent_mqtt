@@ -1,0 +1,184 @@
+[
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python",
+    "url": "http://stackoverflow.com/tags/python/info",
+    "snippet": "Python Video Tutorials\n- Programming in Python\n- Python for Beginners\n- Python 3 Basics Tutorial Series\n- Python Crash Course\n- Python Course for Beginners - YouTube\nPython for Scientists\nPython Online IDE\n- Ideone - An online IDE, with other popular language support.\n- Replit - Online interpreter f"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python and Oracle Database Tutorial: The New Wave of Scripting",
+    "url": "https://github.com/oracle/python-oracledb/blob/main/samples/tutorial/Python-and-Oracle-Database-The-New-Wave-of-Scripting.html",
+    "snippet": "<h4>Review the connection credentials used by the tutorial scripts</h4>\n<p>Review <code>db_config.py</code> (thin mode), and <code>db_config.sql</code> files in the <code>tutorial</code> and <code>tutorial/sql </code>directories respectively.\nThese are included in other Python and SQL files for sett"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "DeepSeek-V3: A High-Performance Language Model for Code Review",
+    "url": "https://fcp7.com/deepseek-v3.html",
+    "snippet": "import gradio as gr\ndef code_reviewer_ui(code):\nreturn review_code(code)\ninterface = gr.Interface(\nfn=code_reviewer_ui,\ninputs=gr.Code(language='python', lines=20, label=\"Paste your code here\"),\noutputs=gr.Textbox(label=\"Review Feedback\"),\ntitle=\"AI Code Reviewer Assistant\",\ndescription=\"Analyze you"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Containerizing a Python Web App and Deploying to Azure App Service",
+    "url": "https://learn.microsoft.com/ka-ge/azure/developer/python/tutorial-containerize-deploy-python-web-app-azure-01",
+    "snippet": "Prerequisites\nTo complete this tutorial, you need:\n- An Azure account where you can create: - Azure Container Registry\n- Azure App Service\n- Azure Cosmos DB for MongoDB (or access to an equivalent).\nTo create an Azure Cosmos DB for MongoDB database, follow the steps in part 2 of this tutorial.\n- Vis"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Comprehensive Tutorial Package for Beamline Scientists",
+    "url": "https://github.com/BCDA-APS/BITS/pull/159",
+    "snippet": "Results in deployable instrument packages ready for beamline use.\n🤖 Generated with [Claude Code](https://claude.ai/code) Co-Authored-By: Claude <noreply@anthropic.com>\n| I would like to see the prompts given to Claude Code that were used to generate the code examples here.\nAny request for review sho"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Clean up server_args, triton cache manager",
+    "url": "https://github.com/sgl-project/sglang/pull/8332",
+    "snippet": "-\nReview the Privacy Notices, Generative AI Prohibited Use Policy, Terms of Service, and learn how to configure Gemini Code Assist in GitHub here.\nGemini can make mistakes, so double check it and use code with caution.\n↩\nThere was a problem hiding this comment.\nChoose a reason for hiding this commen"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Google十年,我被彻底颠覆了!",
+    "url": "https://new.qq.com/omn/20210508/20210508A04BN300.html",
+    "snippet": "这直接把工程师们送到评审委员会那里接受“再教育”，没错，真的是“再教育”，连 Python 之父 Guido van Rossum 也花了挺大力气才通过了 Python 语言代码的 Readability Review。\n\n接下来，提交新代码前，各种静态、动态检查工具自动运行，帮你报出一系列风格错误、编译错误、单元测试错误和简单的逻辑错误，你得先依着工具的提示，把这些低级别错误改一遍，然后才进入 Peer Review 的环节。\n\n整个 Code Review 都在非常方便的网页工具里完成，写代码的和审阅代码的人可以方便地交互、讨论，甚至在线修改代码。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "removes the incorrect genrule query and \"preclean\" function",
+    "url": "https://github.com/ray-project/ray/pull/55000",
+    "snippet": "-\nReview the Privacy Notices, Generative AI Prohibited Use Policy, Terms of Service, and learn how to configure Gemini Code Assist in GitHub here.\nGemini can make mistakes, so double check it and use code with caution.\n↩\nThere was a problem hiding this comment.\nChoose a reason for hiding this commen"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Claude Code 对您的代码库非常了解，Claude 也精通编程，包括许多固有偏好。",
+    "url": "https://www.eet-china.com/mp/a483248.html",
+    "snippet": "# skills/code-reviewer/SKILL.md\nname: code-reviewer\ndescription: Reviews Python code for quality, style, and common bugs.\nUse when the user submits code for review, asks for feedback on their code, or wants a code audit.\nmetadata:\npattern: reviewer\nseverity-levels: error,warning,info\nYou are a Pytho"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Client for codeflash.ai - automatic code performance optimization, powered by AI",
+    "url": "https://pypi.org/project/codeflash/",
+    "snippet": "Client for codeflash.ai - automatic code performance optimization, powered by AI\nProject description\nCodeflash is a general purpose optimizer for Python that automatically improves the performance of your Python code while maintaining its correctness.\nIt uses advanced LLMs to generate multiple optim"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Ultimate Python Code Review Checklist",
+    "url": "https://bito.ai/blog/python-code-review-checklist/",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python Documentation: Best Practices and Examples",
+    "url": "https://sathiyakugan.dev/blog/best-practices-python-documentation-version-control",
+    "snippet": "It is important to be respectful and constructive in your feedback, and to avoid personal attacks or criticism.\n- Use code review tools: There are various code review tools available, such as GitHub Pull Requests and Gerrit.\nThese tools provide an interface for reviewing code, as well as features su"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Good Skills are concise, well-structured, and tested with real usage",
+    "url": "https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices",
+    "snippet": "**Step 5: Verify output**\nRun: `python scripts/verify_output.py output.pdf`\nIf verification fails, return to Step 2.\nImplement feedback loops\nCommon pattern: Run validator → fix errors → repeat\nThis pattern greatly improves output quality.\nExample 1: Style guide compliance (for Skills without code):"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "让 code review 成为一种社交性流程",
+    "url": "https://zhuanlan.zhihu.com/p/31581735",
+    "snippet": "那当然是，代码示例。\n你可以通过写一些示例代码来减轻作者的负担，以展现出你作为评审者的慷慨大度。\n比如说，你有一个同事并不是很熟悉 Python 的列表推导特性，他给你发了如下的代码：\nurls = []\nfor path in paths:\nurl = 'https://'\nurl += domain\nurl += path\nurls.append(url)\n作为回复，一句 “我们能不能用列表推导来简化这儿的代码？”\n可能会让他们感到恼怒，因为他们或许需要花 20 分钟来搜索他们之前从没用过的东西。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Code Review Walkthrough",
+    "url": "https://third-bit.com/2010/03/11/code-review-walkthrough/",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Static Code Analysis Guide / Python Code Review Checklist",
+    "url": "https://www.jetbrains.com/pages/static-code-analysis-guide/python-code-review-checklist/",
+    "snippet": "This checklist is a great starting point for reviewing code, but ultimately, the code review is a process where you get to have your input on changes.\nDon't be afraid to make suggestions that may not be correct; instead, open a conversation to ensure all changes are made intentionally.\nUsing a team "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Top 10 Python Best Practices for Better Code Quality",
+    "url": "https://www.digitalogy.co/blog/top-python-best-practices-for-better-code-quality/",
+    "snippet": "10. Follow Best Practices for Code Reviews\nCode reviews are an essential part of the development process that helps maintain code quality and share knowledge among team members.\nHere are some best practices for conducting code reviews:\n- Review Code Regularly – Make code reviews a regular part of yo"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python Code Quality: Best Practices and Tools",
+    "url": "https://realpython.com/python-code-quality/#%3A~%3Atext%3DChecking%20the%20quality%20of%20Python%2Cmodular%20design%2C%20and%20comprehensive%20testing.",
+    "snippet": "- Identifying logic errors, edge cases, and incorrect assumptions\n- Ensuring the code properly handles errors, edge cases, and exceptional situations\n- Confirming the code adheres to style guidelines\n- Detecting vulnerabilities like lack of input validation or unsafe usage of functions and objects\n-"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Python Code Review Checklist",
+    "url": "https://www.adservio.fr/post/python-code-review-checklist",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Build a Project that Automates Your Code Review",
+    "url": "https://www.packtpub.com/en-us/learning/how-to-tutorials/build-a-project-that-automates-your-code-review?srsltid=AfmBOoqV4r2XXpW0We5g2mpdbqB5Gbmsa_AaoazxoRE6Tvgez0ovGwJU",
+    "snippet": "Let's walk through the steps to build this code review program from scratch.\nBy following these steps, you'll be able to create your own implementation tailored to your specific needs.\nLet's get started:\n1. Set Up Your Development Environment Ensure you have Python installed on your machine.\nYou can"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Prompt Generator for Code Development",
+    "url": "https://learnprompting.org/blog/ai-prompts-coding?srsltid=AfmBOor9yOjNXVPdOsz2fd5IP4nB3Mt0t8uUfK--YYxv-hNeAiXNVxJ0",
+    "snippet": "Basic prompt\nReview my code.\n![Astronaut](https://learnprompting.org/_next/image?url=%2Fdocs%2Fassets%2Fastronaut.webp&w=48&q=75&dpl=dpl_4xrNJubb2rB1yNq1SNnQqJtckvvd)\nImproved prompt\nRole: [Senior Code Reviewer]\nTask: [Perform a comprehensive code review]\nProgramming Language: [Python]\nReview Focus "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "OpenAI: AI reviews your code automatically!",
+    "url": "https://dev.to/yuikoito/openai-ai-reviews-your-code-automatically-536b",
+    "snippet": "\".\nAlso try to have a Python code reviewed!.\nHere is the code that I forgot to add the colon.\ndef hello()\nprint('hello')\nThe reviews is:\nThis code has a syntax error.\nThe printhello()\ndef hello(): print('hello')\nThis code has a syntax error.\nTheprinthello()\ndef hello(): print('hello')\nhello()\nfuncti"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Learn Python: Beginner Coding",
+    "url": "https://apps.apple.com/de/app/learn-python-python-compiler/id6738841614",
+    "snippet": "Comprehensive Curriculum: Learn Python from the ground up.\nFrom basic syntax to advanced topics, our structured lessons cover everything you need to become a Python pro.\nSave and Revisit Code: Bookmark your favorite code snippets or save your ongoing projects to revisit or improve later using the bu"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "A comprehensive Python learning journey organized into phases, covering fundamentals to advanced concepts with practical projects.",
+    "url": "https://github.com/arunpandian9159/Python_Roadmap",
+    "snippet": "- Text editor or IDE (VS Code recommended)\n- Python 3.7+ installed\n- Clone or download this repository\n- Start with Phase 1, Chapter 1\n- Work through each file sequentially\n- Complete the projects to reinforce your learning\n- Practice regularly and experiment with the code\n- Practice Daily - Consist"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Build software better, together",
+    "url": "https://github.com/topics/github-app?o=desc&s=stars",
+    "snippet": "🤖 All the missing GitHub automation 🙂 🙌\nA GitHub ![:octocat: :octocat:](https://github.githubassets.com/images/icons/emoji/octocat.png) app to automatically review Python code style over Pull Requests\napp to automatically review Python code style over Pull Requests\nAdd a description, image, and link"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "How to Easily Learn Python: A Beginner’s Guide - Blog | All Star Technology",
+    "url": "https://blog.allstartech.net/how-to-easily-learn-python-a-beginners-guide/",
+    "snippet": "Review and Refactor Code\nRegularly review your code to identify areas of improvement and efficiency.\nRefactoring your code (rewriting it to be cleaner and more efficient) is a valuable skill that will help you write better code as you progress.\nConclusion\nLearning Python can be an exciting and rewar"
+  }
+]

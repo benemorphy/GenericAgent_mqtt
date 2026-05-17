@@ -1,0 +1,162 @@
+[
+  {
+    "source": "skill_hub",
+    "key": "agentskill_skills/wshobson/python-performance-optimization",
+    "description": "Profile and optimize Python code using cProfile, memory profilers, and performance best practices for debugging slow code and improving application performance.",
+    "tags": [
+      "python",
+      "profiling",
+      "optimization",
+      "performance",
+      "debugging"
+    ],
+    "score": 0.779
+  },
+  {
+    "source": "skill_hub",
+    "key": "agentskill_skills/dicklesworthstone/python-performance-optimization",
+    "description": "Profile and optimize Python code using cProfile, memory profilers, and performance best practices for debugging slow code and improving application performance.",
+    "tags": [
+      "python",
+      "profiling",
+      "optimization",
+      "performance",
+      "debugging"
+    ],
+    "score": 0.77
+  },
+  {
+    "source": "skill_hub",
+    "key": "agentskill_skills/neversight/python-performance-optimization",
+    "description": "Profile and optimize Python code using cProfile, memory profilers, and performance best practices for debugging slow code and improving application performance.",
+    "tags": [
+      "python",
+      "profiling",
+      "optimization",
+      "performance",
+      "debugging"
+    ],
+    "score": 0.77
+  },
+  {
+    "source": "skill_hub",
+    "key": "agentskill_skills/aiskillstore/python-performance-optimization",
+    "description": "Profile and optimize Python code using cProfile, memory profilers, and performance best practices for debugging slow code and improving application performance.",
+    "tags": [
+      "python",
+      "performance",
+      "profiling",
+      "optimization",
+      "debugging"
+    ],
+    "score": 0.77
+  },
+  {
+    "source": "skill_hub",
+    "key": "agentskill_skills/fabioeducacross/python-performance-optimization",
+    "description": "Profile and optimize Python code using cProfile, memory profilers, and performance best practices for debugging slow code and improving application performance.",
+    "tags": [
+      "python",
+      "profiling",
+      "optimization",
+      "performance",
+      "debugging"
+    ],
+    "score": 0.77
+  },
+  {
+    "source": "skill_hub",
+    "key": "agentskill_skills/microck/async-python-patterns",
+    "description": "Master Python asyncio, concurrent programming, and async/await patterns for high-performance applications. Use when building async APIs, concurrent systems, or I/O-bound applications requiring non-blocking operations.",
+    "tags": [
+      "python",
+      "asyncio",
+      "async",
+      "concurrency",
+      "patterns"
+    ],
+    "score": 0.77
+  },
+  {
+    "source": "skill_hub",
+    "key": "agentskill_skills/ljchg12-hue/python-performance-optimization",
+    "description": "Profile and optimize Python code using cProfile, memory profilers, and performance best practices for debugging slow code and improving application performance.",
+    "tags": [
+      "python",
+      "profiling",
+      "optimization",
+      "performance",
+      "debugging"
+    ],
+    "score": 0.77
+  },
+  {
+    "source": "skill_hub",
+    "key": "wshobson/agents/python-performance-optimization",
+    "description": "Comprehensive guide to profiling, analyzing, and optimizing Python code for better performance, covering CPU profiling, memory optimization, caching, parallelization, database tuning, and implementation best practices.",
+    "tags": [
+      "python",
+      "performance",
+      "profiling",
+      "optimization",
+      "memory"
+    ],
+    "score": 0.761
+  },
+  {
+    "source": "skill_hub",
+    "key": "agentskill_skills/josiahsiegel/python-asyncio",
+    "description": "Complete Python asyncio system for concurrent/async programming with async/await patterns, TaskGroup, semaphores, timeouts, and queues.",
+    "tags": [
+      "python",
+      "asyncio",
+      "async",
+      "concurrency",
+      "io"
+    ],
+    "score": 0.745
+  },
+  {
+    "source": "skill_hub",
+    "key": "agentskill_skills/gaku52/python-development",
+    "description": "Comprehensive Python development guide covering FastAPI, Django, type hints, async processing, data processing, and performance optimization best practices.",
+    "tags": [
+      "python",
+      "fastapi",
+      "django",
+      "web-development",
+      "type-hints"
+    ],
+    "score": 0.745
+  },
+  {
+    "source": "wikipedia",
+    "title": "History of Python",
+    "url": "https://en.wikipedia.org/wiki/History_of_Python",
+    "snippet": "added the async/await syntax. Furthermore, .pyo files were removed, with .pyc files representing both unoptimized and optimized bytecode. Python 3.6 followed"
+  },
+  {
+    "source": "wikipedia",
+    "title": "F Sharp (programming language)",
+    "url": "https://en.wikipedia.org/wiki/F_Sharp_%28programming_language%29",
+    "snippet": "available. The async block may be invoked using the Async.RunSynchronously function. Multiple async blocks can be executed in parallel using the Async.Parallel"
+  },
+  {
+    "source": "wikipedia",
+    "title": "C Sharp syntax",
+    "url": "https://en.wikipedia.org/wiki/C_Sharp_syntax",
+    "snippet": "async-await syntax: public static class SomeAsyncCode { public static async Task&lt;XDocument&gt; GetContentAsync() { HttpClient hc = new HttpClient(); string"
+  },
+  {
+    "source": "wikipedia",
+    "title": "Nim (programming language)",
+    "url": "https://en.wikipedia.org/wiki/Nim_%28programming_language%29",
+    "snippet": " generic programming Python: Off-side rule Lisp: Macro system, AST manipulation, homoiconicity Oberon: export marker C#: async/await, lambda macros ParaSail:"
+  },
+  {
+    "source": "wikipedia",
+    "title": "CUDA",
+    "url": "https://en.wikipedia.org/wiki/CUDA",
+    "snippet": "with a wide array of other programming languages including C++, Fortran, Python and Julia. This accessibility makes it easier for specialists in parallel"
+  }
+]

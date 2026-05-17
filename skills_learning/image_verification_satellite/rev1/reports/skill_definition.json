@@ -1,0 +1,61 @@
+{
+  "name": "image_verification_satellite",
+  "display_name": "Image Verification Satellite",
+  "prerequisites": [
+    {
+      "name": "Python 编程",
+      "reason": "用于实现图像处理算法和验证流程"
+    },
+    {
+      "name": "计算机视觉基础",
+      "reason": "理解图像特征提取、匹配和异常检测"
+    },
+    {
+      "name": "卫星遥感知识",
+      "reason": "熟悉卫星图像类型（如多光谱、SAR）和采集原理"
+    },
+    {
+      "name": "深度学习基础",
+      "reason": "掌握 CNN 和 GAN 等模型用于图像生成与验证"
+    }
+  ],
+  "description": "In this study, we assess the potential and risks associated with novel image generation methods such as in the context of monitoring and verification with a focus on satellite imagery.\nMore concretely；Its goal is to frequently and precisely monitor the Korean Peninsula and surrounding waters from a ",
+  "related_tags": [
+    "honesty",
+    "agent",
+    "elixir",
+    "evidence",
+    "completion",
+    "discipline",
+    "workflow",
+    "tdd",
+    "testing",
+    "verification"
+  ],
+  "web_summary": "In this study, we assess the potential and risks associated with novel image generation methods such as in the context of monitoring and verification with a focus on satellite imagery.\nMore concretely；Its goal is to frequently and precisely monitor the Korean Peninsula and surrounding waters from a ",
+  "core_concepts": [
+    "卫星图像真实性验证",
+    "图像生成方法（如 GANs）的潜力与风险",
+    "高频监测与时间序列分析",
+    "地理空间数据对齐与配准",
+    "图像篡改检测与溯源"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "忽略图像元数据验证，导致误判伪造图像",
+      "advice": "始终检查图像元数据（如时间戳、传感器信息），并结合物理一致性分析"
+    },
+    {
+      "pitfall": "过度依赖单一验证方法，降低鲁棒性",
+      "advice": "组合多种验证技术（如特征匹配、深度学习分类和物理模型）以提高准确性"
+    },
+    {
+      "pitfall": "未考虑卫星图像的大气干扰和几何畸变",
+      "advice": "预处理阶段进行大气校正和几何校正，减少噪声影响"
+    },
+    {
+      "pitfall": "忽视生成图像的时序一致性",
+      "advice": "利用多时相图像序列验证，检测异常变化或逻辑矛盾"
+    }
+  ]
+}

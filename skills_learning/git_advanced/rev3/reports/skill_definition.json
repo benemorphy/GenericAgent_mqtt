@@ -1,0 +1,61 @@
+{
+  "name": "git_advanced",
+  "display_name": "Git Advanced",
+  "prerequisites": [
+    {
+      "name": "Git基础",
+      "reason": "需要熟悉基本命令如commit、branch、merge、rebase，以及工作区、暂存区、仓库的概念。"
+    },
+    {
+      "name": "命令行使用",
+      "reason": "高级Git操作多在终端执行，需熟练使用命令行和基本Shell命令。"
+    },
+    {
+      "name": "版本控制概念",
+      "reason": "理解分布式版本控制原理，包括提交、分支、标签、远程仓库等核心概念。"
+    }
+  ],
+  "description": "本课程面向希望掌握Git高级操作的开发者，涵盖使用Git MCP进行版本控制管理、提交历史分析、代码审查和工作流自动化。你将学习如何高效管理复杂分支、重写历史、解决冲突，并利用自动化工具提升团队协作效率。通过实战案例，深入理解Git内部机制，避免常见陷阱，成为团队中的Git专家。",
+  "related_tags": [
+    "bisect",
+    "git",
+    "partial-clone",
+    "rebase",
+    "cherry-pick",
+    "sparse-checkout",
+    "monorepo",
+    "performance",
+    "mcp",
+    "worktrees"
+  ],
+  "core_concepts": [
+    "交互式变基（Interactive Rebase）：使用git rebase -i整理提交历史，合并、编辑或删除提交。",
+    "Git MCP（Model Context Protocol）：通过MCP集成Git操作，实现自动化代码审查和工作流。",
+    "提交历史分析：使用git log高级选项、bisect二分查找、blame追溯代码变更。",
+    "高级分支策略：掌握Git Flow、GitHub Flow等模型，以及cherry-pick、revert等操作。",
+    "工作流自动化：利用Git钩子（hooks）和CI/CD管道自动化测试、部署和代码检查。",
+    "冲突解决技巧：使用mergetool、rerere（重用记录解决方案）高效处理合并冲突。"
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "在公共分支上执行变基（rebase），导致其他协作者历史混乱。",
+      "advice": "仅对未推送的本地分支使用变基；公共分支应使用merge或revert，并提前与团队约定策略。"
+    },
+    {
+      "pitfall": "滥用git push --force覆盖远程历史，丢失他人提交。",
+      "advice": "使用--force-with-lease替代--force，确保不会覆盖远程新提交；推送前确认分支状态。"
+    },
+    {
+      "pitfall": "忽略提交信息规范，导致历史难以追溯。",
+      "advice": "采用约定式提交（Conventional Commits）格式，如feat: add login，并配合commitlint工具检查。"
+    },
+    {
+      "pitfall": "在大型仓库中频繁使用git stash，导致工作丢失或冲突。",
+      "advice": "优先使用临时分支保存工作；使用git stash list和git stash show管理，避免堆积。"
+    },
+    {
+      "pitfall": "误用git reset --hard永久删除未提交的更改。",
+      "advice": "使用git stash或git checkout -b备份；若已执行，可尝试git reflog恢复。"
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+[
+  {
+    "id": "P_domain_llm_1",
+    "principle": "构建高效搜索查询（使用布尔运算符、通配符和精确短语）",
+    "confidence": 95,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_2",
+    "principle": "利用高级搜索过滤器（按日期、站点、文件类型等筛选结果）",
+    "confidence": 90,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_3",
+    "principle": "评估搜索结果的可信度与权威性（识别来源、验证信息）",
+    "confidence": 88,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_llm_5",
+    "principle": "优化搜索策略与迭代（从宽泛到精准，利用相关搜索和反向链接）",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_001",
+    "principle": "Wiki搜索应优先返回结构化数据（如物品属性、价格、任务信息），而非纯文本，以支持游戏或知识库的高效查询。",
+    "confidence": 85,
+    "level": "domain"
+  },
+  {
+    "id": "P_pin_version",
+    "principle": "固定版本号避免意外升级",
+    "confidence": 84,
+    "level": "basic"
+  },
+  {
+    "id": "P_domain_llm_4",
+    "principle": "掌握特定领域搜索技巧（如学术、专利、新闻数据库）",
+    "confidence": 82,
+    "level": "domain"
+  },
+  {
+    "id": "P_002",
+    "principle": "Wiki搜索系统应支持多步骤过滤工作流，通过逐步缩小文档范围来提升检索结果的准确性和相关性。",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_005",
+    "principle": "Wiki搜索系统应选择成熟的开源引擎（如MediaWiki）作为基础，以保障稳定性和社区支持。",
+    "confidence": 80,
+    "level": "domain"
+  },
+  {
+    "id": "P_env_separation",
+    "principle": "使用环境变量/配置文件分离环境差异",
+    "confidence": 79,
+    "level": "basic"
+  },
+  {
+    "id": "P_domain_4",
+    "principle": "rest相关技术与最佳实践（wiki_search）",
+    "confidence": 77,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_5",
+    "principle": "http相关技术与最佳实践（wiki_search）",
+    "confidence": 77,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_1",
+    "principle": "wiki_search核心概念与术语体系",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_2",
+    "principle": "wiki_search常见场景与解决方案",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_domain_3",
+    "principle": "wiki_search工具链与环境搭建",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_resource_limits",
+    "principle": "资源限制防止单服务耗尽",
+    "confidence": 75,
+    "level": "basic"
+  },
+  {
+    "id": "P_004",
+    "principle": "Wiki搜索应基于快速（quick）的核心理念，优先优化响应速度和简洁性，避免复杂交互。",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_008",
+    "principle": "Wiki搜索设计应区分使用场景（如标准wiki、个人wiki、托管wiki），并针对不同场景定制搜索策略。",
+    "confidence": 75,
+    "level": "domain"
+  },
+  {
+    "id": "P_003",
+    "principle": "Wiki搜索功能可允许用户对搜索结果进行注释和排序调整，以个性化知识组织和共享。",
+    "confidence": 70,
+    "level": "domain"
+  },
+  {
+    "id": "P_006",
+    "principle": "Wiki搜索应面向特定领域（如家族历史研究）提供参考信息，并支持跨页面链接和分类导航。",
+    "confidence": 70,
+    "level": "domain"
+  },
+  {
+    "id": "P_007",
+    "principle": "Wiki搜索实现应选用轻量级、高性能的引擎（如Node.js），以支持快速部署和扩展。",
+    "confidence": 65,
+    "level": "advanced"
+  }
+]

@@ -1,0 +1,227 @@
+[
+  {
+    "source": "skill_hub",
+    "type": "skill_def",
+    "key": "jezweb/claude-skills/ai-sdk-ui",
+    "description": "Comprehensive guide for building AI-powered React UIs using Vercel AI SDK v6 hooks (useChat, useCompletion, useObject), covering migration from v4/v5, streaming patterns, tool approval workflows, and 18 common error solutions.",
+    "tags": [
+      "react",
+      "ai-sdk",
+      "vercel",
+      "nextjs",
+      "streaming"
+    ],
+    "score": 0.97,
+    "relevance": "high"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks 的最佳实践",
+    "url": "https://juejin.cn/post/7030778926154645541",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "探索React Hooks：前端开发的革命性工具-阿里云开发者社区",
+    "url": "https://developer.aliyun.com/article/1623489",
+    "snippet": "四、React Hooks的高级应用\n除了上述常用的Hooks外，React还提供了许多其他高级Hooks，如useReducer、useCallback、useMemo等。\n这些高级Hooks可以帮助你更有效地管理复杂的状态和副作用，提高应用的性能和可维护性。\n五、React Hooks的最佳实践\n在使用React Hooks时，有一些最佳实践值得遵循：\n- 保持组件简单：尽量将组件保持在较小的粒度，每个组件只做一件事。\n这有助于提高代码的可维护性和可测试性。\n- 避免在条件语句或循环中使用Hooks：这样做可能会导致意想不到的行为和错误。\n如果需要在条件语句或循环中使用Hooks，请确保它"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks原理探析",
+    "url": "https://developer.aliyun.com/article/1477945",
+    "snippet": "三、React Hooks最佳实践\n在实际应用React Hooks的过程中，遵循以下最佳实践有助于写出更健壮、易维护的代码：\n明确依赖：在useEffect和useMemo/useCallback中，务必正确声明依赖项数组，确保副作用函数或缓存值在相关依赖变化时得到适时更新。\n避免滥用：虽然Hooks使函数组件功能强大，但过度使用可能导致代码混乱。\n合理划分组件职责，保持单一职责原则，只在必要时引入适当的Hook。\n编写自定义Hook：对于重复使用的逻辑或状态管理模式，可封装为自定义Hook，提升代码复用性和抽象层次。\n遵循“关注点分离”原则，每个自定义Hook应专注于解决一类问题。\n遵循规"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks 最佳实践",
+    "url": "https://www.cnblogs.com/amboke/p/16683621.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "最佳实践如何使用React Hooks等最初获取数据并在稍后更新它？",
+    "url": "https://cloud.tencent.com.cn/developer/information/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8React%20Hooks%E7%AD%89%E6%9C%80%E5%88%9D%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E5%B9%B6%E5%9C%A8%E7%A8%8D%E5%90%8E%E6%9B%B4%E6%96%B0%E5%AE%83%EF%BC%9F-article",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "react hooks useEffect() cleanup for only componentWillUnmount?",
+    "url": "https://stackoverflow.com/questions/55020041/react-hooks-useeffect-cleanup-for-only-componentwillunmount",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "在 React 和 Vue 中尝鲜 Hooks",
+    "url": "https://www.haomeiwen.com/subject/fbelxqtx.html",
+    "snippet": "其次值得注意的是处理副作用的 useEffect ：\nexport function useEffect(rawEffect, deps) {\n//...\nif (isMounting) {\nconst cleanup = () => {\nconst { current } = cleanup\nif (current) {\ncurrent()\ncleanup.current = null\n}\n}\nconst effect = () => {\nconst { current } = effect\nif (current) {\ncleanup.current = current()\neffect."
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Clean Up Async Requests in `useEffect` Hooks",
+    "url": "https://dev.to/pallymore/clean-up-async-requests-in-useeffect-hooks-90h",
+    "snippet": "hook.\nThat function will be called whenever that effect is fired again (e.g. when the values of its dependencies have changed), as well as right before the component unmounts.\nSo if you have a useEffect\nhook that looks like this:\nuseEffect(() => {\n// logic here\nreturn () => {\n// clean up\n};\n}, []); "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React useEffect Hooks",
+    "url": "https://www.w3schools.com/REACT/react_useeffect.asp",
+    "snippet": "Effect Cleanup\nSome effects require cleanup to reduce memory leaks.\nTimeouts, subscriptions, event listeners, and other effects that are no longer needed should be disposed.\nWe do this by including a return function at the end of the useEffect\nHook.\nExample:\nClean up the timer at the end of the useE"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks UseEffect",
+    "url": "https://blogs.xcentium.com/blogs/react-hooks-useeffect",
+    "snippet": "If the callback\nof useEffect(callback, deps)\nreturns a function, then useEffect()\nconsiders this as an effect cleanup:\nConsider the example below where I added the event lister to capture when windows resize and update the DOM.\nIf there is no clean-up each time that component is mounted, it will kee"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "What are React custom hooks? How to make a custom hook in React JS?",
+    "url": "https://www.turing.com/blog/custom-react-js-hooks-how-to-use/",
+    "snippet": "Real-World Examples of Custom React.js Hooks\nCustom React.js Hooks have gained popularity in the React.js community due to their ability to encapsulate reusable logic and promote code reusability.\nIn this section, we’ll explore real-world examples of custom Hooks, showcasing how they are utilized ef"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks: Renderprops vs Custom Hooks",
+    "url": "https://dev.to/chaituknag/renderprops-vs-custom-hooks-which-one-to-use-5a0",
+    "snippet": "Custom Hooks\nCustom hooks are functions that use React hooks to provide some reusable logic.\nThey allow us to extract stateful logic from components and reuse it in other components.\nCustom hooks are great for encapsulating complex logic and making it easy to reuse across our application.\nFor exampl"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React 之实战总结(近1w字，我踩过的坑大家就别再踩了😂)",
+    "url": "https://juejin.cn/post/6844904038668976142",
+    "snippet": "7. 自定义hook\n有些知识真的是需要一定的积累后，才能理解，并且要多多学而时习之，就比如这个自定义\nhook\n，现在终于能模仿着写出一些小例子了，分享给大家。\n首先介绍一下，自定义 Hooks\n允许创建自定义 Hook\n，只要函数名遵循以 use\n开头，且返回非 JSX\n元素，就是 Hooks\n啦！自定义 Hooks\n内还可以调用包括内置 Hooks\n在内的所有自定义 Hooks"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Introduction to React Architecture",
+    "url": "https://dev.to/mourya_modugula/best-practices-for-designing-a-robust-react-architecture-5387",
+    "snippet": "5. Custom Hooks\nCustom hooks allow you to extract and reuse logic across multiple components.\nThey encapsulate complex logic, improving the separation of concerns.\nExample:\nimport { useState, useEffect } from 'react';\nconst useFetchData = (url) => {\nconst [data, setData] = useState(null);\nconst [loa"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "在React中，Hooks API为函数组件提供了额外的功能",
+    "url": "https://developer.aliyun.com/article/1491845",
+    "snippet": "三、使用自定义Hooks\n使用自定义Hooks非常简单，只需要像使用普通Hooks一样在组件中调用即可：\nimport React from 'react';\nimport useFetchData from './useFetchData';\nfunction MyComponent() {\nconst { data, error, loading } = useFetchData('https://api.example.com/data');\nif (loading) {\nreturn <div>Loading...</div>;\n}\nif (error) {\nreturn <div>E"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks & useEffect error All In One",
+    "url": "https://www.cnblogs.com/xgqfrms/p/15942728.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks 常见问题及解决方案",
+    "url": "https://juejin.cn/post/6875222549446262798",
+    "snippet": "修改成回调函数的方式：\nconst initCount = c => {\nconsole.log('initCount 执行');\nreturn c * 2;\n};\nfunction Counter() {\nconst [count, setCount] = useState(() => initCount(0));\nreturn <p onClick={() => setCount(count + 1)}>clicked {count} times</p>;\n}\n这个时候，initCount\n函数只会在 Counter\n组件初始化的时候执行，之后无论组件如何渲染，initCount\n函数都不"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks Error All In One",
+    "url": "https://www.cnblogs.com/xgqfrms/p/14647410.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "使用React Hooks时要避免的5个错误！",
+    "url": "https://cloud.tencent.cn/developer/information/%E4%BD%BF%E7%94%A8React%E6%8C%82%E9%92%A9%E6%97%B6%E7%9A%84%E5%85%AC%E5%85%B1%E5%B1%9E%E6%80%A7",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "Improper use of React Hooks can cause problems with performance and bugs",
+    "url": "https://www.telerik.com/blogs/7-common-mistakes-using-react-hooks",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "使用React Hooks优化组件性能",
+    "url": "https://juejin.cn/post/7400671870873321506",
+    "snippet": "4. 使用useReducer\n优化状态管理\n在复杂的状态管理场景中，useReducer\n比useState\n更适合。它可以帮助我们更清晰地管理状态变化逻辑，从而提高性能和可维护性。\nimport React, { useReducer } from 'react';\nconst initialState = { count: 0 };\nfunction reducer(state, action) {\nswitch (action.type) {\ncase 'increment':\nreturn { count: state.count + 1 };\ncase 'decrement':\nr"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "useState & useReducer #205",
+    "url": "https://github.com/yaofly2012/note/issues/205",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks Mastery: 10 Hooks That Will Transform Your Development",
+    "url": "https://www.netguru.com/blog/react-hooks-examples",
+    "snippet": "Additionally, useReducer provides a dispatch function with stable identity, making it valuable for performance optimization in components that trigger deep updates.\nChoosing between useState() and useReducer()\nThe decision between these hooks depends on your state's complexity and update patterns.\nE"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "useState与useReducer的实现",
+    "url": "https://react.iamkasong.com/hooks/usestate.html",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "【归纳】React Hooks 之二（useReducer、useContext）",
+    "url": "https://blog.nowcoder.net/n/b7f974f0d3704c5db5962be3149d2af4",
+    "snippet": "总得来说，useReducer 是 useState 的复杂版，但是在某些场景下，useReducer 会比 useState 更适用。例如 state 逻辑较复杂且包含多个子值，或者下一个 state 依赖于之前的 state 等。并且，使用 useReducer 还能给那些会触发深更新的组件做性能优化，因为你可以向子组件传递 dispatch 而不是回调函数。一般来说，如果有多个 state 需要放在一个对象里，这个时候用 useReducer 更为直观。需要注意的是，在上一篇博客中提到的 useState 不能「局部更新」对象，在 useReducer 里也是不行的。"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "useCallback and useMemo are an attempt to bypass weak spots that come with the functional programming approach chosen with React hooks",
+    "url": "https://stackoverflow.com/questions/53159301/what-does-usecallback-usememo-do-in-react",
+    "snippet": ""
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "useMemo and useCallback in React: Performance Optimization",
+    "url": "https://www.debugbear.com/blog/react-usememo-usecallback",
+    "snippet": "- There's no render-performance concern\nuseMemo vs useCallback: using the right hook\nBoth hooks can help avoid unnecessary React rendering work.\nuseMemo is for memoizing values, while useCallback is for memoizing functions.\nTo summarize what useMemo and useCallback hooks are and when they should be "
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "note-react-hooks-in-action",
+    "url": "https://github.com/uptonking/note4yaoo/blob/main/note-react-hooks-in-action.md?plain=1",
+    "snippet": "- 以我个人的经验, useMemo主要用于memo类型组件的props上（如果不用这个memo类型组件就是负作用）, 以及创建开销过大的场景。\n- useCallback本质是useMemo的语法糖, 而function本身并不是创建开销过大的。\n- 所以我认为useCallback设计出来是和React.memo配套使用的。\n- 就算你用useCallback包裹了, 这个func每次render的时候也会重新创建，useCallback只是确定最终你传给组件的那个func是新的func还是旧的func, 所以说从开销上去讲并讲不通。\n- 我个人觉得useCallback主要是为了和mem"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "React Hooks: A Comprehensive Guide",
+    "url": "https://plainsurf.com/react-hooks-a-deep-dive-into-usestate-useeffect-and-more/",
+    "snippet": "useMemo\nThe useMemo hook helps optimize expensive calculations by memoizing the result.\nIt allows us to memoize values between renders, preventing unnecessary recalculations when the dependencies remain the same.\nuseCallback\nThe useCallback hook proves useful for memoizing functions, particularly wh"
+  },
+  {
+    "source": "web",
+    "type": "web_article",
+    "title": "掌握 React Hooks api 将更好的帮助你在工作中使用",
+    "url": "https://indolem.github.io/2020/05/19/react-hooks6-useMemo/",
+    "snippet": "优化示例\n与 useCallback 的用法类似。\nconst memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);\n返回一个 memoized 值。\n把“创建”函数和依赖项数组作为参数传入 useMemo记住，传入 useMemouseEffectuseMemo如果没有提供依赖项数组，useMemo你可以把 useMemo 作为性能优化的手段，但不要把它当成语义上的保证。\n将来，React 可能会选择“遗忘”以前的一些 memoized 值，并在下次渲染时重新计算它们，比如为离屏组件释放内存。先编写在没有 us"
+  }
+]

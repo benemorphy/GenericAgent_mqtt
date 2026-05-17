@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "skill": "git_advanced",
+  "knowledge_score": 100.0,
+  "coverage_pct": 100.0,
+  "practical_score": 100,
+  "case_penalty": 5,
+  "final_score": 95,
+  "passed": true,
+  "note": "git.py:100"
+}
