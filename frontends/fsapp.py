@@ -7,6 +7,8 @@ from agentmain import GeneraticAgent
 from frontends.chatapp_common import format_restore
 from frontends.continue_cmd import handle_frontend_command as handle_continue_frontend, reset_conversation
 from llmcore import mykeys
+from tools.feishu_reminder import ReminderManager, start_reminder_checker, format_reminder_list, REMIND_HELP
+from tools.inspiration_board import Board as InspirationBoard, list_all as list_inspirations
 
 import traceback
 import lark_oapi as lark
@@ -238,6 +240,10 @@ AGENT_TIMEOUT_SEC = 900
 agent = GeneraticAgent()
 threading.Thread(target=agent.run, daemon=True).start()
 client, user_tasks = None, {}
+
+# 提醒管理器
+_reminder = ReminderManager()
+_reminder_send = lambda oid, txt: send_message(oid, txt) if oid else None
 
 
 def create_client():
@@ -648,7 +654,7 @@ def handle_command(open_id, cmd, chat_id=None):
     elif op == "/new":
         _send_cmd_response(reset_conversation(agent))
     elif op == "/help":
-        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/help - 显示帮助")
+        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/help - 显示帮助")
     elif op == "/status":
         llm = agent.get_llm_name() if agent.llmclient else "未配置"
         _send_cmd_response(f"状态: {'🔴 运行中' if agent.is_running else '🟢 空闲'}\nLLM: [{agent.llm_no}] {llm}")
@@ -676,6 +682,45 @@ def handle_command(open_id, cmd, chat_id=None):
             _send_cmd_response(f"恢复失败: {e}")
     elif op == "/continue" or cmd.startswith("/continue"):
         _send_cmd_response(handle_continue_frontend(agent, cmd))
+    elif op == "/remind":
+        sub = parts[1] if len(parts) > 1 else ""
+        if sub == "add" and len(parts) >= 4:
+            raw = " ".join(parts[2:])
+            r = _reminder.add(raw, open_id=open_id)
+            if r:
+                rtype = "每日" if r["type"] == "daily" else "一次性"
+                _send_cmd_response(f"\u2705 已添加{rtype}提醒: [{r['id']}] {r['text']} ({r['hour']:02d}:{r['minute']:02d})")
+            else:
+                _send_cmd_response("\u274c 格式错误，示例:\n/remind add 每天9:00 喝杯水\n/remind add 14:30 开会提醒")
+        elif sub == "list":
+            lst = _reminder.list(open_id=open_id)
+            _send_cmd_response(format_reminder_list(lst))
+        elif sub == "del" and len(parts) >= 3:
+            try:
+                rid = int(parts[2])
+                if _reminder.remove(rid, open_id=open_id):
+                    _send_cmd_response(f"\u2705 已删除提醒 [{rid}]")
+                else:
+                    _send_cmd_response(f"\u274c 提醒 [{rid}] 不存在或不属于你")
+            except ValueError:
+                _send_cmd_response("用法: /remind del <id>")
+        else:
+            _send_cmd_response(REMIND_HELP)
+    elif op == "/inspired":
+        _board = InspirationBoard()
+        _ideas = _board.load_all()
+        if not _ideas:
+            _send_cmd_response("📋 灵感板为空")
+        else:
+            _lines = [f"💡 灵感板 ({len(_ideas)}/20 条活跃)"]
+            for _idea in _ideas:
+                _icon = {"new": "\U0001f7d7", "thinking": "\U0001f914", "in_progress": "\U0001f528", "implemented": "\u2705"}.get(_idea["status"], "\U0001f4a1")
+                _src = "\U0001f464" if _idea.get("source") == "user" else "\U0001f916"
+                _tag = f" [{', '.join(_idea.get('tags', []))}]" if _idea.get("tags") else ""
+                _lines.append(f"{_icon} #{_idea['id']} {_src} {_idea['title']}{_tag}")
+                if _idea.get("detail"):
+                    _lines.append(f"   {_idea['detail'][:80]}")
+            _send_cmd_response("\n".join(_lines)[:1500])
     else:
         _send_cmd_response(f"未知命令: {cmd}")
 
@@ -687,6 +732,8 @@ def main():
         sys.exit(1)
     client = create_client()
     handler = lark.EventDispatcherHandler.builder("", "").register_p2_im_message_receive_v1(handle_message).build()
+    # 启动定时提醒检查（每30秒检查一次）
+    start_reminder_checker(_reminder, _reminder_send, interval=30)
     print("=" * 50 + "\n飞书 Agent 已启动（长连接模式）\n" + f"App ID: {APP_ID}\n等待消息...\n" + "=" * 50)
     retry_delay = 5
     while True:
