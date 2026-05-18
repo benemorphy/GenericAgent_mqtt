@@ -18,6 +18,13 @@ print(get_todo())       # 查看待办
 ## 任务选择
 - 有未完成条目 → 取**一条**，直接进入执行，其他条目下次执行
 - 无 TODO → 读 `autonomous_operation_sop/task_planning.md` 规划，下次执行
+
+## 灵感板（自主行动必检）
+- 每次自主行动**先读灵感板**: `from inspiration_board import Board; Board().get_suggestions_for_agent()`
+- 对用户的灵感（source="user"）进行思考：`board.think(id, "我的分析...")`
+- 根据项目状态可自主添加灵感：`board.add_agent_idea("标题", "详情", ["tag1"])`
+- 上限20条活跃，超量自动归档到 `memory/inspirations/archive/`
+- MQTT 实时通知: topic `agent/board/inspiration/{id}/signal`
 - 不连续两次选相同子任务
 - 价值公式：**「AI训练数据无法覆盖」×「对未来协作有持久收益」**
 

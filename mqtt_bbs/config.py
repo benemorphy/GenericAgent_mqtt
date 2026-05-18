@@ -1,9 +1,9 @@
 """MQTT BBS 默认配置"""
 
-# 公共 EMQX 测试 Broker（无需注册）
+# 本地 RMQTT Broker（已部署在 D:\tools\rmqtt-0.20.0）
 # 可通过环境变量 MQTT_HOST / MQTT_PORT 覆写
 import os as _os
-BROKER_HOST = _os.environ.get("MQTT_HOST", "broker.emqx.io")
+BROKER_HOST = _os.environ.get("MQTT_HOST", "127.0.0.1")
 BROKER_PORT = int(_os.environ.get("MQTT_PORT", "1883"))
 
 # 主题前缀（多团队隔离用，例如 "team_a/"）
