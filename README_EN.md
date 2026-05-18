@@ -1,3 +1,5 @@
+<img align="right" src="assets/images/GGA.png" width="240" height="300"/>
+
 <div align="center">
 <img src="https://raw.githubusercontent.com/lsdefine/GenericAgent/main/assets/images/bar.jpg" width="880"/>
 </div>
