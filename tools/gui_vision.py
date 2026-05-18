@@ -1,16 +1,18 @@
 """
-GUI视觉理解工具 - 三层fallback架构
+GUI视觉理解工具 - 双层架构(默认使用本地OCR)
 
 用法:
     from gui_vision import understand_window, compare_ui_states, list_windows
 
-    # 自动fallback
-    state = understand_window("Chrome", backend="auto")
+    # 默认: 本地OCR
+    state = understand_window("Chrome")
 
-    # 强制离线
+    # 指定后端: "offline"(OCR) | "local"(VLM) | "auto"(VLM→OCR回退)
     state = understand_window("记事本", backend="offline")
+    state = understand_window("记事本", backend="local")   # 需要VLM服务
 
-回退链: local VLM → offline(无VLM，仅元信息+OCR)
+后端: offline(rapidocr OCR) → local(本地VLM, 需启动)
+默认: offline (rapidocr)
 """
 import sys, os, time, json, traceback, ctypes, base64
 from io import BytesIO
@@ -57,7 +59,7 @@ JPEG_QUALITY = 85
 # 超时配置(秒) - 每个后端独立超时
 BACKEND_TIMEOUTS = {
     'local': 30,    # local VLM 超时(含模型推理)
-    'offline': 10,  # offline OCR 超时
+    'offline': 15,  # offline OCR 超时(大图约10s, 留余量)
     'auto': 5,      # auto模式的local阶段超时(快速失败以回退)
 }
 
@@ -404,15 +406,59 @@ def _analyze_offline(img, hwnd: int, window_meta: dict = None) -> dict:
     }
 
 
+# ===================== 坐标转换工具 =====================
+
+def element_to_screen_coords(state: dict, element: dict) -> tuple:
+    """
+    将UI元素的bbox(截图像素坐标)转换为屏幕物理坐标，供 ljqCtrl.Click() 使用。
+
+    参数:
+        state: understand_window() 返回的完整状态dict
+        element: ui_elements 中的某个元素，需含 'bbox': [x, y, w, h]
+
+    返回:
+        (screen_x, screen_y) 物理像素坐标，即元素bbox中心在屏幕上的物理位置
+        若信息不足返回 None
+    """
+    bbox = element.get('bbox')
+    client_origin = state.get('client_origin')
+    if not bbox or len(bbox) < 4 or not client_origin or len(client_origin) < 2:
+        return None
+    # bbox: [x, y, w, h] 相对截图左上角(原始截图像素坐标)
+    # client_origin: (left, top) 客户区左上角屏幕物理坐标
+    center_x = bbox[0] + bbox[2] // 2
+    center_y = bbox[1] + bbox[3] // 2
+    screen_x = client_origin[0] + center_x
+    screen_y = client_origin[1] + center_y
+    return (screen_x, screen_y)
+
+
+def element_bbox_to_screen_rect(state: dict, element: dict) -> list:
+    """
+    将元素bbox转换为屏幕物理矩形 [left, top, right, bottom]。
+    用于区域截图或调试。
+    """
+    bbox = element.get('bbox')
+    client_origin = state.get('client_origin')
+    if not bbox or len(bbox) < 4 or not client_origin or len(client_origin) < 2:
+        return None
+    return [
+        client_origin[0] + bbox[0],
+        client_origin[1] + bbox[1],
+        client_origin[0] + bbox[0] + bbox[2],
+        client_origin[1] + bbox[1] + bbox[3],
+    ]
+
+
 # ===================== 主API =====================
 
-def understand_window(title: str, backend: str = "auto", fallback: bool = True):
+def understand_window(title: str, backend: str = "offline", fallback: bool = True):
     """
-    理解窗口界面 - 三层fallback (带超时控制和自动降级)
+    理解窗口界面 - 双层架构 (默认使用rapidocr本地OCR)
 
     参数:
         title: 窗口标题关键词
-        backend: "auto" | "local" | "offline"
+        backend: "offline"(默认) | "auto" | "local"
         fallback: auto模式下local失败是否回退到offline
 
     返回:
