@@ -6,14 +6,15 @@ from tools.skill_learn_from_cases_full.dir_manager import _sanitize_skill_name
 
 
 def test_sanitize_normal():
-    """正常技能名保持不变"""
-    assert _sanitize_skill_name("python_project_management") == "python_project_management"
+    """正常技能名: 驼峰规范，无下划线"""
+    result = _sanitize_skill_name("python_project_management")
+    assert result == "pythonprojectmanagement"  # 驼峰: 下划线被移除
 
 
 def test_sanitize_chinese():
-    """中文技能名安全处理"""
+    """中文技能名: 中文全移除，保留英文字母"""
     result = _sanitize_skill_name("人机交互ui设计")
-    assert "人机交" in result or "ui" in result
+    assert "ui" in result  # 中文被移除，仅保留英文字母
 
 
 def test_sanitize_path_traversal():

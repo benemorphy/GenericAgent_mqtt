@@ -9,35 +9,32 @@ from tools.skill_learn_from_cases_full.name_converter import convert_name
 
 
 def test_english_name():
-    """纯英文名保持不变"""
-    assert convert_name("docker_compose_production") == "docker_compose_production"
+    """纯英文名转驼峰"""
+    assert convert_name("docker_compose_production") == "dockerComposeProduction"
 
 
 def test_chinese_name():
-    """中文名正确转换"""
+    """中文名正确转驼峰（大小写不敏感检查）"""
     result = convert_name("小微贷款图像凭证鉴定")
-    assert "image" in result and "voucher" in result and "verification" in result
+    assert result == "imageVoucherVerificationMicroLoan"
 
 
 def test_mixed_name():
-    """中英文混合"""
+    """中英文混合转驼峰"""
     result = convert_name("python项目管理")
-    assert "python" in result
-    assert "project_management" in result or "management" in result
+    assert result == "pythonProjectManagement"
 
 
 def test_ui_hci_name():
     """UI/HCI 专有名词"""
     result = convert_name("人机交互ui设计")
-    assert "ui" in result
-    assert "hci" in result
-    assert "design" in result
+    assert result == "uiHciDesign"
 
 
 def test_prototype_handoff():
     """原型+handoff 技能"""
     result = convert_name("原型设计handoff")
-    assert "handoff" in result or "prototyp" in result
+    assert "handoff" in result or "prototype" in result or "prototyp" in result
 
 
 def test_path_traversal_safety():
