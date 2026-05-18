@@ -134,3 +134,6 @@ uv.lock
 # Local runtime SQLite DB
 agent_bbs.db
 boards.json
+
+# FreeFileSync database
+*.ffs_db
