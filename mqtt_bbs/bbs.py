@@ -191,6 +191,79 @@ class AgentBoard:
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.CANCELLED.value, retain=True)
         log.info(f"[{self.agent_id}] 🛑 取消任务: {task_id}")
 
+    # ── 公开发布（Point 5: Broadcast） ──
+
+    def publish(self, topic: str, payload: Any, retain: bool = False, qos: Optional[int] = None):
+        """发布消息到任意 topic（对标 README 的 board.publish()）"""
+        self._client.publish(topic, payload, retain=retain, qos=qos)
+
+    # ── 公开订阅（Point 4: Wildcard 订阅收集） ──
+
+    def subscribe(self, topic: str, callback: Callable):
+        """订阅任意 topic（对标通配符订阅收集结果）"""
+        self._client.subscribe(topic, callback)
+
+    # ── Map-Reduce 批量等待 + 自动聚合（Point 4） ──
+
+    def wait_all(self, task_ids: list[str], timeout: float = 300,
+                 reduce_fn: Optional[Callable] = None,
+                 poll_interval: float = 0.5) -> Any:
+        """
+        批量等待多个任务完成，自动聚合结果。
+
+        对标: 通配符订阅 board/task/+/output 收集结果
+
+        Args:
+            task_ids: 任务ID列表
+            timeout: 总超时（秒）
+            reduce_fn: 聚合函数(list[TaskOutput]) → any，默认返回 list
+            poll_interval: 轮询间隔
+
+        Returns:
+            reduce_fn 的结果，或 TaskOutput 列表
+        """
+        deadline = time.time() + timeout
+        results: dict[str, TaskOutput] = {}
+
+        def on_output(topic, payload):
+            if isinstance(payload, dict):
+                out = TaskOutput.from_dict(payload)
+                results[out.task_id] = out
+
+        # 为每个 task_id 订阅 output
+        remaining = set(task_ids)
+        for tid in task_ids:
+            self._client.subscribe(f"board/task/{tid}/output", on_output)
+
+        # 等待所有完成
+        while remaining and time.time() < deadline:
+            for tid in list(remaining):
+                if tid in results and results[tid].status in ("completed", "failed", "cancelled"):
+                    remaining.discard(tid)
+            if not remaining:
+                break
+            time.sleep(poll_interval)
+
+        # 清理订阅
+        for tid in task_ids:
+            self._client.unsubscribe(f"board/task/{tid}/output")
+
+        # 超时未完成的任务标记为失败
+        for tid in remaining:
+            results[tid] = TaskOutput(
+                task_id=tid, agent_id="", status="failed",
+                error={"type": "timeout", "msg": f"wait_all 超时 ({timeout}s)"},
+            )
+
+        ordered = [results.get(tid, TaskOutput(
+            task_id=tid, agent_id="", status="failed",
+            error={"type": "lost", "msg": "任务结果丢失"},
+        )) for tid in task_ids]
+
+        if reduce_fn:
+            return reduce_fn(ordered)
+        return ordered
+
 
 # ──────────────────────────────────────────────
 # WorkerAgent — 工作智能体（任务执行者）
@@ -219,6 +292,9 @@ class WorkerAgent:
         self._running = False
         self._current_task_id: Optional[str] = None
         self._seq = 0  # stdout/stderr 序列号
+        self._interventions: list[dict] = []  # 运行时注入命令队列（Point 6）
+        self._suspended = False  # 暂停标志（Point 5: Broadcast）
+        self._subscribed_dynamic: set[str] = set()  # 动态订阅 topic 集合
 
     # ── 注册任务处理器 ──
 
@@ -262,6 +338,8 @@ class WorkerAgent:
 
         # 订阅取消信号
         self._client.subscribe(f"node/{self.agent_id}/task/current", self._on_cancel)
+        # 订阅全局广播信号（Point 5: Broadcast/Multicast）
+        self._client.subscribe("board/global/signal", self._on_global_signal)
 
         log.info(f"[{self.agent_id}] 🚀 启动 (capabilities={self.capabilities})")
 
@@ -297,6 +375,12 @@ class WorkerAgent:
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.RUNNING.value, retain=True)
         self._client.publish(f"node/{self.agent_id}/task/current", task_id, retain=True)
         self._client.publish(f"node/{self.agent_id}/status", "busy", retain=True)
+
+        # 动态订阅：任务取消信号 + 运行时注入（Point 6: Runtime Intervention）
+        self._client.subscribe(f"board/task/{task_id}/signal", self._on_task_signal)
+        self._subscribed_dynamic.add(f"board/task/{task_id}/signal")
+        self._client.subscribe(f"board/task/{task_id}/intervene", self._on_intervene)
+        self._subscribed_dynamic.add(f"board/task/{task_id}/intervene")
 
         log.info(f"[{self.agent_id}] 🤝 认领任务: {task_id}")
         return True
@@ -381,12 +465,82 @@ class WorkerAgent:
         task_status = TaskStatus.DONE if status == "completed" else TaskStatus.FAILED
         self._client.publish(f"board/task/{task_id}/status", task_status.value, retain=True)
 
+        # 取消动态订阅（任务信号 + intervene）
+        self._unsubscribe_dynamic()
+        # 清理干预队列
+        self._interventions.clear()
+
         # 清理自身状态
         self._client.publish(f"node/{self.agent_id}/task/current", "", retain=True)
         self._client.publish(f"node/{self.agent_id}/status", "online", retain=True)
 
         log.info(f"[{self.agent_id}] ✅ 任务完成: {task_id} (status={status})")
         self._current_task_id = None
+
+    # ── 动态订阅管理（Point 4/6） ──
+
+    def _unsubscribe_dynamic(self):
+        """取消所有动态订阅"""
+        for topic in list(self._subscribed_dynamic):
+            self._client.unsubscribe(topic)
+        self._subscribed_dynamic.clear()
+
+    # ── 公开方法：获取干预命令（Point 6） ──
+
+    def get_interventions(self) -> list[dict]:
+        """
+        获取并清空运行时注入的干预命令。
+
+        在 task_handler 中定期调用，检查是否有干预指令:
+
+            for cmd in worker.get_interventions():
+                if cmd.get("action") == "skip":
+                    ...
+        """
+        result = list(self._interventions)
+        self._interventions.clear()
+        return result
+
+    # ── 任务信号处理（Point 6: 修复 cancel 路由） ──
+
+    def _on_task_signal(self, topic: str, payload):
+        """收到 board/task/{task_id}/signal 信号"""
+        if isinstance(payload, bytes):
+            payload = payload.decode("utf-8")
+        if payload == "[CANCEL]" and self._current_task_id:
+            log.warning(f"[{self.agent_id}] 🛑 收到取消信号 (board/task信号)")
+            self.complete(status="failed", error={"type": "cancelled", "msg": "被主智能体取消"})
+
+    # ── 运行时注入处理（Point 6: Intervene） ──
+
+    def _on_intervene(self, topic: str, payload):
+        """收到运行时注入命令 → 存入干预队列"""
+        if isinstance(payload, bytes):
+            try:
+                payload = json.loads(payload.decode("utf-8"))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                payload = {"raw": payload.decode("utf-8", errors="replace")}
+        if not isinstance(payload, dict):
+            payload = {"action": str(payload)}
+        payload["_received_at"] = time.time()
+        self._interventions.append(payload)
+        log.info(f"[{self.agent_id}] 📨 收到干预命令: {payload.get('action', 'unknown')}")
+
+    # ── 全局广播信号处理（Point 5: Broadcast） ──
+
+    def _on_global_signal(self, topic: str, payload):
+        """收到全局广播信号: [SUSPEND] / [RESUME] / [SHUTDOWN]"""
+        if isinstance(payload, bytes):
+            payload = payload.decode("utf-8")
+        if payload == "[SUSPEND]":
+            self._suspended = True
+            log.warning(f"[{self.agent_id}] ⏸ 全局暂停")
+        elif payload == "[RESUME]":
+            self._suspended = False
+            log.info(f"[{self.agent_id}] ▶ 全局恢复")
+        elif payload == "[SHUTDOWN]":
+            log.warning(f"[{self.agent_id}] 🛑 全局关机")
+            self.stop()
 
     # ── 内部消息处理 ──
 
