@@ -21,6 +21,20 @@ GA_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(GA_ROOT))
 sys.path.insert(0, str(GA_ROOT / "memory" / "skill_search"))
 
+# -- 自动启用LLM（从本地API密钥配置加载）--
+if not os.environ.get("SKILL_LLM_ENABLE"):
+    try:
+        import mykey
+        cfg = getattr(mykey, 'native_oai_config', {})
+        if cfg and cfg.get('apikey') and cfg.get('apibase'):
+            os.environ.setdefault("SKILL_LLM_ENABLE", "1")
+            os.environ.setdefault("LLM_API_BASE", cfg['apibase'].rstrip('/'))
+            os.environ.setdefault("LLM_API_KEY", cfg['apikey'])
+            os.environ.setdefault("LLM_MODEL", cfg.get('model', 'gpt-4'))
+            os.environ.setdefault("LLM_TIMEOUT", "120")
+    except Exception:
+        pass  # mykey不存在或无可用配置，LLM不启用
+
 from tools.skill_learn_from_cases_full import dir_manager
 from tools.skill_learn_from_cases_full.restore_funcs import _import_skill_search, _import_web_search, _web_search_wikipedia
 from tools.skill_learn_from_cases_full.llm_helper import call_llm, call_llm_json, llm_available
