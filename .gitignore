@@ -138,3 +138,6 @@ boards.json
 
 # FreeFileSync database
 *.ffs_db
+
+# Design documents (local only)
+docs/
