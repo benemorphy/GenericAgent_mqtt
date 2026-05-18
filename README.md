@@ -1,3 +1,5 @@
+<img align="right" src="assets/images/GGA.png" width="240" height="300"/>
+
 ## 🍴 本分支特色
 
 | 维度 | 原版 GenericAgent | 本分支 GenericAgent_mqtt |
