@@ -49,22 +49,4 @@ jobs:
       - name: Run tests
         run: python -m pytest tests/ -v --tb=short -W ignore::DeprecationWarning
 
-  build:
-    name: Build
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: "pip"
-      - name: Install build
-        run: pip install build
-      - name: Build package
-        run: python -m build
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
+
