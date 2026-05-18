@@ -128,6 +128,7 @@ reflect/*
 .trae/
 Snapshots/
 images/
+!assets/images/
 temp_tools/
 uv.lock
 
