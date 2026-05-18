@@ -214,6 +214,48 @@ start_all.bat
 
 启动：rmqtt broker (1883) → MariaDB（可选）→ rmqtt Web UI (8100) → MQTT Dashboard (8501) → 5 个示例 Worker Agent。
 
+
+### 🔹 gui_vision — 窗口视觉理解（OCR/VLM双后端）
+
+基于 rapidocr 的本地窗口 OCR 识别 + VLM fallback。无需截图上传，直接在内存中截取窗口区域分析。
+
+| 功能 | 说明 |
+|------|------|
+| 📸 窗口截图 | 仅截目标窗口（**禁止全屏**），自动 DPI 补偿 |
+| 🔍 OCR 识别 | rapidocr-onnxruntime 本地 OCR，200+ 元素/10s |
+| 📐 坐标转换 | `element_to_screen_coords()` bbox → 屏幕物理坐标 |
+| 🖱️ 联动点击 | 识别后直接 `ljqCtrl.Click()` 点击 UI 元素 |
+| ⏱️ 超时降级 | 独立超时配置（offline15s/local30s），失败自动降级 |
+
+### 🔹 inspiration_board — 灵感沟通交流板
+
+用户与 Agent 之间的灵感协作板，基于 MQTT BBS 实时同步。
+
+| 功能 | 说明 |
+|------|------|
+| 💡 添加灵感 | 对话中随时保存想法，自动 MQTT 通知 |
+| 🤔 Agent 思考 | 自主空闲时分析灵感并记录笔记 |
+| 📦 自动归档 | 活跃上限 20 条，超量自动持久化存档 |
+| 🔔 MQTT 通知 | 每次新增/更新发布到 `agent/board/inspiration/{id}/signal` |
+
+### 🔹 Feishu Bot 连接 SOP
+
+飞书 Bot 部署指南与运维 SOP，位于 `memory/feishu_connect_sop.md`：
+- 配置 `mykey.py` → `fs_app_id` / `fs_app_secret`
+- 启动：`python frontends/fsapp.py`
+- WebSocket 长连接，自动重连（5s→120s 指数退避）
+- 支持文本/图片/音频/文件/卡片消息
+
+### 🔹 MQTT BBS 独立文档
+
+`mqtt_bbs/README.md`（中）/ `mqtt_bbs/README_EN.md`（英）— 包含：
+- 完整主题树（25+ 主题）与 Retain/QoS 策略
+- AgentBoard / WorkerAgent / Dashboard 三角色使用指南
+- 4 个完整代码示例（Master/Worker/Map-Reduce/运行时干预）
+- 飞书 Bot 集成方案
+- 能力声明与智能匹配
+
+
 ---
 ---
 

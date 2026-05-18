@@ -304,6 +304,60 @@ start_all.bat
 
 This launches: rmqtt broker (port 1883) → MariaDB (optional) → rmqtt Web UI (port 8100) → MQTT Dashboard (port 8501) → 5 sample worker agents with different capabilities.
 
+
+## 🔹 gui_vision — Window Visual Understanding (OCR/VLM)
+
+Local window OCR using rapidocr + VLM fallback. Captures window regions in-memory, no screenshot upload needed.
+
+| Feature | Description |
+|---------|-------------|
+| 📸 Window Capture | Target window only (**no fullscreen**), auto DPI compensation |
+| 🔍 OCR Engine | rapidocr-onnxruntime local OCR, 200+ elements/10s |
+| 📐 Coordinate Conversion | `element_to_screen_coords()` bbox → physical screen coords |
+| 🖱️ Click Integration | Recognize → `ljqCtrl.Click()` instantly |
+| ⏱️ Degradation Chain | Independent timeouts (offline15s/local30s), auto fallback |
+
+```python
+from gui_vision import understand_window, element_to_screen_coords
+state = understand_window("Chrome")  # default: rapidocr
+el = state['ui_elements'][0]
+x, y = element_to_screen_coords(state, el)
+```
+
+## 🔹 inspiration_board — Inspiration Board
+
+A collaboration board between user and agent for ideas, synced via MQTT BBS in real-time.
+
+| Feature | Description |
+|---------|-------------|
+| 💡 Add Ideas | Save thoughts mid-conversation, auto MQTT notification |
+| 🤔 Agent Thinking | Analyze inspirations during idle time, add notes |
+| 📦 Auto Archive | Max 20 active, overflow auto-archived to persistent storage |
+| 🔔 MQTT Notify | Publish/Subscribe on `agent/board/inspiration/{id}/signal` |
+
+```bash
+python -c "from inspiration_board import Board; Board().add_idea('title','details',['tag'])"
+python -c "from inspiration_board import Board; Board().list_all()"
+```
+
+## 🔹 Feishu Bot Connection SOP
+
+Feishu/Lark bot deployment guide at `memory/feishu_connect_sop.md`:
+- Configure `mykey.py` → `fs_app_id` / `fs_app_secret`
+- Start: `python frontends/fsapp.py`
+- WebSocket persistent connection, auto-reconnect (5s→120s backoff)
+- Supports text/image/audio/file/card messages
+
+## 🔹 MQTT BBS Standalone Docs
+
+`mqtt_bbs/README.md` (CN) / `mqtt_bbs/README_EN.md` (EN) — covering:
+- Complete topic tree (25+ topics) with Retain/QoS strategy
+- AgentBoard / WorkerAgent / Dashboard role guides
+- 4 full code examples (Master/Worker/Map-Reduce/Runtime Intervention)
+- Feishu Bot integration plan
+- Capability declaration and smart matching
+
+
 ---
 
 ## 🚀 Quick Start
