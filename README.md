@@ -1,5 +1,20 @@
 <img align="right" src="assets/images/GGA.png" width="240" height="300"/>
 
+
+<div align="center">
+<img src="https://raw.githubusercontent.com/lsdefine/GenericAgent/main/assets/images/bar.jpg" width="880"/>
+</div>
+
+> 🍴 **Fork of [GenericAgent](https://github.com/lsdefine/GenericAgent)** — 衍生自 [lsdefine](https://github.com/lsdefine) 的极简自进化 Agent 框架。  
+> **核心改动**: MQTT BBS — 用事件驱动的 MQTT 消息总线替代原文件式 Agent 通信，解锁分布式、跨机器、实时协作能力。  
+> 上游项目 MIT License，本分支亦同。
+
+---
+
+<p align="center">
+  <a href="#english">English</a> | <a href="#chinese">中文</a>
+</p>
+
 ## 🍴 本分支特色
 
 | 维度 | 原版 GenericAgent | 本分支 GenericAgent_mqtt |
