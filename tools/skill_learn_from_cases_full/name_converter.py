@@ -33,8 +33,21 @@ def _load_mapping() -> dict:
     return mapping
 
 
+def _snake_to_camel(name: str) -> str:
+    """下划线分隔名 → 驼峰(camelCase): 首词小写，后续词首字母大写"""
+    parts = name.split('_')
+    if not parts or not parts[0]:
+        return name
+    # 首词全小写，后续词首字母大写
+    result = [parts[0].lower()]
+    for p in parts[1:]:
+        if p:
+            result.append(p[0].upper() + p[1:].lower())
+    return ''.join(result)
+
+
 def convert_name(skill_name: str) -> str:
-    """将任意技能名转换为标准英文名（下划线分隔）"""
+    """将任意技能名转换为标准英文驼峰名（camelCase）"""
     if not skill_name:
         return "unknown"
 
@@ -45,7 +58,7 @@ def convert_name(skill_name: str) -> str:
         safe = skill_name.strip().lower().replace(" ", "_").replace("-", "_")
         # 路径注入防护
         safe = re.sub(r'[^\w\-\u4e00-\u9fff]', '', safe).strip('_')
-        return safe or "unknown"
+        return _snake_to_camel(safe) or "unknown"
 
     mapping = _load_mapping()
     seen = set()
@@ -72,7 +85,8 @@ def convert_name(skill_name: str) -> str:
             # 消耗匹配的中文文本（防止"数据"重复匹配"数据库"）
             remaining = remaining.replace(zh, " " * len(zh), 1)
     
-    return "_".join(result) if result else skill_name.strip().lower().replace(" ", "_")
+    snake = "_".join(result) if result else skill_name.strip().lower().replace(" ", "_")
+    return _snake_to_camel(snake)
 
 
 def refresh_cache():
