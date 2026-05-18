@@ -70,5 +70,14 @@
   "设计规范": "design_system",
   "线框图": "wireframe",
   "可用性": "usability",
-  "项目管理": "project_management"
+  "项目管理": "project_management",
+  "本体论": "ontology",
+  "本体": "ontology",
+  "推理": "reasoning",
+  "语义": "semantic",
+  "知识图谱": "knowledge_graph",
+  "图数据库": "graph_database",
+  "查询": "query",
+  "Cypher": "cypher",
+  "Neo4j": "neo4j"
 }

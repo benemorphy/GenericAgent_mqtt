@@ -17,14 +17,15 @@ SKILL_LEARN_ROOT = GA_ROOT / "skills_learning"
 
 def _sanitize_skill_name(skill_name: str) -> str:
     """
-    清洗技能名：移除路径遍历字符（../..）和危险字符，
-    确保只能用作单个目录名，不能进行路径穿越。
+    清洗技能名：只允许纯英文字母数字下划线连字符（目录强制纯英文）。
+    中文技能名应先经过 name_converter.convert_name() 转换后再传入。
     """
-    # 移除非字母数字下划线连字符和中文的字符
-    sanitized = _re.sub(r'[^\w\-\u4e00-\u9fff]', '_', skill_name)
+    # 只保留英文字母数字（驼峰命名），其余全部移除
+    sanitized = _re.sub(r'[^a-zA-Z0-9]', '', skill_name)
     # 防止空名和特殊前缀
     sanitized = sanitized.strip('_')
-    if not sanitized:
+    # 若全被移除（如纯中文输入未转换），返回特殊标记避免混淆
+    if not sanitized or not any(c.isalnum() for c in sanitized):
         sanitized = "unnamed_skill"
     return sanitized
 

@@ -58,7 +58,7 @@ JPEG_QUALITY = 85
 
 # 超时配置(秒) - 每个后端独立超时
 BACKEND_TIMEOUTS = {
-    'local': 30,    # local VLM 超时(含模型推理)
+    'local': 180,   # local VLM 超时(含模型推理, qwen3-vl-4b约50-100s)
     'offline': 15,  # offline OCR 超时(大图约10s, 留余量)
     'auto': 5,      # auto模式的local阶段超时(快速失败以回退)
 }
@@ -86,6 +86,7 @@ def _log_degration_event(event_type: str, reason: str, meta: dict = None):
     except Exception:
         pass
 MAX_PIXELS = LOCAL_MAX_PIXELS  # 与vision_api本地后端一致: 截图与VLM入图统一尺寸限制
+VLM_MAX_SIDE = 400  # VLM入图最长边阈值(px), qwen3-vl-4b实测: >400px时响应>100s, ≤400px可控制在60s内
 UI_PROMPT = """请详细描述这个界面，列出所有可见的UI元素，每个元素包含坐标信息。格式：
 - [label|10%,20%,30%,5%] 文本内容
 - [button|50%,30%,15%,8%] 按钮文字
@@ -280,6 +281,16 @@ def _analyze_vlm(img, backend: str, prompt: str, timeout: int,
     scale_x = orig_w / img.width if img.width > 0 else 1.0
     scale_y = orig_h / img.height if img.height > 0 else 1.0
 
+    # VLM专用缩放到最长边阈值（OCR不受影响）
+    if backend in ('local', 'auto') and max(img.size) > VLM_MAX_SIDE:
+        ratio = VLM_MAX_SIDE / max(img.size)
+        new_w = int(img.width * ratio)
+        new_h = int(img.height * ratio)
+        img = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+        print(f"  📐 VLM缩放: {orig_w}×{orig_h} → {new_w}×{new_h} (阈值{VLM_MAX_SIDE}px)")
+        scale_x = orig_w / img.width if img.width > 0 else 1.0
+        scale_y = orig_h / img.height if img.height > 0 else 1.0
+
     # ask_vision 签名: ask_vision(image_input, prompt, timeout, ...)
     raw = ask_vision(img, prompt, backend=backend, timeout=timeout)
     if not raw or raw.startswith("Error"):
@@ -300,7 +311,23 @@ def _analyze_vlm(img, backend: str, prompt: str, timeout: int,
                 if '|' in bracket_content:
                     el_type, coord_str = bracket_content.split('|', 1)
                     el_type = el_type.strip().lower()
-                    # 解析 "x%,y%,w%,h%"
+                else:
+                    # 兼容无|格式: "type, x, y, w, h" 或 "x, y, w, h" 
+                    parts_comma = [p.strip() for p in bracket_content.split(',')]
+                    if len(parts_comma) == 5:
+                        # [type, x, y, w, h] 格式
+                        el_type = parts_comma[0].strip().lower()
+                        coord_str = ','.join(parts_comma[1:])
+                    elif len(parts_comma) == 4:
+                        # [x, y, w, h] 格式（纯坐标无type）
+                        el_type = 'element'
+                        coord_str = ','.join(parts_comma)
+                    else:
+                        el_type = bracket_content.strip().lower()
+                        coord_str = ''
+                
+                if coord_str:
+                    # 解析 "x%,y%,w%,h%" （兼容无%）
                     parts = [p.strip().rstrip('%') for p in coord_str.split(',')]
                     if len(parts) == 4:
                         try:
