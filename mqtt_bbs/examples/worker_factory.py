@@ -12,7 +12,7 @@ import json, os, sys, time, logging
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 logging.basicConfig(level=logging.INFO, format="%(name)s | %(message)s")
 
-from mqtt_bbs import WorkerAgent
+from mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
 
 WORKER_ID = os.environ.get("WORKER_ID", "worker_factory")
 WORKER_CAPS = os.environ.get("WORKER_CAPS", "analyse_log")

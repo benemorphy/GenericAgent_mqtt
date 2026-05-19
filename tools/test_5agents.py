@@ -8,7 +8,7 @@ os.environ["MQTT_PORT"] = "1883"
 
 logging.basicConfig(level=logging.WARN, format="%(name)s | %(message)s")
 
-from mqtt_bbs import WorkerAgent, AgentBoard
+from mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent, AgentBoardWithPersistence as AgentBoard
 
 agents = []
 results = {}
