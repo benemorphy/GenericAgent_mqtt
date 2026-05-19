@@ -17,6 +17,7 @@ HELP_COMMANDS = (
     ("/llm", "查看当前模型列表"),
     ("/llm [n]", "切换到第 n 个模型"),
     ("/dream", "白日梦 — 消化今天工作，跨域联想，放松一下"),
+    ("/brainstorm <topic>", "多Agent并行头脑风暴 — 5视角Round Robin+Devil's Advocate"),
 )
 TELEGRAM_MENU_COMMANDS = (
     ("help", "显示帮助"),
@@ -28,6 +29,7 @@ TELEGRAM_MENU_COMMANDS = (
     ("btw", "临时插问主 agent 进展，不打断主线"),
     ("llm", "查看模型列表；/llm n 切换到指定模型"),
     ("dream", "白日梦 — 消化工作，跨域联想"),
+    ("brainstorm", "多Agent并行头脑风暴"),
 )
 
 
