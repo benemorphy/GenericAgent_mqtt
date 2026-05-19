@@ -132,7 +132,7 @@ def replay_memories(domain=None, k=3):
                 "recommend": "需要统一策略或评估哪种更优"
             })
         
-        # 缺口: 低置信度
+        # 缺口: 低置信度 → 自动触发技能学习
         if a['confidence'] < 0.5:
             insights.append({
                 "type": "gap",
@@ -140,6 +140,20 @@ def replay_memories(domain=None, k=3):
                 "confidence": a['confidence'],
                 "recommend": "启动Deep Research"
             })
+            # 自动触发技能学习
+            topic = a['problem'].strip()[:40]
+            if len(topic) > 5:
+                try:
+                    import subprocess as _sp
+                    ga_root = str(Path(__file__).resolve().parents[1])
+                    print(f"  📚 自动学习: {topic}")
+                    proc = _sp.Popen([
+                        'python', '-m', 'tools.skill_learn_from_cases_full', topic, '--force',
+                        '--from-url', 'https://www.google.com/search?q=' + topic.replace(' ', '+')
+                    ], cwd=ga_root, stdout=_sp.DEVNULL, stderr=_sp.DEVNULL)
+                    insights[-1]["learn_pid"] = proc.pid
+                except Exception as e:
+                    print(f"  ⚠️ 自动学习启动失败: {e}")
     
     return insights
 
