@@ -16,6 +16,7 @@ HELP_COMMANDS = (
     ("/btw <q>", "side question — 临时插问主 agent 进展，不打断主线"),
     ("/llm", "查看当前模型列表"),
     ("/llm [n]", "切换到第 n 个模型"),
+    ("/dream", "白日梦 — 消化今天工作，跨域联想，放松一下"),
 )
 TELEGRAM_MENU_COMMANDS = (
     ("help", "显示帮助"),
@@ -26,6 +27,7 @@ TELEGRAM_MENU_COMMANDS = (
     ("continue", "列出可恢复会话；/continue n 恢复第 n 个"),
     ("btw", "临时插问主 agent 进展，不打断主线"),
     ("llm", "查看模型列表；/llm n 切换到指定模型"),
+    ("dream", "白日梦 — 消化工作，跨域联想"),
 )
 
 
