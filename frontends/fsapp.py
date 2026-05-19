@@ -8,6 +8,7 @@ from frontends.chatapp_common import format_restore
 from frontends.continue_cmd import handle_frontend_command as handle_continue_frontend, reset_conversation
 from llmcore import mykeys
 from tools.feishu_reminder import ReminderManager, start_reminder_checker, format_reminder_list, REMIND_HELP
+from tools.todo_manager import TodoManager, TODO_HELP
 from tools.inspiration_board import Board as InspirationBoard, list_all as list_inspirations
 from mqtt_bbs import AgentBoardWithPersistence
 
@@ -245,6 +246,7 @@ client, user_tasks = None, {}
 # 提醒管理器
 _reminder = ReminderManager()
 _reminder_send = lambda oid, txt: send_message(oid, txt) if oid else None
+_todo_mgr = TodoManager()
 _master_board = None  # 延迟初始化 AgentBoardWithPersistence
 
 def _get_board():
@@ -629,6 +631,12 @@ def handle_message(data):
             send_message(open_id, f"⚠️ 暂不支持处理此类飞书消息：{message.message_type}")
         return
     print(f"收到消息 [{open_id}] ({message.message_type}, {len(image_paths)} images): {user_input[:200]}")
+    # 群聊消息自动提取待办
+    if chat_id and message.message_type == "text":
+        extracted = _todo_mgr.extract_todos(user_input)
+        for todo_text in extracted:
+            _todo_mgr.add(todo_text, open_id=open_id, source="群聊", chat_id=chat_id)
+            print(f"  📋 已提取待办: {todo_text}")
     if message.message_type == "text" and user_input.startswith("/"):
         return handle_command(open_id, user_input, chat_id)
 
@@ -681,7 +689,7 @@ def handle_command(open_id, cmd, chat_id=None):
     elif op == "/new":
         _send_cmd_response(reset_conversation(agent))
     elif op == "/help":
-        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/task <type> <json> - 发布MQTT任务\n/help - 显示帮助")
+        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/task <type> <json> - 发布MQTT任务\n/todo - 待办管理（add/done/del）\n/help - 显示帮助")
     elif op == "/status":
         llm = agent.get_llm_name() if agent.llmclient else "未配置"
         _send_cmd_response(f"状态: {'🔴 运行中' if agent.is_running else '🟢 空闲'}\nLLM: [{agent.llm_no}] {llm}")
@@ -784,6 +792,32 @@ def handle_command(open_id, cmd, chat_id=None):
                 threading.Thread(target=_wait_and_notify, args=(tid, chat_id, open_id), daemon=True).start()
             except Exception as e:
                 _send_cmd_response(f"❌ 任务发布失败: {e}")
+    elif op == "/todo":
+        global _todo_mgr
+        if len(parts) >= 3 and parts[1] == "add":
+            content = " ".join(parts[2:])
+            t = _todo_mgr.add(content, open_id=open_id)
+            _send_cmd_response(f"✅ 已添加待办 #{t['id']}: {content}")
+        elif len(parts) >= 3 and parts[1] == "done":
+            try:
+                tid_d = int(parts[2])
+                if _todo_mgr.done(tid_d):
+                    _send_cmd_response(f"✅ 待办 #{tid_d} 已完成")
+                else:
+                    _send_cmd_response(f"❌ 待办 #{tid_d} 不存在")
+            except ValueError:
+                _send_cmd_response("用法: /todo done <id>")
+        elif len(parts) >= 3 and parts[1] == "del":
+            try:
+                tid_d = int(parts[2])
+                if _todo_mgr.remove(tid_d):
+                    _send_cmd_response(f"🗑️ 已删除待办 #{tid_d}")
+                else:
+                    _send_cmd_response(f"❌ 待办 #{tid_d} 不存在")
+            except ValueError:
+                _send_cmd_response("用法: /todo del <id>")
+        else:
+            _send_cmd_response(_todo_mgr.format_list())
     else:
         _send_cmd_response(f"未知命令: {cmd}")
 
