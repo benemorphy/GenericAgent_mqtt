@@ -277,7 +277,7 @@ if __name__ == '__main__':
         # MQTT WorkerAgent 模式（默认）
         agent.peer_hint = False
         try:
-            from mqtt_bbs import WorkerAgent
+            from mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
             import logging as _l; _l.basicConfig(level=_l.WARNING)
             _mqtt_agent_id = f"agent_{os.urandom(4).hex()}"
             worker = WorkerAgent(_mqtt_agent_id,

@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
 logging.basicConfig(level=logging.INFO, format="%(name)s | %(message)s")
 
-from mqtt_bbs import WorkerAgent
+from mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
 
 
 def analyse_log_handler(task):
