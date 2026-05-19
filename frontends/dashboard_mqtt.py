@@ -22,7 +22,7 @@ import streamlit as st
 
 # ── 数据源层 ──────────────────────────────────────────
 
-from mqtt_bbs import BBSClient
+from mqtt_bbs import BBSClientWithPersistence as BBSClient
 
 
 class MQTTDataSource:

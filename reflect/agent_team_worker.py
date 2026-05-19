@@ -40,7 +40,7 @@ def init(a):
     _cfg = c
 
     try:
-        from mqtt_bbs import WorkerAgent
+        from mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
     except ImportError:
         return  # mqtt_bbs 未安装，跳过初始化
 

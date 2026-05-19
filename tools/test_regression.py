@@ -84,7 +84,7 @@ except Exception as e:
 # 5. 发布任务 + 验证 agent 认领
 print("\n[5] Agent 任务测试")
 try:
-    from mqtt_bbs import AgentBoard
+    from mqtt_bbs import AgentBoardWithPersistence as AgentBoard
     with AgentBoard("regression_test") as board:
         tid = board.post_task("analyse_log", {"path": "/var/log/nginx", "pattern": "error"}, timeout=10)
         output = board.wait_task(tid, timeout=30)
