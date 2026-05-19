@@ -18,11 +18,15 @@ print(get_todo())       # 查看待办
 ## 任务选择
 - 有未完成条目 → 取**一条**，直接进入执行，其他条目下次执行
 - 无 TODO → 读 `autonomous_operation_sop/task_planning.md` 规划，下次执行
-- **默认选项**: 无TODO且无灵感板高优任务时，**自动启动 Deep Research**
-  - 主题 = 结合当天工作的核心主题
+- **核心能力 — Agent Dreaming**：空闲时默认启动 DREAM 循环
+  - 步骤: Digest(压缩记忆) → Replay(冲突检测) → Associate(跨域联想) → 灵感板
+  - 工具: `tools/dream_engine.py`
+  - 输出: 新灵感 / 跨域关联 / Deep Research计划
+  - 触发: 连续空闲 >10分钟 或 用户手动 /dream
+- **次级选项 — Deep Research**：Dreaming产出缺口时自动展开
   - 方法论 = Sophub DeepResearch SOP (DAG分治+子Agent并行+多轮深化)
   - 产出来源: WEB(Google/学术) + LOCAL(本地代码/文档/技能库) + MEMORY(记忆/SOP)
-  - 输出: `docs/deep_research_{主题}.md` → 移入对应项目目录
+  - 输出: `docs/deep_research_{主题}.md`
 
 ## 灵感板（自主行动必检）
 - 每次自主行动**先读灵感板**: `from inspiration_board import Board; Board().get_suggestions_for_agent()`
