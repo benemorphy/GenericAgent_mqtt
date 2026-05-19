@@ -9,6 +9,7 @@ from frontends.continue_cmd import handle_frontend_command as handle_continue_fr
 from llmcore import mykeys
 from tools.feishu_reminder import ReminderManager, start_reminder_checker, format_reminder_list, REMIND_HELP
 from tools.inspiration_board import Board as InspirationBoard, list_all as list_inspirations
+from mqtt_bbs import AgentBoardWithPersistence
 
 import traceback
 import lark_oapi as lark
@@ -244,6 +245,32 @@ client, user_tasks = None, {}
 # 提醒管理器
 _reminder = ReminderManager()
 _reminder_send = lambda oid, txt: send_message(oid, txt) if oid else None
+_master_board = None  # 延迟初始化 AgentBoardWithPersistence
+
+def _get_board():
+    global _master_board
+    if _master_board is None:
+        try:
+            _master_board = AgentBoardWithPersistence("feishu_bot")
+            print("[MQTT BBS] AgentBoardWithPersistence 已连接 (feishu_bot)")
+        except Exception as e:
+            print(f"[MQTT BBS] 连接失败: {e}")
+    return _master_board
+
+def _query_db_output(task_id):
+    """从MariaDB查任务output（绕过wait_task时序）"""
+    try:
+        import pymysql
+        conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='mariadb',
+                               database='mqtt_bbs', connect_timeout=3, autocommit=True)
+        cur = conn.cursor()
+        cur.execute("SELECT payload FROM retained_messages WHERE topic=%s",
+                    (f"board/task/{task_id}/output",))
+        rows = cur.fetchall()
+        cur.close(); conn.close()
+        return rows
+    except Exception:
+        return []
 
 
 def create_client():
@@ -654,7 +681,7 @@ def handle_command(open_id, cmd, chat_id=None):
     elif op == "/new":
         _send_cmd_response(reset_conversation(agent))
     elif op == "/help":
-        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/help - 显示帮助")
+        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/task <type> <json> - 发布MQTT任务\n/help - 显示帮助")
     elif op == "/status":
         llm = agent.get_llm_name() if agent.llmclient else "未配置"
         _send_cmd_response(f"状态: {'🔴 运行中' if agent.is_running else '🟢 空闲'}\nLLM: [{agent.llm_no}] {llm}")
@@ -721,6 +748,42 @@ def handle_command(open_id, cmd, chat_id=None):
                 if _idea.get("detail"):
                     _lines.append(f"   {_idea['detail'][:80]}")
             _send_cmd_response("\n".join(_lines)[:1500])
+    elif op == "/task":
+        board = _get_board()
+        if not board:
+            _send_cmd_response("❌ MQTT BBS 未连接")
+        elif len(parts) < 3:
+            _send_cmd_response("用法: /task <type> <input_json>\n示例: /task analyse {\"target\":\"log\"}")
+        else:
+            try:
+                task_type = parts[1]
+                task_input = json.loads(" ".join(parts[2:]))
+                tid = board.post_task(task_type, task_input)
+                _send_cmd_response(f"📤 任务已发布:\n  ID: {tid}\n  类型: {task_type}\n  输入: {json.dumps(task_input, ensure_ascii=False)[:200]}")
+                # 后台等结果
+                def _wait_and_notify(tid, chat_id, open_id):
+                    try:
+                        import time
+                        for _ in range(30):
+                            time.sleep(0.5)
+                            rows = _query_db_output(tid)
+                            if rows: break
+                        if not rows:
+                            try: result = board.wait_task(tid, timeout=5)
+                            except: result = None
+                        else:
+                            result = json.loads(rows[0][0]) if rows else None
+                        msg = f"✅ 任务完成 ({tid}): {json.dumps(result, ensure_ascii=False)[:300]}" if result else f"⏱️ 任务 {tid} 超时"
+                        if chat_id: send_message(chat_id, msg, receive_id_type="chat_id")
+                        else: send_message(open_id, msg)
+                    except Exception as e:
+                        err_msg = f"❌ 任务 {tid} 异常: {e}"
+                        if chat_id: send_message(chat_id, err_msg, receive_id_type="chat_id")
+                        else: send_message(open_id, err_msg)
+                import threading
+                threading.Thread(target=_wait_and_notify, args=(tid, chat_id, open_id), daemon=True).start()
+            except Exception as e:
+                _send_cmd_response(f"❌ 任务发布失败: {e}")
     else:
         _send_cmd_response(f"未知命令: {cmd}")
 
