@@ -18,6 +18,11 @@ print(get_todo())       # 查看待办
 ## 任务选择
 - 有未完成条目 → 取**一条**，直接进入执行，其他条目下次执行
 - 无 TODO → 读 `autonomous_operation_sop/task_planning.md` 规划，下次执行
+- **默认选项**: 无TODO且无灵感板高优任务时，**自动启动 Deep Research**
+  - 主题 = 结合当天工作的核心主题
+  - 方法论 = Sophub DeepResearch SOP (DAG分治+子Agent并行+多轮深化)
+  - 产出来源: WEB(Google/学术) + LOCAL(本地代码/文档/技能库) + MEMORY(记忆/SOP)
+  - 输出: `docs/deep_research_{主题}.md` → 移入对应项目目录
 
 ## 灵感板（自主行动必检）
 - 每次自主行动**先读灵感板**: `from inspiration_board import Board; Board().get_suggestions_for_agent()`
