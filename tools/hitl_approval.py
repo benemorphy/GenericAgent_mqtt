@@ -9,7 +9,7 @@ HITL Approval — 人在回路审批管理器
   4. 结果回写 MariaDB hitl_audit_log
 """
 
-import json, time, threading, uuid, os
+import sys, json, time, threading, uuid, os
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
