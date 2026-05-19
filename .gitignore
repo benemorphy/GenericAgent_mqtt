@@ -141,3 +141,11 @@ boards.json
 
 # Design documents (local only)
 docs/
+
+# Security: API keys, tokens, secrets
+*token*
+*password*
+*secret*
+*.key
+*.pem
+*.cert
