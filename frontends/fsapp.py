@@ -9,6 +9,7 @@ from frontends.continue_cmd import handle_frontend_command as handle_continue_fr
 from llmcore import mykeys
 from tools.feishu_reminder import ReminderManager, start_reminder_checker, format_reminder_list, REMIND_HELP
 from tools.todo_manager import TodoManager, TODO_HELP
+from tools.hitl_approval import submit_decision, approve, reject, get_pending_list, _HITL_HELP
 from tools.inspiration_board import Board as InspirationBoard, list_all as list_inspirations
 from mqtt_bbs import AgentBoardWithPersistence
 
@@ -689,7 +690,7 @@ def handle_command(open_id, cmd, chat_id=None):
     elif op == "/new":
         _send_cmd_response(reset_conversation(agent))
     elif op == "/help":
-        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/task <type> <json> - 发布MQTT任务\n/todo - 待办管理（add/done/del）\n/help - 显示帮助")
+        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/task <type> <json> - 发布MQTT任务\n/todo - 待办管理（add/done/del）\n/hitl - 审批管理（list/approve/reject）\n/help - 显示帮助")
     elif op == "/status":
         llm = agent.get_llm_name() if agent.llmclient else "未配置"
         _send_cmd_response(f"状态: {'🔴 运行中' if agent.is_running else '🟢 空闲'}\nLLM: [{agent.llm_no}] {llm}")
@@ -792,6 +793,23 @@ def handle_command(open_id, cmd, chat_id=None):
                 threading.Thread(target=_wait_and_notify, args=(tid, chat_id, open_id), daemon=True).start()
             except Exception as e:
                 _send_cmd_response(f"❌ 任务发布失败: {e}")
+    elif op == "/hitl":
+        global _todo_mgr
+        if len(parts) >= 3 and parts[1] == "approve":
+            result = approve(parts[2])
+            _send_cmd_response(f"✅ 审批通过: {parts[2]}" if result else f"❌ 审批失败: {parts[2]}")
+        elif len(parts) >= 3 and parts[1] == "reject":
+            result = reject(parts[2])
+            _send_cmd_response(f"✅ 已拒绝: {parts[2]}" if result else f"❌ 操作失败: {parts[2]}")
+        else:
+            pending = get_pending_list()
+            if not pending:
+                _send_cmd_response("📋 无待审批项")
+            else:
+                lines = [f"🤖 待审批 ({len(pending)}项):"]
+                for p in pending:
+                    lines.append(f"  #{p['id']} [{p['task_type']}] conf={p['confidence']:.2f} {p['reason'][:40]}")
+                _send_cmd_response("\n".join(lines))
     elif op == "/todo":
         global _todo_mgr
         if len(parts) >= 3 and parts[1] == "add":
