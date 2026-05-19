@@ -133,19 +133,26 @@ class BBSClientWithPersistence(BBSClient):
     # ── publish (增强: retain → 写 DB) ──────────────────
 
     def publish(self, topic: str, payload, retain=False, qos=None):
-        # 1. 写 MariaDB (retain 消息)
+        # 1. 写 MariaDB (retain 消息) — 异常不阻断MQTT
         if retain and self._db:
-            self._upsert_retained(topic, payload, qos or 1)
+            try:
+                self._upsert_retained(topic, payload, qos or 1)
+            except Exception as e:
+                log.error(f"[PERSIST] DB写入失败 topic={topic}: {e}", exc_info=True)
 
         # 2. 如果是发给特定 Agent 的消息，且该 Agent 离线，入队 session_queue
-        target = self._parse_target_agent(topic)
-        if target:
-            session = self._get_session(target)
-            if session and session.get("status") == "offline":
-                self._enqueue_session(target, topic, payload, qos or 1, is_retained=retain)
-                log.info(f"📥 {target} 离线，消息入队 session_queue")
+        if self._db and topic.count("/") >= 2:
+            try:
+                target = self._parse_target_agent(topic)
+                if target:
+                    session = self._get_session(target)
+                    if session and session.get("status") == "offline":
+                        self._enqueue_session(target, topic, payload, qos or 1, is_retained=retain)
+                        log.info(f"📥 {target} 离线，消息入队 session_queue")
+            except Exception as e:
+                log.error(f"[PERSIST] session队列失败 topic={topic}: {e}")
 
-        # 3. 发 MQTT
+        # 3. 发 MQTT（无论如何都执行）
         super().publish(topic, payload, retain, qos)
 
     # ── subscribe (增强: 恢复 retained + session_queue) ──
@@ -154,10 +161,11 @@ class BBSClientWithPersistence(BBSClient):
         self._subscribed_topics[topic] = callback
         super().subscribe(topic, callback, qos)
 
-        # 恢复 retained
-        if self._db and not self._recovered:
+        # 恢复 retained（每次subscribe都尝试，不受_recovered限制）
+        if self._db:
             self._recover_retained(topic, callback)
-            self._replay_session_queue()
+            if not self._recovered:
+                self._replay_session_queue()
 
     # ── connect/disconnect 事件 ─────────────────────────
 
@@ -376,6 +384,7 @@ class AgentBoardWithPersistence:
     def wait_task(self, task_id: str, timeout=None,
                   poll_interval: float = 0.5):
         from .bbs import TaskOutput
+        import json as _json
         if timeout is None:
             timeout = config.DEFAULT_TASK_TIMEOUT
 
@@ -389,8 +398,28 @@ class AgentBoardWithPersistence:
             if isinstance(payload, bytes):
                 payload = payload.decode()
             if payload == "[ROUND_END]":
-                pass  # output 会在 round end 之前到达
+                pass
 
+        # 1. 优先查 MariaDB retained_messages（output可能已先于subscribe到达）
+        if hasattr(self, '_client') and hasattr(self._client, '_db') and self._client._db:
+            rows = self._client._db.execute(
+                "SELECT payload FROM retained_messages WHERE topic=%s",
+                (f"board/task/{task_id}/output",)
+            )
+            if rows:
+                payload = rows[0]["payload"]
+                if isinstance(payload, (str, bytes)):
+                    try:
+                        data = _json.loads(payload if isinstance(payload, str) else payload.decode())
+                        if isinstance(data, dict):
+                            result_holder["output"] = TaskOutput.from_dict(data)
+                            self._results[task_id] = result_holder["output"]
+                            log.info(f"[{self.agent_id}] ✅ 从DB恢复结果: {task_id}")
+                            return result_holder["output"]
+                    except (_json.JSONDecodeError, TypeError):
+                        pass
+
+        # 2. MQTT subscribe（兜底接收实时消息）
         self._client.subscribe(f"board/task/{task_id}/output", on_output)
         self._client.subscribe(f"board/task/{task_id}/signal", on_signal)
 
