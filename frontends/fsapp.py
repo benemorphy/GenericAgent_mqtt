@@ -849,26 +849,26 @@ def handle_command(open_id, cmd, chat_id=None):
         _assocs = associate_random(k=2)
         _ib = _InspBoard()
         _new_ideas = 0
-        _lines = ["💭 Agent Dreaming"]
-        _lines.append(f"    dream_memories: {_cnt} 条")
+        _lines = [f"💭 Agent Dreaming (dream_memories: {_cnt} 条)"]
         if _ins:
-            _lines.append("  [insight] 记忆洞察:")
             for _i in _ins:
+                _icon = {"conflict": "⚡", "gap": "🔍", "repeat": "🔄", "opportunity": "💡"}.get(_i['type'], "💭")
                 _desc = _i['desc'][:80]
-                _lines.append(f"    [{_i['type']}] {_desc}")
+                _lines.append(f"{_icon} [{_i['type']}] {_desc}")
                 _ib.add_idea(f"[Dream] {_desc}", _desc, tags=["dream", _i['type']], source="agent")
                 _new_ideas += 1
         if _assocs:
-            _lines.append("  [associate] 跨域联想:")
             for _a in _assocs:
                 _title = f"{_a['domain_a'][:20]} × {_a['domain_b'][:20]}"
                 _desc = f"score={_a.get('score',0):.2f}: {_a.get('desc','')[:100]}"
-                _lines.append(f"    {_title} ({_a.get('score',0):.2f})")
+                _lines.append(f"🔗 跨域: {_title} ({_a.get('score',0):.2f})")
                 _ib.add_idea(f"[Dream] {_title}", _desc, tags=["dream", "associate"], source="agent")
                 _new_ideas += 1
         if not _ins and not _assocs:
             _lines.append("  暂无洞察（继续积累对话记忆）")
-        _lines.append(f"\n📌 已写入灵感板 {_new_ideas} 条")
+        if _new_ideas:
+            _lines.append(f"─" * 30)
+            _lines.append(f"📌 已写入灵感板 {_new_ideas} 条（/inspired 查看）")
         _send_cmd_response("\n".join(_lines))
     else:
         _send_cmd_response(f"未知命令: {cmd}")
