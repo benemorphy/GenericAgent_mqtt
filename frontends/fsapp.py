@@ -836,6 +836,27 @@ def handle_command(open_id, cmd, chat_id=None):
                 _send_cmd_response("用法: /todo del <id>")
         else:
             _send_cmd_response(_todo_mgr.format_list())
+    elif op == "/dream":
+        from tools.dream_engine import replay_memories, associate_random
+        import pymysql as _pm
+        _conn = _pm.connect(host='127.0.0.1', port=3306, user='root', password='mariadb', database='mqtt_bbs')
+        _cur = _conn.cursor()
+        _cur.execute("SELECT COUNT(*) FROM dream_memories")
+        _cnt = _cur.fetchone()[0]
+        _conn.close()
+        _ins = replay_memories(k=3)
+        _assocs = associate_random(k=2)
+        _lines = ["💭 Agent Dreaming"]
+        _lines.append(f"    dream_memories: {_cnt} 条")
+        if _ins:
+            _lines.append("  [insight] 记忆洞察:")
+            for _i in _ins: _lines.append(f"    [{_i['type']}] {_i['desc'][:80]}")
+        if _assocs:
+            _lines.append("  [associate] 跨域联想:")
+            for _a in _assocs: _lines.append(f"    {_a['domain_a'][:20]} x {_a['domain_b'][:20]} (score={_a.get('score',0):.2f})")
+        if not _ins and not _assocs:
+            _lines.append("  暂无洞察（继续积累对话记忆）")
+        _send_cmd_response("\n".join(_lines))
     else:
         _send_cmd_response(f"未知命令: {cmd}")
 
