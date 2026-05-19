@@ -690,7 +690,7 @@ def handle_command(open_id, cmd, chat_id=None):
     elif op == "/new":
         _send_cmd_response(reset_conversation(agent))
     elif op == "/help":
-        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/task <type> <json> - 发布MQTT任务\n/todo - 待办管理（add/done/del）\n/hitl - 审批管理（list/approve/reject）\n/help - 显示帮助")
+        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/task <type> <json> - 发布MQTT任务\n/todo - 待办管理（add/done/del）\n/hitl - 审批管理（list/approve/reject）\n/dream - Agent梦境（记忆回放+跨域联想）\n/help - 显示帮助")
     elif op == "/status":
         llm = agent.get_llm_name() if agent.llmclient else "未配置"
         _send_cmd_response(f"状态: {'🔴 运行中' if agent.is_running else '🟢 空闲'}\nLLM: [{agent.llm_no}] {llm}")
