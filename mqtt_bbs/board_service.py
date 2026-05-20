@@ -14,8 +14,14 @@ Board Service — MQTT 公告板持久化服务
 
 或:
     from mqtt_bbs.board_service import BoardService
-    svc = BoardService()
-    svc.start()
+    try:
+        svc = BoardService()
+        svc.start()
+    except KeyboardInterrupt:
+        log.info("BoardService 收到中断信号，正在关闭...")
+    except Exception as e:
+        log.error(f"BoardService 启动失败: {e}")
+        import traceback; traceback.print_exc()
 """
 
 import json, time, uuid, logging, os, sqlite3, threading
@@ -212,6 +218,7 @@ class BoardService:
         self._boards = {}          # board_key → config
         self._dbs = {}             # board_key → sqlite3 connection
         self._dbs_lock = threading.Lock()
+        self._db_io_lock = threading.RLock()  # SQLite 线程安全锁（所有DB操作共用）
         self._running = False
         self._client = BBSClient(agent_id, host=self._host, port=self._port)
         self._registry = CapabilityRegistry(self._client)
@@ -278,14 +285,16 @@ class BoardService:
         boards_path = os.path.join(self._data_dir, BOARDS_FILE)
         if os.path.exists(boards_path):
             try:
-                self._boards = json.load(open(boards_path, "r", encoding="utf-8"))
+                with open(boards_path, "r", encoding="utf-8") as f:
+                    self._boards = json.load(f)
                 log.info(f"加载 {len(self._boards)} boards 从 {boards_path}")
             except Exception as e:
                 log.warning(f"加载 boards.json 失败: {e}, 使用默认配置")
                 self._boards = dict(DEFAULT_BOARDS)
         else:
             self._boards = dict(DEFAULT_BOARDS)
-            json.dump(DEFAULT_BOARDS, open(boards_path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+            with open(boards_path, "w", encoding="utf-8") as f:
+                json.dump(DEFAULT_BOARDS, f, ensure_ascii=False, indent=2)
             log.info(f"创建默认 boards.json: {boards_path}")
 
         # 确保每个 board 的 DB 已初始化
@@ -358,12 +367,13 @@ class BoardService:
             return
 
         token = uuid.uuid4().hex[:16]
-        try:
-            db.execute("INSERT INTO users VALUES(?,?,?)", (token, name, time.time()))
-            db.commit()
-        except sqlite3.IntegrityError:
-            row = db.execute("SELECT token FROM users WHERE name=?", (name,)).fetchone()
-            token = row["token"] if row else token
+        with self._db_io_lock:
+            try:
+                db.execute("INSERT INTO users VALUES(?,?,?)", (token, name, time.time()))
+                db.commit()
+            except sqlite3.IntegrityError:
+                row = db.execute("SELECT token FROM users WHERE name=?", (name,)).fetchone()
+                token = row["token"] if row else token
 
         resp_topic = f"{TOPIC_BBS}/{board_key}/register/response/{corr_id}"
         self._client.publish(resp_topic, {"token": token, "name": name}, retain=False, qos=1)
@@ -384,20 +394,21 @@ class BoardService:
         if not db:
             return
 
-        # 验证 token
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
-        if not row:
-            log.warning(f"  ❌ 无效 token (board: {board_key})")
-            resp_topic = f"{TOPIC_BBS}/{board_key}/post/response/{corr_id}"
-            self._client.publish(resp_topic, {"error": "invalid token"}, retain=False, qos=1)
-            return
+        with self._db_io_lock:
+            # 验证 token
+            row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+            if not row:
+                log.warning(f"  ❌ 无效 token (board: {board_key})")
+                resp_topic = f"{TOPIC_BBS}/{board_key}/post/response/{corr_id}"
+                self._client.publish(resp_topic, {"error": "invalid token"}, retain=False, qos=1)
+                return
 
-        author = row["name"]
-        cur = db.execute("INSERT INTO posts(author,content,created_at) VALUES(?,?,?)",
-                         (author, content, time.time()))
-        db.commit()
-        post_id = cur.lastrowid
-        created_at = time.time()
+            author = row["name"]
+            cur = db.execute("INSERT INTO posts(author,content,created_at) VALUES(?,?,?)",
+                             (author, content, time.time()))
+            db.commit()
+            post_id = cur.lastrowid
+            created_at = time.time()
 
         # 响应给发布者
         if corr_id:
@@ -459,78 +470,57 @@ class BoardService:
 
         result = None
 
-        if query_type == "posts":
-            author = params.get("author")
-            limit = int(params.get("limit", 50))
-            offset = int(params.get("offset", 0))
-            if author:
+        with self._db_io_lock:
+            if query_type == "posts":
+                author = params.get("author")
+                limit = int(params.get("limit", 50))
+                offset = int(params.get("offset", 0))
+                if author:
+                    rows = db.execute(
+                        "SELECT id,author,content,created_at FROM posts WHERE author=? ORDER BY id DESC LIMIT ? OFFSET ?",
+                        (author, limit, offset)
+                    ).fetchall()
+                else:
+                    rows = db.execute(
+                        "SELECT id,author,content,created_at FROM posts ORDER BY id DESC LIMIT ? OFFSET ?",
+                        (limit, offset)
+                    ).fetchall()
+                result = [dict(r) for r in rows]
+
+            elif query_type == "poll":
+                since_id = int(params.get("since_id", 0))
+                limit = int(params.get("limit", 50))
                 rows = db.execute(
-                    "SELECT id,author,content,created_at FROM posts WHERE author=? ORDER BY id DESC LIMIT ? OFFSET ?",
-                    (author, limit, offset)
+                    "SELECT id,author,content,created_at FROM posts WHERE id>? ORDER BY id LIMIT ?",
+                    (since_id, limit)
                 ).fetchall()
-            else:
+                result = [dict(r) for r in rows]
+
+            elif query_type == "count":
+                author = params.get("author")
+                if author:
+                    row = db.execute("SELECT COUNT(*) as c FROM posts WHERE author=?", (author,)).fetchone()
+                else:
+                    row = db.execute("SELECT COUNT(*) as c FROM posts").fetchone()
+                result = {"total": row["c"] if row else 0}
+
+            elif query_type == "authors":
+                rows = db.execute("SELECT DISTINCT name FROM users ORDER BY name").fetchall()
+                result = [r["name"] for r in rows]
+
+            elif query_type == "since":
+                """GET /poll 等效: 返回 ID 大于 since_id 的新帖"""
+                since_id = int(params.get("since_id", 0))
+                limit = int(params.get("limit", 50))
                 rows = db.execute(
-                    "SELECT id,author,content,created_at FROM posts ORDER BY id DESC LIMIT ? OFFSET ?",
-                    (limit, offset)
+                    "SELECT id,author,content,created_at FROM posts WHERE id>? ORDER BY id LIMIT ?",
+                    (since_id, limit)
                 ).fetchall()
-            result = [dict(r) for r in rows]
-
-        elif query_type == "poll":
-            since_id = int(params.get("since_id", 0))
-            limit = int(params.get("limit", 50))
-            rows = db.execute(
-                "SELECT id,author,content,created_at FROM posts WHERE id>? ORDER BY id LIMIT ?",
-                (since_id, limit)
-            ).fetchall()
-            result = [dict(r) for r in rows]
-
-        elif query_type == "count":
-            author = params.get("author")
-            if author:
-                row = db.execute("SELECT COUNT(*) as c FROM posts WHERE author=?", (author,)).fetchone()
-            else:
-                row = db.execute("SELECT COUNT(*) as c FROM posts").fetchone()
-            result = {"total": row["c"] if row else 0}
-
-        elif query_type == "authors":
-            rows = db.execute("SELECT DISTINCT name FROM users ORDER BY name").fetchall()
-            result = [r["name"] for r in rows]
-
-        elif query_type == "since":
-            """GET /poll 等效: 返回 ID 大于 since_id 的新帖"""
-            since_id = int(params.get("since_id", 0))
-            limit = int(params.get("limit", 50))
-            rows = db.execute(
-                "SELECT id,author,content,created_at FROM posts WHERE id>? ORDER BY id LIMIT ?",
-                (since_id, limit)
-            ).fetchall()
-            result = [dict(r) for r in rows]
+                result = [dict(r) for r in rows]
 
         resp_topic = f"{TOPIC_BBS}/{board_key}/query/response/{corr_id}"
         self._client.publish(resp_topic, {"type": query_type, "data": result}, retain=False, qos=1)
         log.debug(f"  🔍 查询: {query_type} (board: {board_key}, corr: {corr_id[:8]})")
-
-    def _on_file_chunk(self, topic: str, payload):
-        """文件上传/分片上传请求
-
-        兼容两种模式:
-        - 旧版单chunk: {token, filename, data(base64), corr_id}
-        - 新版分片:   {token, session_id, seq, data(base64), corr_id}
-        """
-        board_key = self._board_from_topic(topic)
-        if not board_key or not isinstance(payload, dict):
-            return
-        token = payload.get("token", "")
-        corr_id = payload.get("corr_id", "")
-        if not token:
-            return
-
-        db = self._get_db(board_key)
-        if not db:
-            return
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
-        if not row:
-            return
 
     def _on_file_init(self, topic: str, payload):
         """文件分片上传初始化: {token, filename, total_size, chunk_count, corr_id}"""
@@ -562,7 +552,8 @@ class BoardService:
         meta = {"session_id": session_id, "filename": safe_name, "total_size": total_size,
                 "chunk_count": chunk_count, "received": 0, "board_key": board_key}
         meta_path = os.path.join(session_dir, "_meta.json")
-        json.dump(meta, open(meta_path, "w"))
+        with open(meta_path, "w") as f:
+            json.dump(meta, f)
 
         if corr_id:
             resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
@@ -610,9 +601,11 @@ class BoardService:
                 with open(chunk_path, "wb") as f:
                     f.write(chunk_bytes)
                 # 更新 meta
-                meta = json.load(open(meta_path))
+                with open(meta_path) as f:
+                    meta = json.load(f)
                 meta["received"] = meta.get("received", 0) + 1
-                json.dump(meta, open(meta_path, "w"))
+                with open(meta_path, "w") as f:
+                    json.dump(meta, f)
                 if corr_id:
                     resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
                     self._client.publish(resp_topic, {"session_id": session_id, "seq": seq}, retain=False, qos=1)
@@ -666,7 +659,8 @@ class BoardService:
         if not os.path.exists(meta_path):
             return
 
-        meta = json.load(open(meta_path))
+        with open(meta_path) as f:
+            meta = json.load(f)
         chunk_count = meta.get("chunk_count", 0)
         received = meta.get("received", 0)
 
@@ -685,7 +679,8 @@ class BoardService:
             for seq in range(chunk_count):
                 chunk_path = os.path.join(session_dir, f"{seq:04d}.chunk")
                 if os.path.exists(chunk_path):
-                    out.write(open(chunk_path, "rb").read())
+                    with open(chunk_path, "rb") as cf:
+                        out.write(cf.read())
 
         # 清理临时分片目录
         import shutil
@@ -719,7 +714,8 @@ class BoardService:
         filepath = os.path.join(board_upload_dir, file_ref)
         if os.path.exists(filepath) and os.path.isfile(filepath):
             import base64
-            file_bytes = open(filepath, "rb").read()
+            with open(filepath, "rb") as dlf:
+                file_bytes = dlf.read()
             data_b64 = base64.b64encode(file_bytes).decode()
             if corr_id:
                 resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
@@ -733,10 +729,16 @@ class BoardService:
     def _on_admin_reload(self, topic: str, payload):
         """热加载 boards.json"""
         self._load_boards()
-        # 为新 board 订阅主题
+        # 取消已删除 board 的订阅 + 为新 board 订阅
+        subscribed = getattr(self, '_subscribed_boards', set())
+        for board_key in list(subscribed):
+            if board_key not in self._boards:
+                subscribed.discard(board_key)
         for board_key in self._boards:
-            if board_key not in [self._board_from_topic(s) for s in self._client._subscriptions]:
+            if board_key not in subscribed:
                 self._subscribe_board(board_key)
+                subscribed.add(board_key)
+        self._subscribed_boards = subscribed
         log.info("  🔄 boards 热加载完成")
 
     # ── 便捷方法 ──
@@ -749,7 +751,8 @@ class BoardService:
         self._subscribe_board(board_key)
         # 持久化到 boards.json
         boards_path = os.path.join(self._data_dir, BOARDS_FILE)
-        json.dump(self._boards, open(boards_path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+        with open(boards_path, "w", encoding="utf-8") as f:
+            json.dump(self._boards, f, ensure_ascii=False, indent=2)
         log.info(f"  ➕ 新增 board: {board_key}")
 
 
@@ -761,8 +764,14 @@ def main():
         format="%(asctime)s.%(msecs)03d [%(name)s] %(levelname)s %(message)s",
         datefmt="%H:%M:%S",
     )
-    svc = BoardService()
-    svc.start()
+    try:
+        svc = BoardService()
+        svc.start()
+    except KeyboardInterrupt:
+        log.info("BoardService 收到中断信号，正在关闭...")
+    except Exception as e:
+        log.error(f"BoardService 启动失败: {e}")
+        import traceback; traceback.print_exc()
 
 
 if __name__ == "__main__":
