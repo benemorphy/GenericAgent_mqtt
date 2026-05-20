@@ -313,7 +313,7 @@ class BoardService:
 
     def _publish_event(self, board_key: str, event: str, data: dict):
         """发布 events 主题，供插件订阅"""
-        topic = f"{cfg.TOPIC_BBS}{board_key}/events/{event}"
+        topic = f"{TOPIC_BBS}/{board_key}/events/{event}"
         self._plugin_mgr.trigger_event(topic, data)
 
     # ── Board 配置加载 ──
@@ -528,13 +528,13 @@ class BoardService:
                 offset = int(params.get("offset", 0))
                 if author:
                     rows = db.execute(
-                        "SELECT id,author,content,created_at FROM posts WHERE author=? ORDER BY id DESC LIMIT ? OFFSET ?",
-                        (author, limit, offset)
+                        "SELECT id,author,content,created_at FROM bbs_posts WHERE author=%s AND board=%s ORDER BY id DESC LIMIT %s OFFSET %s",
+                        (author, board_key, limit, offset)
                     ).fetchall()
                 else:
                     rows = db.execute(
-                        "SELECT id,author,content,created_at FROM posts ORDER BY id DESC LIMIT ? OFFSET ?",
-                        (limit, offset)
+                        "SELECT id,author,content,created_at FROM bbs_posts WHERE board=%s ORDER BY id DESC LIMIT %s OFFSET %s",
+                        (board_key, limit, offset)
                     ).fetchall()
                 result = [dict(r) for r in rows]
 
@@ -542,8 +542,8 @@ class BoardService:
                 since_id = int(params.get("since_id", 0))
                 limit = int(params.get("limit", 50))
                 rows = db.execute(
-                    "SELECT id,author,content,created_at FROM posts WHERE id>? ORDER BY id LIMIT ?",
-                    (since_id, limit)
+                    "SELECT id,author,content,created_at FROM bbs_posts WHERE board=%s AND id>%s ORDER BY id LIMIT %s",
+                    (board_key, since_id, limit)
                 ).fetchall()
                 result = [dict(r) for r in rows]
 
@@ -552,11 +552,11 @@ class BoardService:
                 if author:
                     row = db.execute("SELECT COUNT(*) as c FROM bbs_posts WHERE author=%s AND board=%s", (author, board_key)).fetchone()
                 else:
-                    row = db.execute("SELECT COUNT(*) as c FROM posts").fetchone()
+                    row = db.execute("SELECT COUNT(*) as c FROM bbs_posts WHERE board=%s", (board_key,)).fetchone()
                 result = {"total": row["c"] if row else 0}
 
             elif query_type == "authors":
-                rows = db.execute("SELECT DISTINCT name FROM users ORDER BY name").fetchall()
+                rows = db.execute("SELECT DISTINCT name FROM bbs_users WHERE board=%s ORDER BY name", (board_key,)).fetchall()
                 result = [r["name"] for r in rows]
 
             elif query_type == "since":
