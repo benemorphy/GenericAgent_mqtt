@@ -34,6 +34,18 @@ QOS = {
 import os as _os
 HMAC_SECRET = _os.environ.get("MQTT_HMAC_SECRET", "mqtt_bbs_hmac_secret_2026")
 
+# MQTT 5.0 配置
+MQTT_VERSION = 5  # 5=MQTTv5, 4=MQTTv3.1.1 (paho 常量名)
+CLEAN_START = True  # clean_start=True 丢弃旧会话
+SESSION_EXPIRY_INTERVAL = 3600  # 会话过期时间(秒)，0=立即过期
+MESSAGE_EXPIRY_INTERVAL = 300   # 消息过期时间(秒)，0=永不过期
+# Topic Alias 配置
+TOPIC_ALIAS_MAXIMUM = 32  # 最大主题别名数(rmqtt 配置支持)
+
+# 心跳配置
+HEARTBEAT_INTERVAL = 30  # 心跳间隔(秒)
+HEARTBEAT_TIMEOUT = 90   # 无心跳判定离线(秒)
+
 # MariaDB 持久化配置
 DB_CONFIG = {
     "host": "127.0.0.1",

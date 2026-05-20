@@ -215,7 +215,7 @@ class BBSClientWithPersistence(BBSClient):
 
     def _recover_all_retained(self):
         """恢复所有已订阅的 retained"""
-        for pattern, cb in self._subscribed_topics.items():
+        for pattern, cb in list(self._subscribed_topics.items()):
             self._recover_retained(pattern, cb)
 
     # ── 内部: Session 离线队列 ──────────────────────────

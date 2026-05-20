@@ -237,6 +237,36 @@ start_all.bat
 | 🤔 Agent 思考 | 自主空闲时分析灵感并记录笔记 |
 | 📦 自动归档 | 活跃上限 20 条，超量自动持久化存档 |
 | 🔔 MQTT 通知 | 每次新增/更新发布到 `agent/board/inspiration/{id}/signal` |
+| 📡 BBS 后端 | 默认使用 MQTT BBS 持久化，支持 `subscribe()` 实时订阅变更 |
+
+### 🔹 CapabilityRegistry — 能力市场与动态分发
+
+内置在 BoardService 中的 Agent 能力注册表。
+
+```
+board = AgentBoard("master")
+board.query_capabilities("scan")
+board.post_task_routed("scan", {...}, target_capability="scan")
+```
+
+### 🔹 WhiteboardKV — 实时协作白板
+
+BBS 驱动的 KV 共享状态存储，CAS 乐观锁。`get/set/cas/increment/watch/list_keys`。
+
+### 🔹 BBScheduler — 定时任务调度器
+
+```bash
+python -m mqtt_bbs.scheduler
+```
+支持 daily/weekday/weekly/monthly/once/every_Nh，可选 `target_capability`。
+
+### 🔹 文件分片传输
+
+`file_init` → `file_chunk`(分片) → `file_commit`(合并)，向后兼容。
+
+### 🔹 Bot → BBS 桥接
+
+飞书 `/bbs post` + `/bbs subscribe`，QQ/其他统一命令。BBS 新帖自动推送到飞书群聊。
 
 ### 🔹 Feishu Bot 连接 SOP
 

@@ -17,6 +17,43 @@ from enum import Enum
 from .client import BBSClient, TaskMessage, TaskOutput
 from . import config
 
+
+# ── BBS 公告板通知（BoardClient BBS 协议，默认必选） ──
+
+def _bbs_notify(event: str, task_id: str, detail: dict):
+    """通过 BoardClient BBS 协议发布任务事件通知（失败不阻塞，仅告警）"""
+    try:
+        from .board_client import BoardClient
+        with BoardClient(f"bbs_notifier_{task_id[:4]}", board="agent-bbs-test") as bbs:
+            reg = bbs.register("bbs_notifier", timeout=2)
+            token = reg.get("token", "")
+            if token:
+                content = f"[多Agent·{event}] #{task_id} {json.dumps(detail, ensure_ascii=False)[:200]}"
+                bbs.post(content, token)
+    except Exception as e:
+        log.warning(f"[BBS] BoardClient 通知失败 ({event} #{task_id}): {e}")
+
+
+def _save_brainstorm(task_id: str, topic: str, agent_id: str,
+                     perspective: str, idea: str, detail: str = ""):
+    """持久化脑暴结果到 brainstorm_sessions 表（失败不阻塞，仅告警）"""
+    try:
+        import pymysql
+        from .config import DB_CONFIG
+        conn = pymysql.connect(**DB_CONFIG, connect_timeout=3)
+        with conn.cursor() as cur:
+            cur.execute(
+                """INSERT INTO brainstorm_sessions
+                   (session_id, topic, agent_id, perspective, idea, detail, status)
+                   VALUES (%s, %s, %s, %s, %s, %s, 'completed')""",
+                (task_id, topic, agent_id, perspective, idea, detail)
+            )
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        log.warning(f"[BBS] 脑暴持久化失败 (#{task_id} {agent_id}): {e}")
+
+
 log = logging.getLogger("mqtt_bbs.bbs")
 
 
@@ -128,7 +165,99 @@ class AgentBoard:
         self._client.publish(f"board/open", task_id, retain=False)
 
         log.info(f"[{self.agent_id}] 📤 发布任务: {task_id} ({task_type})")
+
+        # BBS 公告板通知（默认必选）
+        _bbs_notify("TASK_CREATED", task_id, {
+            "agent": self.agent_id, "type": task_type,
+            "input_preview": str(task_input)[:100],
+        })
+
         return task_id
+
+    # ── 能力查询 ──
+
+    def query_capabilities(self, capability: Optional[str] = None,
+                           timeout: float = 5.0) -> list[dict]:
+        """
+        查询在线 Agent 及其能力。
+
+        向 CapabilityRegistry (BoardService) 发送查询请求，
+        等待返回注册表快照。
+
+        Args:
+            capability: 按能力过滤，None=返回全部
+            timeout: 等待超时(秒)
+
+        Returns: list[dict] — 每个 dict 含 agent_id, capabilities, status, last_seen
+        """
+        corr_id = f"q_{uuid.uuid4().hex[:8]}"
+        result_holder = {"agents": None}
+
+        def on_response(topic, payload):
+            if isinstance(payload, dict) and payload.get("agents"):
+                result_holder["agents"] = payload["agents"]
+
+        resp_topic = f"board/capability/query/response/{corr_id}"
+        self._client.subscribe(resp_topic, on_response)
+
+        # 发送查询
+        self._client.publish("board/capability/query", {
+            "corr_id": corr_id,
+            "capability": capability,
+        })
+
+        # 等待响应
+        deadline = time.time() + timeout
+        while time.time() < deadline and result_holder["agents"] is None:
+            time.sleep(0.1)
+
+        self._client.unsubscribe(resp_topic)
+        agents = result_holder["agents"] or []
+        log.info(f"[{self.agent_id}] 🔍 能力查询: filter={capability} → {len(agents)} agents")
+        return agents
+
+    # ── 路由发布任务 ──
+
+    def post_task_routed(self, task_type: str, task_input: dict,
+                         target_agent_id: Optional[str] = None,
+                         target_capability: Optional[str] = None,
+                         task_id: Optional[str] = None,
+                         priority: int = 3,
+                         timeout: int = config.DEFAULT_TASK_TIMEOUT) -> str:
+        """
+        发布任务到公告板，支持能力路由和定向分发。
+
+        相比 post_task()，额外支持:
+        - target_agent_id: 直接推送到指定 Agent
+        - target_capability: 推送到有该能力的所有在线 Agent
+
+        向后兼容：同时保留 board/task/{id}/input 广播，旧 Worker 仍能接收。
+        """
+        tid = self.post_task(task_type, task_input, task_id, priority, timeout)
+
+        if target_agent_id:
+            # 定向推送到指定 Agent 的 node topic
+            payload = self._client.publish(
+                f"node/{target_agent_id}/task/input",
+                {"task_id": tid, "type": task_type, "input": task_input},
+                retain=False
+            )
+            log.info(f"[{self.agent_id}] 📬 定向分发: {tid} → {target_agent_id}")
+
+        elif target_capability:
+            # 查询有该能力的 Agent，逐个推送
+            agents = self.query_capabilities(target_capability, timeout=3)
+            online = [a for a in agents if a.get("status") == "online"]
+            for agent in online:
+                aid = agent["agent_id"]
+                self._client.publish(
+                    f"node/{aid}/task/input",
+                    {"task_id": tid, "type": task_type, "input": task_input},
+                    retain=False
+                )
+            log.info(f"[{self.agent_id}] 📬 能力路由: {tid} → {len(online)} agents ({target_capability})")
+
+        return tid
 
     # ── 等待结果 ──
 
@@ -295,6 +424,7 @@ class WorkerAgent:
         self._interventions: list[dict] = []  # 运行时注入命令队列（Point 6）
         self._suspended = False  # 暂停标志（Point 5: Broadcast）
         self._subscribed_dynamic: set[str] = set()  # 动态订阅 topic 集合
+        self._current_task_msg: Optional["TaskMessage"] = None  # 当前任务消息（用于持久化）
 
     # ── 注册任务处理器 ──
 
@@ -335,6 +465,9 @@ class WorkerAgent:
         # 订阅所有任务的 input（含待认领 + 新发布）
         # 注意：公共 Broker 上会看到所有任务，实际使用应加 ACL
         self._client.subscribe("board/task/+/input", self._on_task_input)
+
+        # 订阅定向任务（能力市场路由专用）
+        self._client.subscribe(f"node/{self.agent_id}/task/input", self._on_directed_task)
 
         # 订阅取消信号
         self._client.subscribe(f"node/{self.agent_id}/task/current", self._on_cancel)
@@ -383,6 +516,13 @@ class WorkerAgent:
         self._subscribed_dynamic.add(f"board/task/{task_id}/intervene")
 
         log.info(f"[{self.agent_id}] 🤝 认领任务: {task_id}")
+
+        # BBS 公告板通知（默认必选）
+        _bbs_notify("TASK_CLAIMED", task_id, {
+            "agent": self.agent_id,
+            "capabilities": self.capabilities,
+        })
+
         return True
 
     # ── 流式输出 ──
@@ -474,7 +614,25 @@ class WorkerAgent:
         self._client.publish(f"node/{self.agent_id}/task/current", "", retain=True)
         self._client.publish(f"node/{self.agent_id}/status", "online", retain=True)
 
+        # 脑暴结果持久化（自动检测 brainstorm 任务类型）
+        if self._current_task_msg and getattr(self._current_task_msg, 'type', '') == 'brainstorm':
+            topic = ""
+            if hasattr(self._current_task_msg, 'input') and isinstance(self._current_task_msg.input, dict):
+                topic = self._current_task_msg.input.get("topic", "")
+            persp = result.get("perspective", "") if isinstance(result, dict) else ""
+            idea = result.get("idea", "") if isinstance(result, dict) else str(result or "")
+            detail = result.get("detail", "") if isinstance(result, dict) else ""
+            _save_brainstorm(task_id, topic, self.agent_id, persp, idea, detail)
+        self._current_task_msg = None  # 清理
+
         log.info(f"[{self.agent_id}] ✅ 任务完成: {task_id} (status={status})")
+
+        # BBS 公告板通知（默认必选）
+        _bbs_notify("TASK_COMPLETED", task_id, {
+            "agent": self.agent_id, "status": status,
+            "result_preview": str(result)[:100] if result else "",
+        })
+
         self._current_task_id = None
 
     # ── 动态订阅管理（Point 4/6） ──
@@ -544,6 +702,36 @@ class WorkerAgent:
 
     # ── 内部消息处理 ──
 
+    def _on_directed_task(self, topic: str, payload):
+        """收到定向任务（能力市场路由）"""
+        if not self._task_handler:
+            return
+        if not isinstance(payload, dict):
+            return
+        task_id = payload.get("task_id", "")
+        task_type = payload.get("type", "")
+        task_input = payload.get("input", {})
+        if not task_id or not task_type:
+            return
+
+        # 能力匹配检查
+        if self.capabilities and task_type not in self.capabilities:
+            log.debug(f"[{self.agent_id}] ⏭ 跳过定向不匹配: {task_type}")
+            return
+
+        # 检查是否已被认领
+        from .persistence import TaskMessage
+        msg = TaskMessage(task_id=task_id, type=task_type, input=task_input)
+        self._current_task_msg = msg
+        self.claim_task(task_id)
+        try:
+            log.info(f"[{self.agent_id}] ▶ 执行定向任务: {task_id} ({task_type})")
+            result = self._task_handler(msg)
+            self.complete(result=result)
+        except Exception as e:
+            log.error(f"[{self.agent_id}] ❌ 定向任务异常: {e}")
+            self.complete(status="failed", error={"type": "exception", "msg": str(e)})
+
     def _on_task_input(self, topic: str, payload):
         """收到任务 input → 零信任验签 → 能力匹配 → 自动认领"""
         if not self._task_handler:
@@ -566,6 +754,7 @@ class WorkerAgent:
             return
 
         msg = TaskMessage.from_dict(payload)
+        self._current_task_msg = msg  # 记住任务消息（用于持久化）
 
         # 能力匹配检查
         if self.capabilities and msg.type not in self.capabilities:

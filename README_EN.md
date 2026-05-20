@@ -337,8 +337,37 @@ A collaboration board between user and agent for ideas, synced via MQTT BBS in r
 
 ```bash
 python -c "from inspiration_board import Board; Board().add_idea('title','details',['tag'])"
-python -c "from inspiration_board import Board; Board().list_all()"
+python -c "from inspiration_board import Board; Board().list_all()"""
 ```
+
+### 🔹 CapabilityRegistry — Agent Capability Market
+
+Built-in agent capability registry in BoardService.
+
+```
+board = AgentBoard("master")
+board.query_capabilities("scan")
+board.post_task_routed("scan", {...}, target_capability="scan")
+```
+
+### 🔹 WhiteboardKV — Real-time Collaborative Whiteboard
+
+BBS-backed KV store with CAS optimistic locking. `get/set/cas/increment/watch/list_keys`.
+
+### 🔹 BBScheduler — Cron-like Task Scheduler
+
+```bash
+python -m mqtt_bbs.scheduler
+```
+Supports daily/weekday/weekly/monthly/once/every_Nh schedule, optional `target_capability`.
+
+### 🔹 File Chunked Upload
+
+`file_init` → `file_chunk`(sequential) → `file_commit`(merge). Backward compatible.
+
+### 🔹 Bot → BBS Bridge
+
+Feishu `/bbs post` + `/bbs subscribe`, QQ/others unified `/bbs post`. BBS posts auto-pushed to subscribed Feishu chats.
 
 ## 🔹 Feishu Bot Connection SOP
 

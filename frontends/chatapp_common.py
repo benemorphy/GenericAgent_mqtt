@@ -314,6 +314,33 @@ class AgentChatMixin:
         if op == "/btw":
             answer = await asyncio.to_thread(_handle_btw_frontend, self.agent, cmd)
             return await self.send_text(chat_id, answer, **ctx)
+        if op == "/bbs":
+            # BBS 桥接：发帖到 BBS 公告板
+            parts = (cmd or "").split()
+            if len(parts) < 3 or parts[1] != "post":
+                return await self.send_text(chat_id, "用法:\n/bbs post <内容> - 发帖到 BBS\n/bbs post -b <board> <内容> - 指定 board 发帖", **ctx)
+            try:
+                import sys as _sys
+                _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                if _root not in _sys.path:
+                    _sys.path.insert(0, _root)
+                from mqtt_bbs.board_client import BoardClient as _BC
+                content = " ".join(parts[2:])
+                board = "agent-bridge"
+                if content.startswith("-b "):
+                    board_parts = content[3:].split(None, 1)
+                    if len(board_parts) >= 2:
+                        board = board_parts[0]
+                        content = board_parts[1]
+                with _BC(f"bot_bbs", board=board) as _bbs:
+                    _reg = _bbs.register("Bot桥接", timeout=5)
+                    if _reg and _reg.get("token"):
+                        _result = _bbs.post(content, _reg["token"], timeout=5)
+                        if _result and "error" not in _result:
+                            return await self.send_text(chat_id, f"✅ 已发帖到 BBS ({board}): {content[:100]}", **ctx)
+                    return await self.send_text(chat_id, "❌ BBS 发帖失败", **ctx)
+            except Exception as _e:
+                return await self.send_text(chat_id, f"❌ BBS 错误: {_e}", **ctx)
         return await self.send_text(chat_id, HELP_TEXT, **ctx)
 
     async def run_agent(self, chat_id, text, **ctx):
