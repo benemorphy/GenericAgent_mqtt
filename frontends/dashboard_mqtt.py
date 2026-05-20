@@ -38,7 +38,7 @@ class MQTTDataSource:
         self._tasks = {}
         self._agents = {}
         self._agent_logs = {}
-        self._client = BBSClient("dashboard_mqtt", host=host)
+        self._client = BBSClient(f"dashboard_mqtt_{os.getpid()}", host=host)
         self._client.connect()
         self._client.wait_connected(3)
         self._client.subscribe("board/task/+/input", self._on_task_input)
