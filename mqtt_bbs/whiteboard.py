@@ -186,6 +186,77 @@ class WhiteboardKV:
         log.warning(f"[Whiteboard] ⚠️ increment {key} 重试3次后失败")
         return None
 
+    # ── P0速赢: 基于 CAS 的分布式锁 ──
+
+    def acquire_lock(self, lock_name: str, holder_id: str,
+                     ttl: int = 30, retry_count: int = 10,
+                     retry_delay: float = 0.5) -> bool:
+        """
+        获取分布式锁（基于 WhiteboardKV CAS）。
+        
+        参数:
+            lock_name: 锁名称（如 "dag:scheduler"）
+            holder_id: 持有者标识（如 agent_id）
+            ttl: 锁自动释放时间（秒）
+            retry_count: 获取重试次数
+            retry_delay: 重试间隔（秒）
+        
+        返回:
+            True=获取成功, False=获取失败
+        """
+        lock_key = f"_lock:{lock_name}"
+        now = time.time()
+        for attempt in range(retry_count):
+            current = self.get(lock_key)
+            if current:
+                value = current.get("value", {})
+                ver = current.get("version", 0)
+                holder = value.get("holder", "")
+                # 检查锁是否过期：只有 holder 非空且未过期才算被占用
+                if holder and holder != holder_id:
+                    expires_at = value.get("expires_at", 0)
+                    if time.time() < expires_at:
+                        time.sleep(retry_delay)
+                        continue
+                    # 过期了，视为可抢占
+            # 尝试 CAS 获取锁
+            lock_data = {
+                "holder": holder_id,
+                "acquired_at": now,
+                "expires_at": now + ttl,
+            }
+            cur_ver = current.get("version", 0) if current else 0
+            if self.cas(lock_key, cur_ver, lock_data):
+                log.info(f"[Whiteboard] 🔒 获取锁: {lock_name} → {holder_id}")
+                return True
+            time.sleep(retry_delay)
+        log.warning(f"[Whiteboard] ⚠️ 获取锁失败(重试{retry_count}次): {lock_name}")
+        return False
+
+    def release_lock(self, lock_name: str, holder_id: str) -> bool:
+        """
+        释放分布式锁。
+        
+        参数:
+            lock_name: 锁名称
+            holder_id: 持有者标识（仅持有者可释放）
+        
+        返回:
+            True=释放成功, False=释放失败
+        """
+        lock_key = f"_lock:{lock_name}"
+        current = self.get(lock_key)
+        if not current:
+            return True  # 锁已不存在
+        value = current.get("value", {})
+        if value.get("holder") != holder_id:
+            log.warning(f"[Whiteboard] ⚠️ 非锁持有者无法释放: {lock_name}")
+            return False
+        # 用 set() 直接写入空 holder（不通过 CAS，避免版本号冲突）
+        self.set(lock_key, {"holder": "", "released_at": time.time()})
+        log.info(f"[Whiteboard] 🔓 释放锁: {lock_name} → {holder_id}")
+        return True
+
     # ── 订阅变更 ──
 
     def watch(self, key: str, callback: Callable[[str, Any], None]):

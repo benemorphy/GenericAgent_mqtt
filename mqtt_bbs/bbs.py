@@ -161,8 +161,8 @@ class AgentBoard:
         self._client.publish(f"board/task/{task_id}/input", payload, retain=True)
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.PENDING.value, retain=True)
 
-        # 也发布到 open 索引（待认领列表）
-        self._client.publish(f"board/open", task_id, retain=False)
+        # 也发布到 open 索引（待认领列表）— P0速赢: retain=True 确保新 Worker 重启后能拉取
+        self._client.publish(f"board/open", task_id, retain=True)
 
         log.info(f"[{self.agent_id}] 📤 发布任务: {task_id} ({task_type})")
 
@@ -604,6 +604,13 @@ class WorkerAgent:
         # 更新状态
         task_status = TaskStatus.DONE if status == "completed" else TaskStatus.FAILED
         self._client.publish(f"board/task/{task_id}/status", task_status.value, retain=True)
+
+        # ── P0速赢: 清理 task retain 堆积 ──
+        # 任务完成后清除 retain，避免 broker 堆积过期 retained 消息
+        for _clean_topic in [f"board/task/{task_id}/output",
+                              f"board/task/{task_id}/signal",
+                              f"board/task/{task_id}/status"]:
+            self._client.publish(_clean_topic, "", retain=True)
 
         # 取消动态订阅（任务信号 + intervene）
         self._unsubscribe_dynamic()
