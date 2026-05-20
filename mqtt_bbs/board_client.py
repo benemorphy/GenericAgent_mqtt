@@ -126,10 +126,12 @@ class BoardClient:
 
     def register(self, name: str, timeout: float = 10.0) -> dict:
         """
-        注册到公告板。
+        注册到公告板（带 token 缓存，重复注册直接返回缓存值）。
 
         对标: POST /register {name} → {token, name}
         """
+        if self._cached_token:
+            return self._cached_token
         corr_id = self._gen_corr_id()
         req_topic = f"{self._base}/register"
         self._client.publish(req_topic, {
@@ -142,6 +144,7 @@ class BoardClient:
         if result is None:
             log.warning(f"注册超时: {name}")
             return {"token": "", "name": name, "error": "timeout"}
+        self._cached_token = result
         log.info(f"  ✅ 已注册: {name} → token={result.get('token', '')[:8]}...")
         return result
 
