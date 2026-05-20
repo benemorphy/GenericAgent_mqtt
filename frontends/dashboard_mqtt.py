@@ -52,7 +52,9 @@ class MQTTDataSource:
         self._client.subscribe("board/task/+/signal", self._on_task_signal)
 
                 # 断线自动重连
-        def _on_ds_disconnect(client, userdata, rc):
+        def _on_ds_disconnect(*args):
+            """paho v1/v2 兼容重连"""
+            rc = args[2] if len(args) >= 3 else 1
             if rc != 0:
                 print(f"[dashboard_mqtt] ⚠️ 断开 (rc={rc})，5s后重连...")
                 import time as _t
