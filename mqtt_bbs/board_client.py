@@ -78,6 +78,9 @@ class BoardClient:
         # 订阅新帖广播
         self._client.subscribe(f"{self._base}/new_post", self._on_new_post)
 
+        # 启动心跳（每30s发布 node/{agent_id}/heartbeat）
+        self._client.start_heartbeat()
+
         return self
 
     def disconnect(self):
