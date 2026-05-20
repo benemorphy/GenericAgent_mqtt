@@ -14,7 +14,7 @@ if %errorlevel% equ 0 (
     echo [OK] rmqtt broker 已在运行
 ) else (
     echo [..] 启动 rmqtt broker...
-    start "rmqttd" /B /MIN "D:\tools\rmqtt\rmqtt-0.20.0-x86_64-pc-windows\bin\rmqttd.exe" -f "D:\tools\rmqtt\rmqtt-0.20.0-x86_64-pc-windows\etc\rmqtt.toml"
+    start "rmqttd" /B /MIN /D "D:\tools\rmqtt-0.20.0\rmqtt-0.20.0-x86_64-pc-windows" "D:\tools\rmqtt-0.20.0\rmqtt-0.20.0-x86_64-pc-windows\bin\rmqttd.exe" -f "D:\tools\rmqtt-0.20.0\rmqtt-0.20.0-x86_64-pc-windows\etc\rmqtt.toml"
     timeout /t 3 /nobreak >nul
     echo [OK] rmqtt broker 已启动
 )
