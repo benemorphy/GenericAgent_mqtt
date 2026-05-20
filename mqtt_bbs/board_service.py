@@ -537,6 +537,11 @@ class BoardService:
                         (board_key, limit, offset)
                     ).fetchall()
                 result = [dict(r) for r in rows]
+                # MariaDB datetime -> ISO str
+                for _r in result:
+                    for _k, _v in list(_r.items()):
+                        if hasattr(_v, 'isoformat'):
+                            _r[_k] = _v.isoformat()
 
             elif query_type == "poll":
                 since_id = int(params.get("since_id", 0))
@@ -546,6 +551,10 @@ class BoardService:
                     (board_key, since_id, limit)
                 ).fetchall()
                 result = [dict(r) for r in rows]
+                for _r in result:
+                    for _k, _v in list(_r.items()):
+                        if hasattr(_v, 'isoformat'):
+                            _r[_k] = _v.isoformat()
 
             elif query_type == "count":
                 author = params.get("author")
@@ -564,10 +573,15 @@ class BoardService:
                 since_id = int(params.get("since_id", 0))
                 limit = int(params.get("limit", 50))
                 rows = db.execute(
-                    "SELECT id,author,content,created_at FROM posts WHERE id>? ORDER BY id LIMIT ?",
-                    (since_id, limit)
+                    "SELECT id,author,content,created_at FROM bbs_posts WHERE board=%s AND id>%s ORDER BY id LIMIT %s",
+                    (board_key, since_id, limit)
                 ).fetchall()
                 result = [dict(r) for r in rows]
+                # MariaDB datetime -> ISO str
+                for _r in result:
+                    for _k, _v in list(_r.items()):
+                        if hasattr(_v, 'isoformat'):
+                            _r[_k] = _v.isoformat()
 
         resp_topic = f"{TOPIC_BBS}/{board_key}/query/response/{corr_id}"
         self._client.publish(resp_topic, {"type": query_type, "data": result}, retain=False, qos=1)
