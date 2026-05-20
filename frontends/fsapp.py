@@ -272,7 +272,6 @@ def _init_bbs_push():
         from mqtt_bbs.board_client import BoardClient as _BC
         _bbs_push_client = _BC("feishu_bbs_bridge", board="agent-bbs-test")
         _bbs_push_client.connect()
-        _bbs_push_client.wait_connected(3)
         _bbs_push_client.subscribe("bbs/+/post", _on_bbs_new_post)
         print("[BBS桥接] ✅ BBS→飞书 推送已启动")
     except Exception as e:

@@ -83,6 +83,10 @@ class BoardClient:
     def disconnect(self):
         self._client.disconnect()
 
+    def subscribe(self, topic: str, callback: Callable):
+        """订阅任意 MQTT 主题（委托给内部客户端）"""
+        self._client.subscribe(topic, callback)
+
     @property
     def is_connected(self) -> bool:
         return self._client.is_connected
