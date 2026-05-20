@@ -30,6 +30,7 @@ from pathlib import Path
 
 from .client import BBSClient
 from . import config as cfg
+from .plugin_manager import PluginManager
 
 log = logging.getLogger("mqtt_bbs.board_service")
 
@@ -223,6 +224,7 @@ class BoardService:
         self._client = BBSClient(agent_id, host=self._host, port=self._port)
         self._registry = CapabilityRegistry(self._client)
         self._webhooks: dict[str, list[str]] = {}  # board_key → [webhook_urls]
+        self._plugin_mgr = PluginManager(self._client)
 
     # ── 公开 API ──
 
@@ -259,6 +261,11 @@ class BoardService:
 
         log.info(f"[{self.agent_id}] 🚀 BoardService 启动 ({len(self._boards)} boards)")
 
+        # 启动插件系统
+        loaded = self._plugin_mgr.discover_and_load()
+        if loaded:
+            log.info(f"[Plugin] 已加载 {len(loaded)} 个插件: {', '.join(loaded)}")
+
         try:
             while self._running:
                 time.sleep(1)
@@ -268,6 +275,8 @@ class BoardService:
     def stop(self):
         """停止服务"""
         self._running = False
+        for name in list(self._plugin_mgr.list_plugins()):
+            self._plugin_mgr.unload(name["name"])
         self._registry.stop()
         for db in self._dbs.values():
             try:
@@ -277,6 +286,13 @@ class BoardService:
         self._dbs.clear()
         self._client.disconnect()
         log.info(f"[{self.agent_id}] 🛑 BoardService 停止")
+
+    # ── 事件发布（供插件系统使用）──
+
+    def _publish_event(self, board_key: str, event: str, data: dict):
+        """发布 events 主题，供插件订阅"""
+        topic = f"{cfg.TOPIC_BBS}{board_key}/events/{event}"
+        self._plugin_mgr.trigger_event(topic, data)
 
     # ── Board 配置加载 ──
 
@@ -377,6 +393,7 @@ class BoardService:
 
         resp_topic = f"{TOPIC_BBS}/{board_key}/register/response/{corr_id}"
         self._client.publish(resp_topic, {"token": token, "name": name}, retain=False, qos=1)
+        self._publish_event(board_key, "register", {"agent_id": name, "token": token, "board": board_key})
         log.info(f"  ✅ 注册: {name} → token={token[:8]}... (board: {board_key})")
 
     def _on_post(self, topic: str, payload):
@@ -409,6 +426,7 @@ class BoardService:
             db.commit()
             post_id = cur.lastrowid
             created_at = time.time()
+            self._publish_event(board_key, "post", {"post_id": post_id, "author": author, "board": board_key})
 
         # 响应给发布者
         if corr_id:
