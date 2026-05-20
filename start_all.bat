@@ -60,6 +60,12 @@ start "mqtt-launcher" /B /MIN ".venv\Scripts\python.exe" frontends/launcher_mqtt
 timeout /t 5 /nobreak >nul
 echo [OK] 5 个 Worker Agent 已启动
 
+:: ── 6. BoardService（MQTT BBS 持久化服务） ──
+echo [..] 启动 BoardService（MQTT BBS 公告板持久化）...
+start "board-service" /B /MIN ".venv\Scripts\python.exe" -m mqtt_bbs.board_service
+timeout /t 3 /nobreak >nul
+echo [OK] BoardService 已启动
+
 echo.
 echo ========================================
 echo  ✅ 自主运行环境启动完成！
@@ -67,5 +73,6 @@ echo.
 echo  Web UI:         http://localhost:%WEBUI_PORT%
 echo  MQTT Dashboard: http://localhost:%DASHBOARD_PORT%
 echo  Broker:         127.0.0.1:1883
+echo  BBS Service:    已启用
 echo ========================================
 echo.

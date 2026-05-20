@@ -42,8 +42,40 @@ class MQTTDataSource:
         self._client.subscribe("board/task/+/stdout", self._on_task_stdout)
         self._client.subscribe("board/task/+/stderr", self._on_task_stderr)
         self._client.subscribe("node/+/status", self._on_agent_status)
+        self._client.subscribe("node/+/heartbeat", self._on_agent_heartbeat)
         self._client.subscribe("node/+/capability", self._on_agent_cap)
         self._client.subscribe("board/task/+/signal", self._on_task_signal)
+
+        # 离线检测定时器
+        self._hb_check_interval = 5  # 每5秒检查一次
+        self._check_hb_timer = threading.Thread(target=self._hb_check_loop, daemon=True)
+        self._check_hb_timer.start()
+
+    def _on_agent_heartbeat(self, topic, payload):
+        """处理心跳消息，更新集群拓扑"""
+        parts = topic.split("/")
+        agent_id = parts[1] if len(parts) >= 2 else "?"
+        if not isinstance(payload, dict):
+            return
+        with self._lock:
+            agent = self._agents.setdefault(agent_id, {})
+            agent["agent_id"] = agent_id
+            agent["status"] = payload.get("status", "online")
+            agent["last_heartbeat"] = time.time()
+            if "capabilities" in payload:
+                agent["capabilities"] = payload["capabilities"]
+            agent["updated_at"] = time.time()
+
+    def _hb_check_loop(self):
+        """定期检查心跳超时，标记离线 Agent"""
+        while True:
+            time.sleep(self._hb_check_interval)
+            now = time.time()
+            with self._lock:
+                for agent_id, agent in self._agents.items():
+                    last = agent.get("last_heartbeat", 0)
+                    if last and (now - last) > config.HEARTBEAT_TIMEOUT:
+                        agent["status"] = "offline"
 
     def _on_task_input(self, topic, payload):
         parts = topic.split("/")
@@ -146,6 +178,15 @@ class MQTTDataSource:
     def cancel_task(self, task_id):
         self._client.publish(f"board/task/{task_id}/signal", "[CANCEL]", retain=True, qos=2)
 
+    def inject_agent(self, agent_id: str, command: str):
+        """向指定 Agent 注入指令"""
+        msg = {"command": command, "injected_at": datetime.now().isoformat()}
+        self._client.publish(f"node/{agent_id}/inject", msg, retain=False, qos=1)
+
+    def broadcast_signal(self, signal: str):
+        """全局广播信号到所有 Agent"""
+        self._client.publish("board/global/signal", signal, retain=True, qos=2)
+
     def publish_task(self, task_type: str, task_input: dict):
         """发布一个任务到 AgentBoard"""
         import uuid
@@ -191,6 +232,18 @@ if __name__ == "__main__":
                 submitted = st.form_submit_button("🚀 发布", use_container_width=True)
             with col2:
                 st.caption("任务将发送到 AgentBoard")
+        st.divider()
+        st.header("📢 全局广播")
+        with st.form("broadcast"):
+            signal = st.text_input("信号", value="SUSPEND", placeholder="SUSPEND/RESUME/SHUTDOWN")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.form_submit_button("📡 发送", use_container_width=True):
+                    if "ds" in st.session_state:
+                        st.session_state.ds.broadcast_signal(signal.strip())
+                        st.toast(f"✅ 已广播: {signal}")
+            with col2:
+                st.caption("所有 Agent 将收到此信号")
 
     # 初始化数据源
     if "ds" not in st.session_state:
@@ -261,6 +314,14 @@ if __name__ == "__main__":
                     if online_for:
                         st.caption(f"在线时长: {online_for}")
                     st.caption(f"能力: {caps_str}")
+                    with st.expander("📤 注入指令", expanded=False):
+                        cmd = st.text_input("指令", key=f"inject_input_{agent_id}", label_visibility="collapsed", placeholder="输入指令...")
+                        if st.button("发送", key=f"inject_btn_{agent_id}", use_container_width=True):
+                            if cmd.strip():
+                                ds.inject_agent(agent_id, cmd.strip())
+                                st.toast(f"✅ 已向 {agent_id} 发送指令: {cmd.strip()}")
+                            else:
+                                st.warning("请输入指令")
 
     # ── 任务列表 ──
     st.header("📋 任务列表")
