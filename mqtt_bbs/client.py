@@ -315,16 +315,20 @@ class BBSClient:
     # ── 回调处理 ──
 
     def _on_connect(self, client, userdata, flags, rc, properties=None):
-        if self.mqtt_version == 5:
-            # MQTT 5.0: rc 是 ReasonCode 对象
-            self._connected = (rc.value == 0)
-        else:
-            self._connected = (rc == 0)
-        if self._connected:
-            self.publish(f"node/{self.agent_id}/status", "online", retain=True)
-            log.info(f"[{self.agent_id}] ✅ 已连接 (rc={rc})")
-        else:
-            log.warning(f"[{self.agent_id}] ❌ 连接失败 (rc={rc})")
+        try:
+            if self.mqtt_version == 5:
+                # MQTT 5.0: rc 是 ReasonCode 对象
+                self._connected = (rc.value == 0)
+            else:
+                self._connected = (rc == 0)
+            if self._connected:
+                self.publish(f"node/{self.agent_id}/status", "online", retain=True)
+                log.info(f"[{self.agent_id}] 已连接 (rc={rc})")
+            else:
+                log.warning(f"[{self.agent_id}] 连接失败 (rc={rc})")
+        except Exception as e:
+            log.error(f"[{self.agent_id}] _on_connect 异常: {e}")
+            import traceback; traceback.print_exc()
 
     def _on_disconnect(self, client, userdata, rc, properties=None, reasonCodeProperties=None):
         self._connected = False

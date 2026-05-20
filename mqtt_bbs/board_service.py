@@ -229,7 +229,7 @@ class BoardService:
     持久化到 SQLite，返回结果到响应主题。
     """
 
-    def __init__(self, agent_id: str = "board-keeper",
+    def __init__(self, agent_id: str = "bbs-keeper",
                  host: str = None, port: int = None,
                  data_dir: str = None):
         self.agent_id = agent_id
@@ -259,33 +259,39 @@ class BoardService:
             log.error("无法连接到 MQTT Broker")
             return
 
-        # 加载 board 配置
-        self._load_boards()
+        try:
+            # 加载 board 配置
+            self._load_boards()
 
-        # 订阅所有 board 的管理主题
-        for board_key in self._boards:
-            self._subscribe_board(board_key)
+            # 订阅所有 board 的管理主题
+            for board_key in self._boards:
+                self._subscribe_board(board_key)
 
-        # 同时也监听 boards.json 变更（热加载）
-        self._client.subscribe(f"{TOPIC_BBS}/+/register", self._on_register)
-        self._client.subscribe(f"{TOPIC_BBS}/+/post", self._on_post)
-        self._client.subscribe(f"{TOPIC_BBS}/+/query", self._on_query)
-        self._client.subscribe(f"{TOPIC_BBS}/+/file_init", self._on_file_init)
-        self._client.subscribe(f"{TOPIC_BBS}/+/file_chunk", self._on_file_chunk)
-        self._client.subscribe(f"{TOPIC_BBS}/+/file_commit", self._on_file_commit)
-        self._client.subscribe(f"{TOPIC_BBS}/+/file_download", self._on_file_download)
-        self._client.subscribe(f"{TOPIC_BBS}/+/admin/reload", self._on_admin_reload)
-        self._client.subscribe(f"{TOPIC_BBS}/+/webhook", self._on_webhook_config)
+            # 同时也监听 boards.json 变更（热加载）
+            self._client.subscribe(f"{TOPIC_BBS}/+/register", self._on_register)
+            self._client.subscribe(f"{TOPIC_BBS}/+/post", self._on_post)
+            self._client.subscribe(f"{TOPIC_BBS}/+/query", self._on_query)
+            self._client.subscribe(f"{TOPIC_BBS}/+/file_init", self._on_file_init)
+            self._client.subscribe(f"{TOPIC_BBS}/+/file_chunk", self._on_file_chunk)
+            self._client.subscribe(f"{TOPIC_BBS}/+/file_commit", self._on_file_commit)
+            self._client.subscribe(f"{TOPIC_BBS}/+/file_download", self._on_file_download)
+            self._client.subscribe(f"{TOPIC_BBS}/+/admin/reload", self._on_admin_reload)
+            self._client.subscribe(f"{TOPIC_BBS}/+/webhook", self._on_webhook_config)
 
-        # 启动能力注册表
-        self._registry.start()
+            # 启动能力注册表
+            self._registry.start()
 
-        log.info(f"[{self.agent_id}] 🚀 BoardService 启动 ({len(self._boards)} boards)")
+            log.info(f"[{self.agent_id}] BoardService 启动 ({len(self._boards)} boards)")
 
-        # 启动插件系统
-        loaded = self._plugin_mgr.discover_and_load()
-        if loaded:
-            log.info(f"[Plugin] 已加载 {len(loaded)} 个插件: {', '.join(loaded)}")
+            # 启动插件系统
+            loaded = self._plugin_mgr.discover_and_load()
+            if loaded:
+                log.info(f"[Plugin] 已加载 {len(loaded)} 个插件: {', '.join(loaded)}")
+        except Exception as e:
+            log.error(f"BoardService 初始化失败: {e}")
+            import traceback; traceback.print_exc()
+            self.stop()
+            return
 
         try:
             while self._running:
