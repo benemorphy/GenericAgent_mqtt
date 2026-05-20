@@ -333,7 +333,7 @@ class BoardService:
         self._client.subscribe(f"{base}/file_download", self._on_file_download)
         log.debug(f"  已订阅 board: {board_key}")
 
-    # ── 数据库管理 ──
+# ── MariaDB 兼容包装 ──
 
 class _MariaDBWrapper:
     """封装 pymysql.Connection，提供 SQLite 兼容的 .execute() 快捷方式"""
@@ -353,6 +353,8 @@ class _MariaDBWrapper:
     def close(self):
         self._conn.close()
 
+
+    # ── 数据库管理 ──
 
     def _ensure_db(self, board_key: str, bconf: dict):
         """确保 board 的 MariaDB 表存在"""
