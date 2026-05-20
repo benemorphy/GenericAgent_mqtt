@@ -74,8 +74,14 @@ class Board:
 
     def _connect_bbs(self):
         """连接 BBS 并注册，返回 BoardClient 实例"""
-        if self._bbs is not None and self._bbs.is_connected:
-            return self._bbs
+        if self._bbs is not None:
+            if self._bbs.is_connected:
+                return self._bbs
+            # 断开旧客户端，避免 LWT 遗愿消息误发 offline
+            try:
+                self._bbs.disconnect()
+            except Exception:
+                pass
         from mqtt_bbs.board_client import BoardClient
         self._bbs = BoardClient("inspiration_board", board=self.bbs_board)
         self._bbs.connect()
