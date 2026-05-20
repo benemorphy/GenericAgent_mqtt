@@ -18,6 +18,11 @@ mqtt_bbs Dashboard — MQTT 实时监控面板 (Streamlit)
 import json, logging, os, sys, threading, time
 from datetime import datetime
 
+# ── 路径设置（确保 from mqtt_bbs import ... 可找到包）──
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
+
 import streamlit as st
 
 # ── 数据源层 ──────────────────────────────────────────

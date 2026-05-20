@@ -18,5 +18,8 @@ MQTT Agent BBS — 智能体协作消息总线 (MariaDB持久化模式)
 """
 
 from .persistence import BBSClientWithPersistence, MariaDBConn, AgentBoardWithPersistence, WorkerAgentWithPersistence
+from .board_client import BoardClient
+from .bbs import AgentBoard, WorkerAgent
+from .whiteboard import WhiteboardKV
 
 __version__ = "0.2.0"
