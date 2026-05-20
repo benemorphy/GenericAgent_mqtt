@@ -215,6 +215,7 @@ class MQTTDataSource:
 # 仅在 streamlit run 模式下执行
 if __name__ == "__main__":
     import streamlit as st
+    from streamlit.runtime.scriptrunner import add_script_run_ctx, get_script_run_ctx
 
     st.set_page_config(page_title="MQTT Agent Dashboard", page_icon="🤖", layout="wide")
 
@@ -374,6 +375,9 @@ if __name__ == "__main__":
                         ds.cancel_task(task_id)
                         st.toast(f"已发送取消信号: {task_id}")
 
-    # 自动刷新
-    time.sleep(0.1)
+    # 自动刷新（使用空元素 + st.rerun 防冲突）
+    _placeholder = st.empty()
+    with _placeholder:
+        st.caption(f"🔄 每 {refresh_rate}s 自动刷新 | 最后更新: {time.strftime('%H:%M:%S')}")
+    time.sleep(refresh_rate)
     st.rerun()
