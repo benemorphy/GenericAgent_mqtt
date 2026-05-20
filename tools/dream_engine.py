@@ -199,6 +199,109 @@ def associate_random(k=2):
     return combos
 
 
+# ── 灵感#8: 可行性评分 (核心×dream_engineer) ──────────
+_FEASIBILITY_WEIGHTS = {
+    "has_existing_tool": 0.3,     # 已有工具可直接用
+    "has_reference": 0.25,        # 有类似实现参考
+    "domain_familiarity": 0.2,    # 领域熟悉度
+    "resource_available": 0.15,   # 所需资源可用
+    "scope_small": 0.1,           # 范围小/可快速验证
+}
+
+
+def score_feasibility(domain_a: str, domain_b: str, detail: str = "") -> dict:
+    """
+    对跨域联想进行可行性评分。
+
+    返回:
+        {"score": 0.0~1.0, "factors": {...}, "difficulty": "easy"/"medium"/"hard"}
+    """
+    score = 0.0
+    factors = {}
+
+    # 1. 已有工具可用的加分
+    tools_dir = Path(__file__).resolve().parent
+    existing_tools = [f.stem for f in tools_dir.glob("*.py")]
+    domain_keywords = (domain_a + " " + domain_b).lower().split()
+    overlap = sum(1 for kw in domain_keywords if any(kw in t for t in existing_tools))
+    factors["has_existing_tool"] = min(overlap * 0.15, 0.3)
+    score += factors["has_existing_tool"]
+
+    # 2. 领域熟悉度 (基于内存中的SOP数量)
+    memory_dir = tools_dir.parent / "memory"
+    sop_files = list(memory_dir.glob("*sop*")) + list(memory_dir.glob("*SOP*"))
+    sop_names = " ".join(f.stem.lower() for f in sop_files)
+    fam_score = sum(0.05 for kw in domain_keywords if kw in sop_names)
+    factors["domain_familiarity"] = min(fam_score, 0.2)
+    score += factors["domain_familiarity"]
+
+    # 3. 范围评估 (detail中有具体描述则加分)
+    has_detail = len(detail.strip()) > 10
+    factors["scope_small"] = 0.1 if has_detail else 0.0
+    score += factors["scope_small"]
+
+    # 4. 资源可用性 (不依赖外部API的加分)
+    needs_external = any(kw in detail.lower() for kw in ["api", "cloud", "付费", "external"])
+    factors["resource_available"] = 0.0 if needs_external else 0.15
+    score += factors["resource_available"]
+
+    # 综合评估
+    score = min(round(score, 2), 1.0)
+    if score >= 0.6:
+        difficulty = "easy"
+    elif score >= 0.3:
+        difficulty = "medium"
+    else:
+        difficulty = "hard"
+
+    return {
+        "score": score,
+        "factors": factors,
+        "difficulty": difficulty,
+    }
+
+
+def morph_to_idea(combo: dict, board=None) -> int:
+    """
+    Morph: 将跨域联想变形为灵感板条目，附带可行性评分。
+
+    灵感#8 实现: dream_engine输出结构增强，加入执行难度/预期收益评估
+    """
+    try:
+        if board is None:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+            from inspiration_board import Board
+            board = Board(bbs_backend=False)
+    except ImportError:
+        return -1
+
+    domain_a = combo.get("domain_a", "未知")
+    domain_b = combo.get("domain_b", "未知")
+    detail = combo.get("detail", "")
+
+    # 可行性评分
+    feas = score_feasibility(domain_a, domain_b, detail)
+
+    title = f"[Dream] {domain_a} × {domain_b}"
+    detail_str = f"score={feas['score']:.2f} ({feas['difficulty']}): {detail}" if detail else f"score={feas['score']:.2f} ({feas['difficulty']})"
+
+    idea_id = board.add_idea(
+        title=title,
+        detail=detail_str,
+        tags=["dream", "associate"],
+        source="agent"
+    )
+
+    if idea_id > 0:
+        # 自动思考评分
+        board.think(idea_id,
+                    f"可行性评分={feas['score']}，难度={feas['difficulty']}，"
+                    f"因子={feas['factors']}")
+
+    print(f"  🧠 Morph: #{idea_id} {title} ({detail_str[:50]})")
+    return idea_id
+
+
 if __name__ == "__main__":
     _ensure_table()
     print("✅ dream_memories 表就绪")

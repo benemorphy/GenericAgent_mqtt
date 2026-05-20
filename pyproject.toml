@@ -37,9 +37,8 @@ all-frontends = [
 requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-py-modules = []
-packages = ["ga_cli"]
+[tool.setuptools.packages.find]
+include = ["ga_cli*", "mqtt_bbs*"]
 
 [project.scripts]
 ga = "ga_cli.cli:main"

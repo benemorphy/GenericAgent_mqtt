@@ -59,3 +59,38 @@ print(get_todo())       # 查看待办
 
 ## 等待用户审查
 - 用户归来后审查报告，决定批准、修改或拒绝方案
+
+---
+<!-- 以下为 Dream 灵感实现产物 -->
+
+## 扩展 A: 任务队列与上下文传递 (核心架构×auto)
+*灵感#5 实现：核心架构更好地支持 auto 自主运行*
+
+### 任务队列机制
+- **粒度控制**: auto 任务分三级粒度——宏观任务(天级)、子任务(小时级)、原子操作(分钟级)
+- **中断恢复**: 每个原子操作完成后 checkpoint，中断后从最后 checkpoint 恢复
+- **优先级**: dream→medium, user→high, research→low
+
+### 跨 Session 上下文传递
+- 使用 `memory/agent_context.json` 作为跨 session 上下文存储
+- 每次 auto 任务开始前加载上下文，结束时保存增量
+- 上下文内容包括：当前活跃TODO、已探测的环境状态、历史决策摘要
+
+## 扩展 B: 执行轨迹录制 (核心架构×auto)
+*灵感#7 实现：监控/反馈循环*
+
+### 轨迹录制 (Trajectory Recording)
+- 每个 auto 任务自动录制执行轨迹到 `./autonomous_reports/trajectories/`
+- 轨迹格式：
+  ```json
+  {
+    "task_id": "task_001",
+    "steps": [
+      {"step": 1, "action": "探测...", "result": "发现...", "time": "...", "status": "ok"},
+      {"step": 2, "action": "执行...", "result": "失败...", "time": "...", "status": "fail"}
+    ],
+    "summary": "共5步，3成功2失败",
+    "learning": "xx问题应使用yy方案"
+  }
+  ```
+- 复盘时加载轨迹，自动提取可复用的经验模式
