@@ -54,13 +54,16 @@ class MQTTDataSource:
                 # 断线自动重连
         def _on_ds_disconnect(*args):
             """paho v1/v2 兼容重连"""
-            rc = args[2] if len(args) >= 3 else 1
-            if rc != 0:
-                print(f"[dashboard_mqtt] ⚠️ 断开 (rc={rc})，5s后重连...")
+            _cli = args[0]  # 始终是 client 实例
+            # v1: (client, userdata, rc) → rc=args[2]
+            # v2: (client, userdata, flags, rc, props) → rc=args[3]
+            _rc = args[3] if len(args) >= 4 else (args[2] if len(args) >= 3 else 1)
+            if _rc != 0:
+                print(f"[dashboard_mqtt] ⚠️ 断开 (rc={_rc})，5s后重连...")
                 import time as _t
                 _t.sleep(5)
                 try:
-                    client.reconnect()
+                    _cli.reconnect()
                     print(f"[dashboard_mqtt] 🔄 重连成功")
                 except Exception as _e:
                     print(f"[dashboard_mqtt] ❌ 重连失败: {_e}")
