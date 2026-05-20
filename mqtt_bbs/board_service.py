@@ -354,29 +354,36 @@ class BoardService:
     # ── 数据库管理 ──
 
     def _ensure_db(self, board_key: str, bconf: dict):
-        """确保 board 的 SQLite 数据库存在并初始化表结构"""
-        db_path = os.path.join(self._data_dir, bconf.get("db", f"{board_key}.db"))
+        """确保 board 的 MariaDB 表存在"""
+        if self._mariadb is None:
+            self._mariadb = pymysql.connect(
+                host=cfg.DB_CONFIG["host"], port=cfg.DB_CONFIG["port"],
+                user=cfg.DB_CONFIG["user"], password=cfg.DB_CONFIG["password"],
+                database=cfg.DB_CONFIG["database"], charset=cfg.DB_CONFIG["charset"],
+                cursorclass=pymysql.cursors.DictCursor
+            )
         with self._dbs_lock:
             if board_key in self._dbs:
                 return
-            conn = sqlite3.connect(db_path, check_same_thread=False)
-            conn.row_factory = sqlite3.Row
             cur = self._mariadb.cursor()
-            cur.execute("""CREATE TABLE IF NOT EXISTS users (
-                token TEXT PRIMARY KEY,
-                name TEXT UNIQUE NOT NULL,
-                created_at REAL NOT NULL
+            cur.execute("""CREATE TABLE IF NOT EXISTS bbs_users (
+                token VARCHAR(32) PRIMARY KEY,
+                name VARCHAR(128) NOT NULL UNIQUE,
+                board VARCHAR(128) NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )""")
-            cur = self._mariadb.cursor()
-            cur.execute("""CREATE TABLE IF NOT EXISTS posts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                author TEXT NOT NULL,
-                content TEXT NOT NULL,
-                created_at REAL NOT NULL
+            cur.execute("""CREATE TABLE IF NOT EXISTS bbs_posts (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                board VARCHAR(128) NOT NULL,
+                author VARCHAR(64) NOT NULL,
+                content LONGTEXT,
+                created_at DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3),
+                KEY idx_board (board),
+                KEY idx_author (author)
             )""")
-            conn.commit()
-            self._dbs[board_key] = conn
-            log.info(f"  DB 就绪: {db_path} (board: {board_key})")
+            self._mariadb.commit()
+            self._dbs.add(board_key)
+            log.info(f"  MariaDB 就绪: board={board_key}")
 
     def _get_db(self, board_key: str):
         """获取 MariaDB 连接（返回 _MariaDBWrapper 兼容 SQLite 接口）"""
