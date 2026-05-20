@@ -202,6 +202,25 @@ class CapabilityRegistry:
                 log.warning(f"  ⏰ 心跳超时标记离线: {expired}")
 
 
+class _MariaDBWrapper:
+    """封装 pymysql.Connection，提供 SQLite 兼容的 .execute() 快捷方式"""
+    def __init__(self, conn):
+        self._conn = conn
+    def execute(self, sql, params=None):
+        cur = self._conn.cursor()
+        if params is None:
+            cur.execute(sql)
+        else:
+            cur.execute(sql, params)
+        return cur
+    def commit(self):
+        self._conn.commit()
+    def cursor(self):
+        return self._conn.cursor()
+    def close(self):
+        self._conn.close()
+
+
 class BoardService:
     """
     MQTT 公告板服务。
@@ -218,9 +237,9 @@ class BoardService:
         self._port = port or cfg.BROKER_PORT
         self._data_dir = data_dir or os.getcwd()
         self._boards = {}          # board_key → config
-        self._dbs = set()            # board_key 集合
+        self._dbs = set()           # board_key set
         self._dbs_lock = threading.Lock()
-        self._mariadb = None  # MariaDB 连接（延迟初始化）
+        self._mariadb = None  # MariaDB 连接
         self._db_io_lock = threading.RLock()  # SQLite 线程安全锁（所有DB操作共用）
         self._running = False
         self._client = BBSClient(agent_id, host=self._host, port=self._port)
@@ -243,10 +262,9 @@ class BoardService:
         # 加载 board 配置
         self._load_boards()
 
-        # 订阅所有 board 的管理主题，同时初始化 MariaDB
-        for board_key, bconf in self._boards.items():
+        # 订阅所有 board 的管理主题
+        for board_key in self._boards:
             self._subscribe_board(board_key)
-            self._ensure_db(board_key, bconf)
 
         # 同时也监听 boards.json 变更（热加载）
         self._client.subscribe(f"{TOPIC_BBS}/+/register", self._on_register)
@@ -295,7 +313,7 @@ class BoardService:
 
     def _publish_event(self, board_key: str, event: str, data: dict):
         """发布 events 主题，供插件订阅"""
-        topic = f"{TOPIC_BBS}/{board_key}/events/{event}"
+        topic = f"{cfg.TOPIC_BBS}{board_key}/events/{event}"
         self._plugin_mgr.trigger_event(topic, data)
 
     # ── Board 配置加载 ──
@@ -333,70 +351,38 @@ class BoardService:
         self._client.subscribe(f"{base}/file_download", self._on_file_download)
         log.debug(f"  已订阅 board: {board_key}")
 
-
-    # ── 数据库管理 ──
-
     # ── 数据库管理 ──
 
     def _ensure_db(self, board_key: str, bconf: dict):
-        """确保 board 的 MariaDB 表存在"""
-        if self._mariadb is None:
-            self._mariadb = pymysql.connect(
-                host=cfg.DB_CONFIG["host"], port=cfg.DB_CONFIG["port"],
-                user=cfg.DB_CONFIG["user"], password=cfg.DB_CONFIG["password"],
-                database=cfg.DB_CONFIG["database"], charset=cfg.DB_CONFIG["charset"],
-                cursorclass=pymysql.cursors.DictCursor
-            )
+        """确保 board 的 SQLite 数据库存在并初始化表结构"""
+        db_path = os.path.join(self._data_dir, bconf.get("db", f"{board_key}.db"))
         with self._dbs_lock:
             if board_key in self._dbs:
                 return
+            conn = sqlite3.connect(db_path, check_same_thread=False)
+            conn.row_factory = sqlite3.Row
             cur = self._mariadb.cursor()
-            cur.execute("""CREATE TABLE IF NOT EXISTS bbs_users (
-                token VARCHAR(32) PRIMARY KEY,
-                name VARCHAR(128) NOT NULL UNIQUE,
-                board VARCHAR(128) NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            cur.execute("""CREATE TABLE IF NOT EXISTS users (
+                token TEXT PRIMARY KEY,
+                name TEXT UNIQUE NOT NULL,
+                created_at REAL NOT NULL
             )""")
-            cur.execute("""CREATE TABLE IF NOT EXISTS bbs_posts (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                board VARCHAR(128) NOT NULL,
-                author VARCHAR(64) NOT NULL,
-                content LONGTEXT,
-                created_at DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3),
-                KEY idx_board (board),
-                KEY idx_author (author)
+            cur = self._mariadb.cursor()
+            cur.execute("""CREATE TABLE IF NOT EXISTS posts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                author TEXT NOT NULL,
+                content TEXT NOT NULL,
+                created_at REAL NOT NULL
             )""")
-            self._mariadb.commit()
-            self._dbs.add(board_key)
-            log.info(f"  MariaDB 就绪: board={board_key}")
+            conn.commit()
+            self._dbs[board_key] = conn
+            log.info(f"  DB 就绪: {db_path} (board: {board_key})")
 
     def _get_db(self, board_key: str):
         """获取 MariaDB 连接（返回 _MariaDBWrapper 兼容 SQLite 接口）"""
         if board_key in self._dbs and self._mariadb:
             return _MariaDBWrapper(self._mariadb)
         return None
-
-# ── MariaDB 兼容包装 ──
-
-class _MariaDBWrapper:
-    """封装 pymysql.Connection，提供 SQLite 兼容的 .execute() 快捷方式"""
-    def __init__(self, conn):
-        self._conn = conn
-    def execute(self, sql, params=None):
-        cur = self._conn.cursor()
-        if params is None:
-            cur.execute(sql)
-        else:
-            cur.execute(sql, params)
-        return cur
-    def commit(self):
-        self._conn.commit()
-    def cursor(self):
-        return self._conn.cursor()
-    def close(self):
-        self._conn.close()
-
-
 
     def _board_from_topic(self, topic: str) -> Optional[str]:
         """从 topic 中提取 board_key, 形如 bbs/{board_key}/..."""
@@ -425,10 +411,10 @@ class _MariaDBWrapper:
         token = uuid.uuid4().hex[:16]
         with self._db_io_lock:
             try:
-                db.execute("INSERT INTO bbs_users(token,name,board) VALUES(%s,%s,%s)", (token, name, board_key))
+                db.execute("INSERT INTO users VALUES(?,?,?)", (token, name, time.time()))
                 db.commit()
-            except pymysql.err.IntegrityError:
-                row = db.execute("SELECT token FROM bbs_users WHERE name=%s AND board=%s", (name, board_key)).fetchone()
+            except sqlite3.IntegrityError:
+                row = db.execute("SELECT token FROM users WHERE name=?", (name,)).fetchone()
                 token = row["token"] if row else token
 
         resp_topic = f"{TOPIC_BBS}/{board_key}/register/response/{corr_id}"
@@ -453,7 +439,7 @@ class _MariaDBWrapper:
 
         with self._db_io_lock:
             # 验证 token
-            row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
+            row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
             if not row:
                 log.warning(f"  ❌ 无效 token (board: {board_key})")
                 resp_topic = f"{TOPIC_BBS}/{board_key}/post/response/{corr_id}"
@@ -461,8 +447,8 @@ class _MariaDBWrapper:
                 return
 
             author = row["name"]
-            cur = db.execute("INSERT INTO bbs_posts(board,author,content,created_at) VALUES(%s,%s,%s,NOW(3))",
-                             (board_key, author, content))
+            cur = db.execute("INSERT INTO posts(author,content,created_at) VALUES(?,?,?)",
+                             (author, content, time.time()))
             db.commit()
             post_id = cur.lastrowid
             created_at = time.time()
@@ -535,13 +521,13 @@ class _MariaDBWrapper:
                 offset = int(params.get("offset", 0))
                 if author:
                     rows = db.execute(
-                        "SELECT id,author,content,created_at FROM bbs_posts WHERE board=%s AND author=%s ORDER BY id DESC LIMIT %s OFFSET %s",
-                        (board_key, author, limit, offset)
+                        "SELECT id,author,content,created_at FROM posts WHERE author=? ORDER BY id DESC LIMIT ? OFFSET ?",
+                        (author, limit, offset)
                     ).fetchall()
                 else:
                     rows = db.execute(
-                        "SELECT id,author,content,created_at FROM bbs_posts WHERE board=%s ORDER BY id DESC LIMIT %s OFFSET %s",
-                        (board_key, limit, offset)
+                        "SELECT id,author,content,created_at FROM posts ORDER BY id DESC LIMIT ? OFFSET ?",
+                        (limit, offset)
                     ).fetchall()
                 result = [dict(r) for r in rows]
 
@@ -557,13 +543,13 @@ class _MariaDBWrapper:
             elif query_type == "count":
                 author = params.get("author")
                 if author:
-                    row = db.execute("SELECT COUNT(*) as c FROM bbs_posts WHERE board=%s AND author=%s", (board_key, author)).fetchone()
+                    row = db.execute("SELECT COUNT(*) as c FROM posts WHERE author=?", (author,)).fetchone()
                 else:
-                    row = db.execute("SELECT COUNT(*) as c FROM bbs_posts WHERE board=%s", (board_key,)).fetchone()
+                    row = db.execute("SELECT COUNT(*) as c FROM posts").fetchone()
                 result = {"total": row["c"] if row else 0}
 
             elif query_type == "authors":
-                rows = db.execute("SELECT DISTINCT name FROM bbs_users WHERE board=%s ORDER BY name", (board_key,)).fetchall()
+                rows = db.execute("SELECT DISTINCT name FROM users ORDER BY name").fetchall()
                 result = [r["name"] for r in rows]
 
             elif query_type == "since":
@@ -596,7 +582,7 @@ class _MariaDBWrapper:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
+        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
         if not row:
             return
 
@@ -636,7 +622,7 @@ class _MariaDBWrapper:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
+        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
         if not row:
             return
 
@@ -708,7 +694,7 @@ class _MariaDBWrapper:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
+        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
         if not row:
             return
 
@@ -764,7 +750,7 @@ class _MariaDBWrapper:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
+        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
         if not row:
             return
 
