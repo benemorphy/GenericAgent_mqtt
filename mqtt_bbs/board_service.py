@@ -24,7 +24,8 @@ Board Service — MQTT 公告板持久化服务
         import traceback; traceback.print_exc()
 """
 
-import json, time, uuid, logging, os, sqlite3, threading
+import json, datetime, uuid, logging, os, threading
+import pymysql
 from typing import Optional, Callable
 from pathlib import Path
 
@@ -217,8 +218,9 @@ class BoardService:
         self._port = port or cfg.BROKER_PORT
         self._data_dir = data_dir or os.getcwd()
         self._boards = {}          # board_key → config
-        self._dbs = {}             # board_key → sqlite3 connection
+        self._dbs = set()            # board_key 集合
         self._dbs_lock = threading.Lock()
+        self._mariadb = None  # MariaDB 连接（延迟初始化）
         self._db_io_lock = threading.RLock()  # SQLite 线程安全锁（所有DB操作共用）
         self._running = False
         self._client = BBSClient(agent_id, host=self._host, port=self._port)
@@ -278,12 +280,13 @@ class BoardService:
         for name in list(self._plugin_mgr.list_plugins()):
             self._plugin_mgr.unload(name["name"])
         self._registry.stop()
-        for db in self._dbs.values():
+        if self._mariadb:
             try:
-                db.close()
+                self._mariadb.close()
             except Exception:
                 pass
         self._dbs.clear()
+        self._mariadb = None
         self._client.disconnect()
         log.info(f"[{self.agent_id}] 🛑 BoardService 停止")
 
@@ -332,31 +335,40 @@ class BoardService:
     # ── 数据库管理 ──
 
     def _ensure_db(self, board_key: str, bconf: dict):
-        """确保 board 的 SQLite 数据库存在并初始化表结构"""
-        db_path = os.path.join(self._data_dir, bconf.get("db", f"{board_key}.db"))
+        """确保 board 的 MariaDB 表存在"""
+        if self._mariadb is None:
+            self._mariadb = pymysql.connect(
+                host=cfg.DB_CONFIG["host"], port=cfg.DB_CONFIG["port"],
+                user=cfg.DB_CONFIG["user"], password=cfg.DB_CONFIG["password"],
+                database=cfg.DB_CONFIG["database"], charset=cfg.DB_CONFIG["charset"],
+                cursorclass=pymysql.cursors.DictCursor
+            )
         with self._dbs_lock:
             if board_key in self._dbs:
                 return
-            conn = sqlite3.connect(db_path, check_same_thread=False)
-            conn.row_factory = sqlite3.Row
-            conn.execute("""CREATE TABLE IF NOT EXISTS users (
-                token TEXT PRIMARY KEY,
-                name TEXT UNIQUE NOT NULL,
-                created_at REAL NOT NULL
+            cur = self._mariadb.cursor()
+            cur.execute("""CREATE TABLE IF NOT EXISTS bbs_users (
+                token VARCHAR(32) PRIMARY KEY,
+                name VARCHAR(128) NOT NULL UNIQUE,
+                board VARCHAR(128) NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )""")
-            conn.execute("""CREATE TABLE IF NOT EXISTS posts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                author TEXT NOT NULL,
-                content TEXT NOT NULL,
-                created_at REAL NOT NULL
+            cur.execute("""CREATE TABLE IF NOT EXISTS bbs_posts (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                board VARCHAR(128) NOT NULL,
+                author VARCHAR(64) NOT NULL,
+                content LONGTEXT,
+                created_at DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3),
+                KEY idx_board (board),
+                KEY idx_author (author)
             )""")
-            conn.commit()
-            self._dbs[board_key] = conn
-            log.info(f"  DB 就绪: {db_path} (board: {board_key})")
+            self._mariadb.commit()
+            self._dbs.add(board_key)
+            log.info(f"  MariaDB 就绪: board={board_key}")
 
     def _get_db(self, board_key: str):
-        """获取 board 对应的数据库连接"""
-        return self._dbs.get(board_key)
+        """获取 MariaDB 连接"""
+        return self._mariadb if board_key in self._dbs else None
 
     def _board_from_topic(self, topic: str) -> Optional[str]:
         """从 topic 中提取 board_key, 形如 bbs/{board_key}/..."""
@@ -385,10 +397,10 @@ class BoardService:
         token = uuid.uuid4().hex[:16]
         with self._db_io_lock:
             try:
-                db.execute("INSERT INTO users VALUES(?,?,?)", (token, name, time.time()))
+                db.execute("INSERT INTO bbs_users(token,name,board) VALUES(%s,%s,%s)", (token, name, board_key))
                 db.commit()
-            except sqlite3.IntegrityError:
-                row = db.execute("SELECT token FROM users WHERE name=?", (name,)).fetchone()
+            except pymysql.err.IntegrityError:
+                row = db.execute("SELECT token FROM bbs_users WHERE name=%s AND board=%s", (name, board_key)).fetchone()
                 token = row["token"] if row else token
 
         resp_topic = f"{TOPIC_BBS}/{board_key}/register/response/{corr_id}"
@@ -413,7 +425,7 @@ class BoardService:
 
         with self._db_io_lock:
             # 验证 token
-            row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+            row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
             if not row:
                 log.warning(f"  ❌ 无效 token (board: {board_key})")
                 resp_topic = f"{TOPIC_BBS}/{board_key}/post/response/{corr_id}"
@@ -421,8 +433,8 @@ class BoardService:
                 return
 
             author = row["name"]
-            cur = db.execute("INSERT INTO posts(author,content,created_at) VALUES(?,?,?)",
-                             (author, content, time.time()))
+            cur = db.execute("INSERT INTO bbs_posts(board,author,content,created_at) VALUES(%s,%s,%s,NOW(3))",
+                             (board_key, author, content))
             db.commit()
             post_id = cur.lastrowid
             created_at = time.time()
@@ -495,13 +507,13 @@ class BoardService:
                 offset = int(params.get("offset", 0))
                 if author:
                     rows = db.execute(
-                        "SELECT id,author,content,created_at FROM posts WHERE author=? ORDER BY id DESC LIMIT ? OFFSET ?",
-                        (author, limit, offset)
+                        "SELECT id,author,content,created_at FROM bbs_posts WHERE board=%s AND author=%s ORDER BY id DESC LIMIT %s OFFSET %s",
+                        (board_key, author, limit, offset)
                     ).fetchall()
                 else:
                     rows = db.execute(
-                        "SELECT id,author,content,created_at FROM posts ORDER BY id DESC LIMIT ? OFFSET ?",
-                        (limit, offset)
+                        "SELECT id,author,content,created_at FROM bbs_posts WHERE board=%s ORDER BY id DESC LIMIT %s OFFSET %s",
+                        (board_key, limit, offset)
                     ).fetchall()
                 result = [dict(r) for r in rows]
 
@@ -517,13 +529,13 @@ class BoardService:
             elif query_type == "count":
                 author = params.get("author")
                 if author:
-                    row = db.execute("SELECT COUNT(*) as c FROM posts WHERE author=?", (author,)).fetchone()
+                    row = db.execute("SELECT COUNT(*) as c FROM bbs_posts WHERE board=%s AND author=%s", (board_key, author)).fetchone()
                 else:
-                    row = db.execute("SELECT COUNT(*) as c FROM posts").fetchone()
+                    row = db.execute("SELECT COUNT(*) as c FROM bbs_posts WHERE board=%s", (board_key,)).fetchone()
                 result = {"total": row["c"] if row else 0}
 
             elif query_type == "authors":
-                rows = db.execute("SELECT DISTINCT name FROM users ORDER BY name").fetchall()
+                rows = db.execute("SELECT DISTINCT name FROM bbs_users WHERE board=%s ORDER BY name", (board_key,)).fetchall()
                 result = [r["name"] for r in rows]
 
             elif query_type == "since":
@@ -556,7 +568,7 @@ class BoardService:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
         if not row:
             return
 
@@ -596,7 +608,7 @@ class BoardService:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
         if not row:
             return
 
@@ -668,7 +680,7 @@ class BoardService:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
         if not row:
             return
 
@@ -724,7 +736,7 @@ class BoardService:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
         if not row:
             return
 
