@@ -56,6 +56,7 @@ class BoardClient:
 
         # 新帖回调（用于实时推送）
         self._post_callbacks: list[Callable] = []
+        self._cached_token = None  # 注册 token 缓存，避免重复 MQTT 往返
 
     def __enter__(self):
         self.connect()
