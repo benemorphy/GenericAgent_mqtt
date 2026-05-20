@@ -333,26 +333,8 @@ class BoardService:
         self._client.subscribe(f"{base}/file_download", self._on_file_download)
         log.debug(f"  已订阅 board: {board_key}")
 
-# ── MariaDB 兼容包装 ──
 
-class _MariaDBWrapper:
-    """封装 pymysql.Connection，提供 SQLite 兼容的 .execute() 快捷方式"""
-    def __init__(self, conn):
-        self._conn = conn
-    def execute(self, sql, params=None):
-        cur = self._conn.cursor()
-        if params is None:
-            cur.execute(sql)
-        else:
-            cur.execute(sql, params)
-        return cur
-    def commit(self):
-        self._conn.commit()
-    def cursor(self):
-        return self._conn.cursor()
-    def close(self):
-        self._conn.close()
-
+    # ── 数据库管理 ──
 
     # ── 数据库管理 ──
 
@@ -393,6 +375,28 @@ class _MariaDBWrapper:
         if board_key in self._dbs and self._mariadb:
             return _MariaDBWrapper(self._mariadb)
         return None
+
+# ── MariaDB 兼容包装 ──
+
+class _MariaDBWrapper:
+    """封装 pymysql.Connection，提供 SQLite 兼容的 .execute() 快捷方式"""
+    def __init__(self, conn):
+        self._conn = conn
+    def execute(self, sql, params=None):
+        cur = self._conn.cursor()
+        if params is None:
+            cur.execute(sql)
+        else:
+            cur.execute(sql, params)
+        return cur
+    def commit(self):
+        self._conn.commit()
+    def cursor(self):
+        return self._conn.cursor()
+    def close(self):
+        self._conn.close()
+
+
 
     def _board_from_topic(self, topic: str) -> Optional[str]:
         """从 topic 中提取 board_key, 形如 bbs/{board_key}/..."""
