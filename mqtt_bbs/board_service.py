@@ -291,7 +291,7 @@ class BoardService:
 
     def _publish_event(self, board_key: str, event: str, data: dict):
         """发布 events 主题，供插件订阅"""
-        topic = f"{cfg.TOPIC_BBS}{board_key}/events/{event}"
+        topic = f"{TOPIC_BBS}/{board_key}/events/{event}"
         self._plugin_mgr.trigger_event(topic, data)
 
     # ── Board 配置加载 ──
