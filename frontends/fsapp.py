@@ -8,7 +8,7 @@ from frontends.chatapp_common import format_restore
 from frontends.continue_cmd import handle_frontend_command as handle_continue_frontend, reset_conversation
 from llmcore import mykeys
 from tools.feishu_reminder import ReminderManager, start_reminder_checker, format_reminder_list, REMIND_HELP
-from tools.todo_manager import TodoManager, TODO_HELP
+from tools.todo_manager import TodoManager, _TODO_HELP as TODO_HELP
 from tools.hitl_approval import submit_decision, approve, reject, get_pending_list, _HITL_HELP
 from tools.inspiration_board import Board as InspirationBoard, list_all as list_inspirations
 from mqtt_bbs import AgentBoardWithPersistence
@@ -249,6 +249,8 @@ _reminder = ReminderManager()
 _reminder_send = lambda oid, txt: send_message(oid, txt) if oid else None
 _todo_mgr = TodoManager()
 _master_board = None  # 延迟初始化 AgentBoardWithPersistence
+_bbs_push_client = None  # BBS 桥接客户端
+_bbs_push_chats = set()  # 订阅 BBS 推送的飞书聊天
 
 def _get_board():
     global _master_board
@@ -259,6 +261,47 @@ def _get_board():
         except Exception as e:
             print(f"[MQTT BBS] 连接失败: {e}")
     return _master_board
+
+def _init_bbs_push():
+    """初始化 BBS→飞书 推送线程"""
+    global _bbs_push_client
+    if _bbs_push_client is not None:
+        return
+    try:
+        # 必须在主线程创建连接
+        from mqtt_bbs.board_client import BoardClient as _BC
+        _bbs_push_client = _BC("feishu_bbs_bridge", board="agent-bbs-test")
+        _bbs_push_client.connect()
+        _bbs_push_client.wait_connected(3)
+        _bbs_push_client.subscribe("bbs/+/post", _on_bbs_new_post)
+        print("[BBS桥接] ✅ BBS→飞书 推送已启动")
+    except Exception as e:
+        print(f"[BBS桥接] ⚠️ 初始化失败: {e}")
+
+# 记录最近推送的帖子ID，避免重复推送
+_bbs_pushed_ids = set()
+def _on_bbs_new_post(topic, payload):
+    """BBS 新帖回调 → 推送到飞书"""
+    global _bbs_push_chats, _bbs_pushed_ids
+    if not _bbs_push_chats or not isinstance(payload, dict):
+        return
+    post_id = payload.get("id", 0)
+    if post_id in _bbs_pushed_ids:
+        return
+    _bbs_pushed_ids.add(post_id)
+    if len(_bbs_pushed_ids) > 1000:
+        _bbs_pushed_ids.clear()
+    
+    content = payload.get("content", "")
+    author = payload.get("author", "?")
+    board = topic.split("/")[1] if topic.count("/") >= 1 else "?"
+    msg = f"📢 [BBS/{board}] {author}: {str(content)[:200]}"
+    
+    for chat_id in list(_bbs_push_chats):
+        try:
+            send_message(chat_id, msg, receive_id_type="chat_id")
+        except Exception as e:
+            print(f"[BBS桥接] ⚠️ 推送失败到 {chat_id}: {e}")
 
 def _query_db_output(task_id):
     """从MariaDB查任务output（绕过wait_task时序）"""
@@ -847,7 +890,7 @@ def handle_command(open_id, cmd, chat_id=None):
         _conn.close()
         _ins = replay_memories(k=3)
         _assocs = associate_random(k=2)
-        _ib = _InspBoard()
+        _ib = _InspBoard(bbs_backend=True)
         _new_ideas = 0
         _lines = [f"💭 Agent Dreaming (dream_memories: {_cnt} 条)"]
         if _ins:
@@ -870,6 +913,59 @@ def handle_command(open_id, cmd, chat_id=None):
             _lines.append(f"─" * 30)
             _lines.append(f"📌 已写入灵感板 {_new_ideas} 条（/inspired 查看）")
         _send_cmd_response("\n".join(_lines))
+
+        # BBS 广播：将梦境结果广播到 agent-dream board
+        if _new_ideas:
+            try:
+                from mqtt_bbs.board_client import BoardClient as _BC
+                with _BC("feishu_bot", board="agent-dream") as _bbs_d:
+                    _reg = _bbs_d.register("飞书Bot", timeout=5)
+                    if _reg and _reg.get("token"):
+                        _bbs_d.post(
+                            f"[Dream广播] {_new_ideas} 条新梦境洞察\n"
+                            + "\n".join(_lines[-_new_ideas-1:]),
+                            _reg["token"], timeout=5
+                        )
+                        print("  📡 Dream 已广播到 agent-dream board")
+            except Exception as _e:
+                print(f"  ⚠️ Dream BBS 广播失败: {_e}")
+    elif op == "/bbs":
+        # 飞书↔BBS 桥接
+        board = _get_board()
+        if not board:
+            _send_cmd_response("❌ MQTT BBS 未连接")
+        elif len(parts) < 3:
+            _send_cmd_response("用法:\n/bbs post <content> - 发帖到 BBS\n/bbs subscribe - 订阅 BBS 新帖推送到本群\n/bbs unsubscribe - 取消订阅")
+        elif parts[1] == "post":
+            content = " ".join(parts[2:])
+            try:
+                from mqtt_bbs.board_client import BoardClient as _BC
+                with _BC("feishu_bot", board="agent-bridge") as _bbs:
+                    reg = _bbs.register("飞书Bot", timeout=5)
+                    if reg and reg.get("token"):
+                        result = _bbs.post(content, reg["token"], timeout=5)
+                        if result and "error" not in result:
+                            _send_cmd_response(f"✅ 已发帖到 BBS (agent-bridge): {content[:100]}")
+                        else:
+                            _send_cmd_response(f"❌ 发帖失败: {result}")
+                    else:
+                        _send_cmd_response("❌ BBS 注册失败")
+            except Exception as _e:
+                _send_cmd_response(f"❌ BBS 操作失败: {_e}")
+        elif parts[1] == "subscribe":
+            if chat_id:
+                _bbs_push_chats.add(chat_id)
+                _send_cmd_response("✅ 已订阅 BBS 新帖推送（新帖将自动推送到此群）")
+            else:
+                _send_cmd_response("❌ 订阅仅支持群聊")
+        elif parts[1] == "unsubscribe":
+            if chat_id:
+                _bbs_push_chats.discard(chat_id)
+                _send_cmd_response("✅ 已取消 BBS 推送订阅")
+            else:
+                _send_cmd_response("❌ 取消订阅仅支持群聊")
+        else:
+            _send_cmd_response("未知 BBS 操作，支持: post / subscribe / unsubscribe")
     else:
         _send_cmd_response(f"未知命令: {cmd}")
 
@@ -883,6 +979,8 @@ def main():
     handler = lark.EventDispatcherHandler.builder("", "").register_p2_im_message_receive_v1(handle_message).build()
     # 启动定时提醒检查（每30秒检查一次）
     start_reminder_checker(_reminder, _reminder_send, interval=30)
+    # 启动 BBS 桥接推送
+    _init_bbs_push()
     print("=" * 50 + "\n飞书 Agent 已启动（长连接模式）\n" + f"App ID: {APP_ID}\n等待消息...\n" + "=" * 50)
     retry_delay = 5
     while True:

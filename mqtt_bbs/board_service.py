@@ -29,9 +29,159 @@ log = logging.getLogger("mqtt_bbs.board_service")
 
 # ── 默认配置 ──
 BOARDS_FILE = "boards.json"           # 同 HTTP 版格式
-DEFAULT_BOARDS = {"agent-bbs-test": {"name": "default", "db": "agent_bbs.db"}}
+DEFAULT_BOARDS = {"agent-bbs-test": {"name": "default", "db": "agent_bbs.db"},
+                  "agent-inspiration": {"name": "灵感板", "db": "agent_inspiration.db"},
+                  "agent-whiteboard": {"name": "白板", "db": "agent_whiteboard.db"}}
 UPLOAD_DIR = "bbs_files"
 TOPIC_BBS = "bbs"                     # agent/bbs/{board}/...
+
+# ── CapabilityRegistry ──
+# BoardService 内置的能力注册表，监听 node/+/capability + heartbeat
+# 提供 board/capability/query 查询接口
+class CapabilityRegistry:
+    """
+    MQTT 驱动的 Agent 能力注册表。
+
+    通过订阅 node/{agent_id}/capability（retain）获取能力声明，
+    通过 node/{agent_id}/heartbeat 获取心跳维持活性，
+    通过 node/{agent_id}/status（含 LWT）检测离线。
+    """
+
+    def __init__(self, client: BBSClient):
+        self._client = client
+        self._lock = threading.Lock()
+        # agent_id → {capabilities, status, last_seen, agent_id}
+        self._agents: dict[str, dict] = {}
+        self._cleanup_timer: Optional[threading.Thread] = None
+        self._running = False
+
+    def start(self):
+        """启动注册表：订阅相关主题"""
+        self._running = True
+        # 订阅能力声明（retain 消息会在连接后立即收到）
+        self._client.subscribe("node/+/capability", self._on_capability)
+        # 订阅心跳
+        self._client.subscribe("node/+/heartbeat", self._on_heartbeat)
+        # 订阅状态变更（含 LWT 离线）
+        self._client.subscribe("node/+/status", self._on_status)
+        # 订阅查询请求
+        self._client.subscribe("board/capability/query", self._on_query)
+        # 启动过期清理线程
+        self._cleanup_timer = threading.Thread(target=self._cleanup_loop, daemon=True)
+        self._cleanup_timer.start()
+        log.info("[CapabilityRegistry] 🚀 启动")
+
+    def stop(self):
+        self._running = False
+
+    def get_agents(self, capability: Optional[str] = None) -> list[dict]:
+        """获取注册的 Agent 列表，可选按能力过滤"""
+        with self._lock:
+            agents = list(self._agents.values())
+        if capability:
+            agents = [a for a in agents if capability in a.get("capabilities", [])]
+        return agents
+
+    def get_agent(self, agent_id: str) -> Optional[dict]:
+        with self._lock:
+            return self._agents.get(agent_id)
+
+    # ── 内部消息处理 ──
+
+    def _on_capability(self, topic: str, payload):
+        """处理能力声明: node/{agent_id}/capability"""
+        parts = topic.split("/")
+        if len(parts) < 3:
+            return
+        agent_id = parts[1]
+        caps = []
+        if isinstance(payload, dict):
+            caps = payload.get("capabilities", [])
+        with self._lock:
+            if agent_id not in self._agents:
+                self._agents[agent_id] = {"agent_id": agent_id, "capabilities": [], "status": "unknown", "last_seen": time.time()}
+            self._agents[agent_id]["capabilities"] = caps
+            self._agents[agent_id]["last_seen"] = time.time()
+        log.info(f"  📋 能力声明: {agent_id} → {caps}")
+
+    def _on_heartbeat(self, topic: str, payload):
+        """处理心跳: node/{agent_id}/heartbeat"""
+        parts = topic.split("/")
+        if len(parts) < 3:
+            return
+        agent_id = parts[1]
+        caps = []
+        load = None
+        if isinstance(payload, dict):
+            caps = payload.get("capabilities", [])
+            load = payload.get("load")
+        with self._lock:
+            if agent_id not in self._agents:
+                self._agents[agent_id] = {"agent_id": agent_id, "capabilities": [], "status": "online", "last_seen": time.time()}
+            if caps:
+                self._agents[agent_id]["capabilities"] = caps
+            self._agents[agent_id]["status"] = "online"
+            self._agents[agent_id]["last_seen"] = time.time()
+            if load is not None:
+                self._agents[agent_id]["load"] = load
+
+    def _on_status(self, topic: str, payload):
+        """处理状态变更（含 LWT 离线信号）: node/{agent_id}/status"""
+        parts = topic.split("/")
+        if len(parts) < 3:
+            return
+        agent_id = parts[1]
+        status = "online"
+        if isinstance(payload, bytes):
+            status = payload.decode("utf-8")
+        elif isinstance(payload, str):
+            status = payload
+        with self._lock:
+            if agent_id not in self._agents:
+                self._agents[agent_id] = {"agent_id": agent_id, "capabilities": [], "status": status, "last_seen": time.time()}
+            else:
+                self._agents[agent_id]["status"] = status
+                if status == "online":
+                    self._agents[agent_id]["last_seen"] = time.time()
+        log.info(f"  🔵 状态变更: {agent_id} → {status}")
+
+    def _on_query(self, topic: str, payload):
+        """处理能力查询请求: board/capability/query"""
+        corr_id = ""
+        capability_filter = None
+        if isinstance(payload, dict):
+            corr_id = payload.get("corr_id", "")
+            capability_filter = payload.get("capability")
+        agents = self.get_agents(capability_filter)
+        resp = {
+            "type": "capability_list",
+            "agents": agents,
+            "count": len(agents),
+            "timestamp": time.time(),
+        }
+        if corr_id:
+            self._client.publish(f"board/capability/query/response/{corr_id}", resp, retain=False)
+        else:
+            # 无 corr_id 则直接回复到通用响应主题
+            self._client.publish("board/capability/query/response", resp, retain=False)
+        log.info(f"  🔍 能力查询: filter={capability_filter} → {len(agents)} agents")
+
+    def _cleanup_loop(self):
+        """定期清理过期 Agent（HEARTBEAT_TIMEOUT 无心跳标记为 offline）"""
+        while self._running:
+            time.sleep(cfg.HEARTBEAT_INTERVAL)
+            now = time.time()
+            expired = []
+            with self._lock:
+                for agent_id, info in self._agents.items():
+                    if info.get("status") == "offline":
+                        continue
+                    last_seen = info.get("last_seen", 0)
+                    if now - last_seen > cfg.HEARTBEAT_TIMEOUT:
+                        info["status"] = "offline"
+                        expired.append(agent_id)
+            if expired:
+                log.warning(f"  ⏰ 心跳超时标记离线: {expired}")
 
 
 class BoardService:
@@ -54,6 +204,7 @@ class BoardService:
         self._dbs_lock = threading.Lock()
         self._running = False
         self._client = BBSClient(agent_id, host=self._host, port=self._port)
+        self._registry = CapabilityRegistry(self._client)
 
     # ── 公开 API ──
 
@@ -78,8 +229,14 @@ class BoardService:
         self._client.subscribe(f"{TOPIC_BBS}/+/register", self._on_register)
         self._client.subscribe(f"{TOPIC_BBS}/+/post", self._on_post)
         self._client.subscribe(f"{TOPIC_BBS}/+/query", self._on_query)
+        self._client.subscribe(f"{TOPIC_BBS}/+/file_init", self._on_file_init)
         self._client.subscribe(f"{TOPIC_BBS}/+/file_chunk", self._on_file_chunk)
+        self._client.subscribe(f"{TOPIC_BBS}/+/file_commit", self._on_file_commit)
+        self._client.subscribe(f"{TOPIC_BBS}/+/file_download", self._on_file_download)
         self._client.subscribe(f"{TOPIC_BBS}/+/admin/reload", self._on_admin_reload)
+
+        # 启动能力注册表
+        self._registry.start()
 
         log.info(f"[{self.agent_id}] 🚀 BoardService 启动 ({len(self._boards)} boards)")
 
@@ -92,6 +249,7 @@ class BoardService:
     def stop(self):
         """停止服务"""
         self._running = False
+        self._registry.stop()
         for db in self._dbs.values():
             try:
                 db.close()
@@ -128,7 +286,10 @@ class BoardService:
         self._client.subscribe(f"{base}/register", self._on_register)
         self._client.subscribe(f"{base}/post", self._on_post)
         self._client.subscribe(f"{base}/query", self._on_query)
+        self._client.subscribe(f"{base}/file_init", self._on_file_init)
         self._client.subscribe(f"{base}/file_chunk", self._on_file_chunk)
+        self._client.subscribe(f"{base}/file_commit", self._on_file_commit)
+        self._client.subscribe(f"{base}/file_download", self._on_file_download)
         log.debug(f"  已订阅 board: {board_key}")
 
     # ── 数据库管理 ──
@@ -307,13 +468,36 @@ class BoardService:
         log.debug(f"  🔍 查询: {query_type} (board: {board_key}, corr: {corr_id[:8]})")
 
     def _on_file_chunk(self, topic: str, payload):
-        """文件上传请求: {agent_id, token, filename, data, corr_id}"""
+        """文件上传/分片上传请求
+
+        兼容两种模式:
+        - 旧版单chunk: {token, filename, data(base64), corr_id}
+        - 新版分片:   {token, session_id, seq, data(base64), corr_id}
+        """
+        board_key = self._board_from_topic(topic)
+        if not board_key or not isinstance(payload, dict):
+            return
+        token = payload.get("token", "")
+        corr_id = payload.get("corr_id", "")
+        if not token:
+            return
+
+        db = self._get_db(board_key)
+        if not db:
+            return
+        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        if not row:
+            return
+
+    def _on_file_init(self, topic: str, payload):
+        """文件分片上传初始化: {token, filename, total_size, chunk_count, corr_id}"""
         board_key = self._board_from_topic(topic)
         if not board_key or not isinstance(payload, dict):
             return
         token = payload.get("token", "")
         filename = payload.get("filename", "")
-        data_b64 = payload.get("data", "")
+        total_size = payload.get("total_size", 0)
+        chunk_count = payload.get("chunk_count", 0)
         corr_id = payload.get("corr_id", "")
         if not token or not filename:
             return
@@ -321,31 +505,187 @@ class BoardService:
         db = self._get_db(board_key)
         if not db:
             return
-
-        # 验证 token
         row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
         if not row:
             return
 
         import base64
+        session_id = uuid.uuid4().hex[:12]
+        safe_name = os.path.basename(filename)
+        session_dir = os.path.join(self._data_dir, UPLOAD_DIR, board_key, f"chunk_{session_id}")
+        os.makedirs(session_dir, exist_ok=True)
+
+        # 保存 session 元信息
+        meta = {"session_id": session_id, "filename": safe_name, "total_size": total_size,
+                "chunk_count": chunk_count, "received": 0, "board_key": board_key}
+        meta_path = os.path.join(session_dir, "_meta.json")
+        json.dump(meta, open(meta_path, "w"))
+
+        if corr_id:
+            resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+            self._client.publish(resp_topic, {"session_id": session_id}, retain=False, qos=1)
+        log.info(f"  📋 分片初始化: {safe_name} ({total_size}B, {chunk_count} chunks) → {session_id}")
+
+    def _on_file_chunk(self, topic: str, payload):
+        """文件上传/分片上传请求
+
+        兼容两种模式:
+        - 旧版单chunk: {token, filename, data(base64), corr_id}
+        - 新版分片:   {token, session_id, seq, data(base64), corr_id}
+        """
+        board_key = self._board_from_topic(topic)
+        if not board_key or not isinstance(payload, dict):
+            return
+        token = payload.get("token", "")
+        corr_id = payload.get("corr_id", "")
+        if not token:
+            return
+
+        db = self._get_db(board_key)
+        if not db:
+            return
+        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        if not row:
+            return
+
+        import base64
+
+        # ── 新版分片模式 ──
+        session_id = payload.get("session_id")
+        if session_id:
+            seq = payload.get("seq", 0)
+            data_b64 = payload.get("data", "")
+            if not data_b64:
+                return
+            session_dir = os.path.join(self._data_dir, UPLOAD_DIR, board_key, f"chunk_{session_id}")
+            meta_path = os.path.join(session_dir, "_meta.json")
+            if not os.path.exists(meta_path):
+                return
+            chunk_path = os.path.join(session_dir, f"{seq:04d}.chunk")
+            try:
+                chunk_bytes = base64.b64decode(data_b64)
+                with open(chunk_path, "wb") as f:
+                    f.write(chunk_bytes)
+                # 更新 meta
+                meta = json.load(open(meta_path))
+                meta["received"] = meta.get("received", 0) + 1
+                json.dump(meta, open(meta_path, "w"))
+                if corr_id:
+                    resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+                    self._client.publish(resp_topic, {"session_id": session_id, "seq": seq}, retain=False, qos=1)
+                log.info(f"  🧩 分片 {seq}: {len(chunk_bytes)}B (session: {session_id[:8]}...)")
+            except Exception as e:
+                log.warning(f"  分片写入失败: {e}")
+            return
+
+        # ── 旧版单chunk模式 ──
+        filename = payload.get("filename", "")
+        data_b64 = payload.get("data", "")
+        if not filename or not data_b64:
+            return
         rand_id = uuid.uuid4().hex[:6]
         safe_name = os.path.basename(filename)
         board_upload_dir = os.path.join(self._data_dir, UPLOAD_DIR, board_key, rand_id)
         os.makedirs(board_upload_dir, exist_ok=True)
         filepath = os.path.join(board_upload_dir, safe_name)
-
         try:
             file_bytes = base64.b64decode(data_b64)
             with open(filepath, "wb") as f:
                 f.write(file_bytes)
-
             ref = f"{rand_id}/{safe_name}"
             if corr_id:
                 resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
                 self._client.publish(resp_topic, {"ref": ref}, retain=False, qos=1)
-            log.info(f"  📎 文件上传: {ref} (board: {board_key})")
+            log.info(f"  📎 文件上传(单chunk): {ref} (board: {board_key})")
         except Exception as e:
             log.warning(f"  文件上传失败: {e}")
+
+    def _on_file_commit(self, topic: str, payload):
+        """文件分片合并: {token, session_id, corr_id}"""
+        board_key = self._board_from_topic(topic)
+        if not board_key or not isinstance(payload, dict):
+            return
+        token = payload.get("token", "")
+        session_id = payload.get("session_id", "")
+        corr_id = payload.get("corr_id", "")
+        if not token or not session_id:
+            return
+
+        db = self._get_db(board_key)
+        if not db:
+            return
+        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        if not row:
+            return
+
+        session_dir = os.path.join(self._data_dir, UPLOAD_DIR, board_key, f"chunk_{session_id}")
+        meta_path = os.path.join(session_dir, "_meta.json")
+        if not os.path.exists(meta_path):
+            return
+
+        meta = json.load(open(meta_path))
+        chunk_count = meta.get("chunk_count", 0)
+        received = meta.get("received", 0)
+
+        if received < chunk_count:
+            log.warning(f"  ⚠️ 分片不完整: {received}/{chunk_count}")
+            if corr_id:
+                resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+                self._client.publish(resp_topic, {"error": f"incomplete: {received}/{chunk_count}"}, retain=False, qos=1)
+            return
+
+        # 合并分片
+        target_dir = os.path.join(self._data_dir, UPLOAD_DIR, board_key, session_id[:6])
+        os.makedirs(target_dir, exist_ok=True)
+        target_path = os.path.join(target_dir, meta["filename"])
+        with open(target_path, "wb") as out:
+            for seq in range(chunk_count):
+                chunk_path = os.path.join(session_dir, f"{seq:04d}.chunk")
+                if os.path.exists(chunk_path):
+                    out.write(open(chunk_path, "rb").read())
+
+        # 清理临时分片目录
+        import shutil
+        shutil.rmtree(session_dir, ignore_errors=True)
+
+        file_ref = f"{session_id[:6]}/{meta['filename']}"
+        if corr_id:
+            resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+            self._client.publish(resp_topic, {"ref": file_ref}, retain=False, qos=1)
+        log.info(f"  ✅ 分片合并: {file_ref} ({received} chunks)")
+
+    def _on_file_download(self, topic: str, payload):
+        """文件下载: {token, file_ref, corr_id}"""
+        board_key = self._board_from_topic(topic)
+        if not board_key or not isinstance(payload, dict):
+            return
+        token = payload.get("token", "")
+        file_ref = payload.get("file_ref", "")
+        corr_id = payload.get("corr_id", "")
+        if not token or not file_ref:
+            return
+
+        db = self._get_db(board_key)
+        if not db:
+            return
+        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        if not row:
+            return
+
+        board_upload_dir = os.path.join(self._data_dir, UPLOAD_DIR, board_key)
+        filepath = os.path.join(board_upload_dir, file_ref)
+        if os.path.exists(filepath) and os.path.isfile(filepath):
+            import base64
+            file_bytes = open(filepath, "rb").read()
+            data_b64 = base64.b64encode(file_bytes).decode()
+            if corr_id:
+                resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+                self._client.publish(resp_topic, {"ref": file_ref, "data": data_b64, "size": len(file_bytes)}, retain=False, qos=1)
+            log.info(f"  📥 文件下载: {file_ref} ({len(file_bytes)}B)")
+        else:
+            if corr_id:
+                resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+                self._client.publish(resp_topic, {"error": "not_found"}, retain=False, qos=1)
 
     def _on_admin_reload(self, topic: str, payload):
         """热加载 boards.json"""
