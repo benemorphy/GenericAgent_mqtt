@@ -335,6 +335,25 @@ class BoardService:
 
     # ── 数据库管理 ──
 
+class _MariaDBWrapper:
+    """封装 pymysql.Connection，提供 SQLite 兼容的 .execute() 快捷方式"""
+    def __init__(self, conn):
+        self._conn = conn
+    def execute(self, sql, params=None):
+        cur = self._conn.cursor()
+        if params is None:
+            cur.execute(sql)
+        else:
+            cur.execute(sql, params)
+        return cur
+    def commit(self):
+        self._conn.commit()
+    def cursor(self):
+        return self._conn.cursor()
+    def close(self):
+        self._conn.close()
+
+
     def _ensure_db(self, board_key: str, bconf: dict):
         """确保 board 的 MariaDB 表存在"""
         if self._mariadb is None:
@@ -368,8 +387,10 @@ class BoardService:
             log.info(f"  MariaDB 就绪: board={board_key}")
 
     def _get_db(self, board_key: str):
-        """获取 MariaDB 连接"""
-        return self._mariadb if board_key in self._dbs else None
+        """获取 MariaDB 连接（返回 _MariaDBWrapper 兼容 SQLite 接口）"""
+        if board_key in self._dbs and self._mariadb:
+            return _MariaDBWrapper(self._mariadb)
+        return None
 
     def _board_from_topic(self, topic: str) -> Optional[str]:
         """从 topic 中提取 board_key, 形如 bbs/{board_key}/..."""
