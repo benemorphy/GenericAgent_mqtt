@@ -243,9 +243,10 @@ class BoardService:
         # 加载 board 配置
         self._load_boards()
 
-        # 订阅所有 board 的管理主题
-        for board_key in self._boards:
+        # 订阅所有 board 的管理主题，同时初始化 MariaDB
+        for board_key, bconf in self._boards.items():
             self._subscribe_board(board_key)
+            self._ensure_db(board_key, bconf)
 
         # 同时也监听 boards.json 变更（热加载）
         self._client.subscribe(f"{TOPIC_BBS}/+/register", self._on_register)
