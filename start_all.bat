@@ -66,6 +66,33 @@ start "board-service" /B /MIN ".venv\Scripts\python.exe" -m mqtt_bbs.board_servi
 timeout /t 3 /nobreak >nul
 echo [OK] BoardService 已启动
 
+:: ── 7. MariaDB 持久化 Worker ──
+echo [..] 启动 MariaDB 持久化 Worker（保存全部 MQTT 消息）...
+start "bbs-persist" /B /MIN ".venv\Scripts\python.exe" -m mqtt_bbs.persistence_worker
+timeout /t 2 /nobreak >nul
+echo [OK] MariaDB 持久化 Worker 已启动
+
+:: ── 8. 默认 WorkerAgent ──
+echo [..] 启动默认 WorkerAgent（发布心跳/能力，可被Dashboard看到）...
+start "default-worker" /B /MIN ".venv\Scripts\python.exe" -c "
+import sys, time, threading
+sys.path.insert(0, '.')
+from mqtt_bbs.bbs import WorkerAgent
+w = WorkerAgent('default_worker', capabilities=['scan','analyze','monitor','report','ops'])
+@w.on_task
+def h(msg):
+    w.stream_out(f'Processing: {msg}')
+    return {'status': 'done', 'task': msg.get('type')}
+w.start()
+try:
+    while True:
+        time.sleep(10)
+except:
+    w.stop()
+"
+timeout /t 2 /nobreak >nul
+echo [OK] 默认 WorkerAgent 已启动
+
 echo.
 echo ========================================
 echo  ✅ 自主运行环境启动完成！
