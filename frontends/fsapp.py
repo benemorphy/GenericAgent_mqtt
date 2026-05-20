@@ -276,18 +276,22 @@ def _init_bbs_push():
     global _bbs_push_client
     if _bbs_push_client is not None:
         return
-    try:
-        # 必须在主线程创建连接
-        from mqtt_bbs.board_client import BoardClient as _BC
-        _bbs_push_client = _BC("feishu_bbs_bridge", board="agent-bbs-test")
-        _bbs_push_client.connect()
-        _bbs_push_client.subscribe("bbs/+/post", _on_bbs_new_post)
-        print("[BBS桥接] ✅ BBS→飞书 推送已启动")
-    except Exception as e:
-        print(f"[BBS桥接] ⚠️ 初始化失败: {e}")
+    for _retry in range(3):
+        try:
+            from mqtt_bbs.board_client import BoardClient as _BC
+            _bbs_push_client = _BC("feishu_bbs_bridge", board="agent-bbs-test")
+            _bbs_push_client.connect()
+            _bbs_push_client.subscribe("bbs/+/post", _on_bbs_new_post)
+            print("[BBS桥接] ✅ BBS→飞书 推送已启动")
+            break
+        except Exception as e:
+            print(f"[BBS桥接] ⚠️ 初始化失败(第{_retry+1}次): {e}")
+            if _retry < 2:
+                import time; time.sleep(2 ** _retry)
 
 # 记录最近推送的帖子ID，避免重复推送
 _bbs_pushed_ids = set()
+_BBS_PUSHED_MAX = 10000  # 防止内存泄漏
 def _on_bbs_new_post(topic, payload):
     """BBS 新帖回调 → 推送到飞书"""
     global _bbs_push_chats, _bbs_pushed_ids
@@ -296,6 +300,9 @@ def _on_bbs_new_post(topic, payload):
     post_id = payload.get("id", 0)
     if post_id in _bbs_pushed_ids:
         return
+    # 控制集合大小，防内存泄漏
+    if len(_bbs_pushed_ids) >= _BBS_PUSHED_MAX:
+        _bbs_pushed_ids = set(list(_bbs_pushed_ids)[-_BBS_PUSHED_MAX//2:])
     _bbs_pushed_ids.add(post_id)
     if len(_bbs_pushed_ids) > 1000:
         _bbs_pushed_ids.clear()
@@ -925,7 +932,7 @@ def handle_command(open_id, cmd, chat_id=None):
         if _new_ideas:
             try:
                 from mqtt_bbs.board_client import BoardClient as _BC
-                with _BC("feishu_bot", board="agent-dream") as _bbs_d:
+                with _BC("feishu_bot_dream", board="agent-dream") as _bbs_d:
                     _reg = _bbs_d.register("飞书Bot", timeout=5)
                     if _reg and _reg.get("token"):
                         _bbs_d.post(
@@ -947,7 +954,7 @@ def handle_command(open_id, cmd, chat_id=None):
             content = " ".join(parts[2:])
             try:
                 from mqtt_bbs.board_client import BoardClient as _BC
-                with _BC("feishu_bot", board="agent-bridge") as _bbs:
+                with _BC("feishu_bot_bridge", board="agent-bridge") as _bbs:
                     reg = _bbs.register("飞书Bot", timeout=5)
                     if reg and reg.get("token"):
                         result = _bbs.post(content, reg["token"], timeout=5)
