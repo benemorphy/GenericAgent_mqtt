@@ -418,10 +418,10 @@ class BoardService:
         token = uuid.uuid4().hex[:16]
         with self._db_io_lock:
             try:
-                db.execute("INSERT INTO users VALUES(?,?,?)", (token, name, time.time()))
+                db.execute("INSERT INTO bbs_users(token,name,board,created_at) VALUES(%s,%s,%s,NOW())", (token, name, board_key))
                 db.commit()
-            except sqlite3.IntegrityError:
-                row = db.execute("SELECT token FROM users WHERE name=?", (name,)).fetchone()
+            except pymysql.err.IntegrityError:
+                row = db.execute("SELECT token FROM bbs_users WHERE name=%s AND board=%s", (name, board_key)).fetchone()
                 token = row["token"] if row else token
 
         resp_topic = f"{TOPIC_BBS}/{board_key}/register/response/{corr_id}"
@@ -446,7 +446,7 @@ class BoardService:
 
         with self._db_io_lock:
             # 验证 token
-            row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+            row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
             if not row:
                 log.warning(f"  ❌ 无效 token (board: {board_key})")
                 resp_topic = f"{TOPIC_BBS}/{board_key}/post/response/{corr_id}"
@@ -454,8 +454,8 @@ class BoardService:
                 return
 
             author = row["name"]
-            cur = db.execute("INSERT INTO posts(author,content,created_at) VALUES(?,?,?)",
-                             (author, content, time.time()))
+            cur = db.execute("INSERT INTO bbs_posts(board,author,content,created_at) VALUES(%s,%s,%s,NOW(3))",
+                             (board_key, author, content))
             db.commit()
             post_id = cur.lastrowid
             created_at = time.time()
@@ -550,7 +550,7 @@ class BoardService:
             elif query_type == "count":
                 author = params.get("author")
                 if author:
-                    row = db.execute("SELECT COUNT(*) as c FROM posts WHERE author=?", (author,)).fetchone()
+                    row = db.execute("SELECT COUNT(*) as c FROM bbs_posts WHERE author=%s AND board=%s", (author, board_key)).fetchone()
                 else:
                     row = db.execute("SELECT COUNT(*) as c FROM posts").fetchone()
                 result = {"total": row["c"] if row else 0}
@@ -589,7 +589,7 @@ class BoardService:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
         if not row:
             return
 
@@ -629,7 +629,7 @@ class BoardService:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
         if not row:
             return
 
@@ -701,7 +701,7 @@ class BoardService:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
         if not row:
             return
 
@@ -757,7 +757,7 @@ class BoardService:
         db = self._get_db(board_key)
         if not db:
             return
-        row = db.execute("SELECT name FROM users WHERE token=?", (token,)).fetchone()
+        row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
         if not row:
             return
 
