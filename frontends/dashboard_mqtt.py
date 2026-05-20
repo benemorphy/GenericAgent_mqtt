@@ -51,6 +51,20 @@ class MQTTDataSource:
         self._client.subscribe("node/+/capability", self._on_agent_cap)
         self._client.subscribe("board/task/+/signal", self._on_task_signal)
 
+                # 断线自动重连
+        def _on_ds_disconnect(client, userdata, rc):
+            if rc != 0:
+                print(f"[dashboard_mqtt] ⚠️ 断开 (rc={rc})，5s后重连...")
+                import time as _t
+                _t.sleep(5)
+                try:
+                    client.reconnect()
+                    print(f"[dashboard_mqtt] 🔄 重连成功")
+                except Exception as _e:
+                    print(f"[dashboard_mqtt] ❌ 重连失败: {_e}")
+        
+        self._client._client.on_disconnect = _on_ds_disconnect
+        
         # 离线检测定时器
         self._hb_check_interval = 5  # 每5秒检查一次
         self._check_hb_timer = threading.Thread(target=self._hb_check_loop, daemon=True)
