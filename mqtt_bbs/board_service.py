@@ -35,6 +35,16 @@ DEFAULT_BOARDS = {"agent-bbs-test": {"name": "default", "db": "agent_bbs.db"},
 UPLOAD_DIR = "bbs_files"
 TOPIC_BBS = "bbs"                     # agent/bbs/{board}/...
 
+# ── Webhook 辅助 ──
+def _webhook_send(url: str, data: dict):
+    """发送 webhook 回调（在独立线程中执行）"""
+    import requests as _req
+    try:
+        _r = _req.post(url, json=data, timeout=5)
+        log.info(f"  🌐 Webhook 发送成功: {url} ({_r.status_code})")
+    except Exception as e:
+        log.warning(f"  🌐 Webhook 失败: {url} → {e}")
+
 # ── CapabilityRegistry ──
 # BoardService 内置的能力注册表，监听 node/+/capability + heartbeat
 # 提供 board/capability/query 查询接口
@@ -205,6 +215,7 @@ class BoardService:
         self._running = False
         self._client = BBSClient(agent_id, host=self._host, port=self._port)
         self._registry = CapabilityRegistry(self._client)
+        self._webhooks: dict[str, list[str]] = {}  # board_key → [webhook_urls]
 
     # ── 公开 API ──
 
@@ -234,6 +245,7 @@ class BoardService:
         self._client.subscribe(f"{TOPIC_BBS}/+/file_commit", self._on_file_commit)
         self._client.subscribe(f"{TOPIC_BBS}/+/file_download", self._on_file_download)
         self._client.subscribe(f"{TOPIC_BBS}/+/admin/reload", self._on_admin_reload)
+        self._client.subscribe(f"{TOPIC_BBS}/+/webhook", self._on_webhook_config)
 
         # 启动能力注册表
         self._registry.start()
@@ -400,6 +412,37 @@ class BoardService:
         }
         self._client.publish(f"{TOPIC_BBS}/{board_key}/new_post", broadcast, retain=False, qos=0)
         log.info(f"  📝 新帖 #{post_id} by {author} (board: {board_key})")
+
+        # ── Webhook: 转发新帖到配置的 URL ──
+        if board_key in self._webhooks:
+            for url in self._webhooks[board_key]:
+                try:
+                    import threading as _th
+                    _th.Thread(target=_webhook_send, args=(url, {
+                        "board": board_key, "event": "new_post",
+                        "post_id": post_id, "author": author, "content": content,
+                    }), daemon=True).start()
+                except Exception as _e:
+                    log.warning(f"  Webhook 发送失败: {url} → {_e}")
+
+    def _on_webhook_config(self, topic: str, payload):
+        """Webhook 配置: {action: "set"|"del", url: "...", board: "..."}"""
+        board_key = self._board_from_topic(topic)
+        if not board_key or not isinstance(payload, dict):
+            return
+        action = payload.get("action", "set")
+        url = payload.get("url", "")
+        if not url:
+            return
+        if action == "set":
+            self._webhooks.setdefault(board_key, [])
+            if url not in self._webhooks[board_key]:
+                self._webhooks[board_key].append(url)
+                log.info(f"  🌐 注册 webhook: {board_key} → {url}")
+        elif action == "del":
+            if board_key in self._webhooks:
+                self._webhooks[board_key] = [u for u in self._webhooks[board_key] if u != url]
+                log.info(f"  🌐 删除 webhook: {board_key} → {url}")
 
     def _on_query(self, topic: str, payload):
         """查询请求: {agent_id, type, params, corr_id} → 返回查询结果"""
