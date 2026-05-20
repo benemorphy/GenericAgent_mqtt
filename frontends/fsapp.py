@@ -250,6 +250,7 @@ _reminder_send = lambda oid, txt: send_message(oid, txt) if oid else None
 _todo_mgr = TodoManager()
 _master_board = None  # 延迟初始化 AgentBoardWithPersistence
 _bbs_push_client = None  # BBS 桥接客户端
+_inspiration_board = None  # 延迟初始化灵感板（单例，防止MQTT client_id冲突）
 _bbs_push_chats = set()  # 订阅 BBS 推送的飞书聊天
 
 def _get_board():
@@ -261,6 +262,14 @@ def _get_board():
         except Exception as e:
             print(f"[MQTT BBS] 连接失败: {e}")
     return _master_board
+
+def _get_inspiration_board():
+    """获取灵感板单例（避免重复创建导致MQTT client_id冲突）"""
+    global _inspiration_board
+    if _inspiration_board is None:
+        from tools.inspiration_board import Board as _InspBoard
+        _inspiration_board = _InspBoard(bbs_backend=True)
+    return _inspiration_board
 
 def _init_bbs_push():
     """初始化 BBS→飞书 推送线程"""
@@ -785,7 +794,7 @@ def handle_command(open_id, cmd, chat_id=None):
         else:
             _send_cmd_response(REMIND_HELP)
     elif op == "/inspired":
-        _board = InspirationBoard()
+        _board = _get_inspiration_board()
         _ideas = _board.load_all()
         if not _ideas:
             _send_cmd_response("📋 灵感板为空")
@@ -880,7 +889,6 @@ def handle_command(open_id, cmd, chat_id=None):
             _send_cmd_response(_todo_mgr.format_list())
     elif op == "/dream":
         from tools.dream_engine import replay_memories, associate_random
-        from tools.inspiration_board import Board as _InspBoard
         import pymysql as _pm
         _conn = _pm.connect(host='127.0.0.1', port=3306, user='root', password='mariadb', database='mqtt_bbs')
         _cur = _conn.cursor()
@@ -889,7 +897,7 @@ def handle_command(open_id, cmd, chat_id=None):
         _conn.close()
         _ins = replay_memories(k=3)
         _assocs = associate_random(k=2)
-        _ib = _InspBoard(bbs_backend=True)
+        _ib = _get_inspiration_board()
         _new_ideas = 0
         _lines = [f"💭 Agent Dreaming (dream_memories: {_cnt} 条)"]
         if _ins:
