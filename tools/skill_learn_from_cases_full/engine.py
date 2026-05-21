@@ -24,8 +24,8 @@ sys.path.insert(0, str(GA_ROOT / "memory" / "skill_search"))
 # -- 自动启用LLM（从本地API密钥配置加载）--
 if not os.environ.get("SKILL_LLM_ENABLE"):
     try:
-        import mykey
-        cfg = getattr(mykey, 'native_oai_config', {})
+        from tools.config_service import ConfigService
+        cfg = ConfigService.instance().get('native_oai_config') or {}
         if cfg and cfg.get('apikey') and cfg.get('apibase'):
             os.environ.setdefault("SKILL_LLM_ENABLE", "1")
             os.environ.setdefault("LLM_API_BASE", cfg['apibase'].rstrip('/'))

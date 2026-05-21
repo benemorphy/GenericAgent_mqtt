@@ -8,8 +8,8 @@ Hooks only via monkey-patch so core files stay untouched:
 import threading, sys
 
 try:
-    from llmcore import _load_mykeys
-    _cfg = _load_mykeys().get('langfuse_config')
+    from tools.config_service import ConfigService
+    _cfg = ConfigService.instance().get('langfuse_config')
     from langfuse import Langfuse
     _lf = Langfuse(**_cfg) if _cfg else None
 except Exception:

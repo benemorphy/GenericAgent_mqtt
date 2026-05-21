@@ -4,7 +4,8 @@ import requests
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from agentmain import GeneraticAgent
 from chatapp_common import AgentChatMixin, ensure_single_instance, public_access, redirect_log, require_runtime, split_text
-from llmcore import mykeys
+from tools.config_service import ConfigService
+mykeys = ConfigService.instance()
 
 try:
     from dingtalk_stream import AckMessage, CallbackHandler, Credential, DingTalkStreamClient
