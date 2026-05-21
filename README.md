@@ -364,6 +364,25 @@ GenericAgent 是一个极简（~3K 行核心代码）的自进化自主 Agent �
 
 通过 **skill_learn_from_cases** CLI 工具加速——已学习 37 项技能。
 
+### 技能评分 Top 12
+
+| 技能 | 评分 | 模式数 |
+|------|:----:|:------:|
+| debug (服务程序调试) | 100 | 12 |
+| test_strategy | 100 | 17 |
+| error_handling_patterns | 100 | 16 |
+| structured_logging | 100 | 12 |
+| git_advanced | 100 | 14 |
+| mqtt_testing | 100 | 12 |
+| performance_optimization | 93 | 12 |
+| docker_compose_production | 84 | 14 |
+| cypher_programming_language | 83 | 13 |
+| neo4j_cypher_graph_database | 82 | 12 |
+| sql | 80 | 14 |
+| wiki_search | 78 | 15 |
+
+> 完整列表：`ls skills_learning/`
+
 ---
 
 ## 🛠️ 工具生态
@@ -390,11 +409,33 @@ worker.on_task(lambda msg: execute_scan(msg.input))
 worker.start()
 ```
 
+**MQTT BBS 相比 File BBS 解决的 8 个关键痛点：**
+1. **毫秒推送** vs 秒级轮询 — 零延迟任务感知
+2. **N:M 任意并发** vs 串行 — 1 个 Master + N 个 Worker 处理 M 个任务
+3. **跨机器** — Worker 可在不同主机、容器、云上运行
+4. **协议级存活检测** — LWT 自动发布离线事件，无僵尸进程
+5. **基于能力的路由** — Worker 仅认领匹配的任务
+6. **运行时干预** — 任务执行中注入指令，无需杀进程
+7. **第三方集成** — 任何 MQTT 客户端均可参与 (Node.js/Grafana/IFTTT)
+8. **持久化 + 离线缓冲** — Broker 为离线 Agent 排队，上线后自动重放
+
 ### 🔹 rmqtt Web UI 仪表盘
 内置 Broker 仪表盘，实时展示所有在线 Agent、任务状态和系统健康度（端口 8100）。
 
 ### 🔹 Dashboard MQTT — 实时监控面板
-基于 Streamlit（端口 8501）：集群概览、Agent 卡片、实时日志、远程干预、停止信号。
+基于 Streamlit（端口 8501）：
+| 功能 | 说明 |
+|------|------|
+| 集群概览 | 总计、运行中、等待中、已完成、已停止 |
+| Agent 卡片 | 状态、在线时长、实时日志 |
+| 日志查看器 | 实时 tail stdout.log + stderr.log |
+| 远程干预 | 发送指令、注入工作记忆 |
+| 停止 Agent | 写入 `_stop` 信号优雅关闭 |
+| 自动刷新 | 可配置 1-10s 间隔 |
+
+```bash
+streamlit run frontends/dashboard_mqtt.py
+```
 
 ### 🔹 skill_learn_from_cases — 案例驱动技能学习 CLI
 从真实案例学习技能。零外部依赖（除搜索引擎 API Key）。双路径：LLM 增强 + 纯规则降级。
@@ -411,8 +452,23 @@ python -m tools.skill_learn_from_cases_full cypher_programming_language
 
 **已学习 37 项技能**，包括：debug、docker_compose_production、cypher_programming_language、git_advanced、mqtt_testing、sql、sparql、neo4j_cypher、ontology、satellite_image_identification 等。
 
-### 🔹 gui_vision — 窗口视觉理解
+### 🔹 gui_vision — 窗口视觉理解 (OCR/VLM)
 本地 OCR (rapidocr-onnxruntime) + VLM 降级。内存窗口截取，DPI 补偿，坐标转换，ljqCtrl 点击联动。
+
+| 特性 | 说明 |
+|------|------|
+| 窗口截取 | 仅目标窗口（非全屏），自动 DPI 补偿 |
+| OCR 引擎 | rapidocr-onnxruntime 本地 OCR，200+ 元素/10s |
+| 坐标转换 | `element_to_screen_coords()` bbox → 物理屏幕坐标 |
+| 点击联动 | 识别 → `ljqCtrl.Click()` 即时点击 |
+| 降级链路 | 独立超时（离线15s/本地30s），自动降级 |
+
+```python
+from gui_vision import understand_window, element_to_screen_coords
+state = understand_window("Chrome")  # default: rapidocr
+el = state['ui_elements'][0]
+x, y = element_to_screen_coords(state, el)
+```
 
 ### 🔹 inspiration_board — 灵感沟通板
 基于 MQTT 实时同步的灵感协作板，支持添加、归档、自动通知。

@@ -303,13 +303,12 @@ def handle_frontend_command(agent, query, exclude_pid=None):
 
 
 def install(cls):
-    """Wrap cls._handle_slash_cmd so /continue is handled before original dispatch."""
-    orig = cls._handle_slash_cmd
-    if getattr(orig, '_continue_patched', False): return
-    def patched(self, raw_query, display_queue):
-        if (raw_query or '').startswith('/continue'):
-            r = handle(self, raw_query, display_queue)
-            if r is None: return None
-        return orig(self, raw_query, display_queue)
-    patched._continue_patched = True
-    cls._handle_slash_cmd = patched
+    """Register /continue handler via slash_cmd_registry (replaces monkey-patch)."""
+    from tools.slash_cmd_registry import register, NOT_MINE
+
+    def handler(agent, raw_query, display_queue):
+        if not (raw_query or '').startswith('/continue'):
+            return NOT_MINE
+        return handle(agent, raw_query, display_queue)
+
+    register('/continue', handler, '/continue [n] - 列出/恢复历史会话')
