@@ -70,6 +70,7 @@ def _install_import_stubs():
     agentmain.GeneraticAgent = GeneraticAgent
 
     chatapp_common = types.ModuleType("chatapp_common")
+    chatapp_common.create_agent = lambda verbose=False: (object(), {})
     chatapp_common.FILE_HINT = ""
     chatapp_common.HELP_TEXT = ""
     chatapp_common.TELEGRAM_MENU_COMMANDS = []
