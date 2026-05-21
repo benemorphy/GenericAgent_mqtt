@@ -58,6 +58,11 @@ class GenericAgentHandler(BaseHandler):
             finally: os.chdir(old_cwd)
         else: result = yield from code_run(code, code_type, timeout, cwd, code_cwd=code_cwd, stop_signal=self.code_stop_signal, maxlen=maxlen)
         next_prompt = get_anchor_prompt(self, skip=args.get('_index', 0) > 0)
+        # 好奇心检测: 目录列举结果中的模式/异常
+        if hasattr(self, '_constraint_dashboard'):
+            from tools.curiosity_hooks import check_code_run_curiosity, try_register_curiosity
+            sig = check_code_run_curiosity(code_type, code, str(result))
+            try_register_curiosity(self, sig)
         return StepOutcome(result, next_prompt=next_prompt)
     
     def do_ask_user(self, args, response):
@@ -80,6 +85,11 @@ class GenericAgentHandler(BaseHandler):
         yield f'[Info] {str(result)}\n'
         if content: result = json.dumps(result, ensure_ascii=False, default=json_default) + f"\n```html\n{content}\n```"
         next_prompt = "\n"
+        # 好奇心检测: 扫描结果中的新tab/有趣页面
+        if hasattr(self, '_constraint_dashboard'):
+            from tools.curiosity_hooks import check_web_scan_curiosity, try_register_curiosity
+            sig = check_web_scan_curiosity(tabs_only, result)
+            try_register_curiosity(self, sig)
         return StepOutcome(result, next_prompt=next_prompt)
     
     def do_web_execute_js(self, args, response):
@@ -168,6 +178,11 @@ class GenericAgentHandler(BaseHandler):
         log_memory_access(path)
         for hook in self._system_prompt_hooks:
             next_prompt += hook({'location': 'file_read', 'path': path}) or ""
+        # 好奇心检测: 文件内容中的异常/模式
+        if hasattr(self, '_constraint_dashboard'):
+            from tools.curiosity_hooks import check_file_read_curiosity, try_register_curiosity
+            sig = check_file_read_curiosity(path, result)
+            try_register_curiosity(self, sig)
         return StepOutcome(result, next_prompt=next_prompt)
     
     def enter_plan_mode(self, plan_path): 
@@ -283,6 +298,23 @@ class GenericAgentHandler(BaseHandler):
         for hook in self._system_prompt_hooks:
             next_prompt += hook({'location': 'turn_end', 'has_summary': bool(rsumm), 'parent': self.parent}) or ""
         for hook in getattr(self.parent, '_turn_end_hooks', {}).values(): hook(locals())  # current readonly
+        # 好奇心发布: 将累计的高优好奇心信号推送到BBS讨论板
+        if hasattr(self, '_constraint_dashboard'):
+            hp = self._constraint_dashboard.high_priority_curiosities
+            if hp and turn > 0 and turn % 6 == 0:
+                try:
+                    from tools.curiosity_board_client import CuriosityBoardClient
+                    agent_id = getattr(self.parent, 'agent_id', self.parent.__class__.__name__)
+                    bbs = CuriosityBoardClient(agent_id)
+                    bbs.connect()
+                    for sig in hp[:3]:  # 最多发3个
+                        post_id = bbs.post_curiosity(sig)
+                        if post_id:
+                            print(f"[Curiosity] 已发布到讨论板: #{post_id}")
+                    self._constraint_dashboard.curiosity_signals.clear()
+                    bbs.disconnect()
+                except Exception as e:
+                    print(f"[Curiosity] 发布到BBS失败: {e}")
         return next_prompt
 
 def get_global_memory():
