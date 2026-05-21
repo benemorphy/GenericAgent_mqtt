@@ -376,3 +376,20 @@ from agentmain import GeneraticAgent as _GA
 from continue_cmd import handle_frontend_command as _handle_continue_frontend, install as _install_continue, reset_conversation as _reset_conversation
 _install_continue(_GA)
 from btw_cmd import handle_frontend_command as _handle_btw_frontend, install as _install_btw; _install_btw(_GA)
+
+
+def create_agent(verbose=False, inc_out=True):
+    """创建并初始化标准 GenericAgent 实例
+
+    统一处理: agent 创建、Verbose/inc_out 设置、ConfigService 注入。
+    各 frontend 只需调用此函数获取 agent + cfg 即可。
+
+    Returns:
+        (agent, cfg) — agent 是 GeneraticAgent 实例, cfg 是 ConfigService 实例
+    """
+    from tools.config_service import ConfigService
+    cfg = ConfigService.instance()
+    agent = _GA()
+    agent.verbose = verbose
+    agent.inc_out = inc_out
+    return agent, cfg

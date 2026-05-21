@@ -16,12 +16,12 @@ class TurnContext(TypedDict, total=False):
 TurnHookFn = Callable[[TurnContext], None]
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from agentmain import GeneraticAgent
 from chatapp_common import (AgentChatMixin, FILE_HINT, build_done_text, clean_reply,
                             ensure_single_instance, extract_files, public_access,
-                            redirect_log, require_runtime, split_text, strip_files)
-from tools.config_service import ConfigService
-mykeys = ConfigService.instance()
+                            redirect_log, require_runtime, split_text, strip_files,
+                            create_agent)
+
+agent, mykeys = create_agent(verbose=False)
 
 try:
     from wecom_aibot_sdk import WSClient, generate_req_id

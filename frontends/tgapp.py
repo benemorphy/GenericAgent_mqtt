@@ -26,12 +26,20 @@ from chatapp_common import (
 )
 from continue_cmd import handle_frontend_command, reset_conversation
 from btw_cmd import handle_frontend_command as handle_btw_frontend_command
-from tools.config_service import ConfigService
-mykeys = ConfigService.instance()
+from chatapp_common import create_agent, (
+    FILE_HINT,
+    HELP_TEXT,
+    TELEGRAM_MENU_COMMANDS,
+    clean_reply,
+    ensure_single_instance,
+    extract_files,
+    format_restore,
+    redirect_log,
+    require_runtime,
+    split_text,
+)
 
-agent = GeneraticAgent()
-agent.verbose = False
-agent.inc_out = True
+agent, mykeys = create_agent(verbose=False)
 ALLOWED = set(mykeys.get('tg_allowed_users', []))
 
 _DRAFT_HINT = "thinking..."
