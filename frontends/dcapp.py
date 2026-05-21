@@ -14,7 +14,8 @@ from chatapp_common import (
     HELP_TEXT, FILE_HINT, format_restore,
     _handle_continue_frontend, _reset_conversation,
 )
-from llmcore import mykeys
+from tools.config_service import ConfigService
+mykeys = ConfigService.instance()
 
 try:
     import discord
