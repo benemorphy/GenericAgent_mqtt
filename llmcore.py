@@ -727,8 +727,9 @@ class MixinSession:
                 print(f'[MixinSession] {last_chunk[:80]}, round {rnd} exhausted, retry in {delay:.1f}s')
                 log.warning('MixinSession %s..., round %d exhausted, retry in %.1fs', last_chunk[:80], rnd, delay)
                 time.sleep(delay)
-            else: print(f'[MixinSession] {last_chunk[:80]}, retry {attempt+1}/{self._retries} (s{idx}→s{nxt})')
-            else: log.warning('MixinSession %s..., retry %d/%d (s%d->s%d)', last_chunk[:80], attempt+1, self._retries, idx, nxt)
+            else:
+                print(f'[MixinSession] {last_chunk[:80]}, retry {attempt+1}/{self._retries} (s{idx}→s{nxt})')
+                log.warning('MixinSession %s..., retry %d/%d (s%d->s%d)', last_chunk[:80], attempt+1, self._retries, idx, nxt)
 
 THINKING_PROMPT_ZH = """
 ### 行动规范（持续有效）
