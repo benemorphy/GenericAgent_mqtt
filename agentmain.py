@@ -183,8 +183,49 @@ if __name__ == '__main__':
     parser.add_argument('--broker-port', type=int, default=None, help='MQTT Broker 端口')
     parser.add_argument('--llm_no', type=int, default=0)
     parser.add_argument('--verbose', action='store_true')
+    parser.add_argument('--task', default=None, help='Subagent 任务名: 创建 temp/{name}/ 以文件模式运行')
+    parser.add_argument('--input', default=None, help='Subagent 短输入文本 (长文本请手动写 input.txt)')
     args = parser.parse_args()
 
+    # ── Subagent 模式 ──
+    if args.task:
+        agent = GeneraticAgent()
+        agent.next_llm(args.llm_no)
+        agent.verbose = args.verbose
+        task_dir = os.path.join(script_dir, 'temp', args.task)
+        os.makedirs(task_dir, exist_ok=True)
+        # 自动清理旧 output + 写 input
+        output_path = os.path.join(task_dir, 'output.txt')
+        if os.path.exists(output_path):
+            os.remove(output_path)
+        if args.input:
+            input_path = os.path.join(task_dir, 'input.txt')
+            with open(input_path, 'w', encoding='utf-8') as f:
+                f.write(args.input)
+        # 读 input
+        input_path = os.path.join(task_dir, 'input.txt')
+        if not os.path.exists(input_path):
+            print(f"[Subagent] 找不到 input.txt: {input_path}")
+            sys.exit(1)
+        query = open(input_path, encoding='utf-8').read()
+        # 单次执行：put_task + 等待 done
+        dq = agent.put_task(query, source='subagent')
+        threading.Thread(target=agent.run, daemon=True).start()
+        full_resp = ""
+        while True:
+            item = dq.get(timeout=300)
+            if 'done' in item:
+                full_resp = item['done']
+                break
+            if 'next' in item:
+                full_resp += item.get('next', '')
+        # 写 output
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(full_resp)
+        print(f"[Subagent] 完成: {args.task} -> {output_path}")
+        sys.exit(0)
+
+    # ── 正常交互 / MQTT 模式 ──
     agent = GeneraticAgent()
     agent.next_llm(args.llm_no)
     agent.verbose = args.verbose
