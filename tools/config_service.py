@@ -36,6 +36,23 @@ class ConfigService:
             cls._instance = cls()
         return cls._instance
 
+    @classmethod
+    def init(cls, profile_name='default'):
+        """初始化并切换到指定 profile（类方法，方便一次调用）
+
+        Args:
+            profile_name: 'internet', 'inner', 'inner_vlm', 或 'default'（从 mykey.py 加载）
+
+        示例:
+            ConfigService.init('internet')   # 切换到外网配置
+            ConfigService.init('inner')      # 切换到内网配置
+            ConfigService.init()             # 默认从 mykey.py 加载
+        """
+        inst = cls.instance()
+        inst._profile = profile_name
+        inst._load(force=True)
+        return inst
+
     # ── 公开 API ──────────────────────────────────────────
 
     def get(self, key, default=None):
@@ -44,10 +61,7 @@ class ConfigService:
         return self._config.get(key, default)
 
     def get_model_config(self, name):
-        """获取 LLM 模型配置（供 ProviderRegistry 使用）
-
-        返回完整的配置 dict，或 None（如果配置不存在）。
-        """
+        """获取 LLM 模型配置（供 ProviderRegistry 使用）"""
         self._ensure_loaded()
         return self._config.get(name)
 
@@ -57,7 +71,7 @@ class ConfigService:
         return dict(self._config)
 
     def reload(self, force=False):
-        """重新加载配置
+        """重新加载当前配置
 
         Args:
             force: 强制重新加载（忽略 mtime 检查）
@@ -66,6 +80,18 @@ class ConfigService:
             (config_dict, changed) 元组
         """
         return self._load(force=force)
+
+    def switch_profile(self, profile_name):
+        """切换到另一个 profile 并重新加载
+
+        Args:
+            profile_name: 'internet', 'inner', 'inner_vlm', 或 'default'
+
+        Returns:
+            (config_dict, changed) 元组
+        """
+        self._profile = profile_name
+        return self._load(force=True)
 
     def watch(self, callback):
         """注册配置变更回调
@@ -85,38 +111,59 @@ class ConfigService:
         """当前配置 profile 名称"""
         return self._profile
 
+    @property
+    def profile_name(self):
+        """当前配置 profile 名称（同 profile）"""
+        return self._profile
+
     # ── 内部实现 ──────────────────────────────────────────
 
     def _load(self, force=False):
         """实际的配置加载逻辑
 
-        Phase 1: 沿用原有 mykey.py / mykey.json 加载方式
-        Phase 2+: 支持 profile 切换（profiles/internet.py 等）
+        Phase 1/2: 默认从 mykey.py / mykey.json 加载
+        Phase 3:  支持从 profiles/<name>.py 加载
         """
-        # 优先尝试 import mykey（Python 模块方式）
-        try:
-            import mykey
-            importlib.reload(mykey)
-            self._path = mykey.__file__
-            self._config = {k: v for k, v in vars(mykey).items()
-                           if not k.startswith('_')}
-            self._profile = 'default'
-            changed = True
-        except ImportError:
-            # fallback: mykey.json
-            p = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'mykey.json')
-            if os.path.exists(p):
-                with open(p, encoding='utf-8') as f:
-                    self._config = json.load(f)
-                self._path = p
-                self._profile = 'json'
+        changed = False
+
+        # ── 如果指定了非 default profile，优先从 profiles/ 加载 ──
+        if self._profile not in ('default', 'json', 'none'):
+            try:
+                mod = importlib.import_module(f'profiles.{self._profile}')
+                importlib.reload(mod)
+                self._path = mod.__file__
+                self._config = {k: v for k, v in vars(mod).items()
+                               if not k.startswith('_')}
                 changed = True
-            else:
-                # 没有可用配置
-                self._config = {}
-                self._path = None
-                self._profile = 'none'
-                changed = force
+            except ImportError:
+                print(f"[ConfigService] Profile '{self._profile}' not found, "
+                      f"falling back to default mykey.py")
+                self._profile = 'default'
+
+        # ── default profile: 从 mykey.py / mykey.json 加载 ──
+        if self._profile == 'default' and not changed:
+            # 优先尝试 import mykey（Python 模块方式）
+            try:
+                import mykey
+                importlib.reload(mykey)
+                self._path = mykey.__file__
+                self._config = {k: v for k, v in vars(mykey).items()
+                               if not k.startswith('_')}
+                changed = True
+            except ImportError:
+                # fallback: mykey.json
+                p = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'mykey.json')
+                if os.path.exists(p):
+                    with open(p, encoding='utf-8') as f:
+                        self._config = json.load(f)
+                    self._path = p
+                    self._profile = 'json'
+                    changed = True
+                else:
+                    self._config = {}
+                    self._path = None
+                    self._profile = 'none'
+                    changed = force
 
         self._mtime = time.time_ns()
 
