@@ -18,9 +18,9 @@ Profiles 是配置环境模版系统，替代原有的 `switch_mykey.ps1` 文件
 
 ```bash
 # 将现有的配置复制为 profile 文件
-cp mykey_internet.py   profiles/internet.py
-cp mykey_inner.py      profiles/inner.py
-cp mykey_inner_vlm.py  profiles/inner_vlm.py
+cp config\mykey_internet.py   profiles/internet.py
+cp config\mykey_inner.py      profiles/inner.py
+cp config\mykey_inner_vlm.py  profiles/inner_vlm.py
 ```
 
 编辑 `profiles/<name>.py` 填入真实的 API key 和端点地址即可。

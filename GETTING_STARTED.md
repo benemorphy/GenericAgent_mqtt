@@ -54,7 +54,7 @@ python3 --version
 
 ### 创建配置文件
 
-进入项目文件夹，把 `mykey_template.py` 复制一份，重命名为 `mykey.py`。
+进入项目文件夹，把 `config/mykey_template.py` 复制一份，重命名为 `mykey.py`。
 
 用任意文本编辑器打开 `mykey.py`，填入你的 API 信息。**选一种填就行**，不用的配置删掉或留着不管都行。
 
@@ -103,7 +103,7 @@ native_claude_config = {
 }
 ```
 
-> 💡 还支持 `native_oai_config`（OpenAI 标准工具调用）、`sider_cookie`（Sider）等，详见 `mykey_template.py` 中的注释。
+> 💡 还支持 `native_oai_config`（OpenAI 标准工具调用）、`sider_cookie`（Sider）等，详见 `config/mykey_template.py` 中的注释。
 
 ### 关键规则
 

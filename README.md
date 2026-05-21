@@ -106,7 +106,7 @@ This fork inherits all upstream capabilities and upgrades the **inter-agent comm
 | `agent_loop.py` | ~100-line agent loop: messages → LLM → tool calls → step outcome |
 | `ga.py` | GenericAgentHandler: 9 atomic tool implementations + memory access |
 | `llmcore.py` | LLM session management (Claude/OpenAI/Ollama/DeepSeek) |
-| `mykey.py` | API key configuration (template: `mykey_template.py`) |
+| `mykey.py` | API key configuration (template: `config/mykey_template.py`) |
 | `TMWebDriver.py` | Browser automation with CDP bridge, session persistence |
 
 ---
@@ -210,7 +210,7 @@ git clone https://github.com/benemorphy/GenericAgent_mqtt.git
 cd GenericAgent_mqtt
 uv venv
 uv pip install -e ".[ui]"
-cp mykey_template.py mykey.py     # fill in LLM API Key
+cp config/mykey_template.py mykey.py     # fill in LLM API Key
 python launch.pyw
 ```
 
@@ -361,7 +361,7 @@ GenericAgent 是一个极简（~3K 行核心代码）的自进化自主 Agent �
 | `agent_loop.py` | ~100行Agent循环：消息 → LLM → 工具调用 → 步骤结果 |
 | `ga.py` | GenericAgentHandler：9原子工具实现 + 记忆访问 |
 | `llmcore.py` | LLM会话管理 (Claude/OpenAI/Ollama/DeepSeek) |
-| `mykey.py` | API密钥配置 (模板: `mykey_template.py`) |
+| `mykey.py` | API密钥配置 (模板: `config/mykey_template.py`) |
 | `TMWebDriver.py` | 浏览器自动化，CDP桥接，会话保持 |
 
 ---
@@ -550,7 +550,7 @@ git clone https://github.com/benemorphy/GenericAgent_mqtt.git
 cd GenericAgent_mqtt
 uv venv
 uv pip install -e ".[ui]"
-cp mykey_template.py mykey.py     # 填入 LLM API Key
+cp config/mykey_template.py mykey.py     # 填入 LLM API Key
 python launch.pyw
 ```
 
