@@ -150,6 +150,10 @@ docs/
 # Abandoned virtual environments
 CLEAR=1/
 
+# Local config variants (moved to config/)
+config/
+__pycache__/
+
 # Security: API keys, tokens, secrets
 *token*
 *password*

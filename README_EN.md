@@ -98,7 +98,7 @@ This fork inherits all upstream capabilities and upgrades the **inter-agent comm
 | `agent_loop.py` | ~100-line agent loop: messages -> LLM -> tool calls -> step outcome |
 | `ga.py` | GenericAgentHandler: 9 atomic tool implementations + memory access |
 | `llmcore.py` | LLM session management (Claude/OpenAI/Ollama/DeepSeek) |
-| `mykey.py` | API key configuration (template: `mykey_template.py`) |
+| `mykey.py` | API key configuration (template: `config/mykey_template.py`) |
 | `TMWebDriver.py` | Browser automation with CDP bridge, session persistence |
 
 ---
@@ -297,7 +297,7 @@ git clone https://github.com/benemorphy/GenericAgent_mqtt.git
 cd GenericAgent_mqtt
 uv venv
 uv pip install -e ".[ui]"
-cp mykey_template.py mykey.py     # fill in your LLM API Key
+cp config/mykey_template.py mykey.py     # fill in your LLM API Key
 python launch.pyw
 ```
 

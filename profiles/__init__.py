@@ -9,9 +9,9 @@ ConfigService 根据 profile 名称加载对应文件。
   inner_vlm  — 内网 VLM 多模态模型配置
 
 快速开始:
-  cp mykey_internet.py profiles/internet.py   # 从现有配置创建
-  cp mykey_inner.py profiles/inner.py
-  cp mykey_inner_vlm.py profiles/inner_vlm.py
+  cp config\mykey_internet.py profiles/internet.py   # 从现有配置创建
+  cp config\mykey_inner.py profiles/inner.py
+  cp config\mykey_inner_vlm.py profiles/inner_vlm.py
 
 切换 profile:
   python -c "from tools.config_service import ConfigService; ConfigService.init('internet')"
