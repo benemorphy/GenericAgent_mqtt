@@ -1,9 +1,9 @@
-<img align="right" src="assets/images/GGA.png" width="240" height="300"/>
+<img style="float:right;margin-left:20px" src="assets/images/GGA.png" width="240" height="300" alt="GenericAgent logo"/>
 
 ---
 
-<div align="center">
-<img src="https://raw.githubusercontent.com/lsdefine/GenericAgent/main/assets/images/bar.jpg" width="880"/>
+<div style="text-align:center">
+<img src="https://raw.githubusercontent.com/lsdefine/GenericAgent/main/assets/images/bar.jpg" width="880" alt="GenericAgent banner"/>
 </div>
 
 > 🍴 **Fork of [GenericAgent](https://github.com/lsdefine/GenericAgent)** — A fork of [lsdefine](https://github.com/lsdefine)'s minimalist self-evolving agent framework.
