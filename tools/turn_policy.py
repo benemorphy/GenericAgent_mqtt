@@ -11,6 +11,8 @@ register_default_hooks(), which is called in ga.py __init__. For manual use:
 
 import os
 
+from tools.constraint_dashboard import policy_constraint_dashboard
+
 
 # ── Turn Policy Functions ──
 
@@ -67,6 +69,7 @@ DEFAULT_TURN_POLICIES = [
     policy_danger_retry,
     policy_inject_memory,
     policy_plan_limit,
+    policy_constraint_dashboard,
 ]
 
 POLICY_NAMES = {
@@ -100,15 +103,12 @@ def register_turn_policies(handler, policies=None):
 def _needs_handler(policy_func):
     """Check if policy function needs handler as first arg.
     
-    Functions defined in this module (DEFAULT_TURN_POLICIES) take
-    (turn, _plan, next_prompt) directly. External policy functions
-    may take (handler, turn, _plan, next_prompt) with a handler param.
-    
-    Convention: if function name starts with 'policy_' but is NOT
-    in DEFAULT_TURN_POLICIES, assume it needs handler.
+    Built-in functions from this module take (turn, _plan, next_prompt).
+    External policy functions (from other modules) use
+    (handler, turn, _plan, next_prompt) signature and need wrapping.
     """
-    if policy_func in DEFAULT_TURN_POLICIES:
-        return False
+    if policy_func in DEFAULT_TURN_POLICIES and getattr(policy_func, '__module__', '') == __name__:
+        return False  # built-in: no handler
     # Check signature: if first param is not 'turn', needs handler
     import inspect
     try:
