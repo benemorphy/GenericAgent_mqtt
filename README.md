@@ -170,6 +170,17 @@ python -m tools.skill_learn_from_cases_full cypher_programming_language
 ### 🔹 gui_vision — Window Visual Understanding
 Local OCR (rapidocr-onnxruntime) + VLM fallback. In-memory window capture, DPI compensation, coordinate conversion, ljqCtrl click integration.
 
+### 🔹 llm_providers — Provider Factory Pattern
+Pluggable LLM provider registry (`tools/llm_providers/`). Register any provider (Claude, OpenAI, Gemini, local) via `ProviderRegistry.register(name, cls)`. Decouples session creation from provider-specific SSE parsing and auth.
+
+```python
+from tools.llm_providers import ProviderRegistry
+sess = ProviderRegistry.create('claude-opus', cfg_dict)
+```
+
+### 🔹 turn_policy — Pluggable Turn Strategy Chain
+Customizable turn strategy for Agent loop (`tools/turn_policy.py`). Configure tool call budgets, max retries, and step limits per session without modifying core loop logic.
+
 ### 🔹 inspiration_board — Agent-User Collaboration Board
 MQTT-synced idea board. Add, archive, auto-notify on `agent/board/inspiration/{id}/signal`.
 

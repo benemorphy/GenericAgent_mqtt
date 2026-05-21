@@ -93,12 +93,25 @@ except:
 timeout /t 2 /nobreak >nul
 echo [OK] 默认 WorkerAgent 已启动
 
+:: ── 9. MD Server（Markdown 文件浏览器，端口 8899） ──
+set MD_PORT=8899
+netstat -ano | findstr ":%MD_PORT% " | findstr "LISTENING" >nul
+if %errorlevel% equ 0 (
+    echo [OK] MD Server (port %MD_PORT%) 已在运行
+) else (
+    echo [..] 启动 MD Server（Markdown 文件浏览器）...
+    start "md-server" /B /MIN ".venv\Scripts\python.exe" tools/md_server.py --port %MD_PORT%
+    timeout /t 3 /nobreak >nul
+    echo [OK] MD Server 已启动 (http://localhost:%MD_PORT%)
+)
+
 echo.
 echo ========================================
 echo  ✅ 自主运行环境启动完成！
 echo.
 echo  Web UI:         http://localhost:%WEBUI_PORT%
 echo  MQTT Dashboard: http://localhost:%DASHBOARD_PORT%
+echo  MD Server:      http://localhost:%MD_PORT%
 echo  Broker:         127.0.0.1:1883
 echo  BBS Service:    已启用
 echo ========================================
