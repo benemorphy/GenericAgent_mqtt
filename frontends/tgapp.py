@@ -26,7 +26,8 @@ from chatapp_common import (
 )
 from continue_cmd import handle_frontend_command, reset_conversation
 from btw_cmd import handle_frontend_command as handle_btw_frontend_command
-from chatapp_common import create_agent, (
+from chatapp_common import (
+    create_agent,
     FILE_HINT,
     HELP_TEXT,
     TELEGRAM_MENU_COMMANDS,
