@@ -268,6 +268,19 @@ class GenericAgentHandler(BaseHandler):
         self.history_info = last_history if last_history else []
         self.code_stop_signal = []
         self._done_hooks = []
+        # Turn policy hooks - pluggable strategy chain
+        self._turn_policies = [
+            self._policy_danger_ask_user,
+            self._policy_danger_retry,
+            self._policy_inject_memory,
+            self._policy_plan_limit,
+        ]
+        # System prompt hooks - pluggable prompt injection chain
+        self._system_prompt_hooks = [
+            self._sph_memory_sop,
+            self._sph_summary_enforcer,
+            self._sph_master_intervention,
+        ]
 
     def _get_abs_path(self, path):
         if not path: return ""
@@ -418,8 +431,8 @@ class GenericAgentHandler(BaseHandler):
         result = smart_format(result, max_str_len=maxlen, omit_str='\n\n[omitted long content]\n\n')
         next_prompt = self._get_anchor_prompt(skip=args.get('_index', 0) > 0)
         log_memory_access(path)
-        if 'memory' in path or 'sop' in path: 
-            next_prompt += "\n[SYSTEM TIPS] 正在读取记忆或SOP文件，若决定按sop执行请提取sop中的关键点（特别是靠后的）update working memory."
+        for hook in self._system_prompt_hooks:
+            next_prompt += hook({'location': 'file_read', 'path': path}) or ""
         return StepOutcome(result, next_prompt=next_prompt)
     
     def _in_plan_mode(self): return self.working.get('in_plan_mode')
@@ -543,7 +556,61 @@ class GenericAgentHandler(BaseHandler):
             try: print(prompt)
             except: pass
         return prompt
+
+    # ── Turn Policy Hooks (可插拔策略链) ──
+
+    def _policy_danger_ask_user(self, turn, _plan, next_prompt):
+        """每75轮强制ask_user（非plan模式）"""
+        if turn % 75 == 0 and (not _plan):
+            return f"\n\n[DANGER] 已连续执行第 {turn} 轮。必须总结情况进行ask_user，不允许继续重试。"
+        return ""
+
+    def _policy_danger_retry(self, turn, _plan, next_prompt):
+        """每7轮禁止无效重试"""
+        if turn % 7 == 0:
+            return f"\n\n[DANGER] 已连续执行第 {turn} 轮。禁止无效重试。若无有效进展，必须切换策略：1. 探测物理边界 2. 请求用户协助。如有需要，可调用 update_working_checkpoint 保存关键上下文。"
+        return ""
+
+    def _policy_inject_memory(self, turn, _plan, next_prompt):
+        """每10轮注入全局记忆"""
+        if turn % 10 == 0:
+            return get_global_memory()
+        return ""
+
+    def _policy_plan_limit(self, turn, _plan, next_prompt):
+        """Plan模式上限检测"""
+        if _plan and turn >= 10 and turn % 5 == 0 and turn <= 110:
+            return f"[Plan Hint] 正在计划模式。必须 file_read({_plan}) 确认当前步骤，回复开头引用：📌 当前步骤：...\n\n"
+        if _plan and turn >= 120:
+            return f"\n\n[DANGER] Plan模式已运行 {turn} 轮，已达上限。必须 ask_user 汇报进度并确认是否继续。"
+        return ""
+
+    # ── System Prompt Hooks (可插拔提示注入链) ──
     
+    def _sph_memory_sop(self, context):
+        """读取memory/SOP文件时注入提示"""
+        if context.get('location') == 'file_read':
+            path = context.get('path', '')
+            if 'memory' in path or 'sop' in path:
+                return "\n[SYSTEM TIPS] 正在读取记忆或SOP文件，若决定按sop执行请提取sop中的关键点（特别是靠后的）update working memory."
+        return ""
+    
+    def _sph_summary_enforcer(self, context):
+        """缺summary时强制要求"""
+        if context.get('location') == 'turn_end' and not context.get('has_summary'):
+            return "\n\n\n[SYSTEM] 必须在回复文本中包含<summary>！\n\n"
+        return ""
+    
+    def _sph_master_intervention(self, context):
+        """Master干预信息注入（从_intervene文件读取）"""
+        if context.get('location') == 'turn_end':
+            parent = context.get('parent')
+            if parent and hasattr(parent, 'task_dir'):
+                injprompt = consume_file(parent.task_dir, '_intervene')
+                if injprompt:
+                    return f"\n\n[MASTER] {injprompt}\n"
+        return ""
+
     def turn_end_callback(self, response, tool_calls, tool_results, turn, next_prompt, exit_reason):
         _c = re.sub(r'```.*?```|<thinking>.*?</thinking>', '', response.content, flags=re.DOTALL)
         rsumm = re.search(r"<summary>(.*?)</summary>", _c, re.DOTALL)
@@ -553,25 +620,18 @@ class GenericAgentHandler(BaseHandler):
             clean_args = {k: v for k, v in args.items() if not k.startswith('_')}
             summary = f"调用工具{tool_name}, args: {clean_args}"
             if tool_name == 'no_tool': summary = "直接回答了用户问题"
-            next_prompt += "\n\n\n[SYSTEM] 必须在回复文本中包含<summary>！\n\n"
         summary = smart_format(summary.replace('\n', ''), max_str_len=80)
         self.history_info.append(f'[Agent] {summary}')
         _plan = self._in_plan_mode()
 
-        if turn % 65 == 0 and (not _plan):
-            next_prompt += f"\n\n[DANGER] 已连续执行第 {turn} 轮。必须总结情况进行ask_user，不允许继续重试。"
-        elif turn % 7 == 0:
-            next_prompt += f"\n\n[DANGER] 已连续执行第 {turn} 轮。禁止无效重试。若无有效进展，必须切换策略：1. 探测物理边界 2. 请求用户协助。如有需要，可调用 update_working_checkpoint 保存关键上下文。"
-        elif turn % 10 == 0: next_prompt += get_global_memory()
-
-        if _plan and turn >= 10 and turn % 5 == 0:
-            next_prompt = f"[Plan Hint] 正在计划模式。必须 file_read({_plan}) 确认当前步骤，回复开头引用：📌 当前步骤：...\n\n" + next_prompt
-        if _plan and turn >= 90: next_prompt += f"\n\n[DANGER] Plan模式已运行 {turn} 轮，已达上限。必须 ask_user 汇报进度并确认是否继续。"
+        # Policy hook chain - each policy returns "" or a string to append
+        for policy in self._turn_policies:
+            next_prompt += policy(turn, _plan, next_prompt) or ""
 
         injkeyinfo = consume_file(self.parent.task_dir, '_keyinfo')
-        injprompt = consume_file(self.parent.task_dir, '_intervene')
         if injkeyinfo: self.working['key_info'] = self.working.get('key_info', '') + f"\n[MASTER] {injkeyinfo}"
-        if injprompt: next_prompt += f"\n\n[MASTER] {injprompt}\n"
+        for hook in self._system_prompt_hooks:
+            next_prompt += hook({'location': 'turn_end', 'has_summary': bool(rsumm), 'parent': self.parent}) or ""
         for hook in getattr(self.parent, '_turn_end_hooks', {}).values(): hook(locals())  # current readonly
         return next_prompt
 

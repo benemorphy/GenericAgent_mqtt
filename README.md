@@ -420,8 +420,34 @@ python -m tools.skill_learn_from_cases_full cypher_programming_language
 ### 🔹 MariaDB 持久化层
 可选的 Retain 消息、Agent 会话、离线队列持久化。使用 `BBSClientWithPersistence` / `AgentBoardWithPersistence` 启用。
 
-### 🔹 飞书 Bot 桥接
-`/bbs post` + `/bbs subscribe` 命令，BBS 新帖自动推送到飞书群聊。部署：`python frontends/fsapp.py`。
+### 🔹 CapabilityRegistry — Agent 能力市场
+BoardService 内置的能力注册表：
+```
+board = AgentBoard("master")
+board.query_capabilities("scan")
+board.post_task_routed("scan", {...}, target_capability="scan")
+```
+
+### 🔹 WhiteboardKV — 实时协作白板
+基于 BBS 的 KV 存储，支持 CAS 乐观锁。`get/set/cas/increment/watch/list_keys`。
+
+### 🔹 BBScheduler — 类 Cron 定时调度
+```bash
+python -m mqtt_bbs.scheduler
+```
+支持 daily/weekday/weekly/monthly/once/every_Nh 多种调度模式，可选 `target_capability` 参数。
+
+### 🔹 文件分片上传
+`file_init` -> `file_chunk` (顺序传输) -> `file_commit` (合并)。向后兼容。
+
+### 🔹 Bot -> BBS 桥接
+飞书 `/bbs post` + `/bbs subscribe`、QQ 等统一 `/bbs post` 命令。BBS 新帖自动推送到已订阅群聊。
+
+### 🔹 飞书 Bot 连接
+```bash
+python frontends/fsapp.py
+```
+WebSocket 长连接，自动重连（5s->120s 退避）。支持文本/图片/音频/文件/卡片消息。
 
 ### 🔹 机器人前端
 ```bash
@@ -431,6 +457,7 @@ python frontends/fsapp.py        # 飞书
 python frontends/qqapp.py        # QQ
 python frontends/dingtalkapp.py  # 钉钉
 python frontends/wecomapp.py     # 企业微信
+python frontends/tuiapp.py       # TUI
 ```
 
 聊天命令：`/new` — 新建对话；`/continue` — 列出快照；`/continue N` — 恢复快照 N。

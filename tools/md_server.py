@@ -1,0 +1,322 @@
+#!/usr/bin/env python3
+"""
+Markdown 文件 Web 查看器
+
+用法:
+    python tools/md_server.py              # 默认 docs/ 目录, 端口 8899
+    python tools/md_server.py --dir memory  # 指定目录
+    python tools/md_server.py --port 8080   # 指定端口
+
+启动后浏览器打开 http://localhost:8899
+"""
+
+import os, sys, json, argparse
+from pathlib import Path
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.parse import urlparse, quote
+
+try:
+    from markdown_it import MarkdownIt
+except ImportError:
+    print("请安装 markdown-it-py: pip install markdown-it-py")
+    sys.exit(1)
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+MD = MarkdownIt('js-default', {'linkify': True})
+
+HTML_TPL = """<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title}</title>
+<style>
+* {{margin:0;padding:0;box-sizing:border-box;}}
+body {{font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#2c3e50;background:#fafafa;}}
+nav {{position:fixed;top:0;left:0;width:240px;height:100vh;overflow-y:auto;background:#1a1a2e;color:#eee;padding:15px;z-index:1000;}}
+nav .parent-btn {{display:block;margin-bottom:12px;border-bottom:1px solid #333;padding:0 0 10px 0;color:#e94560;font-weight:bold;font-size:14px;text-decoration:none;}}
+nav .parent-btn:hover {{color:#ff6b6b;}}
+nav h3 {{font-size:14px;color:#e94560;margin:20px 0 8px 0;text-transform:uppercase;letter-spacing:1px;}}
+nav a {{display:block;color:#ccc;text-decoration:none;padding:3px 8px;border-radius:4px;font-size:13px;margin:1px 0;}}
+nav a:hover,nav a.active {{background:#e94560;color:#fff;}}
+nav a.active {{font-weight:bold;}}
+main {{margin-left:260px;padding:30px 40px;max-width:900px;}}
+main h1 {{color:#1a1a2e;border-bottom:3px solid #e94560;padding-bottom:10px;margin:0 0 25px 0;}}
+main h2 {{color:#1a1a2e;border-bottom:1px solid #eee;padding-bottom:8px;margin:30px 0 15px 0;}}
+main h3 {{color:#1a1a2e;margin:25px 0 10px 0;}}
+main p {{margin:10px 0;}}
+main code {{background:#f0f0f0;padding:2px 7px;border-radius:4px;font-size:13px;color:#e94560;}}
+main pre {{background:#1a1a2e;color:#e8e8e8;padding:18px;border-radius:8px;overflow-x:auto;font:13px/1.6 "SF Mono","Fira Code",Consolas,monospace;}}
+main pre code {{background:transparent;color:#e8e8e8;padding:0;}}
+main table {{border-collapse:collapse;width:100%;margin:15px 0;}}
+main th,main td {{border:1px solid #ddd;padding:8px 12px;text-align:left;}}
+main th {{background:#1a1a2e;color:#fff;}}
+main tr:nth-child(even) {{background:#f5f5f5;}}
+main blockquote {{border-left:4px solid #e94560;margin:15px 0;padding:10px 20px;background:#f5f5f5;border-radius:0 4px 4px 0;}}
+main img {{max-width:100%;border-radius:6px;margin:10px 0;}}
+main ul,main ol {{margin:10px 0;padding-left:25px;}}
+main li {{margin:4px 0;}}
+main hr {{border:none;border-top:1px solid #ddd;margin:30px 0;}}
+.dir-list {{list-style:none;padding:0;}}
+.dir-list li {{padding:8px 0;border-bottom:1px solid #eee;}}
+.dir-list a {{color:#1a1a2e;text-decoration:none;font-size:16px;}}
+.dir-list a:hover {{color:#e94560;}}
+.dir-list .size {{color:#999;font-size:13px;margin-left:10px;}}
+#toast {{position:fixed;bottom:30px;right:30px;background:#1a1a2e;color:#e94560;padding:10px 20px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .3s;z-index:9999;}}
+#toast.show {{opacity:1;}}
+</style></head><body>
+<nav>
+<h3>📂 {dir_name}</h3>
+{nav_links}
+</nav>
+<main>
+{content}
+</main>
+<div id="toast"></div>
+<script>
+document.querySelectorAll('nav a').forEach(a=>{{
+    if(a.href === location.href || a.href === location.href.split('?')[0]) a.classList.add('active');
+}});
+</script>
+</body></html>"""
+
+
+class MDHandler(BaseHTTPRequestHandler):
+    root_dir = None          # 启动时指定的根目录
+    project_root = None      # 项目根目录（限制不能跳出）
+
+    def _parse_query(self):
+        """解析查询参数，返回 dir 参数值（相对于启动根目录）"""
+        qs = urlparse(self.path).query
+        params = {}
+        for part in qs.split("&"):
+            if "=" in part:
+                k, v = part.split("=", 1)
+                params[k] = v
+        return params
+
+    def _current_root(self):
+        """根据 ?dir= 查询参数获取当前根目录，保证不超出 project_root"""
+        params = self._parse_query()
+        raw_dir = params.get("dir", "")
+        if not raw_dir:
+            return self.root_dir
+        # 解析相对路径，限制不能超出 project_root
+        resolved = (self.root_dir / raw_dir).resolve()
+        pr = self.project_root.resolve()
+        if not str(resolved).startswith(str(pr)):
+            return pr  # 超出项目根则卡在 project_root
+        if resolved.is_dir():
+            return resolved
+        return resolved.parent
+
+    def _url_for(self, path_str, new_dir=None):
+        """生成带 dir 参数的 URL"""
+        params = self._parse_query()
+        cur_dir = params.get("dir", "")
+        if new_dir is not None:
+            cur_dir = new_dir
+        base = f"/{path_str}" if path_str else "/"
+        if cur_dir:
+            base += f"?dir={cur_dir}" if "?" not in base else f"&dir={cur_dir}"
+        return base
+
+    def log_message(self, fmt, *args):
+        """静默日志，只输出访问路径"""
+        print(f"[MD] {args[0]}", file=sys.stderr)
+
+    def _send(self, data, mime="text/html;charset=utf-8"):
+        self.send_response(200)
+        self.send_header("Content-Type", mime)
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", "no-cache")
+        self.end_headers()
+        self.wfile.write(data)
+
+    def _send_404(self, msg="Not Found"):
+        self.send_response(404)
+        self.send_header("Content-Type", "text/plain;charset=utf-8")
+        self.end_headers()
+        self.wfile.write(msg.encode())
+
+    def _read_file(self, rel_path):
+        cr = self._current_root()
+        full = cr / rel_path
+        if not full.exists() or not full.is_file():
+            return None
+        try:
+            return full.read_bytes()
+        except Exception:
+            return None
+
+    def _build_nav(self, active_file=None):
+        """生成左侧导航HTML，含上一级按钮"""
+        cr = self._current_root()
+        pr = self.project_root.resolve()
+
+        parts = []
+
+        # --- 上一级按钮 ---
+        is_top = (cr.resolve() == pr)
+        if not is_top:
+            parent_dir = cr.parent
+            # 计算 dir 参数相对值
+            rel_to_root = parent_dir.relative_to(self.root_dir) if self.root_dir in parent_dir.parents or parent_dir == self.root_dir else Path("..")
+            # 更精确：计算相对于 root_dir 的路径
+            try:
+                rel_dir = parent_dir.relative_to(self.root_dir)
+                dir_param = str(rel_dir.as_posix())
+            except ValueError:
+                # parent 不在 root_dir 下，用相对路径
+                dir_param = ".."
+            parts.append(
+                f'<div style="margin-bottom:12px;border-bottom:1px solid #333;padding-bottom:8px;">'
+                f'<a href="{self._url_for("", new_dir=dir_param)}" '
+                f'style="color:#e94560;font-weight:bold;font-size:14px;">'
+                f'&#x2191; 上一级: {parent_dir.name}/</a></div>'
+            )
+
+        md_files = sorted(cr.rglob("*.md"))
+        # 按目录分组
+        groups = {}
+        for f in md_files:
+            rel = f.relative_to(cr)
+            parent = str(rel.parent) if rel.parent != Path(".") else "根目录"
+            groups.setdefault(parent, []).append(rel)
+
+        for group_name in sorted(groups.keys()):
+            display_name = group_name if group_name != "根目录" else "."
+            parts.append(f'<h3>{display_name}</h3>')
+            for rel in groups[group_name]:
+                url = self._url_for(rel.as_posix())
+                cls = ' class="active"' if rel.as_posix() == active_file else ""
+                parts.append(f'<a{cls} href="{url}">{rel.name}</a>')
+
+        return "\n".join(parts)
+
+    def _render_index(self):
+        """渲染目录首页"""
+        cr = self._current_root()
+        items = []
+        for f in sorted(cr.rglob("*.md")):
+            rel = f.relative_to(cr)
+            size = f.stat().st_size
+            size_str = f"{size/1024:.1f}KB" if size > 1024 else f"{size}B"
+            items.append(
+                f'<li><a href="{self._url_for(rel.as_posix())}">{rel.as_posix()}</a>'
+                f'<span class="size">{size_str}</span></li>'
+            )
+
+        nav = self._build_nav()
+        display_name = cr.name
+        content = f"<h1>{display_name}/</h1>"
+        content += f"<p>共 {len(items)} 个 Markdown 文件</p>"
+        content += f'<ul class="dir-list">{"".join(items)}</ul>'
+
+        html = HTML_TPL.format(
+            title=f"{display_name}/ — MD Viewer",
+            dir_name=display_name,
+            nav_links=nav,
+            content=content,
+        )
+        self._send(html.encode())
+
+    def _render_md(self, rel_path):
+        """渲染Markdown文件"""
+        raw = self._read_file(rel_path)
+        if raw is None:
+            return self._send_404("File not found")
+
+        text = raw.decode("utf-8", errors="replace")
+        body = MD.render(text)
+        nav = self._build_nav(active_file=rel_path)
+
+        cr = self._current_root()
+
+        html = HTML_TPL.format(
+            title=f"{rel_path} — MD Viewer",
+            dir_name=cr.name,
+            nav_links=nav,
+            content=body,
+        )
+        self._send(html.encode())
+
+    def _serve_file(self, rel_path):
+        """服务非md文件（如图片等）"""
+        raw = self._read_file(rel_path)
+        if raw is None:
+            return self._send_404("File not found")
+
+        ext = Path(rel_path).suffix.lower()
+        mime_map = {
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".gif": "image/gif",
+            ".svg": "image/svg+xml",
+            ".webp": "image/webp",
+            ".ico": "image/x-icon",
+            ".css": "text/css;charset=utf-8",
+            ".js": "application/javascript;charset=utf-8",
+            ".json": "application/json;charset=utf-8",
+        }
+        mime = mime_map.get(ext, "application/octet-stream")
+        self._send(raw, mime=mime)
+
+    def do_GET(self):
+        path = urlparse(self.path).path.strip("/")
+
+        if not path:
+            return self._render_index()
+
+        # 尝试作为md文件
+        if Path(path).suffix == ".md":
+            return self._render_md(path)
+
+        # 尝试查找匹配的md文件（支持无后缀，用当前目录而非启动目录）
+        cr = self._current_root()
+        md_candidate = cr / f"{path}.md"
+        if md_candidate.exists():
+            return self._render_md(f"{path}.md")
+
+        # 静态文件
+        self._serve_file(path)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Markdown Web Viewer")
+    parser.add_argument("--dir", "-d", default="docs",
+                        help="要浏览的目录 (默认: docs)")
+    parser.add_argument("--port", "-p", type=int, default=8899,
+                        help="端口号 (默认: 8899)")
+    parser.add_argument("--host", default="127.0.0.1",
+                        help="监听地址 (默认: 127.0.0.1)")
+    args = parser.parse_args()
+
+    target_dir = (PROJECT_ROOT / args.dir).resolve()
+    if not target_dir.exists():
+        print(f"[ERROR] 目录不存在: {target_dir}")
+        sys.exit(1)
+    if not target_dir.is_dir():
+        print(f"[ERROR] 路径不是目录: {target_dir}")
+        sys.exit(1)
+
+    MDHandler.root_dir = target_dir
+    MDHandler.project_root = PROJECT_ROOT
+
+    server = HTTPServer((args.host, args.port), MDHandler)
+    print(f"\n  {'='*50}")
+    print(f"   MD Viewer 已启动")
+    print(f"   目录: {target_dir}")
+    print(f"   地址: http://{args.host}:{args.port}")
+    print(f"   退出: Ctrl+C")
+    print(f"  {'='*50}\n")
+
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n  已停止.")
+        server.server_close()
+
+
+if __name__ == "__main__":
+    main()
