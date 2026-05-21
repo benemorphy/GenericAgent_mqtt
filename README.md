@@ -1,9 +1,9 @@
-<img align="right" src="assets/images/GGA.png" width="240" height="300"/>
+<img style="float:right;margin-left:20px" src="assets/images/GGA.png" width="240" height="300" alt="GenericAgent logo"/>
 
 ---
 
-<div align="center">
-<img src="https://raw.githubusercontent.com/lsdefine/GenericAgent/main/assets/images/bar.jpg" width="880"/>
+<div style="text-align:center">
+<img src="https://raw.githubusercontent.com/lsdefine/GenericAgent/main/assets/images/bar.jpg" width="880" alt="GenericAgent banner"/>
 </div>
 
 > 🍴 **Fork of [GenericAgent](https://github.com/lsdefine/GenericAgent)** — 衍生自 [lsdefine](https://github.com/lsdefine) 的极简自进化 Agent 框架。
@@ -12,13 +12,13 @@
 
 ---
 
-<p align="center">
+<p style="text-align:center">
   <a href="#english">English</a> | <a href="#chinese">中文</a>
 </p>
 
 ---
 
-<a name="english"></a>
+<a id="english"></a>
 
 ## 🍴 What's Different in This Fork
 
@@ -267,12 +267,12 @@ Both original copyright (c) 2025 lsdefine and fork copyright (c) 2026 benemorphy
 
 ---
 
-<a name="chinese"></a>
+<a id="chinese"></a>
 
 ---
 
-<div align="center">
-<img src="https://raw.githubusercontent.com/lsdefine/GenericAgent/main/assets/images/bar.jpg" width="880"/>
+<div style="text-align:center">
+<img src="https://raw.githubusercontent.com/lsdefine/GenericAgent/main/assets/images/bar.jpg" width="880" alt="GenericAgent banner"/>
 </div>
 
 ## 🍴 本分支特色
