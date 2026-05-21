@@ -147,6 +147,9 @@ bbs_files/
 # Design documents (local only)
 docs/
 
+# Abandoned virtual environments
+CLEAR=1/
+
 # Security: API keys, tokens, secrets
 *token*
 *password*
