@@ -65,75 +65,14 @@ def get_current_commit_message():
 
 
 # ═══════════════════════════════════════════════════════════════
-# 推送前安全审计
+# 推送前安全审计（委托给 tools/security_audit）
 # ═══════════════════════════════════════════════════════════════
-SENSITIVE_PATTERNS = [
-    "sk-", "ghp_", "gho_", "ghu_", "ghs_", "ghr_",
-    "api_key", "apikey", "api_secret", "apisecret",
-    "password", "passwd", "secret", "token",
-    "-----BEGIN RSA PRIVATE KEY-----",
-    "-----BEGIN OPENSSH PRIVATE KEY-----",
-    "-----BEGIN PRIVATE KEY-----",
-]
 
 def audit():
-    """推送前安全审计"""
-    print(f"\n{'='*50}")
-    print("[审计] 检查即将推送的内容...")
-    print(f"{'='*50}")
-    
-    status = run("git status --porcelain", capture=True)
-    if not status:
-        print("  无待推送文件")
-        return True
-    
-    files = []
-    for line in status.split("\n"):
-        line = line.strip()
-        if not line: continue
-        status_flag = line[:2].strip()
-        fname = line[3:].strip()
-        if status_flag in ("M", "A", "?", "AM", "MM"):
-            files.append(fname)
-    
-    if not files:
-        print("  无文件改动")
-        return True
-    
-    print(f"\n  待推送文件 ({len(files)}):")
-    for f in sorted(files):
-        size = os.path.getsize(f) if os.path.exists(f) else 0
-        print(f"    {f}  ({size/1024:.1f} KB)")
-    
-    sensitive_found = []
-    for f in files:
-        if not os.path.exists(f): continue
-        ext = os.path.splitext(f)[1].lower()
-        if ext in ('.png','.jpg','.jpeg','.gif','.ico','.woff','.woff2','.ttf','.eot'):
-            continue
-        if os.path.getsize(f) > 500 * 1024: continue
-        
-        try:
-            with open(f, 'r', encoding='utf-8', errors='ignore') as fh:
-                content = fh.read()
-            for pattern in SENSITIVE_PATTERNS:
-                if pattern in content:
-                    for i, line in enumerate(content.split('\n'), 1):
-                        if pattern in line:
-                            masked = line.strip()[:60].replace(pattern, pattern[:3]+'***'+pattern[-3:])
-                            sensitive_found.append(f"  [WARN] {f}:{i}  {masked}")
-        except (IOError, OSError):
-            pass
-    
-    if sensitive_found:
-        print(f"\n  [FAIL] 发现可能的敏感信息泄露!")
-        for s in sensitive_found:
-            print(s)
-        print(f"\n  请移除敏感信息后再推送。确认安全可用 --skip-audit")
-        return False
-    
-    print(f"\n  [PASS] 审计通过，无安全风险")
-    return True
+    """推送前安全审计（委托给 tools/security_audit）"""
+    from tools.security_audit import audit_files, print_report
+    ok, details, summary = audit_files()
+    return print_report(ok, details, summary)
 
 
 def main():
