@@ -32,7 +32,7 @@ if %errorlevel% equ 0 (
     echo Make sure profiles/%1.py exists with valid configuration.
     echo.
     echo Quick start:
-    echo   copy mykey_internet.py profiles/internet.py
-    echo   copy mykey_inner.py profiles/inner.py
-    echo   copy mykey_inner_vlm.py profiles/inner_vlm.py
+    echo   copy config\mykey_internet.py profiles/internet.py
+    echo   copy config\mykey_inner.py profiles/inner.py
+    echo   copy config\mykey_inner_vlm.py profiles/inner_vlm.py
 )
