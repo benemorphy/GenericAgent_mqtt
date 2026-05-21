@@ -23,7 +23,7 @@ except ImportError:
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-MD = MarkdownIt('js-default', {'linkify': True})
+MD = MarkdownIt('js-default', {'linkify': True, 'html': True})
 
 HTML_TPL = """<!DOCTYPE html>
 <html lang="zh-CN">
@@ -32,14 +32,17 @@ HTML_TPL = """<!DOCTYPE html>
 <style>
 * {{margin:0;padding:0;box-sizing:border-box;}}
 body {{font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#2c3e50;background:#fafafa;}}
-nav {{position:fixed;top:0;left:0;width:240px;height:100vh;overflow-y:auto;background:#1a1a2e;color:#eee;padding:15px;z-index:1000;}}
+nav {{width:240px;min-width:100px;background:#1a1a2e;color:#eee;padding:15px;overflow-y:auto;flex-shrink:0;box-sizing:border-box;}}
 nav .parent-btn {{display:block;margin-bottom:12px;border-bottom:1px solid #333;padding:0 0 10px 0;color:#e94560;font-weight:bold;font-size:14px;text-decoration:none;}}
 nav .parent-btn:hover {{color:#ff6b6b;}}
 nav h3 {{font-size:14px;color:#e94560;margin:20px 0 8px 0;text-transform:uppercase;letter-spacing:1px;}}
 nav a {{display:block;color:#ccc;text-decoration:none;padding:3px 8px;border-radius:4px;font-size:13px;margin:1px 0;}}
 nav a:hover,nav a.active {{background:#e94560;color:#fff;}}
 nav a.active {{font-weight:bold;}}
-main {{margin-left:260px;padding:30px 40px;max-width:900px;}}
+#container {{display:flex;width:100%;min-height:100vh;}}
+#divider {{width:6px;cursor:col-resize;background:#2a2a4e;flex-shrink:0;user-select:none;}}
+#divider:hover {{background:#e94560;}}
+main {{flex:1;min-width:0;padding:30px 40px;max-width:900px;overflow-y:auto;}}
 main h1 {{color:#1a1a2e;border-bottom:3px solid #e94560;padding-bottom:10px;margin:0 0 25px 0;}}
 main h2 {{color:#1a1a2e;border-bottom:1px solid #eee;padding-bottom:8px;margin:30px 0 15px 0;}}
 main h3 {{color:#1a1a2e;margin:25px 0 10px 0;}}
@@ -64,16 +67,41 @@ main hr {{border:none;border-top:1px solid #ddd;margin:30px 0;}}
 #toast {{position:fixed;bottom:30px;right:30px;background:#1a1a2e;color:#e94560;padding:10px 20px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .3s;z-index:9999;}}
 #toast.show {{opacity:1;}}
 </style></head><body>
-<nav>
+<div id="container">
+<nav id="sidebar">
 <h3>📂 {dir_name}</h3>
 {nav_links}
 </nav>
+<div id="divider"></div>
 <main>
 {content}
 </main>
+</div>
 <div id="toast"></div>
 <script>
-document.querySelectorAll('nav a').forEach(a=>{{
+var sidebar = document.getElementById('sidebar');
+var divider = document.getElementById('divider');
+var isDragging = false;
+
+// 恢复上次保存的宽度
+var saved = localStorage.getItem('md_sidebar_w');
+if (saved) sidebar.style.width = saved + 'px';
+
+divider.addEventListener('mousedown', function(e) {{
+    isDragging = true; e.preventDefault();
+}});
+document.addEventListener('mousemove', function(e) {{
+    if (!isDragging) return;
+    var w = Math.max(100, Math.min(600, e.clientX - sidebar.getBoundingClientRect().left));
+    sidebar.style.width = w + 'px';
+}});
+document.addEventListener('mouseup', function() {{
+    if (isDragging) {{
+        isDragging = false;
+        localStorage.setItem('md_sidebar_w', parseInt(sidebar.style.width));
+    }}
+}});
+document.querySelectorAll('nav a').forEach(function(a) {{
     if(a.href === location.href || a.href === location.href.split('?')[0]) a.classList.add('active');
 }});
 </script>
@@ -128,7 +156,7 @@ class MDHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", mime)
         self.send_header("Content-Length", str(len(data)))
-        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Cache-Control", "no-store")
         self.end_headers()
         self.wfile.write(data)
 
@@ -149,25 +177,21 @@ class MDHandler(BaseHTTPRequestHandler):
             return None
 
     def _build_nav(self, active_file=None):
-        """生成左侧导航HTML，含上一级按钮"""
+        """生成左侧导航HTML：子目录 + 当前目录下的 .md 文件"""
         cr = self._current_root()
         pr = self.project_root.resolve()
-
+        root_str = str(self.root_dir.resolve())
         parts = []
+
+        def _rel_path(target):
+            """计算 target 相对于 root_dir 的路径（支持 ../ 上溯）"""
+            return os.path.relpath(str(target), root_str).replace('\\', '/')
 
         # --- 上一级按钮 ---
         is_top = (cr.resolve() == pr)
         if not is_top:
             parent_dir = cr.parent
-            # 计算 dir 参数相对值
-            rel_to_root = parent_dir.relative_to(self.root_dir) if self.root_dir in parent_dir.parents or parent_dir == self.root_dir else Path("..")
-            # 更精确：计算相对于 root_dir 的路径
-            try:
-                rel_dir = parent_dir.relative_to(self.root_dir)
-                dir_param = str(rel_dir.as_posix())
-            except ValueError:
-                # parent 不在 root_dir 下，用相对路径
-                dir_param = ".."
+            dir_param = _rel_path(parent_dir)
             parts.append(
                 f'<div style="margin-bottom:12px;border-bottom:1px solid #333;padding-bottom:8px;">'
                 f'<a href="{self._url_for("", new_dir=dir_param)}" '
@@ -175,21 +199,29 @@ class MDHandler(BaseHTTPRequestHandler):
                 f'&#x2191; 上一级: {parent_dir.name}/</a></div>'
             )
 
-        md_files = sorted(cr.rglob("*.md"))
-        # 按目录分组
-        groups = {}
-        for f in md_files:
-            rel = f.relative_to(cr)
-            parent = str(rel.parent) if rel.parent != Path(".") else "根目录"
-            groups.setdefault(parent, []).append(rel)
+        # --- 子目录（可点击进入） ---
+        subdirs = sorted([
+            d for d in cr.iterdir()
+            if d.is_dir() and not d.name.startswith('.')
+        ])
+        if subdirs:
+            parts.append('<h3>目录</h3>')
+            for d in subdirs:
+                dir_param = _rel_path(d)
+                url = self._url_for("", new_dir=dir_param)
+                parts.append(f'<a href="{url}">📁 {d.name}/</a>')
 
-        for group_name in sorted(groups.keys()):
-            display_name = group_name if group_name != "根目录" else "."
-            parts.append(f'<h3>{display_name}</h3>')
-            for rel in groups[group_name]:
-                url = self._url_for(rel.as_posix())
-                cls = ' class="active"' if rel.as_posix() == active_file else ""
-                parts.append(f'<a{cls} href="{url}">{rel.name}</a>')
+        # --- 当前目录下的 .md 文件 ---
+        md_files = sorted([
+            f for f in cr.iterdir()
+            if f.is_file() and f.suffix.lower() == '.md'
+        ])
+        if md_files:
+            parts.append('<h3>文件</h3>')
+            for f in md_files:
+                url = self._url_for(f.name)
+                cls = ' class="active"' if f.name == active_file else ""
+                parts.append(f'<a{cls} href="{url}">{f.name}</a>')
 
         return "\n".join(parts)
 
@@ -244,6 +276,13 @@ class MDHandler(BaseHTTPRequestHandler):
         """服务非md文件（如图片等）"""
         raw = self._read_file(rel_path)
         if raw is None:
+            # 当前目录找不到时，回退到项目根目录
+            # 修复：markdown 中相对路径（如 assets/images/GGA.png）
+            # 是相对 md 文件位置而非 root_dir, 浏览器请求时不带 ?dir= 参数
+            alt_path = self.project_root / rel_path
+            if alt_path.exists() and alt_path.is_file():
+                raw = alt_path.read_bytes()
+        if raw is None:
             return self._send_404("File not found")
 
         ext = Path(rel_path).suffix.lower()
@@ -264,9 +303,23 @@ class MDHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlparse(self.path).path.strip("/")
+        # URL decode 处理 %20 等编码（应对文件名含空格等情况）
+        from urllib.parse import unquote
+        path = unquote(path)
 
         if not path:
-            return self._render_index()
+            # 未选择md文件时，只显示侧边栏，内容区留空
+            nav = self._build_nav()
+            cr = self._current_root()
+            display_name = cr.name
+            html = HTML_TPL.format(
+                title=f"{display_name}/ — MD Viewer",
+                dir_name=display_name,
+                nav_links=nav,
+                content="",
+            )
+            self._send(html.encode())
+            return
 
         # 尝试作为md文件
         if Path(path).suffix == ".md":
