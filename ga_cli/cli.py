@@ -129,7 +129,7 @@ def cmd_update():
     """git pull + pip install"""
     os.chdir(PROJECT_DIR)
     print("🔄 git pull...")
-    r = subprocess.run(["git", "pull"], capture_output=True, text=True)
+    r = subprocess.run(["git", "pull"], capture_output=True, text=True, encoding='utf-8', errors='replace')
     print(r.stdout)
     if r.returncode != 0:
         print(r.stderr)
