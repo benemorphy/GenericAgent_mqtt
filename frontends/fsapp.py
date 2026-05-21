@@ -4,10 +4,10 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)
 os.chdir(PROJECT_ROOT)
 from agentmain import GeneraticAgent
-from frontends.chatapp_common import format_restore
+from frontends.chatapp_common import format_restore, create_agent
 from frontends.continue_cmd import handle_frontend_command as handle_continue_frontend, reset_conversation
-from tools.config_service import ConfigService
-mykeys = ConfigService.instance()
+
+agent, mykeys = create_agent(verbose=False)
 from tools.feishu_reminder import ReminderManager, start_reminder_checker, format_reminder_list, REMIND_HELP
 from tools.todo_manager import TodoManager, _TODO_HELP as TODO_HELP
 from tools.hitl_approval import submit_decision, approve, reject, get_pending_list, _HITL_HELP
