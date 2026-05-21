@@ -20,6 +20,9 @@ class GenericAgentHandler(BaseHandler):
         # Register default hooks (turn policies, system prompt hooks, plan validators)
         from tools.hooks_default import register_default_hooks
         register_default_hooks(self)
+        # 约束仪表盘 — 执行中的预算状态感知
+        from tools.constraint_dashboard import ConstraintDashboard
+        self._constraint_dashboard = ConstraintDashboard()
 
     def _get_abs_path(self, path):
         if not path: return ""
@@ -266,6 +269,10 @@ class GenericAgentHandler(BaseHandler):
         summary = smart_format(summary.replace('\n', ''), max_str_len=80)
         self.history_info.append(f'[Agent] {summary}')
         _plan = self.working.get('in_plan_mode')
+
+        # 约束仪表盘更新 — 在policy chain前更新计数器
+        if hasattr(self, '_constraint_dashboard'):
+            self._constraint_dashboard.update(tool_calls, exit_reason)
 
         # Policy hook chain - each policy returns "" or a string to append
         for policy in self._turn_policies:
