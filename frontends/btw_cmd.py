@@ -126,17 +126,15 @@ def handle_frontend_command(agent, query) -> str:
 
 
 def install(cls):
-    """Idempotent monkey-patch: intercept /btw before original dispatch."""
-    orig = cls._handle_slash_cmd
-    if getattr(orig, '_btw_patched', False): return
+    """Register /btw handler via slash_cmd_registry (replaces monkey-patch)."""
+    from tools.slash_cmd_registry import register, NOT_MINE
 
-    def patched(self, raw_query, display_queue):
+    def handler(agent, raw_query, display_queue):
         s = (raw_query or '').strip()
-        if s == '/btw' or s.startswith('/btw ') or s.startswith('/btw\t'):
-            r = handle(self, raw_query, display_queue)
-            if r is None: return None
-            return r
-        return orig(self, raw_query, display_queue)
+        if not (s == '/btw' or s.startswith('/btw ') or s.startswith('/btw\t')):
+            return NOT_MINE
+        # handle() puts result in display_queue, returns None (consumed)
+        return handle(agent, raw_query, display_queue)
 
-    patched._btw_patched = True
-    cls._handle_slash_cmd = patched
+    register('/btw', handler, '/btw <q> - side question, 不打断主线')
+    # Also ensure legacy back-compat: cls._handle_slash_cmd points through dispatch

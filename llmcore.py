@@ -1,5 +1,6 @@
-import os, json, re, time, requests, sys, threading, urllib3, base64, importlib, uuid
+import os, json, re, time, requests, sys, threading, urllib3, base64, importlib, uuid, functools
 from datetime import datetime
+from tools.retry_utils import retry_stream
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _RESP_CACHE_KEY = str(uuid.uuid4())
 
@@ -30,38 +31,10 @@ def __getattr__(name):  # once guard in PEP 562
     if name == 'mykeys': return reload_mykeys()[0]
     raise AttributeError(f"module 'llmcore' has no attribute {name}")
 
-def compress_history_tags(messages, keep_recent=10, max_len=800, force=False, interval=5):
-    """Compress <thinking>/<tool_use>/<tool_result> tags in older messages to save tokens."""
-    compress_history_tags._cd = getattr(compress_history_tags, '_cd', 0) + 1
-    if force: compress_history_tags._cd = 0
-    if compress_history_tags._cd % interval != 0: return messages
-    _before = sum(len(json.dumps(m, ensure_ascii=False)) for m in messages)
-    _pats = {tag: re.compile(rf'(<{tag}>)([\s\S]*?)(</{tag}>)') for tag in ('thinking', 'think', 'tool_use', 'tool_result')}
-    _hist_pat = re.compile(r'<(history|key_info|earlier_context)>[\s\S]*?</\1>')
-    def _trunc_str(s): return s[:max_len//2] + '\n...[Truncated]...\n' + s[-max_len//2:] if isinstance(s, str) and len(s) > max_len else s
-    def _trunc(text):
-        text = _hist_pat.sub(lambda m: f'<{m.group(1)}>[...]</{m.group(1)}>', text)
-        for pat in _pats.values(): text = pat.sub(lambda m: m.group(1) + _trunc_str(m.group(2)) + m.group(3), text)
-        return text
-    for i, msg in enumerate(messages):
-        if i >= len(messages) - keep_recent: break
-        c = msg['content']
-        if isinstance(c, str): msg['content'] = _trunc(c)
-        elif isinstance(c, list):
-            for b in c:
-                if not isinstance(b, dict): continue
-                t = b.get('type')
-                if t == 'text' and isinstance(b.get('text'), str): b['text'] = _trunc(b['text'])
-                elif t == 'tool_result':
-                    tc = b.get('content')
-                    if isinstance(tc, str): b['content'] = _trunc_str(tc)
-                    elif isinstance(tc, list):
-                        for sub in tc:
-                            if isinstance(sub, dict) and sub.get('type') == 'text': sub['text'] = _trunc_str(sub.get('text'))
-                elif t == 'tool_use' and isinstance(b.get('input'), dict):
-                    for k, v in b['input'].items(): b['input'][k] = _trunc_str(v)
-    print(f"[Cut] {_before} -> {sum(len(json.dumps(m, ensure_ascii=False)) for m in messages)}")
-    return messages
+from tools.history_compressor import DefaultCompressor
+
+_compressor = DefaultCompressor()
+
 
 def _sanitize_leading_user_msg(msg):
     """把 user 消息里的 tool_result 块改写成纯文本，避免孤立引用。
@@ -91,10 +64,10 @@ def trim_messages_history(history, sess):
     cap = sess.context_win * 3
     target = int(cap * getattr(sess, 'trim_keep_rate', 0.6))
     def cost(): return sum(len(json.dumps(m, ensure_ascii=False)) for m in history)
-    compress_history_tags(history, interval=getattr(sess, 'cut_msg_interval', 5))
+    _compressor.compress(history, sess=sess, interval=getattr(sess, 'cut_msg_interval', 5))
     print(f'[Debug] Current context: {cost()} chars, {len(history)} messages.')
     if cost() <= cap: return
-    compress_history_tags(history, keep_recent=4, force=True)
+    _compressor.compress(history, keep_recent=4, force=True)
     if cost() <= target: return
     while len(history) > 9 and cost() > target:
         history.pop(0)
@@ -350,43 +323,29 @@ def _stamp_oai_cache_markers(messages, model):
             c = list(c); c[-1] = dict(c[-1], cache_control={'type': 'ephemeral'})
             messages[idx] = {**messages[idx], 'content': c}
 
-def _stream_with_retry(sess, url, headers, payload, parse_fn):
-    _RETRYABLE = {408, 409, 425, 429, 500, 502, 503, 504, 529}
-    def _delay(resp, attempt):
-        try: ra = float((resp.headers or {}).get("retry-after"))
-        except: ra = None
-        return max(0.5, ra if ra is not None else min(30.0, 1.5 * (2 ** attempt)))
-    for attempt in range(sess.max_retries + 1):
-        streamed = False
+def _raw_api_post(sess, url, headers, payload, parse_fn):
+    """纯粹的 API POST 请求，无重试逻辑（重试由 @retry_stream 装饰器处理）"""
+    streamed = False
+    with requests.post(url, headers=headers, json=payload, stream=sess.stream,
+                       timeout=(sess.connect_timeout, sess.read_timeout), proxies=sess.proxies, verify=sess.verify) as r:
+        if r.status_code >= 400:
+            try: body = r.text.strip()[:500]
+            except: body = ""
+            err = f"!!!Error: HTTP {r.status_code}" + (f": {body}" if body else "")
+            yield err
+            return [{"type": "text", "text": err}]
+        gen = parse_fn(r)
         try:
-            with requests.post(url, headers=headers, json=payload, stream=sess.stream, 
-                               timeout=(sess.connect_timeout, sess.read_timeout), proxies=sess.proxies, verify=sess.verify) as r:
-                if r.status_code >= 400:
-                    if r.status_code in _RETRYABLE and attempt < sess.max_retries:
-                        d = _delay(r, attempt)
-                        print(f"[LLM Retry] HTTP {r.status_code}, retry in {d:.1f}s ({attempt+1}/{sess.max_retries+1})")
-                        time.sleep(d); continue
-                    try: body = r.text.strip()[:500]
-                    except: body = ""
-                    err = f"!!!Error: HTTP {r.status_code}" + (f": {body}" if body else "")
-                    yield err; return [{"type": "text", "text": err}]
-                gen = parse_fn(r)
-                try:
-                    while True: streamed = True; yield next(gen)
-                except StopIteration as e:
-                    if not e.value and not streamed: raise requests.ConnectionError("empty response")
-                    return e.value or []
-        except (requests.Timeout, requests.ConnectionError) as e:
-            err = f"!!!Error: {type(e).__name__}"
-            if attempt < sess.max_retries:
-                d = _delay(None, attempt)
-                print(f"[LLM Retry] {type(e).__name__}, retry in {d:.1f}s ({attempt+1}/{sess.max_retries+1})")
-                yield err; time.sleep(d); continue
-            yield err; return [{"type": "text", "text": err}]
+            while True: streamed = True; yield next(gen)
+        except StopIteration as e:
+            if not e.value and not streamed:
+                raise requests.ConnectionError("empty response")
+            return e.value or []
         except Exception as e:
             err = f"\n\n[!!! 流异常中断 {type(e).__name__}: {e} !!!]" if streamed else f"!!!Error: {type(e).__name__}: {e}"
             yield err; return [{"type": "text", "text": err}]
 
+@retry_stream()
 def _openai_stream(sess, messages):
     model, api_mode = sess.model, sess.api_mode
     ml = model.lower()
@@ -413,7 +372,7 @@ def _openai_stream(sess, messages):
     if tools: payload["tools"] = _prepare_oai_tools(tools, api_mode)
     if sess.service_tier: payload["service_tier"] = sess.service_tier
     parse_fn = (lambda r: _parse_openai_sse(r.iter_lines(), api_mode)) if sess.stream else (lambda r: _parse_openai_json(r.json(), api_mode))
-    return (yield from _stream_with_retry(sess, url, headers, payload, parse_fn))
+    return (yield from _raw_api_post(sess, url, headers, payload, parse_fn))
         
 def _prepare_oai_tools(tools, api_mode="chat_completions"):
     if api_mode == "responses":
@@ -588,6 +547,7 @@ def _ensure_thinking_blocks(messages, model):
     return messages
 
 class ClaudeSession(BaseSession):
+    @retry_stream()
     def raw_ask(self, messages):
         messages = _fix_messages(messages)
         if self.max_tokens is None: self.max_tokens = 8192
@@ -598,7 +558,7 @@ class ClaudeSession(BaseSession):
         if self.system: payload["system"] = [{"type": "text", "text": self.system, "cache_control": {"type": "persistent"}}]
         url = auto_make_url(self.api_base, "messages")
         parse_fn = (lambda r: _parse_claude_sse(r.iter_lines())) if self.stream else (lambda r: _parse_claude_json(r.json()))
-        return (yield from _stream_with_retry(self, url, headers, payload, parse_fn))
+        return (yield from _raw_api_post(self, url, headers, payload, parse_fn))
     def make_messages(self, raw_list):
         msgs = _drop_unsigned_thinking([{"role": m['role'], "content": list(m['content'])} for m in raw_list])
         user_idxs = [i for i, m in enumerate(msgs) if m['role'] == 'user']
@@ -638,6 +598,7 @@ class NativeClaudeSession(BaseSession):
         self._account_uuid = str(uuid.uuid4())
         self._device_id = uuid.uuid4().hex + uuid.uuid4().hex[:32]
         self.tools = None
+    @retry_stream()
     def raw_ask(self, messages):
         if self.max_tokens is None: self.max_tokens = 8192
         model = self.model
@@ -671,7 +632,7 @@ class NativeClaudeSession(BaseSession):
             messages[idx]["content"][-1] = dict(messages[idx]["content"][-1], cache_control={"type": "ephemeral"})
         url = auto_make_url(self.api_base, "messages") + '?beta=true'
         parse_fn = (lambda r: _parse_claude_sse(r.iter_lines())) if self.stream else (lambda r: _parse_claude_json(r.json()))
-        return (yield from _stream_with_retry(self, url, headers, payload, parse_fn))
+        return (yield from _raw_api_post(self, url, headers, payload, parse_fn))
 
     def ask(self, msg):
         assert type(msg) is dict

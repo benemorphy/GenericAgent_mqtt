@@ -8,7 +8,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from llmcore import reload_mykeys, LLMSession, ToolClient, ClaudeSession, MixinSession, NativeToolClient, NativeClaudeSession, NativeOAISession, resolve_client
 from agent_loop import agent_runner_loop
-from ga import GenericAgentHandler, smart_format, get_global_memory, format_error, consume_file
+from ga import GenericAgentHandler, get_global_memory
+from tools.ga_utils import smart_format, format_error, consume_file
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 def load_tool_schema(suffix=''):
@@ -120,6 +121,11 @@ class GenericAgent:
             return None
         if raw_query.strip() == '/resume':
             return r'帮我看看最近有哪些会话可以恢复。读model_responses/目录，按修改时间取最近10个文件，从每个文件里找最后一个<history>...</history>块，用一句话总结每个会话在聊什么，列表给我选。注意读文件后要把字面的\n替换成真换行才能正确匹配。'
+        # Registered handler chain (replaces fragile monkey-patch chain)
+        from tools.slash_cmd_registry import dispatch, NOT_MINE
+        result = dispatch(self, raw_query, display_queue)
+        if result is not NOT_MINE:
+            return result
         return raw_query
 
     def run(self):
@@ -184,24 +190,11 @@ if __name__ == '__main__':
     agent.verbose = args.verbose
     threading.Thread(target=agent.run, daemon=True).start()
 
-    # MQTT WorkerAgent 模式（唯一启动模式）
+    # MQTT WorkerAgent 模式 — 委托给独立模块 (mqtt_bbs/mqtt_agent_runner.py)
     agent.peer_hint = False
     try:
-        from mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
-        import logging as _l; _l.basicConfig(level=_l.WARNING)
-        _mqtt_agent_id = f"agent_{os.urandom(4).hex()}"
-        worker = WorkerAgent(_mqtt_agent_id,
-                             host=args.broker_host, port=args.broker_port)
-        def _mqtt_handler(msg):
-            dq = agent.put_task(msg.input, source='mqtt')
-            while 'done' not in (item := dq.get(timeout=300)):
-                if 'next' in item:
-                    worker.stream_out(msg.task_id, item.get('next', ''))
-            result = item['done']
-            worker.complete(msg.task_id, result=result)
-        worker.on_task(_mqtt_handler)
-        print(f"[MQTT] WorkerAgent 已启动 (host={worker._client.host}:{worker._client.port})")
-        worker.start(block=True)
+        from mqtt_bbs.mqtt_agent_runner import start_mqtt_agent
+        start_mqtt_agent(args)
     except ImportError as e:
         print(f"[MQTT] 初始化失败: {e} (需要 pip install paho-mqtt)")
         sys.exit(1)
