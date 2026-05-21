@@ -32,6 +32,8 @@ mykey.py
 mykey_internet.py
 mykey_inner*.py
 mykey_template*.py
+profiles/*.py
+!profiles/__init__.py
 agent.env
 
 tasks/

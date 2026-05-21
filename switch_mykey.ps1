@@ -9,6 +9,10 @@ chcp 65001 > $null
     .\switch_mykey.ps1 inner_vlm → 切到本地VLM模型 (mykey_inner_vlm.py → mykey.py)
     .\switch_mykey.ps1 internet  → 切到外网API (mykey_internet.py → mykey.py)
     .\switch_mykey.ps1 status    → 查看当前是哪种配置
+
+  注意: 推荐使用新的 profile 系统替代本脚本：
+    .\switch_profile.bat internet
+    或 python -c "from tools.config_service import ConfigService; ConfigService.init('internet')"
 #>
 
 param(
