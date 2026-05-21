@@ -2,6 +2,7 @@ import os, json, re, time, requests, sys, threading, urllib3, base64, importlib,
 from datetime import datetime
 from tools.retry_utils import retry_stream
 from tools.config_service import ConfigService
+from tools.logger import log
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _RESP_CACHE_KEY = str(uuid.uuid4())
 
@@ -70,6 +71,7 @@ def trim_messages_history(history, sess):
     def cost(): return sum(len(json.dumps(m, ensure_ascii=False)) for m in history)
     _compressor.compress(history, sess=sess, interval=getattr(sess, 'cut_msg_interval', 5))
     print(f'[Debug] Current context: {cost()} chars, {len(history)} messages.')
+    log.debug('Current context: %d chars, %d messages', cost(), len(history))
     if cost() <= cap: return
     _compressor.compress(history, keep_recent=4, force=True)
     if cost() <= target: return
@@ -78,6 +80,7 @@ def trim_messages_history(history, sess):
         while history and history[0].get('role') != 'user': history.pop(0)
         if history and history[0].get('role') == 'user': history[0] = _sanitize_leading_user_msg(history[0])
     print(f'[Debug] Trimmed context, current: {cost()} chars, {len(history)} messages.')
+    log.debug('Trimmed context, current: %d chars, %d messages', cost(), len(history))
 
 def auto_make_url(base, path):
     b, p = base.rstrip('/'), path.strip('/')
@@ -90,13 +93,13 @@ def _try_parse_tool_args(raw):
     Returns list of parsed dicts."""
     if not raw: return [{}]
     try: return [json.loads(raw)]
-    except: pass
+    except json.JSONDecodeError: pass
     parts = re.split(r'(?<=\})(?=\{)', raw)
     if len(parts) > 1:
         parsed = []
         for p in parts:
             try: parsed.append(json.loads(p))
-            except: return [{"_raw": raw}]
+            except json.JSONDecodeError: return [{"_raw": raw}]
         return parsed
     return [{"_raw": raw}]
 
@@ -106,14 +109,14 @@ def _record_usage(usage, api_mode):
     if api_mode == 'responses':
         cached = (usage.get("input_tokens_details") or {}).get("cached_tokens", 0)
         inp = usage.get("input_tokens", 0)
-        print(f"[Cache] input={inp} cached={cached}")
+        log.debug('Cache: input=%d cached=%d', inp, cached)
     elif api_mode == 'chat_completions':
         cached = (usage.get("prompt_tokens_details") or {}).get("cached_tokens", 0)
         inp = usage.get("prompt_tokens", 0)
-        print(f"[Cache] input={inp} cached={cached}")
+        log.debug('Cache: input=%d cached=%d', inp, cached)
     elif api_mode == 'messages':
         ci, cr, inp = usage.get("cache_creation_input_tokens", 0), usage.get("cache_read_input_tokens", 0), usage.get("input_tokens", 0)
-        print(f"[Cache] input={inp} creation={ci} read={cr}")
+        log.debug('Cache: input=%d creation=%d read=%d', inp, ci, cr)
     
     return
 
@@ -137,7 +140,7 @@ def _raw_api_post(sess, url, headers, payload, parse_fn):
                        timeout=(sess.connect_timeout, sess.read_timeout), proxies=sess.proxies, verify=sess.verify) as r:
         if r.status_code >= 400:
             try: body = r.text.strip()[:500]
-            except: body = ""
+            except Exception: body = ""
             err = f"!!!Error: HTTP {r.status_code}" + (f": {body}" if body else "")
             yield err
             return [{"type": "text", "text": err}]
@@ -521,7 +524,7 @@ class ToolClient:
                 if extra not in f.get('description', ''): f['description'] = f.get('description', '') + extra
                 break
         full_prompt = self._build_protocol_prompt(messages, tools)
-        print("Full prompt length:", len(full_prompt), 'chars')
+        log.debug('Full prompt length: %d chars', len(full_prompt))
         gen = self.backend.ask(full_prompt)
         _write_llm_log('Prompt', full_prompt, self.log_path)
         raw_text = ''
@@ -606,10 +609,10 @@ Follow these steps to think and act:
                 except json.JSONDecodeError:
                     errors.append(f'Failed to parse tool_use JSON: {json_str[:200]}')
                     self.last_tools = ''
-                except: pass
+                except Exception: pass
             if not tool_calls:
                 for e in errors:
-                    print(f"[Warn] {e}"); tool_calls.append(MockToolCall('bad_json', {'msg': e}))
+                    log.warning('%s', e); tool_calls.append(MockToolCall('bad_json', {'msg': e}))
         return MockResponse(thinking, remaining_text.strip(), tool_calls, text)
 
 def _parse_text_tool_calls(content):
@@ -622,7 +625,7 @@ def _parse_text_tool_calls(content):
             idx = content.index(_jp); raw = json.loads(content[idx:])
             tcs = [MockToolCall(b["name"], b.get("input", {}), id=b.get("id", "")) for b in raw if b.get("type") == "tool_use"]
             return tcs, content[:idx].strip()
-        except: pass
+        except (json.JSONDecodeError, Exception): pass
     # try XML tags: <tool_call>{"name":..., "arguments":...}</tool_call>
     _xp = r"<(?:tool_use|tool_call)>((?:(?!<(?:tool_use|tool_call)>).){15,}?)</(?:tool_use|tool_call)>"
     for s in re.findall(_xp, content, re.DOTALL):
@@ -630,7 +633,7 @@ def _parse_text_tool_calls(content):
             d = tryparse(s.strip()); name = d.get('name')
             args = d.get('arguments') or d.get('args') or d.get('input') or {}
             if name: tcs.append(MockToolCall(name, args))
-        except: pass
+        except Exception: pass
     if tcs: content = re.sub(_xp, "", content, flags=re.DOTALL).strip()
     return tcs, content
 
@@ -654,12 +657,12 @@ def _write_llm_log(label, content, log_path=None):
 
 def tryparse(json_str):
     try: return json.loads(json_str)
-    except: pass
+    except json.JSONDecodeError: pass
     json_str = json_str.strip().strip('`').replace('json\n', '', 1).strip()
     try: return json.loads(json_str)
-    except: pass
+    except json.JSONDecodeError: pass
     try: return json.loads(json_str[:-1])
-    except: pass
+    except json.JSONDecodeError: pass
     if '}' in json_str: json_str = json_str[:json_str.rfind('}') + 1]
     return json.loads(json_str)
 
@@ -699,7 +702,7 @@ class MixinSession:
         for attempt in range(self._retries + 1):
             idx = (base + attempt) % n
             gen = self._orig_raw_asks[idx](*args, **kwargs)
-            print(f'[MixinSession] Using session ({self._sessions[idx].name})')
+            log.info('MixinSession using session (%s)', self._sessions[idx].name)
             last_chunk, return_val, yielded = None, [], False
             try:
                 while True:
@@ -713,6 +716,7 @@ class MixinSession:
                 elif isinstance(last_chunk, str) and '[!!! 流异常中断' in last_chunk and n > 1:
                     self._cur_idx = (idx + 1) % n; self._switched_at = time.time()
                     print(f'[MixinSession] Partial failure, next call → s{self._cur_idx} ({self._sessions[self._cur_idx].name})')
+                    log.warning('MixinSession partial failure, next call -> s%d (%s)', self._cur_idx, self._sessions[self._cur_idx].name)
                 return return_val
             if attempt >= self._retries:
                 yield last_chunk; return return_val
@@ -721,8 +725,10 @@ class MixinSession:
                 rnd = (attempt + 1) // n
                 delay = min(30, self._base_delay * (1.5 ** rnd))
                 print(f'[MixinSession] {last_chunk[:80]}, round {rnd} exhausted, retry in {delay:.1f}s')
+                log.warning('MixinSession %s..., round %d exhausted, retry in %.1fs', last_chunk[:80], rnd, delay)
                 time.sleep(delay)
             else: print(f'[MixinSession] {last_chunk[:80]}, retry {attempt+1}/{self._retries} (s{idx}→s{nxt})')
+            else: log.warning('MixinSession %s..., retry %d/%d (s%d->s%d)', last_chunk[:80], attempt+1, self._retries, idx, nxt)
 
 THINKING_PROMPT_ZH = """
 ### 行动规范（持续有效）

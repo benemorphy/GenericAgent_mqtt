@@ -60,7 +60,7 @@ def get_current_commit_message():
     try:
         msg = run("git log -1 --format=%s", capture=True)
         return msg
-    except:
+    except subprocess.CalledProcessError:
         return "auto update"
 
 
@@ -122,7 +122,7 @@ def audit():
                         if pattern in line:
                             masked = line.strip()[:60].replace(pattern, pattern[:3]+'***'+pattern[-3:])
                             sensitive_found.append(f"  [WARN] {f}:{i}  {masked}")
-        except:
+        except (IOError, OSError):
             pass
     
     if sensitive_found:

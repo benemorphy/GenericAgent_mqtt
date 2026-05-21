@@ -38,7 +38,7 @@ class GenericAgentHandler(BaseHandler):
             code = self._extract_code_block(response, code_type)
             if not code: return StepOutcome("[Error] Code missing. Must use reply code block or 'script' arg.", next_prompt="\n")
         try: timeout = int(args.get("timeout", 60))
-        except: timeout = 60
+        except (ValueError, TypeError): timeout = 60
         raw_path = os.path.join(self.cwd, args.get("cwd", './'))
         cwd = os.path.normpath(os.path.abspath(raw_path))
         code_cwd = os.path.normpath(self.cwd)
@@ -97,10 +97,10 @@ class GenericAgentHandler(BaseHandler):
             try:
                 with open(abs_path, 'w', encoding='utf-8') as f: f.write(str(content))
                 result["js_return"] += f"\n\n[已保存完整内容到 {abs_path}]"
-            except: result['js_return'] += f"\n\n[保存失败，无法写入文件 {abs_path}]"
+            except OSError: result['js_return'] += f"\n\n[保存失败，无法写入文件 {abs_path}]"
         show = smart_format(json.dumps(result, ensure_ascii=False, indent=2, default=json_default), max_str_len=300)
         try: print("Web Execute JS Result:", show)
-        except: pass
+        except Exception: pass
         yield f"JS 执行结果:\n{show}\n"
         next_prompt = get_anchor_prompt(self, skip=args.get('_index', 0) > 0)
         result = json.dumps(result, ensure_ascii=False, default=json_default)
