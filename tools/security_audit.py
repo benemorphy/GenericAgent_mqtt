@@ -23,15 +23,24 @@ _BINARY_EXTS = {'.png', '.jpg', '.jpeg', '.gif', '.ico',
 
 
 def _parse_git_status(status_text):
+    """解析 git status --porcelain 输出
+
+    输出格式每行: XY path
+      X = 暂存区状态, Y = 工作区状态
+      空格 = 无变更, ? = 未追踪
+      例: " M tools/x.py" = 工作区修改,  "?? new.py" = 未追踪
+    """
     files = []
     for line in status_text.split("\n"):
-        line = line.strip()
+        line = line.rstrip()
         if not line:
             continue
-        status_flag = line[:2].strip()
-        fname = line[3:].strip()
-        if status_flag in ("M", "A", "?", "AM", "MM"):
-            files.append(fname)
+        # XY 是两个字符, 第3字符是空格, 之后是路径
+        xy = line[:2]
+        path = line[3:]
+        # 任一位置为 M/A/? 都算改动
+        if 'M' in xy or 'A' in xy or '?' in xy:
+            files.append(path)
     return files
 
 
