@@ -225,33 +225,6 @@ class MDHandler(BaseHTTPRequestHandler):
 
         return "\n".join(parts)
 
-    def _render_index(self):
-        """渲染目录首页"""
-        cr = self._current_root()
-        items = []
-        for f in sorted(cr.rglob("*.md")):
-            rel = f.relative_to(cr)
-            size = f.stat().st_size
-            size_str = f"{size/1024:.1f}KB" if size > 1024 else f"{size}B"
-            items.append(
-                f'<li><a href="{self._url_for(rel.as_posix())}">{rel.as_posix()}</a>'
-                f'<span class="size">{size_str}</span></li>'
-            )
-
-        nav = self._build_nav()
-        display_name = cr.name
-        content = f"<h1>{display_name}/</h1>"
-        content += f"<p>共 {len(items)} 个 Markdown 文件</p>"
-        content += f'<ul class="dir-list">{"".join(items)}</ul>'
-
-        html = HTML_TPL.format(
-            title=f"{display_name}/ — MD Viewer",
-            dir_name=display_name,
-            nav_links=nav,
-            content=content,
-        )
-        self._send(html.encode())
-
     def _render_md(self, rel_path):
         """渲染Markdown文件"""
         raw = self._read_file(rel_path)
