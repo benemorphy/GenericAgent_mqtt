@@ -1,31 +1,33 @@
 import os, json, re, time, requests, sys, threading, urllib3, base64, importlib, uuid, functools
 from datetime import datetime
 from tools.retry_utils import retry_stream
+from tools.config_service import ConfigService
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _RESP_CACHE_KEY = str(uuid.uuid4())
 
 def _load_mykeys():
-    global _mykey_path
-    try:
-        import mykey; importlib.reload(mykey); _mykey_path = mykey.__file__
-        return {k: v for k, v in vars(mykey).items() if not k.startswith('_')}
-    except ImportError: pass
-    _mykey_path = p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mykey.json')
-    if not os.path.exists(p): raise Exception('[ERROR] mykey.py or mykey.json not found, please create one from mykey_template.')
-    with open(p, encoding='utf-8') as f: return json.load(f)
+    """加载配置（向后兼容，内部委托给 ConfigService）
 
-_mykey_path = _mykey_mtime = None
+    保留此函数供 plugins/langfuse_tracing.py 等旧消费者使用。
+    """
+    cfg, _changed = ConfigService.instance().reload(force=True)
+    return cfg
+
+_mykey_path = None
+_mykey_mtime = None
 def reload_mykeys():
-    global _mykey_mtime
-    mt = os.stat(_mykey_path).st_mtime_ns if _mykey_path else -1
-    if mt == _mykey_mtime: return globals().get('mykeys', {}), False
-    mk = _load_mykeys(); _mykey_mtime = os.stat(_mykey_path).st_mtime_ns
-    print(f'[Info] Load mykeys from {_mykey_path}')
-    globals().update(mykeys=mk)
-    if mk.get('langfuse_config'):
-        try: from plugins import langfuse_tracing
-        except Exception: pass
-    return mk, True
+    """加载/重载配置，检测变更（向后兼容包装）
+
+    Returns:
+        (config_dict, changed) 元组
+    """
+    cfg, changed = ConfigService.instance().reload(force=False)
+    if changed:
+        globals().update(mykeys=cfg)
+        if cfg.get('langfuse_config'):
+            try: from plugins import langfuse_tracing
+            except Exception: pass
+    return cfg, changed
 
 def __getattr__(name):  # once guard in PEP 562
     if name == 'mykeys': return reload_mykeys()[0]
@@ -787,7 +789,7 @@ def resolve_session(cfg_name):
     Falls back to None for unrecognized config names (backward compat).
     """
     from tools.llm_providers import ProviderRegistry
-    cfg = reload_mykeys()[0].get(cfg_name)
+    cfg = ConfigService.instance().get_model_config(cfg_name)
     if not cfg: raise ValueError(f"Config '{cfg_name}' not in mykey")
     try:
         return ProviderRegistry.create(cfg_name, cfg)
