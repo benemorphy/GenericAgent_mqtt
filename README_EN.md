@@ -262,6 +262,31 @@ python -m mqtt_bbs.scheduler
 ```
 Supports daily/weekday/weekly/monthly/once/every_Nh schedule, optional `target_capability`.
 
+### 🔹 benchmark_metrics — Rumination Efficiency Benchmark
+Quantifies 5 core metrics of the Agent's self-improvement loop (CI first-pass rate / rumination cycles / SOP survival / skill review pass / failure coverage).
+```bash
+python tools/benchmark_metrics.py           # text report
+python tools/benchmark_metrics.py --md      # Markdown format
+```
+
+### 🔹 step_detector — MASC Real-time Step Detection
+Detects tool call anomalies in real-time during the Agent execution loop. Identifies 8 failure patterns (timeout, error, empty result, permission denied, etc.) and injects warnings into the next LLM context.
+```python
+from tools.step_detector import StepDetector
+detector = StepDetector()
+anomalies = detector.analyze("tool_name", args, output)
+```
+
+### 🔹 plan_validator — Metagent-P Symbolic Constraints
+Pluggable validation chain for Plan mode — checks structural integrity (sections/step numbers), path validity (referenced files exist), and syntax correctness (brackets/code blocks/tables) before execution begins.
+Configure rules in `tools/plan_validator_default.py`.
+
+### 🔹 learning_log — Metacognitive Log (Extended)
+Logs session strategies and outcomes. Dashboard now shows **competence confidence** assessment per task category — success rate, confidence level, and trend for each category.
+```bash
+python tools/learning_log.py --dashboard   # shows competence confidence
+```
+
 ### 🔹 File Chunked Upload
 `file_init` -> `file_chunk` (sequential) -> `file_commit` (merge). Backward compatible.
 
