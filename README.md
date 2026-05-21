@@ -515,6 +515,31 @@ python -m mqtt_bbs.scheduler
 ```
 支持 daily/weekday/weekly/monthly/once/every_Nh 多种调度模式，可选 `target_capability` 参数。
 
+### 🔹 benchmark_metrics — 反刍效率基准
+量化评估 Agent 自我改进闭环的 5 个核心指标（CI首次通过率/反刍循环/SOP存活率/技能复习通过率/失败模式覆盖率）。
+```bash
+python tools/benchmark_metrics.py          # 文本报告
+python tools/benchmark_metrics.py --md     # Markdown 格式
+```
+
+### 🔹 step_detector — MASC 实时步骤检测
+在 Agent 执行循环中实时检测工具调用异常，识别超时/错误/空结果/权限拒绝等 8 种失败模式，自动注入警告到下一轮 LLM 上下文。
+```python
+from tools.step_detector import StepDetector
+detector = StepDetector()
+anomalies = detector.analyze("tool_name", args, output)
+```
+
+### 🔹 plan_validator — Metagent-P 符号约束
+Plan 模式的可插拔验证链 — 在计划生成阶段就检查: 结构完整性（章节/编号）、路径有效性（引用文件存在）、语法正确性（括号/代码块/表格）。
+在 `tools/plan_validator_default.py` 中配置验证规则。
+
+### 🔹 learning_log — 元认知学习日志（扩展）
+记录会话策略与结果，仪表盘新增**能力置信度评估** — 按任务分类显示成功率、置信度、趋势变化，让 Agent 知道自己什么情况下容易失败。
+```bash
+python tools/learning_log.py --dashboard   # 显示置信度仪表盘
+```
+
 ### 🔹 文件分片上传
 `file_init` -> `file_chunk` (顺序传输) -> `file_commit` (合并)。向后兼容。
 
