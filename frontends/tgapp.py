@@ -26,7 +26,8 @@ from chatapp_common import (
 )
 from continue_cmd import handle_frontend_command, reset_conversation
 from btw_cmd import handle_frontend_command as handle_btw_frontend_command
-from llmcore import mykeys
+from tools.config_service import ConfigService
+mykeys = ConfigService.instance()
 
 agent = GeneraticAgent()
 agent.verbose = False

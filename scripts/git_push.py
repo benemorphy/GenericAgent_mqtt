@@ -31,13 +31,13 @@ REPO = "benemorphy/GenericAgent_mqtt"
 BRANCH_PREFIX = "auto-push"
 
 def get_token():
-    """从 mykey.py 读取 GitHub token"""
-    try:
-        from mykey import github_token
-        return github_token
-    except (ImportError, AttributeError):
-        print("[ERROR] 请在 mykey.py 中添加: github_token = 'github_pat_xxx'")
-        sys.exit(1)
+    """从 ConfigService 读取 GitHub token"""
+    from tools.config_service import ConfigService
+    token = ConfigService.instance().get('github_token')
+    if token:
+        return token
+    print("[ERROR] 请在 mykey.py 中添加: github_token = 'github_pat_xxx'")
+    sys.exit(1)
 
 def run(cmd, check=True, capture=False):
     """运行命令"""
