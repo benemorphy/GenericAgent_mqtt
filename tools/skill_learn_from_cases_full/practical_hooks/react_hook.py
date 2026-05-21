@@ -17,7 +17,7 @@ def run(env: dict = None) -> dict:
     
     # 1. 检测 Node.js
     try:
-        r = subprocess.run(["node", "--version"], capture_output=True, text=True, timeout=5)
+        r = subprocess.run(["node", "--version"], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=5)
         if r.returncode == 0:
             ver = r.stdout.strip()
             detail["node"] = True
@@ -28,7 +28,7 @@ def run(env: dict = None) -> dict:
     
     # 2. 检测 npm
     try:
-        r = subprocess.run(["npm", "--version"], capture_output=True, text=True, timeout=5)
+        r = subprocess.run(["npm", "--version"], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=5)
         if r.returncode == 0:
             ver = r.stdout.strip()
             detail["npm"] = True
@@ -39,7 +39,7 @@ def run(env: dict = None) -> dict:
     
     # 3. 检测 npx (create-react-app)
     try:
-        r = subprocess.run(["npx", "--version"], capture_output=True, text=True, timeout=5)
+        r = subprocess.run(["npx", "--version"], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=5)
         if r.returncode == 0:
             ver = r.stdout.strip()
             detail["npx"] = True

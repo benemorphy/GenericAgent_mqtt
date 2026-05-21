@@ -21,7 +21,7 @@ FFPROBE = r"D:\Program Files\ffmpeg-2026-04-01-git-eedf8f0165-full_build\bin\ffp
 def _run(cmd, timeout=60):
     """执行 ffmpeg 命令"""
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        r = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=timeout)
         if r.returncode != 0:
             log.warning(f"ffmpeg 返回 {r.returncode}: {r.stderr[:200]}")
         return r.returncode, r.stdout, r.stderr

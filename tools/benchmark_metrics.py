@@ -47,7 +47,7 @@ def metric_ci_first_pass_rate():
         # fallback: 从git log估算(哪些提交是fix后的重新尝试)
         results["status"] = "estimated_from_git"
         results["detail"] = f"gh CLI unavailable ({e}), using git log estimate"
-        r = subprocess.run(['git', 'log', '--format=%s', '--since=2026-05-01'], capture_output=True, text=True)
+        r = subprocess.run(['git', 'log', '--format=%s', '--since=2026-05-01'], capture_output=True, text=True, encoding='utf-8', errors='replace')
         commits = [l for l in r.stdout.strip().split('\n') if l]
         fix_patterns = ['fix', '修复', 'hotfix', 'bug', 'correct', '修复']
         retry_patterns = ['retry', 're-try', 'try again', 'attempt', '重试']
@@ -65,7 +65,7 @@ def metric_ci_first_pass_rate():
 
 def metric_rumination_cycles():
     """反刍循环次数 — git提交中 fix→commit 的密集度分析"""
-    r = subprocess.run(['git', 'log', '--format=%H %ai %s', '--all', '--since=2026-05-17'], capture_output=True, text=True)
+    r = subprocess.run(['git', 'log', '--format=%H %ai %s', '--all', '--since=2026-05-17'], capture_output=True, text=True, encoding='utf-8', errors='replace')
     lines = [l.strip() for l in r.stdout.strip().split('\n') if l]
     
     cycles = defaultdict(list)
@@ -257,7 +257,7 @@ def run_all():
     """运行全部指标"""
     return {
         "report_generated": datetime.now().strftime('%Y-%m-%d %H:%M'),
-        "git_commit": subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True).stdout.strip(),
+        "git_commit": subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True, encoding='utf-8', errors='replace').stdout.strip(),
         "metrics": {
             "ci_first_pass_rate": metric_ci_first_pass_rate(),
             "rumination_cycles": metric_rumination_cycles(),

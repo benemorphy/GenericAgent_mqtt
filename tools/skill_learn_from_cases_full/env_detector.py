@@ -86,7 +86,7 @@ def detect_sqlite() -> dict:
     ]:
         if os.path.exists(path):
             try:
-                r = subprocess.run([path, "--version"], capture_output=True, text=True, timeout=3)
+                r = subprocess.run([path, "--version"], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=3)
                 if r.returncode == 0:
                     result["available"] = True
                     result["path"] = path
@@ -103,7 +103,7 @@ def detect_git() -> dict:
     """探测 Git"""
     result = {"available": False, "note": ""}
     try:
-        r = subprocess.run(["git", "--version"], capture_output=True, text=True, timeout=3)
+        r = subprocess.run(["git", "--version"], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=3)
         if r.returncode == 0:
             result["available"] = True
             result["note"] = r.stdout.strip()
