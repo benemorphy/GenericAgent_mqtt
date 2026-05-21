@@ -40,16 +40,21 @@ def get_token():
     sys.exit(1)
 
 def run(cmd, check=True, capture=False):
-    """运行命令"""
+    """运行命令（统一 UTF-8 编码）"""
     print(f"$ {cmd}")
+    env = os.environ.copy()
+    env.setdefault("PYTHONIOENCODING", "utf-8")
     if capture:
-        r = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        r = subprocess.run(
+            cmd, shell=True, capture_output=True, text=True,
+            encoding="utf-8", errors="replace", env=env
+        )
         if r.returncode != 0 and check:
             print(f"[ERROR] 命令失败: {cmd}")
             print(r.stderr)
             sys.exit(1)
         return r.stdout.strip()
-    r = subprocess.run(cmd, shell=True)
+    r = subprocess.run(cmd, shell=True, env=env)
     if r.returncode != 0 and check:
         print(f"[ERROR] 命令失败: {cmd}")
         sys.exit(1)

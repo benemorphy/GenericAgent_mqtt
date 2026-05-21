@@ -70,7 +70,7 @@ class SearchResult:
 
 def _run(cmd):
     try:
-        r = subprocess.run(cmd.split(), capture_output=True, text=True, timeout=5)
+        r = subprocess.run(cmd.split(), capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=5)
         return r.stdout.strip() if r.returncode == 0 else ""
     except Exception:
         return ""

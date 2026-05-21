@@ -30,7 +30,7 @@ def run(env: dict = None) -> dict:
     # 3. 检测 Figma (via npm package)
     has_figma = False
     try:
-        r = subprocess.run(["npx", "--yes", "figma", "--version"], capture_output=True, text=True, timeout=5)
+        r = subprocess.run(["npx", "--yes", "figma", "--version"], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=5)
         has_figma = r.returncode == 0
     except:
         pass

@@ -4,7 +4,7 @@ import json, sys, tempfile, subprocess
 
 
 def _exec(cmd, cwd=None):
-    return subprocess.run(cmd, capture_output=True, text=True, timeout=15, cwd=cwd)
+    return subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=15, cwd=cwd)
 
 
 def main():
