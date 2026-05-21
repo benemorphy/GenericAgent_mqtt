@@ -484,6 +484,17 @@ x, y = element_to_screen_coords(state, el)
 ### 🔹 inspiration_board — 灵感沟通板
 基于 MQTT 实时同步的灵感协作板，支持添加、归档、自动通知。
 
+### 🔹 llm_providers — Provider 工厂模式
+可插拔的 LLM Provider 注册表（`tools/llm_providers/`）。通过 `ProviderRegistry.register(name, cls)` 注册任意 Provider（Claude、OpenAI、Gemini、本地模型等）。将会话创建与 Provider 特有的 SSE 解析和认证解耦。
+
+```python
+from tools.llm_providers import ProviderRegistry
+sess = ProviderRegistry.create('claude-opus', cfg_dict)
+```
+
+### 🔹 turn_policy — 可插拔回合策略链
+Agent 循环的可定制回合策略（`tools/turn_policy.py`）。在不修改核心循环逻辑的情况下，为每次会话配置工具调用预算、最大重试次数和步数限制。
+
 ### 🔹 MariaDB 持久化层
 可选的 Retain 消息、Agent 会话、离线队列持久化。使用 `BBSClientWithPersistence` / `AgentBoardWithPersistence` 启用。
 
