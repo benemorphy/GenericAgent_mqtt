@@ -58,6 +58,22 @@ class BoardClient:
         self._post_callbacks: list[Callable] = []
         self._cached_token = None  # 注册 token 缓存，避免重复 MQTT 往返
 
+        # P0.1: 响应槽预订阅 —— 每个 Agent 预订阅自己的响应槽，消除动态 subscribe/unsubscribe
+        # 格式: v2/agent/{id}/rpc/res/{corr_id}
+        self._reply_to = f"v2/agent/{agent_id}/rpc/res/"
+
+    # ── P0.3: Payload schema 统一 ──
+    @staticmethod
+    def _build_payload(source: str, corr_id: str, reply_to: str, **extra) -> dict:
+        """构造标准化消息: {v, type, source, corr_id, reply_to, ...extra}"""
+        return {
+            "v": 1,
+            "source": source,
+            "corr_id": corr_id,
+            "reply_to": reply_to,
+            **extra,
+        }
+
     def __enter__(self):
         self.connect()
         return self
@@ -70,7 +86,11 @@ class BoardClient:
         self._client.connect()
         self._client.wait_connected(5)
 
-        # 订阅所有可能的响应主题（使用通配符）
+        # P0.1: 响应槽预订阅 —— 每个 Agent 预订阅自己的响应槽 (v2/agent/{id}/rpc/res/#)
+        # 响应槽消除了动态 subscribe/unsubscribe 开销，responder 通过 reply_to 字段回传
+        self._client.subscribe(f"{self._reply_to}#", self._on_response)
+
+        # 向后兼容：保留旧版 per-type 响应通配符订阅
         self._client.subscribe(f"{self._base}/register/response/+", self._on_response)
         self._client.subscribe(f"{self._base}/post/response/+", self._on_response)
         self._client.subscribe(f"{self._base}/query/response/+", self._on_response)
@@ -146,6 +166,7 @@ class BoardClient:
             "agent_id": self.agent_id,
             "name": name,
             "corr_id": corr_id,
+            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
         }, retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
@@ -171,6 +192,7 @@ class BoardClient:
             "token": token,
             "content": content,
             "corr_id": corr_id,
+            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
         }, retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
@@ -218,6 +240,7 @@ class BoardClient:
             "type": "posts",
             "params": {"author": author, "limit": limit, "offset": offset},
             "corr_id": corr_id,
+            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
         }, retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
@@ -238,6 +261,7 @@ class BoardClient:
             "type": "poll",
             "params": {"since_id": since_id, "limit": limit},
             "corr_id": corr_id,
+            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
         }, retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
@@ -258,6 +282,7 @@ class BoardClient:
             "type": "count",
             "params": {"author": author},
             "corr_id": corr_id,
+            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
         }, retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
@@ -278,6 +303,7 @@ class BoardClient:
             "type": "authors",
             "params": {},
             "corr_id": corr_id,
+            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
         }, retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
@@ -315,6 +341,7 @@ class BoardClient:
             "filename": filename,
             "data": data_b64,
             "corr_id": corr_id,
+            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
         }, retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)

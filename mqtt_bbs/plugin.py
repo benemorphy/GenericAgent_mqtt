@@ -93,6 +93,14 @@ class PluginContext:
 
     # ── 生命周期 ──
 
+    def register_filter(self, name: str, callback: Callable,
+                        priority: int = 100):
+        """注册过滤器到 BoardService 的 handler 链。
+        name 格式: 'pre_post', 'post_post', 'pre_register', 'post_register' 等。
+        callback(data) -> data 或 None（阻断）。
+        """
+        self._manager.register_filter(name, callback, priority, self._plugin.name)
+
     def unregister_all(self):
         """取消本插件所有订阅（由 PluginManager 调用）。"""
         # 注意：实际 MQTT 取消订阅需要 manager 层面支持

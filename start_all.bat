@@ -60,11 +60,21 @@ start "mqtt-launcher" /B /MIN ".venv\Scripts\python.exe" frontends/launcher_mqtt
 timeout /t 5 /nobreak >nul
 echo [OK] 5 个 Worker Agent 已启动
 
-:: ── 6. BoardService（MQTT BBS 持久化服务） ──
-echo [..] 启动 BoardService（MQTT BBS 公告板持久化）...
-start "board-service" /B /MIN ".venv\Scripts\python.exe" -m mqtt_bbs.board_service
-timeout /t 3 /nobreak >nul
-echo [OK] BoardService 已启动
+:: ── 6. BoardService（MQTT BBS 持久化服务 — Rust 版） ──
+echo [..] 启动 BoardService RS（Rust MQTT 公告板持久化）...
+set BOARD_RS_DIR=%~dp0tools\board_service_rs
+set BOARD_RS_EXE=%BOARD_RS_DIR%\target\release\board_service_rs.exe
+if not exist "%BOARD_RS_EXE%" set BOARD_RS_EXE=%BOARD_RS_DIR%\target\debug\board_service_rs.exe
+if exist "%BOARD_RS_EXE%" (
+    start "board-service-rs" /B /MIN "%BOARD_RS_EXE%" --db-url "mysql://root:mariadb@127.0.0.1/mqtt_bbs"
+    timeout /t 3 /nobreak >nul
+    echo [OK] BoardService RS 已启动
+) else (
+    echo [!] Rust BoardService 未编译，回退到 Python 版...
+    start "board-service" /B /MIN ".venv\Scripts\python.exe" -m mqtt_bbs.board_service
+    timeout /t 3 /nobreak >nul
+    echo [OK] BoardService (Python fallback) 已启动
+)
 
 :: ── 7. MariaDB 持久化 Worker ──
 echo [..] 启动 MariaDB 持久化 Worker（保存全部 MQTT 消息）...
@@ -105,12 +115,25 @@ if %errorlevel% equ 0 (
     echo [OK] MD Server 已启动 (http://localhost:%MD_PORT%)
 )
 
+:: ── 10. MQTT 监控面板（Rust，端口 8900） ──
+set MQTT_MONITOR_PORT=8900
+netstat -ano | findstr ":%MQTT_MONITOR_PORT% " | findstr "LISTENING" >nul
+if %errorlevel% equ 0 (
+    echo [OK] MQTT 监控面板 (port %MQTT_MONITOR_PORT%) 已在运行
+) else (
+    echo [..] 启动 MQTT 监控面板（Rust）...
+    start "mqtt-monitor-rs" /B /MIN tools\rmqtt_webui_rs\target\release\rmqtt_webui_rs.exe
+    timeout /t 3 /nobreak >nul
+    echo [OK] MQTT 监控面板已启动 (http://localhost:%MQTT_MONITOR_PORT%)
+)
+
 echo.
 echo ========================================
 echo  ✅ 自主运行环境启动完成！
 echo.
 echo  Web UI:         http://localhost:%WEBUI_PORT%
 echo  MQTT Dashboard: http://localhost:%DASHBOARD_PORT%
+echo  MQTT Monitor:   http://localhost:%MQTT_MONITOR_PORT%
 echo  MD Server:      http://localhost:%MD_PORT%
 echo  Broker:         127.0.0.1:1883
 echo  BBS Service:    已启用
