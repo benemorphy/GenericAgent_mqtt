@@ -1,5 +1,5 @@
 use sqlx::mysql::{MySqlPool, MySqlPoolOptions};
-use crate::models::{Post, UserRow, FileSession};
+use mqtt_bbs_rs::models::{Post, UserRow, FileSession};
 
 pub type DbPool = MySqlPool;
 

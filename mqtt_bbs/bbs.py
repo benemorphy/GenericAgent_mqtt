@@ -168,13 +168,25 @@ class AgentBoard:
         payload["_sig"] = _calc_hmac(task_id, task_type, task_input)
         self._client.publish(f"board/task/{task_id}/input", payload, retain=True)
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.PENDING.value, retain=True)
-        # P1.4: v2/task 双写
-        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/input", payload, self._client, retain=True, qos=1)
-        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/status", TaskStatus.PENDING.value, self._client, retain=True)
+        # P1.4 + P0.3: v2/task 双写 + 统一信封
+        envelope = BBSClient.build_payload(
+            source=self.agent_id, corr_id=task_id,
+            action="task_input",
+            task_type=task_type, priority=priority, timeout=timeout,
+        )
+        envelope["payload"] = payload  # 原始 payload 嵌入信封的 payload 字段
+        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/input", envelope, self._client, retain=True, qos=1)
+        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/status",
+                         BBSClient.build_payload(source=self.agent_id, corr_id=task_id,
+                                                  action="task_status", status=TaskStatus.PENDING.value),
+                         self._client, retain=True)
 
         # 也发布到 open 索引（待认领列表）— P0速赢: retain=True 确保新 Worker 重启后能拉取
         self._client.publish(f"board/open", task_id, retain=True)
-        _publish_v2_task(f"{V2_TASK_TOPIC}/open", task_id, self._client, retain=True)
+        _publish_v2_task(f"{V2_TASK_TOPIC}/open",
+                         BBSClient.build_payload(source=self.agent_id, corr_id=task_id,
+                                                  action="task_open", task_id=task_id),
+                         self._client, retain=True)
 
         log.info(f"[{self.agent_id}] 📤 发布任务: {task_id} ({task_type})")
 
@@ -212,11 +224,11 @@ class AgentBoard:
         resp_topic = f"board/capability/query/response/{corr_id}"
         self._client.subscribe(resp_topic, on_response)
 
-        # 发送查询
-        self._client.publish("board/capability/query", {
-            "corr_id": corr_id,
-            "capability": capability,
-        })
+        # P0.3: 使用统一信封发送查询
+        self._client.publish("board/capability/query", BBSClient.build_payload(
+            source=self.agent_id, corr_id=corr_id, reply_to=f"board/capability/query/response/",
+            action="capability_query", capability=capability,
+        ))
 
         # 等待响应
         deadline = time.time() + timeout
@@ -248,13 +260,17 @@ class AgentBoard:
         tid = self.post_task(task_type, task_input, task_id, priority, timeout)
 
         if target_agent_id:
-            # 定向推送到指定 Agent 的 node topic
-            payload = self._client.publish(
+            # 定向推送到指定 Agent 的 node topic (带统一信封)
+            self._client.publish(
                 f"node/{target_agent_id}/task/input",
-                {"task_id": tid, "type": task_type, "input": task_input},
+                BBSClient.build_payload(
+                    source=self.agent_id, corr_id=tid,
+                    action="task_routed",
+                    task_id=tid, type=task_type, input=task_input,
+                ),
                 retain=False
             )
-            log.info(f"[{self.agent_id}] 📬 定向分发: {tid} → {target_agent_id}")
+            log.info(f"[{self.agent_id}] 定向分发: {tid} -> {target_agent_id}")
 
         elif target_capability:
             # 查询有该能力的 Agent，逐个推送

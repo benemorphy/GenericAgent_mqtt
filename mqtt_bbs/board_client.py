@@ -64,10 +64,15 @@ class BoardClient:
 
     # ── P0.3: Payload schema 统一 ──
     @staticmethod
-    def _build_payload(source: str, corr_id: str, reply_to: str, **extra) -> dict:
-        """构造标准化消息: {v, type, source, corr_id, reply_to, ...extra}"""
+    def _build_payload(source: str, corr_id: str, reply_to: str, action: str = "", **extra) -> dict:
+        """构造标准化消息信封: {v, action, source, corr_id, reply_to, ...extra}
+
+        所有业务字段通过 **extra 传入，保持向后兼容。
+        响应槽: reply_to + corr_id 定位响应。
+        """
         return {
             "v": 1,
+            "action": action,
             "source": source,
             "corr_id": corr_id,
             "reply_to": reply_to,
@@ -162,12 +167,14 @@ class BoardClient:
             return self._cached_token
         corr_id = self._gen_corr_id()
         req_topic = f"{self._base}/register"
-        self._client.publish(req_topic, {
-            "agent_id": self.agent_id,
-            "name": name,
-            "corr_id": corr_id,
-            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
-        }, retain=False, qos=1)
+        self._client.publish(req_topic, self._build_payload(
+            source=self.agent_id,
+            corr_id=corr_id,
+            reply_to=self._reply_to,       # P0.1: 响应槽预订阅
+            action="register",
+            agent_id=self.agent_id,
+            name=name,
+        ), retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
         if result is None:
@@ -187,13 +194,15 @@ class BoardClient:
         """
         corr_id = self._gen_corr_id()
         req_topic = f"{self._base}/post"
-        self._client.publish(req_topic, {
-            "agent_id": self.agent_id,
-            "token": token,
-            "content": content,
-            "corr_id": corr_id,
-            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
-        }, retain=False, qos=1)
+        self._client.publish(req_topic, self._build_payload(
+            source=self.agent_id,
+            corr_id=corr_id,
+            reply_to=self._reply_to,       # P0.1: 响应槽预订阅
+            action="post",
+            agent_id=self.agent_id,
+            token=token,
+            content=content,
+        ), retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
         if result is None:
@@ -235,13 +244,15 @@ class BoardClient:
         """
         corr_id = self._gen_corr_id()
         req_topic = f"{self._base}/query"
-        self._client.publish(req_topic, {
-            "agent_id": self.agent_id,
-            "type": "posts",
-            "params": {"author": author, "limit": limit, "offset": offset},
-            "corr_id": corr_id,
-            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
-        }, retain=False, qos=1)
+        self._client.publish(req_topic, self._build_payload(
+            source=self.agent_id,
+            corr_id=corr_id,
+            reply_to=self._reply_to,       # P0.1: 响应槽预订阅
+            action="query",
+            agent_id=self.agent_id,
+            type="posts",
+            params={"author": author, "limit": limit, "offset": offset},
+        ), retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
         if result and "data" in result:
@@ -256,13 +267,15 @@ class BoardClient:
         """
         corr_id = self._gen_corr_id()
         req_topic = f"{self._base}/query"
-        self._client.publish(req_topic, {
-            "agent_id": self.agent_id,
-            "type": "poll",
-            "params": {"since_id": since_id, "limit": limit},
-            "corr_id": corr_id,
-            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
-        }, retain=False, qos=1)
+        self._client.publish(req_topic, self._build_payload(
+            source=self.agent_id,
+            corr_id=corr_id,
+            reply_to=self._reply_to,       # P0.1: 响应槽预订阅
+            action="query",
+            agent_id=self.agent_id,
+            type="poll",
+            params={"since_id": since_id, "limit": limit},
+        ), retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
         if result and "data" in result:
@@ -277,13 +290,15 @@ class BoardClient:
         """
         corr_id = self._gen_corr_id()
         req_topic = f"{self._base}/query"
-        self._client.publish(req_topic, {
-            "agent_id": self.agent_id,
-            "type": "count",
-            "params": {"author": author},
-            "corr_id": corr_id,
-            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
-        }, retain=False, qos=1)
+        self._client.publish(req_topic, self._build_payload(
+            source=self.agent_id,
+            corr_id=corr_id,
+            reply_to=self._reply_to,       # P0.1: 响应槽预订阅
+            action="query",
+            agent_id=self.agent_id,
+            type="count",
+            params={"author": author},
+        ), retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
         if result and "data" in result:
@@ -298,13 +313,15 @@ class BoardClient:
         """
         corr_id = self._gen_corr_id()
         req_topic = f"{self._base}/query"
-        self._client.publish(req_topic, {
-            "agent_id": self.agent_id,
-            "type": "authors",
-            "params": {},
-            "corr_id": corr_id,
-            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
-        }, retain=False, qos=1)
+        self._client.publish(req_topic, self._build_payload(
+            source=self.agent_id,
+            corr_id=corr_id,
+            reply_to=self._reply_to,       # P0.1: 响应槽预订阅
+            action="query",
+            agent_id=self.agent_id,
+            type="authors",
+            params={},
+        ), retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
         if result and "data" in result:
@@ -335,14 +352,16 @@ class BoardClient:
         filename = os.path.basename(filepath)
         corr_id = self._gen_corr_id()
         req_topic = f"{self._base}/file_chunk"
-        self._client.publish(req_topic, {
-            "agent_id": self.agent_id,
-            "token": token,
-            "filename": filename,
-            "data": data_b64,
-            "corr_id": corr_id,
-            "reply_to": self._reply_to,       # P0.1: 响应槽预订阅
-        }, retain=False, qos=1)
+        self._client.publish(req_topic, self._build_payload(
+            source=self.agent_id,
+            corr_id=corr_id,
+            reply_to=self._reply_to,       # P0.1: 响应槽预订阅
+            action="file_chunk",
+            agent_id=self.agent_id,
+            token=token,
+            filename=filename,
+            data=data_b64,
+        ), retain=False, qos=1)
 
         result = self._wait_response(corr_id, timeout)
         if result is None:
