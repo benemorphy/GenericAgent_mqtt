@@ -1,27 +1,21 @@
 """
-MQTT Agent BBS — 智能体协作消息总线 (MariaDB持久化模式)
-
-对标当前 subagent 文件协议 (input.txt / output.txt / [ROUND END])，
-用 MQTT 主题树实现任务分发、流式反馈、结果收集 + MariaDB 持久化。
+MQTT Agent BBS — 智能体协作消息总线 (Rust BoardService + Mosquitto + MariaDB)
 
 快速开始:
-    from mqtt_bbs import AgentBoardWithPersistence, WorkerAgentWithPersistence
+    from mqtt_bbs.board_client import BoardClient
 
-    # 主智能体：发布任务（自动持久化）
-    master = AgentBoardWithPersistence("master_alpha")
-    task_id = master.post_task("analyse_log", {"path": "/var/log"})
-    result = master.wait_task(task_id)
+    bbs = BoardClient("agent_alpha")
+    bbs.connect()
+    info = bbs.register("agent_alpha")
 
-    # 工作智能体：认领并执行
-    worker = WorkerAgentWithPersistence("worker_01")
-    worker.start()
+依赖:
+    Python 客户端 → MQTT (Mosquitto) → Rust BoardService RS → MariaDB
+    Rust 无运行时可部署
 """
 
-from .persistence import BBSClientWithPersistence, MariaDBConn, AgentBoardWithPersistence, WorkerAgentWithPersistence
 from .board_client import BoardClient
+from .client import BBSClient
 from .bbs import AgentBoard, WorkerAgent
 from .whiteboard import WhiteboardKV
-from .scheduler import BBScheduler
-from .dag import DAGWorkflow, DAGTask
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
