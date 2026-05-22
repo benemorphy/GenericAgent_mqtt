@@ -100,7 +100,7 @@ if %errorlevel% equ 0 (
     echo [OK] MD Server (port %MD_PORT%) 已在运行
 ) else (
     echo [..] 启动 MD Server（Markdown 文件浏览器）...
-    start "md-server" /B /MIN ".venv\Scripts\python.exe" tools/md_server.py --port %MD_PORT%
+    start "md-server" /B /MIN tools\md_server_rs\target\release\md_server_rs.exe --port %MD_PORT%
     timeout /t 3 /nobreak >nul
     echo [OK] MD Server 已启动 (http://localhost:%MD_PORT%)
 )
