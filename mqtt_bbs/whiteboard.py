@@ -2,35 +2,178 @@
 实时协作白板 — BBS 驱动的 KV 共享状态 + CAS 乐观锁
 
 用法:
-    from mqtt_bbs.whiteboard import WhiteboardKV
+    from mqtt_bbs.whiteboard import WhiteboardKV, StateKV
 
+    # 传统方式（向后兼容）
     wb = WhiteboardKV("agent-alpha", board="agent-whiteboard")
     wb.connect()
-
-    # 写
     wb.set("model_config", {"lr": 0.001, "epochs": 10})
 
-    # 读
-    val = wb.get("model_config")
-
-    # CAS 乐观锁写
-    old = wb.get("counter")
-    wb.cas("counter", old["version"], old["value"] + 1)
-
-    # 订阅变更
-    def on_change(key, value):
-        print(f"{key} 变更为: {value}")
-    wb.watch("model_config", on_change)
+    # P1.5: v2/state 状态空间独立化（推荐）
+    st = StateKV("agent-alpha", namespace="training")
+    st.connect()
+    st.set("model_config", {"lr": 0.001, "epochs": 10})
+    val = st.get("model_config")
 """
 
-import json, time, logging
+import json, time, os, logging
 from typing import Callable, Optional, Any
 
 from .board_client import BoardClient
+from . import config as cfg
+from .client import BBSClient
 
 log = logging.getLogger("mqtt_bbs.whiteboard")
 
 WHITEBOARD_AUTHOR = "whiteboard"  # BBS 帖子 author 标识
+
+STATE_TOPIC = "v2/state"  # P1.5: v2/state/{namespace}/{key}
+
+
+class StateKV:
+    """P1.5: 基于 MariaDB 的 KV 状态存储
+
+    用法:
+        st = StateKV("agent-alpha", namespace="training")
+        st.connect()
+        st.set("model_config", {"lr": 0.001})
+        val = st.get("model_config")
+        st.cas("counter", 0, 1)    # CAS 乐观锁
+    """
+
+    def __init__(self, agent_id: str, namespace: str = "default",
+                 host: str = None, port: int = None):
+        self.agent_id = agent_id
+        self.namespace = namespace
+        self._client = BBSClient(agent_id, host=host, port=port)
+        self._connected = False
+        self._watchers: dict[str, list[Callable]] = {}
+        self._subscribed = False
+        self._db = None
+        self._db_config = cfg.DB_CONFIG.copy()
+
+    def connect(self):
+        self._client.connect()
+        self._client.wait_connected(5)
+        self._connected = self._client.is_connected
+        if not self._subscribed:
+            self._msg_handler = self._client.subscribe(
+                self._ns_topic() + "#", self._on_message)
+            self._subscribed = True
+        # 初始化 DB 连接
+        import pymysql
+        self._db = pymysql.connect(**self._db_config)
+
+    def disconnect(self):
+        if self._db:
+            self._db.close()
+            self._db = None
+        self._client.disconnect()
+        self._connected = False
+
+    def _ns_topic(self):
+        return f"v2/state/{self.namespace}/"
+
+    def _topic(self, key: str):
+        return f"v2/state/{self.namespace}/{key}"
+
+    def get(self, key: str, default: Any = None) -> Optional[dict]:
+        if not self._db:
+            return None
+        cur = self._db.cursor()
+        cur.execute(
+            "SELECT value, version, updated_by, updated_at FROM state_kv WHERE namespace=%s AND `key`=%s",
+            (self.namespace, key))
+        row = cur.fetchone()
+        if not row:
+            return None
+        return {
+            "key": key,
+            "value": json.loads(row[0]) if isinstance(row[0], str) else row[0],
+            "version": row[1],
+            "updated_by": row[2],
+            "updated_at": str(row[3]) if row[3] else "",
+        }
+
+    def set(self, key: str, value: Any):
+        if not self._db:
+            return
+        now = time.strftime("%Y-%m-%d %H:%M:%S")
+        cur = self._db.cursor()
+        cur.execute(
+            "INSERT INTO state_kv (namespace, `key`, value, version, updated_by, updated_at) "
+            "VALUES (%s, %s, %s, 1, %s, %s) "
+            "ON DUPLICATE KEY UPDATE value=%s, version=version+1, updated_by=%s, updated_at=%s",
+            (self.namespace, key, json.dumps(value, ensure_ascii=False), self.agent_id, now,
+             json.dumps(value, ensure_ascii=False), self.agent_id, now))
+        self._db.commit()
+        self._client.publish(self._topic(key), {"value": value, "version_inc": True}, retain=False, qos=1)
+
+    def cas(self, key: str, expected_version: int, new_value: Any) -> bool:
+        if not self._db:
+            return False
+        cur = self._db.cursor()
+        cur.execute(
+            "SELECT version FROM state_kv WHERE namespace=%s AND `key`=%s",
+            (self.namespace, key))
+        row = cur.fetchone()
+        cur_version = row[0] if row else 0
+        if cur_version != expected_version:
+            return False
+        now = time.strftime("%Y-%m-%d %H:%M:%S")
+        cur.execute(
+            "INSERT INTO state_kv (namespace, `key`, value, version, updated_by, updated_at) "
+            "VALUES (%s, %s, %s, %s, %s, %s) "
+            "ON DUPLICATE KEY UPDATE value=%s, version=%s, updated_by=%s, updated_at=%s",
+            (self.namespace, key, json.dumps(new_value, ensure_ascii=False),
+             expected_version + 1, self.agent_id, now,
+             json.dumps(new_value, ensure_ascii=False),
+             expected_version + 1, self.agent_id, now))
+        self._db.commit()
+        self._client.publish(self._topic(key), {"value": new_value, "version": expected_version + 1},
+                             retain=False, qos=1)
+        return True
+
+    def increment(self, key: str, delta: int = 1, default: int = 0) -> Optional[int]:
+        for attempt in range(3):
+            current = self.get(key)
+            cur_val = current["value"] if current else default
+            new_val = cur_val + delta
+            if self.cas(key, current["version"] if current else 0, new_val):
+                return new_val
+            import time as _t
+            _t.sleep(0.05)
+        return None
+
+    def delete(self, key: str):
+        if not self._db:
+            return
+        cur = self._db.cursor()
+        cur.execute("DELETE FROM state_kv WHERE namespace=%s AND `key`=%s",
+                     (self.namespace, key))
+        self._db.commit()
+        self._client.publish(self._topic(key), {"deleted": True}, retain=False, qos=1)
+
+    def watch(self, key: str, callback: Callable):
+        if key not in self._watchers:
+            self._watchers[key] = []
+        self._watchers[key].append(callback)
+
+    def _on_message(self, topic, payload):
+        key = topic.replace(self._ns_topic(), "").split("/")[0]
+        value = payload.get("value") if isinstance(payload, dict) else None
+        if key and key in self._watchers:
+            for cb in self._watchers[key]:
+                try:
+                    cb(key, value)
+                except Exception as e:
+                    log.error(f"[StateKV] watcher 异常 [{key}]: {e}")
+
+    @property
+    def is_connected(self) -> bool:
+        return self._connected
+
+
 
 
 class WhiteboardKV:

@@ -6,11 +6,19 @@ set PATH=D:\tools\w64devkit\bin;%USERPROFILE%\.cargo\bin;%USERPROFILE%\.rustup\t
 
 if /I "%1"=="build" (
     cargo build --release
-    goto :end
+    goto if exist rmqtt_webui_rs\target\release\rmqtt_webui_rs.exe (
+    start /B "" rmqtt_webui_rs\target\release\rmqtt_webui_rs.exe >nul 2>&1
+    echo rmqtt_webui_rs started on :8900
+)
+:end
 )
 if /I "%1"=="debug" (
     cargo build
-    goto :end
+    goto if exist rmqtt_webui_rs\target\release\rmqtt_webui_rs.exe (
+    start /B "" rmqtt_webui_rs\target\release\rmqtt_webui_rs.exe >nul 2>&1
+    echo rmqtt_webui_rs started on :8900
+)
+:end
 )
 
 :: 默认: 启动已知二进制
@@ -21,5 +29,9 @@ if exist md_server_rs\target\release\md_server_rs.exe (
 if exist simphtml_rs\target\release\simphtml_rs.exe (
     start /B "" simphtml_rs\target\release\simphtml_rs.exe --serve --port 8901 >nul 2>&1
     echo simphtml_rs started on :8901
+)
+if exist rmqtt_webui_rs\target\release\rmqtt_webui_rs.exe (
+    start /B "" rmqtt_webui_rs\target\release\rmqtt_webui_rs.exe >nul 2>&1
+    echo rmqtt_webui_rs started on :8900
 )
 :end

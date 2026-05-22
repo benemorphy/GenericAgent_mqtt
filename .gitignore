@@ -166,3 +166,6 @@ __pycache__/
 
 # Rust build artifacts
 target/
+
+# Python 文档归档（已由 Rust 替代）
+archive/

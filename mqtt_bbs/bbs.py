@@ -56,6 +56,14 @@ def _save_brainstorm(task_id: str, topic: str, agent_id: str,
 
 log = logging.getLogger("mqtt_bbs.bbs")
 
+# P1.4: v2/task 命名空间
+V2_TASK_TOPIC = "v2/task"  # v2/task/{task_id}/{subtype}
+
+
+def _publish_v2_task(topic_v2: str, payload, client, retain=False, qos=0):
+    """发布到 v2/task 命名空间（日志审计用，方便后续迁移）"""
+    client.publish(topic_v2, payload, retain=retain, qos=qos)
+
 
 class TaskStatus(str, Enum):
     PENDING = "pending"
@@ -160,9 +168,13 @@ class AgentBoard:
         payload["_sig"] = _calc_hmac(task_id, task_type, task_input)
         self._client.publish(f"board/task/{task_id}/input", payload, retain=True)
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.PENDING.value, retain=True)
+        # P1.4: v2/task 双写
+        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/input", payload, self._client, retain=True, qos=1)
+        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/status", TaskStatus.PENDING.value, self._client, retain=True)
 
         # 也发布到 open 索引（待认领列表）— P0速赢: retain=True 确保新 Worker 重启后能拉取
         self._client.publish(f"board/open", task_id, retain=True)
+        _publish_v2_task(f"{V2_TASK_TOPIC}/open", task_id, self._client, retain=True)
 
         log.info(f"[{self.agent_id}] 📤 发布任务: {task_id} ({task_type})")
 
@@ -289,9 +301,11 @@ class AgentBoard:
                 # signal 收到后，output 应该在 Retain 中
                 pass
 
-        # 订阅 output 和 signal
+        # 订阅 output 和 signal（board + v2 双订阅）
         self._client.subscribe(f"board/task/{task_id}/output", on_output)
         self._client.subscribe(f"board/task/{task_id}/signal", on_signal)
+        self._client.subscribe(f"{V2_TASK_TOPIC}/{task_id}/output", on_output)
+        self._client.subscribe(f"{V2_TASK_TOPIC}/{task_id}/signal", on_signal)
 
         # 先尝试读 Retain（任务可能已经完成）
         # paho 的 subscribe 会自动收到 Retain 消息
@@ -301,6 +315,8 @@ class AgentBoard:
             if result_holder["output"] is not None:
                 self._client.unsubscribe(f"board/task/{task_id}/output")
                 self._client.unsubscribe(f"board/task/{task_id}/signal")
+                self._client.unsubscribe(f"{V2_TASK_TOPIC}/{task_id}/output")
+                self._client.unsubscribe(f"{V2_TASK_TOPIC}/{task_id}/signal")
                 log.info(f"[{self.agent_id}] ✅ 任务完成: {task_id}")
                 return result_holder["output"]
             time.sleep(poll_interval)
@@ -308,6 +324,8 @@ class AgentBoard:
         # 超时
         self._client.unsubscribe(f"board/task/{task_id}/output")
         self._client.unsubscribe(f"board/task/{task_id}/signal")
+        self._client.unsubscribe(f"{V2_TASK_TOPIC}/{task_id}/output")
+        self._client.unsubscribe(f"{V2_TASK_TOPIC}/{task_id}/signal")
         log.warning(f"[{self.agent_id}] ⏰ 任务超时: {task_id}")
         return TaskOutput(task_id=task_id, agent_id="", status="failed",
                           error={"type": "timeout", "msg": f"等待超过{timeout}秒"})
@@ -462,9 +480,9 @@ class WorkerAgent:
         # 发布在线状态
         self._client.publish(f"node/{self.agent_id}/status", "online", retain=True)
 
-        # 订阅所有任务的 input（含待认领 + 新发布）
-        # 注意：公共 Broker 上会看到所有任务，实际使用应加 ACL
+        # 订阅所有任务的 input（含待认领 + 新发布）— board + v2 双订阅
         self._client.subscribe("board/task/+/input", self._on_task_input)
+        self._client.subscribe(f"{V2_TASK_TOPIC}/+/input", self._on_task_input)
 
         # 订阅定向任务（能力市场路由专用）
         self._client.subscribe(f"node/{self.agent_id}/task/input", self._on_directed_task)
@@ -501,19 +519,27 @@ class WorkerAgent:
         self._current_task_id = task_id
         self._seq = 0
 
-        # 发布 claim + 状态
+        # 发布 claim + 状态（board + v2 双写）
         self._client.publish(f"board/task/{task_id}/claim",
                              {"agent_id": self.agent_id, "claimed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
                              retain=True)
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.RUNNING.value, retain=True)
+        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/claim",
+                         {"agent_id": self.agent_id, "claimed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
+                         self._client, retain=True, qos=1)
+        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/status", TaskStatus.RUNNING.value, self._client, retain=True)
         self._client.publish(f"node/{self.agent_id}/task/current", task_id, retain=True)
         self._client.publish(f"node/{self.agent_id}/status", "busy", retain=True)
 
-        # 动态订阅：任务取消信号 + 运行时注入（Point 6: Runtime Intervention）
+        # 动态订阅：任务取消信号 + 运行时注入（board + v2）
         self._client.subscribe(f"board/task/{task_id}/signal", self._on_task_signal)
         self._subscribed_dynamic.add(f"board/task/{task_id}/signal")
         self._client.subscribe(f"board/task/{task_id}/intervene", self._on_intervene)
         self._subscribed_dynamic.add(f"board/task/{task_id}/intervene")
+        self._client.subscribe(f"{V2_TASK_TOPIC}/{task_id}/signal", self._on_task_signal)
+        self._subscribed_dynamic.add(f"{V2_TASK_TOPIC}/{task_id}/signal")
+        self._client.subscribe(f"{V2_TASK_TOPIC}/{task_id}/intervene", self._on_intervene)
+        self._subscribed_dynamic.add(f"{V2_TASK_TOPIC}/{task_id}/intervene")
 
         log.info(f"[{self.agent_id}] 🤝 认领任务: {task_id}")
 
@@ -549,6 +575,8 @@ class WorkerAgent:
         if tid:
             self._client.publish(f"board/task/{tid}/stdout",
                                  {"seq": self._seq, "data": text}, retain=False)
+            _publish_v2_task(f"{V2_TASK_TOPIC}/{tid}/stdout",
+                             {"seq": self._seq, "data": text}, self._client, retain=False)
 
     def stream_err(self, task_id_or_data=None, data: str = None):
         self._seq += 1
@@ -558,6 +586,8 @@ class WorkerAgent:
             tid = task_id_or_data; text = data
         if tid:
             self._client.publish(f"board/task/{tid}/stderr", {"seq": self._seq, "data": text}, retain=False)
+            _publish_v2_task(f"{V2_TASK_TOPIC}/{tid}/stderr",
+                             {"seq": self._seq, "data": text}, self._client, retain=False)
 
     # ── 完成任务 ──
 
@@ -595,21 +625,27 @@ class WorkerAgent:
             metrics={"duration_sec": 0},  # TODO: 可加计时
         )
 
-        # 写 output（对标 output.txt）
+        # 写 output（对标 output.txt）— board + v2 双写
         self._client.publish(f"board/task/{task_id}/output", output.to_dict(), retain=True, qos=1)
+        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/output", output.to_dict(), self._client, retain=True, qos=1)
 
         # 发完成信号（对标 [ROUND END]）
         self._client.publish(f"board/task/{task_id}/signal", "[ROUND_END]", retain=True, qos=2)
+        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/signal", "[ROUND_END]", self._client, retain=True, qos=2)
 
         # 更新状态
         task_status = TaskStatus.DONE if status == "completed" else TaskStatus.FAILED
         self._client.publish(f"board/task/{task_id}/status", task_status.value, retain=True)
+        _publish_v2_task(f"{V2_TASK_TOPIC}/{task_id}/status", task_status.value, self._client, retain=True)
 
         # ── P0速赢: 清理 task retain 堆积 ──
         # 任务完成后清除 retain，避免 broker 堆积过期 retained 消息
         for _clean_topic in [f"board/task/{task_id}/output",
                               f"board/task/{task_id}/signal",
-                              f"board/task/{task_id}/status"]:
+                              f"board/task/{task_id}/status",
+                              f"{V2_TASK_TOPIC}/{task_id}/output",
+                              f"{V2_TASK_TOPIC}/{task_id}/signal",
+                              f"{V2_TASK_TOPIC}/{task_id}/status"]:
             self._client.publish(_clean_topic, "", retain=True)
 
         # 取消动态订阅（任务信号 + intervene）

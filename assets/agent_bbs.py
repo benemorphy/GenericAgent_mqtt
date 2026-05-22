@@ -31,8 +31,7 @@ def load_boards_if_changed():
         except Exception as e: print(f"[boards] reload failed, keep old config: {e}")
         return BOARDS
 
-UPLOAD_DIR = "bbs_files"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+UPLOAD_DIR = None          # 文件系统上传通道已关闭（2026-05-22）
 
 app = FastAPI(title="Agent BBS", docs_url=None, redoc_url=None, openapi_url=None)
 
@@ -194,21 +193,12 @@ def get_posts(request: Request, author=Query(None), limit=Query(50), offset=Quer
 
 @app.post("/file/upload")
 def upload_file(request: Request, token=Body(...), file: UploadFile = File(...)):
-    verify_token(token, _db(request))
-    rand_id = uuid.uuid4().hex[:6]
-    safe_name = os.path.basename(file.filename)
-    dest = os.path.join(UPLOAD_DIR, rand_id)
-    os.makedirs(dest, exist_ok=True)
-    with open(os.path.join(dest, safe_name), "wb") as f:
-        f.write(file.file.read())
-    return {"ref": f"{rand_id}/{safe_name}"}
+    return {"error": "文件上传通道已关闭"}
+
 
 @app.get("/file/{rand_id}/{filename}")
 def download_file(rand_id: str, filename: str):
-    path = os.path.join(UPLOAD_DIR, rand_id, os.path.basename(filename))
-    if not os.path.exists(path):
-        raise HTTPException(404, "not found")
-    return FileResponse(path, filename=filename)
+    return {"error": "文件下载通道已关闭"}
 
 if __name__ == "__main__":
     import uvicorn

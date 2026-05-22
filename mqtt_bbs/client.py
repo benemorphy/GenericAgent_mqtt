@@ -290,11 +290,16 @@ class BBSClient:
 
         callback 接收参数: (topic: str, payload: dict|str|bytes)
         """
-        topic = f"{self._prefix}{topic_suffix}"
-        self._client.subscribe(topic, qos)
+        # 先注册回调，再订阅（避免 retain 消息在回调注册前到达）
         if topic_suffix not in self._subscriptions:
             self._subscriptions[topic_suffix] = []
         self._subscriptions[topic_suffix].append(callback)
+        # v2/ 主题已是完整路径，不加 agent/ 前缀
+        if topic_suffix.startswith("v2/") or topic_suffix.startswith("board/"):
+            topic = topic_suffix
+        else:
+            topic = f"{self._prefix}{topic_suffix}"
+        self._client.subscribe(topic, qos)
         log.info(f"[SUB] {topic}")
         return self
 

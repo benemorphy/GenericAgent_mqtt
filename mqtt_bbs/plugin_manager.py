@@ -17,10 +17,63 @@ import sys
 import threading
 import traceback
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Callable, Any
+from collections import defaultdict
+import bisect
 
 from . import config as cfg
 from .plugin import Plugin, PluginContext, log
+
+
+class FilterChain:
+    """过滤器链 — 按优先级有序执行 filter，支持修改/阻断"""
+
+    def __init__(self):
+        self._filters: dict[str, list[tuple[int, Callable, str]]] = defaultdict(list)
+        # ^ {filter_name: [(priority, callback, plugin_name), ...]}
+
+    def register(self, name: str, callback: Callable, priority: int = 100,
+                 plugin_name: str = ""):
+        """注册过滤器。priority 越小越先执行。callback(data) -> data|None。
+        callback 返回 None 表示阻断消息。"""
+        filters = self._filters[name]
+        # 保持 priority 排序
+        idx = bisect.bisect_left([f[0] for f in filters], priority)
+        filters.insert(idx, (priority, callback, plugin_name))
+        log.info(f"  [Filter] 注册: {name} (pri={priority}, plugin={plugin_name})")
+
+    def unregister(self, name: str, callback: Callable = None, plugin_name: str = None):
+        """取消注册。可指定 callback 或 plugin_name。"""
+        self._filters[name] = [
+            (p, cb, pn) for p, cb, pn in self._filters.get(name, [])
+            if not (callback and cb == callback) and not (plugin_name and pn == plugin_name)
+        ]
+
+    def apply(self, name: str, data: dict) -> Optional[dict]:
+        """依次执行过滤器。任一返回 None 则阻断。返回最终 data 或 None。"""
+        for priority, callback, plugin_name in self._filters.get(name, []):
+            try:
+                result = callback(data)
+                if result is None:
+                    log.info(f"  [Filter] 阻断: {name} → {plugin_name} (pri={priority})")
+                    return None
+                data = result
+            except Exception as e:
+                log.error(f"  [Filter] 异常: {name} → {plugin_name}: {e}")
+                import traceback; traceback.print_exc()
+                return None
+        return data
+
+    def list_filters(self, name: str = None) -> list[dict]:
+        """列出过滤器。name=None 列出全部。"""
+        result = []
+        for n, flist in self._filters.items():
+            if name and n != name:
+                continue
+            for p, cb, pn in flist:
+                result.append({"name": n, "plugin": pn, "priority": p,
+                               "callback": cb.__name__})
+        return result
 
 
 class PluginManager:
@@ -41,6 +94,7 @@ class PluginManager:
         self._plugins: dict[str, Plugin] = {}       # name -> Plugin
         self._modules: dict[str, str] = {}           # name -> source path
         self._lock = threading.Lock()
+        self._filter_chain = FilterChain()            # P1.6: 过滤器链
 
     # ── 公开 API ──
 
@@ -123,6 +177,21 @@ class PluginManager:
     def trigger_event(self, topic: str, data: dict):
         """发布 events 主题事件（供 BoardService 调用）"""
         self._client.publish(topic, data, retain=False, qos=1)
+
+    # ── P1.6 过滤器链 ──
+
+    def register_filter(self, name: str, callback: Callable,
+                        priority: int = 100, plugin_name: str = ""):
+        """注册过滤器到链。name 格式: 'pre_{handler}' / 'post_{handler}'"""
+        self._filter_chain.register(name, callback, priority, plugin_name)
+
+    def apply_filters(self, name: str, data: dict) -> Optional[dict]:
+        """应用过滤器链。返回 None 表示阻断。"""
+        return self._filter_chain.apply(name, data)
+
+    def list_filters(self, name: str = None) -> list[dict]:
+        """列出过滤器"""
+        return self._filter_chain.list_filters(name)
 
     # ── 内部方法 ──
 

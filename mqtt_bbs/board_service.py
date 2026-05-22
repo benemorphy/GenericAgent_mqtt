@@ -40,7 +40,7 @@ BOARDS_FILE = "boards.json"           # 同 HTTP 版格式
 DEFAULT_BOARDS = {"agent-bbs-test": {"name": "default", "db": "agent_bbs.db"},
                   "agent-inspiration": {"name": "灵感板", "db": "agent_inspiration.db"},
                   "agent-whiteboard": {"name": "白板", "db": "agent_whiteboard.db"}}
-UPLOAD_DIR = "bbs_files"
+UPLOAD_DIR = None          # 文件系统上传通道已关闭（2026-05-22）
 TOPIC_BBS = "bbs"                     # agent/bbs/{board}/...
 
 # ── Webhook 辅助 ──
@@ -70,7 +70,6 @@ class CapabilityRegistry:
         self._lock = threading.Lock()
         # agent_id → {capabilities, status, last_seen, agent_id}
         self._agents: dict[str, dict] = {}
-        self._cleanup_timer: Optional[threading.Thread] = None
         self._running = False
 
     def start(self):
@@ -84,10 +83,7 @@ class CapabilityRegistry:
         self._client.subscribe("node/+/status", self._on_status)
         # 订阅查询请求
         self._client.subscribe("board/capability/query", self._on_query)
-        # 启动过期清理线程
-        self._cleanup_timer = threading.Thread(target=self._cleanup_loop, daemon=True)
-        self._cleanup_timer.start()
-        log.info("[CapabilityRegistry] 🚀 启动")
+        log.info("[CapabilityRegistry] 启动")
 
     def stop(self):
         self._running = False
@@ -182,24 +178,7 @@ class CapabilityRegistry:
         else:
             # 无 corr_id 则直接回复到通用响应主题
             self._client.publish("board/capability/query/response", resp, retain=False)
-        log.info(f"  🔍 能力查询: filter={capability_filter} → {len(agents)} agents")
-
-    def _cleanup_loop(self):
-        """定期清理过期 Agent（HEARTBEAT_TIMEOUT 无心跳标记为 offline）"""
-        while self._running:
-            time.sleep(cfg.HEARTBEAT_INTERVAL)
-            now = time.time()
-            expired = []
-            with self._lock:
-                for agent_id, info in self._agents.items():
-                    if info.get("status") == "offline":
-                        continue
-                    last_seen = info.get("last_seen", 0)
-                    if now - last_seen > cfg.HEARTBEAT_TIMEOUT:
-                        info["status"] = "offline"
-                        expired.append(agent_id)
-            if expired:
-                log.warning(f"  ⏰ 心跳超时标记离线: {expired}")
+        log.info(f"  查询: filter={capability_filter} → {len(agents)} agents")
 
 
 class _MariaDBWrapper:
@@ -430,7 +409,12 @@ class BoardService:
                 row = db.execute("SELECT token FROM bbs_users WHERE name=%s AND board=%s", (name, board_key)).fetchone()
                 token = row["token"] if row else token
 
-        resp_topic = f"{TOPIC_BBS}/{board_key}/register/response/{corr_id}"
+        # P0.1: 优先使用 reply_to 响应槽，向后兼容旧版 topic 模式
+        reply_to = payload.get("reply_to", "")
+        if reply_to:
+            resp_topic = f"{reply_to}{corr_id}"
+        else:
+            resp_topic = f"{TOPIC_BBS}/{board_key}/register/response/{corr_id}"
         self._client.publish(resp_topic, {"token": token, "name": name}, retain=False, qos=1)
         self._publish_event(board_key, "register", {"agent_id": name, "token": token, "board": board_key})
         log.info(f"  ✅ 注册: {name} → token={token[:8]}... (board: {board_key})")
@@ -446,6 +430,15 @@ class BoardService:
         if not token or not content:
             return
 
+        # P1.6: pre_post 过滤器链（可修改 payload/阻断发布）
+        filtered = self._plugin_mgr.apply_filters("pre_post", {
+            "board_key": board_key, "token": token,
+            "content": content, "corr_id": corr_id,
+            "payload": payload,
+        })
+        if filtered is None:
+            return
+
         db = self._get_db(board_key)
         if not db:
             return
@@ -455,7 +448,11 @@ class BoardService:
             row = db.execute("SELECT name FROM bbs_users WHERE token=%s", (token,)).fetchone()
             if not row:
                 log.warning(f"  ❌ 无效 token (board: {board_key})")
-                resp_topic = f"{TOPIC_BBS}/{board_key}/post/response/{corr_id}"
+                reply_to = payload.get("reply_to", "")
+                if reply_to:
+                    resp_topic = f"{reply_to}{corr_id}"
+                else:
+                    resp_topic = f"{TOPIC_BBS}/{board_key}/post/response/{corr_id}"
                 self._client.publish(resp_topic, {"error": "invalid token"}, retain=False, qos=1)
                 return
 
@@ -469,7 +466,11 @@ class BoardService:
 
         # 响应给发布者
         if corr_id:
-            resp_topic = f"{TOPIC_BBS}/{board_key}/post/response/{corr_id}"
+            reply_to = payload.get("reply_to", "")
+            if reply_to:
+                resp_topic = f"{reply_to}{corr_id}"
+            else:
+                resp_topic = f"{TOPIC_BBS}/{board_key}/post/response/{corr_id}"
             self._client.publish(resp_topic, {
                 "id": post_id, "author": author, "created_at": created_at
             }, retain=False, qos=1)
@@ -589,7 +590,11 @@ class BoardService:
                         if hasattr(_v, 'isoformat'):
                             _r[_k] = _v.isoformat()
 
-        resp_topic = f"{TOPIC_BBS}/{board_key}/query/response/{corr_id}"
+        reply_to = payload.get("reply_to", "")
+        if reply_to:
+            resp_topic = f"{reply_to}{corr_id}"
+        else:
+            resp_topic = f"{TOPIC_BBS}/{board_key}/query/response/{corr_id}"
         self._client.publish(resp_topic, {"type": query_type, "data": result}, retain=False, qos=1)
         log.debug(f"  🔍 查询: {query_type} (board: {board_key}, corr: {corr_id[:8]})")
 
@@ -627,9 +632,13 @@ class BoardService:
             json.dump(meta, f)
 
         if corr_id:
-            resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+            reply_to = payload.get("reply_to", "")
+            if reply_to:
+                resp_topic = f"{reply_to}{corr_id}"
+            else:
+                resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
             self._client.publish(resp_topic, {"session_id": session_id}, retain=False, qos=1)
-        log.info(f"  📋 分片初始化: {safe_name} ({total_size}B, {chunk_count} chunks) → {session_id}")
+        log.info(f"  分片初始化: {safe_name} ({total_size}B, {chunk_count} chunks) → {session_id}")
 
     def _on_file_chunk(self, topic: str, payload):
         """文件上传/分片上传请求
@@ -678,9 +687,13 @@ class BoardService:
                 with open(meta_path, "w") as f:
                     json.dump(meta, f)
                 if corr_id:
-                    resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+                    reply_to = payload.get("reply_to", "")
+                    if reply_to:
+                        resp_topic = f"{reply_to}{corr_id}"
+                    else:
+                        resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
                     self._client.publish(resp_topic, {"session_id": session_id, "seq": seq}, retain=False, qos=1)
-                log.info(f"  🧩 分片 {seq}: {len(chunk_bytes)}B (session: {session_id[:8]}...)")
+                log.info(f"  分片 {seq}: {len(chunk_bytes)}B (session: {session_id[:8]}...)")
             except Exception as e:
                 log.warning(f"  分片写入失败: {e}")
             return
@@ -701,9 +714,13 @@ class BoardService:
                 f.write(file_bytes)
             ref = f"{rand_id}/{safe_name}"
             if corr_id:
-                resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+                reply_to = payload.get("reply_to", "")
+                if reply_to:
+                    resp_topic = f"{reply_to}{corr_id}"
+                else:
+                    resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
                 self._client.publish(resp_topic, {"ref": ref}, retain=False, qos=1)
-            log.info(f"  📎 文件上传(单chunk): {ref} (board: {board_key})")
+            log.info(f"  文件上传(单chunk): {ref} (board: {board_key})")
         except Exception as e:
             log.warning(f"  文件上传失败: {e}")
 
@@ -736,9 +753,13 @@ class BoardService:
         received = meta.get("received", 0)
 
         if received < chunk_count:
-            log.warning(f"  ⚠️ 分片不完整: {received}/{chunk_count}")
+            log.warning(f"  分片不完整: {received}/{chunk_count}")
             if corr_id:
-                resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+                reply_to = payload.get("reply_to", "")
+                if reply_to:
+                    resp_topic = f"{reply_to}{corr_id}"
+                else:
+                    resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
                 self._client.publish(resp_topic, {"error": f"incomplete: {received}/{chunk_count}"}, retain=False, qos=1)
             return
 
@@ -759,9 +780,13 @@ class BoardService:
 
         file_ref = f"{session_id[:6]}/{meta['filename']}"
         if corr_id:
-            resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+            reply_to = payload.get("reply_to", "")
+            if reply_to:
+                resp_topic = f"{reply_to}{corr_id}"
+            else:
+                resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
             self._client.publish(resp_topic, {"ref": file_ref}, retain=False, qos=1)
-        log.info(f"  ✅ 分片合并: {file_ref} ({received} chunks)")
+        log.info(f"  分片合并: {file_ref} ({received} chunks)")
 
     def _on_file_download(self, topic: str, payload):
         """文件下载: {token, file_ref, corr_id}"""
@@ -789,12 +814,20 @@ class BoardService:
                 file_bytes = dlf.read()
             data_b64 = base64.b64encode(file_bytes).decode()
             if corr_id:
-                resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+                reply_to = payload.get("reply_to", "")
+                if reply_to:
+                    resp_topic = f"{reply_to}{corr_id}"
+                else:
+                    resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
                 self._client.publish(resp_topic, {"ref": file_ref, "data": data_b64, "size": len(file_bytes)}, retain=False, qos=1)
-            log.info(f"  📥 文件下载: {file_ref} ({len(file_bytes)}B)")
+            log.info(f"  文件下载: {file_ref} ({len(file_bytes)}B)")
         else:
             if corr_id:
-                resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
+                reply_to = payload.get("reply_to", "")
+                if reply_to:
+                    resp_topic = f"{reply_to}{corr_id}"
+                else:
+                    resp_topic = f"{TOPIC_BBS}/{board_key}/file/response/{corr_id}"
                 self._client.publish(resp_topic, {"error": "not_found"}, retain=False, qos=1)
 
     def _on_admin_reload(self, topic: str, payload):

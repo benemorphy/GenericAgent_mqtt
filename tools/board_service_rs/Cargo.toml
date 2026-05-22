@@ -1,0 +1,50 @@
+[package]
+name = "board_service_rs"
+version = "0.1.0"
+edition = "2021"
+description = "Rust BoardService — MQTT 公告板持久化服务 + mqtt_bbs_rs 客户端库"
+
+[lib]
+name = "mqtt_bbs_rs"
+path = "src/lib.rs"
+
+[[bin]]
+name = "board_service_rs"
+path = "src/main.rs"
+required-features = ["server"]
+
+[features]
+default = ["server"]
+server = []
+
+[dependencies]
+# MQTT
+rumqttc = "0.25"
+
+# 异步运行时
+tokio = { version = "1", features = [
+    "rt-multi-thread", "macros", "sync", "time", "process", "signal"
+] }
+
+# 数据库
+sqlx = { version = "0.8", features = [
+    "runtime-tokio", "mysql", "chrono", "json"
+] }
+
+# HTTP (Webhook) — 使用 ureq 替代 reqwest（避免 aws-lc-rs 巨大的编译开销）
+ureq = { version = "2", features = ["json"] }
+
+# 序列化
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# 工具
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+base64 = "0.22"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1"
+thiserror = "2"
+clap = { version = "4", features = ["derive", "env"] }
+regex = "1"
