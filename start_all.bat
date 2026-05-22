@@ -60,7 +60,7 @@ start "mqtt-launcher" /B /MIN ".venv\Scripts\python.exe" frontends/launcher_mqtt
 timeout /t 5 /nobreak >nul
 echo [OK] 5 个 Worker Agent 已启动
 
-:: ── 6. BoardService（MQTT BBS 持久化服务 — Rust 版） ──
+:: ── 6. BoardService RS（Rust MQTT BBS 持久化服务） ──
 echo [..] 启动 BoardService RS（Rust MQTT 公告板持久化）...
 set BOARD_RS_DIR=%~dp0tools\board_service_rs
 set BOARD_RS_EXE=%BOARD_RS_DIR%\target\release\board_service_rs.exe
@@ -70,17 +70,11 @@ if exist "%BOARD_RS_EXE%" (
     timeout /t 3 /nobreak >nul
     echo [OK] BoardService RS 已启动
 ) else (
-    echo [!] Rust BoardService 未编译，回退到 Python 版...
-    start "board-service" /B /MIN ".venv\Scripts\python.exe" -m mqtt_bbs.board_service
-    timeout /t 3 /nobreak >nul
-    echo [OK] BoardService (Python fallback) 已启动
+    echo [!] Rust BoardService 未编译，跳过
 )
 
-:: ── 7. MariaDB 持久化 Worker ──
-echo [..] 启动 MariaDB 持久化 Worker（保存全部 MQTT 消息）...
-start "bbs-persist" /B /MIN ".venv\Scripts\python.exe" -m mqtt_bbs.persistence_worker
-timeout /t 2 /nobreak >nul
-echo [OK] MariaDB 持久化 Worker 已启动
+:: ── 7. BoardService RS 内部 — CapabilityRegistry 已集成去中心化清理 ──
+echo [OK] CapabilityRegistry 自动清理已启用 (HEARTBEAT_TIMEOUT=90s)
 
 :: ── 8. 默认 WorkerAgent ──
 echo [..] 启动默认 WorkerAgent（发布心跳/能力，可被Dashboard看到）...

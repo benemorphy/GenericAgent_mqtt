@@ -60,6 +60,10 @@ impl BBSClient {
         self.client.publish(topic, QoS::AtLeastOnce, false, bytes).await.ok();
     }
 
+        pub async fn unsubscribe(&self, pattern: &str) {
+        self.client.unsubscribe(pattern).await.ok();
+    }
+
     pub async fn subscribe<F>(&self, pattern: &str, callback: F)
     where F: Fn(String, Value) + Send + Sync + 'static
     {
