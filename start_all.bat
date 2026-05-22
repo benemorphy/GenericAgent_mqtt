@@ -8,15 +8,15 @@ echo  GenericAgent MQTT - 自主运行启动
 echo ========================================
 echo.
 
-:: ── 1. rmqtt broker（如未运行） ──
-tasklist /fi "imagename eq rmqttd.exe" 2>nul | find /i "rmqttd.exe" >nul
+:: ── 1. Mosquitto MQTT broker（如未运行） ──
+tasklist /fi "imagename eq mosquitto.exe" 2>nul | find /i "mosquitto.exe" >nul
 if %errorlevel% equ 0 (
-    echo [OK] rmqtt broker 已在运行
+    echo [OK] Mosquitto broker 已在运行
 ) else (
-    echo [..] 启动 rmqtt broker...
-    start "rmqttd" /B /MIN /D "D:\tools\rmqtt-0.20.0\rmqtt-0.20.0-x86_64-pc-windows" "D:\tools\rmqtt-0.20.0\rmqtt-0.20.0-x86_64-pc-windows\bin\rmqttd.exe" -f "D:\tools\rmqtt-0.20.0\rmqtt-0.20.0-x86_64-pc-windows\etc\rmqtt.toml"
+    echo [..] 启动 Mosquitto broker...
+    start "mosquitto" /B /MIN "D:\tools\mosquitto\mosquitto.exe" -c "D:\tools\mosquitto\mosquitto.conf"
     timeout /t 3 /nobreak >nul
-    echo [OK] rmqtt broker 已启动
+    echo [OK] Mosquitto broker 已启动 (1883 + TLS 8883)
 )
 
 :: ── 2. MariaDB（如未运行） ──

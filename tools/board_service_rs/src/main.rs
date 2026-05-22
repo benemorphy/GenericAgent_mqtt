@@ -49,7 +49,12 @@ async fn main() -> anyhow::Result<()> {
     
     // 初始化 MQTT 客户端
     let client_id = format!("{}_{}", config.agent_id, uuid::Uuid::new_v4().to_string().split('-').next().unwrap());
-    let mqtt_opts = rumqttc::MqttOptions::new(&client_id, &config.broker_host, config.broker_port);
+    let mut mqtt_opts = rumqttc::MqttOptions::new(&client_id, &config.broker_host, config.broker_port);
+    // MQTT 认证 (P0.2)
+    if !config.broker_username.is_empty() {
+        mqtt_opts.set_credentials(&config.broker_username, &config.broker_password);
+        tracing::info!("MQTT 认证已配置: username={}", config.broker_username);
+    }
     let (mqtt_client, event_loop) = rumqttc::AsyncClient::new(mqtt_opts, 100);
     
     // 连接并订阅（Python 客户端使用 agent/ 前缀）
