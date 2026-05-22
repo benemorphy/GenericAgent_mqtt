@@ -211,6 +211,11 @@ fn mqtt_loop(state: Arc<Mutex<AppState>>) {
     rt.block_on(async {
         let mut opts = MqttOptions::new("rmqtt_webui_rs", BROKER, MQTT_PORT);
         opts.set_keep_alive(Duration::from_secs(30));
+        // MQTT auth from env vars
+        if let Ok(u) = std::env::var("MQTT_USERNAME") {
+            let p = std::env::var("MQTT_PASSWORD").unwrap_or_default();
+            opts.set_credentials(&u, &p);
+        }
         let (client, mut eventloop) = AsyncClient::new(opts, 100);
 
         let _ = client.subscribe("agent/#", QoS::AtMostOnce).await;
