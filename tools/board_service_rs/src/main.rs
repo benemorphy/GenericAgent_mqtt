@@ -73,6 +73,8 @@ async fn main() -> anyhow::Result<()> {
     
     tracing::info!("MQTT 订阅完成 (broker={}:{})", config.broker_host, config.broker_port);
     
+
+    
     // 初始化 Plugin IPC
     let plugin_ipc = if config.plugin_cmd.is_empty() {
         None
