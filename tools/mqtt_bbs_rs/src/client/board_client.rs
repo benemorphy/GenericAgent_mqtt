@@ -1,5 +1,5 @@
 /// Rust BoardClient — BBS 协议客户端 (代替 Python board_client.py)
-use mqtt_bbs_rs::client::bbs_client::BBSClient;
+use crate::client::bbs_client::BBSClient;
 use serde_json::Value;
 use std::sync::Arc;
 use std::time::Duration;

@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use crate::AppState;
-use crate::models::BbsRequest;
+use mqtt_bbs_rs::models::BbsRequest;
 
 pub async fn handle_webhook_config(state: &Arc<AppState>, topic: &str, payload: &[u8]) {
     let (board_key, req) = match parse_webhook(topic, payload) {

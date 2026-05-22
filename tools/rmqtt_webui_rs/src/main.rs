@@ -204,7 +204,7 @@ document.getElementById("task-list").innerHTML=h+"</table>";
 
 fn mqtt_loop(state: Arc<Mutex<AppState>>) {
     use tokio::runtime::Builder;
-    let rt = match Builder::new_current_thread().enable_time().build() {
+    let rt = match Builder::new_current_thread().enable_io().enable_time().build() {
         Ok(r) => r,
         Err(e) => { eprintln!("[rmqtt] Cannot create tokio runtime: {}", e); return; }
     };

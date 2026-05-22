@@ -163,10 +163,14 @@ dependencies = [
  "base64",
  "chrono",
  "clap",
+ "hex",
+ "hmac",
+ "mqtt_bbs_rs",
  "regex",
  "rumqttc",
  "serde",
  "serde_json",
+ "sha2",
  "sqlx",
  "thiserror",
  "tokio",
@@ -992,6 +996,23 @@ dependencies = [
  "libc",
  "wasi",
  "windows-sys 0.61.2",
+]
+
+[[package]]
+name = "mqtt_bbs_rs"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "hex",
+ "hmac",
+ "rumqttc",
+ "serde",
+ "serde_json",
+ "sha2",
+ "sqlx",
+ "tokio",
+ "tracing",
+ "uuid",
 ]
 
 [[package]]

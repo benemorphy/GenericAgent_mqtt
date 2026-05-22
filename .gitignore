@@ -2,6 +2,8 @@ temp/
 tmp/
 tests/
 
+
+sche_tasks/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -165,7 +167,14 @@ __pycache__/
 *.cert
 
 # Rust build artifacts
-target/
+**/target/
 
 # Python 文档归档（已由 Rust 替代）
 archive/
+
+# Rust build artifacts (all subdirectories, total 2.7GB)
+**/target/
+
+# Runtime data (all in MariaDB now)
+data/
+logs/

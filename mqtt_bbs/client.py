@@ -234,6 +234,32 @@ class BBSClient:
 
     # ── 发布 ──
 
+    @staticmethod
+    def build_payload(source: str, corr_id: str, reply_to: str = "", action: str = "",
+                      **extra) -> dict:
+        """构造标准化消息信封: {v, action, source, corr_id, reply_to, ...extra}
+
+        统一所有模块的消息格式，通过 corr_id+reply_to 定位响应。
+        业务字段通过 **extra 传入，保持向后兼容。
+
+        用法:
+            BBSClient.build_payload(
+                source="agent_alpha", corr_id="abc", reply_to="v2/agent/alpha/rpc/res/",
+                action="register", agent_id="agent_alpha", name="my_agent",
+            )
+            # => {"v": 1, "action": "register", "source": "agent_alpha",
+            #     "corr_id": "abc", "reply_to": "v2/agent/alpha/rpc/res/",
+            #     "agent_id": "agent_alpha", "name": "my_agent"}
+        """
+        return {
+            "v": 1,
+            "action": action,
+            "source": source,
+            "corr_id": corr_id,
+            "reply_to": reply_to,
+            **extra,
+        }
+
     def publish(self, topic_suffix: str, payload: Any, retain: bool = False, qos: Optional[int] = None,
                 properties: Optional[dict] = None):
         """

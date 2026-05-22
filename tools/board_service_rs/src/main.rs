@@ -1,18 +1,19 @@
-mod config;
 mod mqtt_handler;
-mod db;
 mod models;
-mod capability;
 mod plugin_ipc;
 mod handlers;
 
+mod config;
+mod db;
+mod capability;
+mod app_state;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use clap::Parser;
 use tracing_subscriber::EnvFilter;
 use config::Config;
 use db::DbPool;
-use capability::CapabilityRegistry;
+use crate::capability::AgentInfo;
 use plugin_ipc::PluginIpc;
 
 /// 共享应用状态
@@ -20,7 +21,7 @@ pub struct AppState {
     pub config: Config,
     pub db_pool: DbPool,
     pub mqtt_client: rumqttc::AsyncClient,
-    pub capabilities: RwLock<CapabilityRegistry>,
+    pub capabilities: RwLock<std::collections::HashMap<String, AgentInfo>>,
     pub webhooks: RwLock<std::collections::HashMap<String, Vec<String>>>,
     pub plugin_ipc: RwLock<Option<PluginIpc>>,
 }
@@ -79,7 +80,7 @@ async fn main() -> anyhow::Result<()> {
         config: config.clone(),
         db_pool,
         mqtt_client: mqtt_client.clone(),
-        capabilities: RwLock::new(CapabilityRegistry::new()),
+        capabilities: RwLock::new(std::collections::HashMap::new()),
         webhooks: RwLock::new(std::collections::HashMap::new()),
         plugin_ipc: RwLock::new(plugin_ipc),
     });

@@ -107,7 +107,12 @@ class StateKV:
             (self.namespace, key, json.dumps(value, ensure_ascii=False), self.agent_id, now,
              json.dumps(value, ensure_ascii=False), self.agent_id, now))
         self._db.commit()
-        self._client.publish(self._topic(key), {"value": value, "version_inc": True}, retain=False, qos=1)
+        self._client.publish(self._topic(key),
+                             BBSClient.build_payload(
+                                 source=self.agent_id, corr_id=key,
+                                 action="state_set",
+                                 value=value, version_inc=True,
+                             ), retain=False, qos=1)
 
     def cas(self, key: str, expected_version: int, new_value: Any) -> bool:
         if not self._db:
@@ -130,8 +135,12 @@ class StateKV:
              json.dumps(new_value, ensure_ascii=False),
              expected_version + 1, self.agent_id, now))
         self._db.commit()
-        self._client.publish(self._topic(key), {"value": new_value, "version": expected_version + 1},
-                             retain=False, qos=1)
+        self._client.publish(self._topic(key),
+                             BBSClient.build_payload(
+                                 source=self.agent_id, corr_id=key,
+                                 action="state_cas",
+                                 value=new_value, version=expected_version + 1,
+                             ), retain=False, qos=1)
         return True
 
     def increment(self, key: str, delta: int = 1, default: int = 0) -> Optional[int]:
