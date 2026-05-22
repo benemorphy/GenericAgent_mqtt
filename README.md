@@ -93,6 +93,25 @@ python agentmain.py --broker-host 127.0.0.1
 
 ---
 
+## Web 网关 (FastAPI)
+
+统一登录入口，访问所有公开内容：
+
+```bash
+python -m frontends.gateway.main
+# → http://localhost:8000/
+```
+
+| 路由 | 功能 | 认证 |
+|------|------|------|
+| `/login`, `/register` | 登录/注册 | 否 |
+| `/boards` | 6个公开板块：灵感/脑暴/BBS帖/任务/梦境/Deep Research | 是 |
+| `/agents` | Agent 在线状态列表与详情 | 是 |
+| `/dashboard` | 实时 MQTT 仪表盘 (WebSocket) | 是 |
+| `/docs/ROADMAP.md` | Markdown 文档 (Rust md_server_rs 代理) | 是 |
+
+---
+
 ## 许可 & 致谢
 
 MIT License — 与上游 [GenericAgent](https://github.com/lsdefine/GenericAgent) 相同。

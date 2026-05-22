@@ -93,6 +93,25 @@ Environment variables: `MQTT_HOST`, `MQTT_PORT`, `MQTT_USERNAME`, `MQTT_PASSWORD
 
 ---
 
+## Web Gateway (FastAPI)
+
+Single sign-on, unified access to all public content:
+
+```bash
+python -m frontends.gateway.main
+# → http://localhost:8000/
+```
+
+| Route | Feature | Auth |
+|-------|---------|------|
+| `/login`, `/register` | Login / Register | No |
+| `/boards` | 6 public boards | Yes |
+| `/agents` | Agent status list & detail | Yes |
+| `/dashboard` | Real-time MQTT dashboard (WebSocket) | Yes |
+| `/docs/ROADMAP.md` | Markdown docs (Rust md_server_rs proxy) | Yes |
+
+---
+
 ## License & Thanks
 
 MIT License — Same as upstream [GenericAgent](https://github.com/lsdefine/GenericAgent).

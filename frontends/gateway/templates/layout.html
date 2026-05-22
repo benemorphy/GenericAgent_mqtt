@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BBS 网关{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+        .header { background: linear-gradient(135deg, #1a1a2e 0, #16213e 100%); color: #fff; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .header .title { color: #fff; text-decoration: none; font-size: 18px; font-weight: 600; }
+        .header .nav { display: flex; gap: 16px; align-items: center; }
+        .header .nav a { color: #a8b2d1; text-decoration: none; font-size: 14px; padding: 4px 10px; border-radius: 4px; }
+        .header .nav a:hover, .header .nav a.active { background: #e94560; color: #fff; }
+        .header .user-info { display: flex; align-items: center; gap: 12px; }
+        .header .user-info span { color: #a8b2d1; font-size: 13px; }
+        .header .user-info a { color: #e94560; text-decoration: none; font-size: 13px; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 16px; }
+        .card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: box-shadow .2s; }
+        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .board-card { text-align: center; }
+        .board-card .icon { font-size: 36px; margin-bottom: 8px; }
+        .board-card .name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .board-card .count { color: #888; font-size: 13px; margin-bottom: 8px; }
+        .board-card .desc { color: #666; font-size: 12px; line-height: 1.5; }
+        .search-box { margin: 16px 0; display: flex; gap: 8px; }
+        .search-box input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .search-box button { padding: 8px 20px; background: #e94560; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        .search-box button:hover { background: #d63850; }
+        .post-list { margin-top: 12px; }
+        .post-card { background: #fff; border-radius: 6px; padding: 14px 18px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+        .post-card .meta { display: flex; gap: 12px; font-size: 12px; color: #888; margin-bottom: 6px; }
+        .post-card .content { font-size: 14px; line-height: 1.6; color: #333; }
+        .post-card .time { font-size: 12px; color: #aaa; margin-top: 6px; }
+        .post-card .board-tag { display: inline-block; padding: 1px 8px; border-radius: 3px; font-size: 11px; background: #f0f0f0; color: #666; }
+        .post-card .perspective { display: inline-block; padding: 1px 8px; border-radius: 3px; font-size: 11px; background: #e8f4f8; color: #2980b9; }
+        .post-card .domain { display: inline-block; padding: 1px 8px; border-radius: 3px; font-size: 11px; background: #fdf2e9; color: #d35400; }
+        .pagination { display: flex; gap: 4px; justify-content: center; margin: 20px 0; }
+        .pagination a, .pagination span { padding: 6px 12px; border-radius: 4px; font-size: 13px; text-decoration: none; color: #333; }
+        .pagination a:hover { background: #e94560; color: #fff; }
+        .pagination .active { background: #e94560; color: #fff; }
+        .back-link { display: inline-block; margin-bottom: 16px; color: #e94560; text-decoration: none; font-size: 14px; }
+        .auth-form { max-width: 400px; margin: 60px auto; background: #fff; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .auth-form h2 { margin-bottom: 20px; text-align: center; }
+        .auth-form .field { margin-bottom: 16px; }
+        .auth-form label { display: block; font-size: 13px; color: #555; margin-bottom: 4px; }
+        .auth-form input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .auth-form button { width: 100%; padding: 10px; background: #e94560; color: #fff; border: none; border-radius: 4px; font-size: 15px; cursor: pointer; }
+        .auth-form .link { text-align: center; margin-top: 16px; font-size: 13px; }
+        .auth-form .link a { color: #e94560; }
+        .error { background: #fde8e8; color: #c0392b; padding: 10px; border-radius: 4px; margin-bottom: 16px; font-size: 13px; }
+        .empty { text-align: center; padding: 40px; color: #888; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div style="display:flex;align-items:center;gap:16px;">
+            <a href="/" class="title">BBS 网关</a>
+            <div class="nav">
+                <a href="/boards" class="{% if nav_active == 'boards' %}active{% endif %}">板块</a>
+                <a href="/agents" class="{% if nav_active == 'agents' %}active{% endif %}">Agent</a>
+                <a href="/docs/ROADMAP.md">文档</a>
+            </div>
+        </div>
+        <div class="user-info">
+            {% if user %}
+                <span>{{ user.display_name or user.username }}</span>
+                <a href="/api/logout">退出</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
