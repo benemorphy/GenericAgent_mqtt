@@ -702,10 +702,36 @@ def find_changed_elements(before_html, after_html):
         result["top_change"] = h if len(h) <= 2000 else h[:2000] + '...[TRUNCATED]'
     return result
 
-def get_html(driver, cutlist=False, maxchars=35000, instruction="", extra_js="", text_only=False):
+_RUST_SIMPHTML = None
+def _get_rust_simphtml():
+    global _RUST_SIMPHTML
+    if _RUST_SIMPHTML is not None:
+        return _RUST_SIMPHTML
+    try:
+        import urllib.request
+        urllib.request.urlopen("http://127.0.0.1:8901/health", timeout=1)
+        _RUST_SIMPHTML = "http://127.0.0.1:8901"
+        return _RUST_SIMPHTML
+    except:
+        return None
+
+def get_html(driver, cutlist=False, maxchars=35000, instruction="", extra_js="", text_only=False, use_rust=False):
     if cutlist: rr = driver.execute_js(js_findMainList + "return findMainList(document.body);").get('data', [])
     page = get_main_block(driver, extra_js=extra_js, text_only=text_only)
     if text_only: return page
+    
+    if use_rust:
+        server = _get_rust_simphtml()
+        if server:
+            import urllib.request
+            try:
+                params = "max_chars=" + str(maxchars)
+                req = urllib.request.Request(server + "/?" + params, data=page.encode("utf-8"), method="POST")
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    return resp.read().decode("utf-8")
+            except Exception as e:
+                print("[Rust simphtml] HTTP fail:", e, "fallback to Python")
+    
     soup = optimize_html_for_tokens(page)
     for div in soup.select('div[data-tag="iframe"]'):
         div.name = 'iframe'; del div['data-tag']

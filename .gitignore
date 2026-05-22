@@ -163,3 +163,6 @@ __pycache__/
 *.key
 *.pem
 *.cert
+
+# Rust build artifacts
+target/

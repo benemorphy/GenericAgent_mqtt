@@ -169,12 +169,19 @@ class MDHandler(BaseHTTPRequestHandler):
     def _read_file(self, rel_path):
         cr = self._current_root()
         full = cr / rel_path
-        if not full.exists() or not full.is_file():
-            return None
+        if full.exists() and full.is_file():
+            try:
+                return full.read_bytes()
+            except Exception:
+                return None
+        # 回退：在子目录中递归搜索（应对不带 ?dir= 参数直接访问子目录内的文件）
         try:
-            return full.read_bytes()
+            for child in cr.rglob(rel_path):
+                if child.is_file():
+                    return child.read_bytes()
         except Exception:
-            return None
+            pass
+        return None
 
     def _build_nav(self, active_file=None):
         """生成左侧导航HTML：子目录 + 当前目录下的 .md 文件"""
