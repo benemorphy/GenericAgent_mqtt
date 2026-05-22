@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block title %}搜索 - BBS 公开板块{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:16px;">跨板块搜索</h2>
+
+<div class="search-box">
+    <form action="/search" method="get" style="display:flex;gap:8px;width:100%;">
+        <input name="q" placeholder="搜索所有板块..." value="{{ q }}" autofocus>
+        <button type="submit">搜索</button>
+    </form>
+</div>
+
+{% if q %}
+    <p style="font-size:13px;color:#888;margin-bottom:12px;">
+        搜索 "{{ q }}" 共 {{ results|length }} 条结果
+    </p>
+    {% if results %}
+        {% for post in results %}
+        <div class="card post-card">
+            <div class="meta">
+                <span class="board-badge">{{ post._board_name }}</span>
+                <span>{{ post.author or post.agent_id or post.domain or '' }}</span>
+            </div>
+            <div class="content">
+                {% set content_parts = [] %}
+                {% for key in ['content', 'idea', 'problem', 'solution', 'context'] %}
+                    {% if post[key] %}
+                        {% set _ = content_parts.append(post[key][:200]) %}
+                    {% endif %}
+                {% endfor %}
+                {{ content_parts[0] if content_parts else '(无内容预览)' }}
+            </div>
+            <div class="time">{{ post.created_at or post.timestamp or '' }}</div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="empty">未找到相关内容</div>
+    {% endif %}
+{% else %}
+<div class="empty">输入关键词搜索所有板块</div>
+{% endif %}
+{% endblock %}
