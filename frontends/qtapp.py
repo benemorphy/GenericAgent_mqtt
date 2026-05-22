@@ -343,13 +343,13 @@ _SVG_BOT = '<svg viewBox="0 0 24 24" fill="none" stroke="{c}" stroke-width="1.8"
 _SVG_SEND = '<svg viewBox="0 0 24 24" fill="none" stroke="{c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/></svg>'
 
 _MD_CSS = """
-body { color: #e4e4e7; font-family: "Arial", "Microsoft YaHei", sans-serif; font-size: 13px; line-height: 1.6; font-weight: 400; }
-h1 { color: #f4f4f5; font-size: 20px; font-weight: 700; border-bottom: 1px solid #3f3f46; padding-bottom: 4px; margin-top: 16px; }
-h2 { color: #f4f4f5; font-size: 17px; font-weight: 700; border-bottom: 1px solid #3f3f46; padding-bottom: 3px; margin-top: 14px; }
-h3 { color: #f4f4f5; font-size: 15px; font-weight: 600; margin-top: 12px; }
-h4,h5,h6 { color: #d4d4d8; font-size: 13px; font-weight: 600; margin-top: 10px; }
+body { color: #e4e4e7; font-family: "Arial", "Microsoft YaHei", sans-serif; font-size: 20px; line-height: 1.6; font-weight: 400; }
+h1 { color: #f4f4f5; font-size: 30px; font-weight: 700; border-bottom: 1px solid #3f3f46; padding-bottom: 4px; margin-top: 16px; }
+h2 { color: #f4f4f5; font-size: 26px; font-weight: 700; border-bottom: 1px solid #3f3f46; padding-bottom: 3px; margin-top: 14px; }
+h3 { color: #f4f4f5; font-size: 22px; font-weight: 600; margin-top: 12px; }
+h4,h5,h6 { color: #d4d4d8; font-size: 20px; font-weight: 600; margin-top: 10px; }
 code { background: rgba(63,63,70,0.6); color: #c4b5fd; padding: 1px 4px; border-radius: 3px;
-       font-family: Consolas, "Courier New", monospace; font-size: 12px; }
+       font-family: Consolas, "Courier New", monospace; font-size: 18px; }
 pre  { background: rgba(24,24,30,0.95); border: 1px solid #3f3f46; border-radius: 6px;
        padding: 10px 12px; margin: 8px 0; }
 pre code { background: transparent; padding: 0; color: #d4d4d8; }
@@ -622,7 +622,7 @@ class _MsgRow(QWidget):
 
         role_lbl = QLabel("你" if is_user else "助手")
         role_lbl.setStyleSheet(
-            "color: #d4d4d8; font-size: 12px; font-weight: 700; background: transparent;"
+            "color: #d4d4d8; font-size: 18px; font-weight: 700; background: transparent;"
         )
         if is_user:
             role_lbl.setAlignment(Qt.AlignRight)
@@ -644,7 +644,7 @@ class _MsgRow(QWidget):
             label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
             label.setStyleSheet(
                 "QLabel { background: transparent; color: #e4e4e7;"
-                " padding: 0; font-size: 14px; line-height: 1.6; }"
+                " padding: 0; font-size: 21px; line-height: 1.6; }"
             )
             bubble_ly.addWidget(label)
             self._label = label
@@ -723,7 +723,7 @@ class _MsgRow(QWidget):
             browser.document().setDefaultStyleSheet(_MD_CSS)
             browser.setStyleSheet(
                 "QTextBrowser { background: transparent; color: #e4e4e7;"
-                " border: none; padding: 0; font-size: 14px; }"
+                " border: none; padding: 0; font-size: 21px; }"
             )
             self._folded_ids = set()  # 记录被折叠的块
             self._auto_fold_new_blocks(text)
@@ -998,7 +998,7 @@ class _TabButton(QPushButton):
     QPushButton {{
         background: transparent; color: {muted};
         border: none; border-radius: 8px;
-        padding: 0 14px; font-size: 12px; font-weight: 700;
+        padding: 0 14px; font-size: 18px; font-weight: 700;
     }}
     QPushButton:hover {{
         background: {hover_bg}; color: {text};
@@ -1027,7 +1027,7 @@ def _action_btn(label: str, color: str, icon: QIcon | None = None) -> QPushButto
             border: 1px solid {C['border'].name()};
             border-left: 3px solid {color};
             border-radius: 8px; padding: 0 14px;
-            font-size: 13px; font-weight: 700; text-align: left;
+            font-size: 20px; font-weight: 700; text-align: left;
         }}
         QPushButton:hover {{ background: rgba(55,55,62,0.9); }}
         QPushButton:checked {{ color: {color}; background: rgba(35,35,40,0.95); }}
@@ -1072,6 +1072,99 @@ class ChatPanel(QWidget):
         self._drag_pos: Optional[QPoint] = None
 
         self._build_ui()
+
+        # ── edge resize state ──
+        self._resize_edge: str | None = None
+        self._resize_start_geom: tuple | None = None  # (x, y, w, h)
+        self.setMouseTracking(True)
+        self.installEventFilter(self)
+        for child in self.findChildren(QWidget):
+            child.installEventFilter(self)
+            child.setMouseTracking(True)
+
+    # ── edge resize helpers ─────────────────────────────────────────────────
+    RESIZE_MARGIN = 6
+    MIN_W, MIN_H = 320, 400
+
+    def _get_resize_edge(self, pos):
+        """Determine which edge/corner pos (widget coords) is near."""
+        r = self.rect()
+        left = pos.x() <= self.RESIZE_MARGIN
+        right = pos.x() >= r.width() - self.RESIZE_MARGIN - 1
+        top = pos.y() <= self.RESIZE_MARGIN
+        bottom = pos.y() >= r.height() - self.RESIZE_MARGIN - 1
+        if left and top:     return 'nw'
+        if right and top:    return 'ne'
+        if left and bottom:  return 'sw'
+        if right and bottom: return 'se'
+        if left:    return 'w'
+        if right:   return 'e'
+        if top:     return 'n'
+        if bottom:  return 's'
+        return None
+
+    _EDGE_CURSORS = {
+        'n': Qt.SizeVerCursor, 's': Qt.SizeVerCursor,
+        'e': Qt.SizeHorCursor, 'w': Qt.SizeHorCursor,
+        'ne': Qt.SizeBDiagCursor, 'sw': Qt.SizeBDiagCursor,
+        'nw': Qt.SizeFDiagCursor, 'se': Qt.SizeFDiagCursor,
+    }
+
+    def _apply_resize(self, global_pos):
+        gx, gy = global_pos.x(), global_pos.y()
+        sx, sy, sw, sh = self._resize_start_geom
+        edge = self._resize_edge
+        x, y, w, h = sx, sy, sw, sh
+
+        if 'e' in edge:
+            w = max(self.MIN_W, gx - sx)
+        if 'w' in edge:
+            w = max(self.MIN_W, sx + sw - gx)
+            x = sx + sw - w
+        if 's' in edge:
+            h = max(self.MIN_H, gy - sy)
+        if 'n' in edge:
+            h = max(self.MIN_H, sy + sh - gy)
+            y = sy + sh - h
+
+        self.setGeometry(x, y, w, h)
+
+    def eventFilter(self, obj, event):
+        etype = event.type()
+        if etype in (QEvent.MouseMove, QEvent.MouseButtonPress, QEvent.MouseButtonRelease):
+            me = event
+            # Convert to window (self) coordinates
+            widget_pos = me.position().toPoint()
+            if obj is not self:
+                widget_pos = obj.mapTo(self, widget_pos)
+
+            if etype == QEvent.MouseMove:
+                if self._resize_edge:
+                    # Actively resizing
+                    self._apply_resize(me.globalPosition().toPoint())
+                    return True
+                else:
+                    # Hover: update cursor
+                    edge = self._get_resize_edge(widget_pos)
+                    cursor = self._EDGE_CURSORS.get(edge, Qt.ArrowCursor)
+                    self.setCursor(cursor)
+
+            elif etype == QEvent.MouseButtonPress:
+                if me.button() == Qt.LeftButton:
+                    edge = self._get_resize_edge(widget_pos)
+                    if edge:
+                        self._resize_edge = edge
+                        self._resize_start_geom = (self.x(), self.y(), self.width(), self.height())
+                        return True
+
+            elif etype == QEvent.MouseButtonRelease:
+                if self._resize_edge:
+                    self._resize_edge = None
+                    self._resize_start_geom = None
+                    self.setCursor(Qt.ArrowCursor)
+                    return True
+
+        return super().eventFilter(obj, event)
 
     def paintEvent(self, _event):
         p = QPainter(self)
@@ -1153,7 +1246,7 @@ class ChatPanel(QWidget):
                 border: 1px solid {C['border'].name()};
                 border-radius: 13px;
                 color: {C['text']};
-                font-size: 13px;
+                font-size: 20px;
                 padding: 0 10px;
             }}
             QLineEdit::placeholder {{ color: {C['muted']}; }}
@@ -1575,7 +1668,7 @@ class ChatPanel(QWidget):
         self._input.setStyleSheet(f"""
             QTextEdit {{
                 background: transparent; color: {C['text']};
-                border: none; padding: 0; font-size: 14px;
+                border: none; padding: 0; font-size: 21px;
                 selection-background-color: rgba(124,58,237,0.4);
             }}
         """)
@@ -1674,7 +1767,7 @@ class ChatPanel(QWidget):
         splitter = QSplitter(Qt.Horizontal)
 
         self._sop_list = QListWidget()
-        self._sop_list.setMaximumWidth(175)
+        self._sop_list.setMinimumWidth(80)
         self._sop_list.setStyleSheet(f"""
             QListWidget {{ background: rgba(10,10,14,0.7); border: none;
                 border-right: 1px solid {C['border'].name()}; outline: none; }}
@@ -1694,7 +1787,7 @@ class ChatPanel(QWidget):
             QTextBrowser {{ background: transparent; color: {C['text']};
                 border: none; padding: 10px 14px;
                 font-family: "Arial", "Microsoft YaHei", sans-serif;
-                font-size: 13px; }}
+                font-size: 20px; }}
             {SCROLLBAR_STYLE}
         """)
         splitter.addWidget(self._sop_viewer)
@@ -2395,7 +2488,7 @@ class ChatPanel(QWidget):
     def _small_btn_style(color: str) -> str:
         return (
             f"QPushButton {{ background: {color}; color: white; border: none;"
-            f" border-radius: 7px; padding: 4px 12px; font-size: 12px; font-weight: 600; }}"
+            f" border-radius: 7px; padding: 4px 12px; font-size: 18px; font-weight: 600; }}"
             f"QPushButton:hover {{ opacity: 0.85; }}"
         )
 
@@ -2420,7 +2513,7 @@ def main():
         font.setFamilies(["Arial", "Microsoft YaHei"])
     except Exception:
         font.setFamily("Microsoft YaHei")
-    font.setPointSize(10)
+    font.setPointSize(15)
     app.setFont(font)
 
     # ── Agent initialisation ──────────────────────────────
