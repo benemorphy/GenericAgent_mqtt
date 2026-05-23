@@ -42,3 +42,6 @@ include = ["ga_cli*", "mqtt_bbs*"]
 
 [project.scripts]
 ga = "ga_cli.cli:main"
+
+[tool.ruff]
+exclude = ["TMWebDriver.py", "archive/"]
