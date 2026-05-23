@@ -20,9 +20,10 @@
      仓库权限: Contents: write, Pull requests: write）
 """
 
-import argparse, os, sys, time, subprocess, json, urllib.request
+import argparse, os, sys, time, subprocess, json, urllib.request, logging
 from pathlib import Path
 
+logger = logging.getLogger("git_push")
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 os.chdir(PROJECT_ROOT)
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -36,12 +37,12 @@ def get_token():
     token = ConfigService.instance().get('github_token')
     if token:
         return token
-    print("[ERROR] 请在 mykey.py 中添加: github_token = 'github_pat_xxx'")
+    logger.error("请在 mykey.py 中添加: github_token = 'github_pat_xxx'")
     sys.exit(1)
 
 def run(cmd, check=True, capture=False):
     """运行命令（统一 UTF-8 编码）"""
-    print(f"$ {cmd}")
+    logger.info(f"$ {cmd}")
     env = os.environ.copy()
     env.setdefault("PYTHONIOENCODING", "utf-8")
     if capture:
@@ -50,13 +51,13 @@ def run(cmd, check=True, capture=False):
             encoding="utf-8", errors="replace", env=env
         )
         if r.returncode != 0 and check:
-            print(f"[ERROR] 命令失败: {cmd}")
+            logger.error(f"命令失败: {cmd}")
             print(r.stderr)
             sys.exit(1)
         return r.stdout.strip()
     r = subprocess.run(cmd, shell=True, env=env)
     if r.returncode != 0 and check:
-        print(f"[ERROR] 命令失败: {cmd}")
+        logger.error(f"命令失败: {cmd}")
         sys.exit(1)
     return r
 
@@ -106,7 +107,7 @@ def main():
     api_base = f"https://api.github.com/repos/{REPO}"
 
     if not args.no_push:
-        print(f"\n{'='*50}")
+        logger.info("=" * 50)
         print(f"1/5  创建分支: {branch_name}")
         run(f"git checkout -b {branch_name}")
         
@@ -121,13 +122,13 @@ def main():
         print("3/5  推送到远程")
         run(f"git push origin {branch_name}")
     else:
-        print(f"\n{'='*50}")
+        logger.info("=" * 50)
         print("跳过 push 步骤")
         branch_name = run("git rev-parse --abbrev-ref HEAD", capture=True)
         print(f"当前分支: {branch_name}")
 
     # 创建 PR
-    print(f"\n{'='*50}")
+    logger.info("=" * 50)
     print("4/5  创建 PR 并自动合并")
     
     pr_data = json.dumps({
@@ -148,7 +149,7 @@ def main():
         print(f"  PR #{pr_number} 已创建: {pr_info['html_url']}")
     except urllib.error.HTTPError as e:
         error_body = e.read().decode()
-        print(f"[ERROR] 创建 PR 失败: {e.code}")
+        logger.error(f"创建 PR 失败: {e.code}")
         print(f"  {error_body}")
         run(f"git checkout main", check=False)
         run(f"git branch -D {branch_name}", check=False)
@@ -170,12 +171,12 @@ def main():
         print(f"  PR #{pr_number} 已合并: {merge_info.get('sha', '')[:8]}")
     except urllib.error.HTTPError as e:
         error_body = e.read().decode()
-        print(f"[ERROR] 合并 PR 失败: {e.code}")
+        logger.error(f"合并 PR 失败: {e.code}")
         print(f"  {error_body}")
         print(f"  请手动合并: https://github.com/benemorphy/GenericAgent_mqtt/pulls")
 
     # 删除远程分支
-    print(f"\n{'='*50}")
+    logger.info("=" * 50)
     print("5/5  清理临时分支")
     
     req3 = urllib.request.Request(
@@ -192,7 +193,7 @@ def main():
     run(f"git branch -D {branch_name}", check=False)
     run(f"git pull", check=False)
     
-    print(f"\n{'='*50}")
+    logger.info("=" * 50)
     print(f"推送完成！已通过 PR #{pr_number} squash-merge 到 main")
     print(f"{'='*50}")
 
