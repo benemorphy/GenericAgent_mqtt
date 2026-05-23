@@ -1,57 +1,53 @@
-"""MQTT BBS 默认配置"""
+"""MQTT BBS 默认配置 — 全部从环境变量读取，无硬编码密码"""
 
-# 本地 RMQTT Broker（已部署在 D:\tools\rmqtt-0.20.0）
-# 可通过环境变量 MQTT_HOST / MQTT_PORT 覆写
 import os as _os
+
+# Broker
 BROKER_HOST = _os.environ.get("MQTT_HOST", "127.0.0.1")
 BROKER_PORT = int(_os.environ.get("MQTT_PORT", "1883"))
 
-# 主题前缀（多团队隔离用，例如 "team_a/"）
-TOPIC_PREFIX = "agent/"
+# 主题前缀
+TOPIC_PREFIX = _os.environ.get("TOPIC_PREFIX", "agent/")
 
-# 客户端配置
-KEEPALIVE = 60
-RECONNECT_DELAY = 3
-MAX_RECONNECT_DELAY = 60
+# 客户端
+KEEPALIVE = int(_os.environ.get("MQTT_KEEPALIVE", "60"))
+RECONNECT_DELAY = int(_os.environ.get("MQTT_RECONNECT_DELAY", "3"))
+MAX_RECONNECT_DELAY = int(_os.environ.get("MQTT_MAX_RECONNECT_DELAY", "60"))
 
-# 任务超时（秒）
-DEFAULT_TASK_TIMEOUT = 300
+# 任务
+DEFAULT_TASK_TIMEOUT = int(_os.environ.get("DEFAULT_TASK_TIMEOUT", "300"))
 
-# QoS 策略（按场景）
+# QoS
 QOS = {
-    "input": 1,     # 任务输入：至少一次
-    "output": 1,    # 任务输出：至少一次
-    "signal": 2,    # 信号：[ROUND_END] 精确一次
-    "stdout": 0,    # 流式输出：最多一次
-    "stderr": 0,    # 流式错误：最多一次
-    "status": 1,    # 状态变更：至少一次
-    "claim": 1,     # 认领：至少一次
+    "input": int(_os.environ.get("QOS_INPUT", "1")),
+    "output": int(_os.environ.get("QOS_OUTPUT", "1")),
+    "signal": int(_os.environ.get("QOS_SIGNAL", "2")),
+    "stdout": int(_os.environ.get("QOS_STDOUT", "0")),
+    "stderr": int(_os.environ.get("QOS_STDERR", "0")),
+    "status": int(_os.environ.get("QOS_STATUS", "1")),
+    "claim": int(_os.environ.get("QOS_CLAIM", "1")),
 }
 
-# HMAC 任务签名密钥（Zero Trust：防消息篡改）
-# 所有 AgentBoard 和 WorkerAgent 共享此密钥
-# 可通过环境变量 MQTT_HMAC_SECRET 覆盖
-import os as _os
+# HMAC
 HMAC_SECRET = _os.environ.get("MQTT_HMAC_SECRET", "mqtt_bbs_hmac_secret_2026")
 
-# MQTT 5.0 配置
-MQTT_VERSION = 5  # 5=MQTTv5, 4=MQTTv3.1.1 (paho 常量名)
-CLEAN_START = True  # clean_start=True 丢弃旧会话
-SESSION_EXPIRY_INTERVAL = 3600  # 会话过期时间(秒)，0=立即过期
-MESSAGE_EXPIRY_INTERVAL = 300   # 消息过期时间(秒)，0=永不过期
-# Topic Alias 配置
-TOPIC_ALIAS_MAXIMUM = 32  # 最大主题别名数(rmqtt 配置支持)
+# MQTT 5.0
+MQTT_VERSION = int(_os.environ.get("MQTT_VERSION", "5"))
+CLEAN_START = _os.environ.get("MQTT_CLEAN_START", "true").lower() == "true"
+SESSION_EXPIRY_INTERVAL = int(_os.environ.get("MQTT_SESSION_EXPIRY", "3600"))
+MESSAGE_EXPIRY_INTERVAL = int(_os.environ.get("MQTT_MESSAGE_EXPIRY", "300"))
+TOPIC_ALIAS_MAXIMUM = int(_os.environ.get("MQTT_TOPIC_ALIAS_MAX", "32"))
 
-# 心跳配置
-HEARTBEAT_INTERVAL = 30  # 心跳间隔(秒)
-HEARTBEAT_TIMEOUT = 90   # 无心跳判定离线(秒)
+# 心跳
+HEARTBEAT_INTERVAL = int(_os.environ.get("HEARTBEAT_INTERVAL", "30"))
+HEARTBEAT_TIMEOUT = int(_os.environ.get("HEARTBEAT_TIMEOUT", "90"))
 
-# MariaDB 持久化配置
+# MariaDB
 DB_CONFIG = {
-    "host": "127.0.0.1",
-    "port": 3306,
-    "user": "root",
-    "password": "mariadb",
-    "database": "mqtt_bbs",
+    "host": _os.environ.get("DB_HOST", "127.0.0.1"),
+    "port": int(_os.environ.get("DB_PORT", "3306")),
+    "user": _os.environ.get("DB_USER", "root"),
+    "password": _os.environ.get("DB_PASSWORD", ""),
+    "database": _os.environ.get("DB_NAME", "mqtt_bbs"),
     "charset": "utf8mb4",
 }
