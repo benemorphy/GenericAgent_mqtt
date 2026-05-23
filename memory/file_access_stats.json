@@ -36,12 +36,12 @@
     "last": "2026-05-20"
   },
   "global_mem_insight.txt": {
-    "count": 44,
-    "last": "2026-05-22"
+    "count": 45,
+    "last": "2026-05-23"
   },
   "global_mem.txt": {
-    "count": 50,
-    "last": "2026-05-22"
+    "count": 51,
+    "last": "2026-05-23"
   },
   "skills_learning_sop.md": {
     "count": 22,
@@ -294,5 +294,9 @@
   "goal_mode_sop.md": {
     "count": 3,
     "last": "2026-05-22"
+  },
+  "RUST_ENV": {
+    "count": 1,
+    "last": "2026-05-23"
   }
 }
