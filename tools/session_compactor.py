@@ -9,14 +9,15 @@ Session Compactor — 后台自动压缩 L4 原始历史
     start_auto_compact()  # 启动后台线程
 """
 
-import os, sys, time, threading, logging
+import os, sys, time, threading, logging, subprocess as _sp
 
 log = logging.getLogger("session_compactor")
+subprocess = _sp
 
 # ── 配置 ──
-_THRESHOLD_KB = 500       # 超过此大小触发压缩
-_COOLDOWN_DAYS = 7         # 冷却期
-_COMPACT_SCRIPT = None     # 自动查找
+_THRESHOLD_KB = 500          # 超过此大小触发压缩
+_COMPACT_INTERVAL = 172800    # 压缩检测间隔(秒) = 48 小时
+_RETENTION_DAYS = 30         # L4 原始会话保留天数
 
 # ── L4 路径 ──
 def _get_l4_path() -> str:
@@ -126,20 +127,42 @@ def auto_compact():
         log.warning(f"自动压缩异常(非致命): {e}")
 
 
-def start_auto_compact(interval_seconds: int = 3600):
-    """启动后台自动压缩线程
+def rotate_l4_sessions(retain_days: int = _RETENTION_DAYS) -> int:
+    """删除 L4_raw_sessions 中超过 retain_days 的原始会话文件
 
     Args:
-        interval_seconds: 检测间隔(秒)，默认 1 小时
+        retain_days: 保留天数，默认 30
+
+    Returns:
+        删除的文件数
     """
-    import subprocess as _sp  # 延迟 import 避免顶层循环
-    global subprocess
-    subprocess = _sp
+    l4_path = _get_l4_path()
+    cutoff = time.time() - retain_days * 86400
+    deleted = 0
+    for fname in os.listdir(l4_path):
+        fpath = os.path.join(l4_path, fname)
+        if os.path.isfile(fpath) and os.path.getmtime(fpath) < cutoff:
+            os.remove(fpath)
+            deleted += 1
+    if deleted > 0:
+        log.info(f"L4 轮换: 删除了 {deleted} 个超过 {retain_days} 天的会话文件")
+    return deleted
+
+
+def start_auto_compact(interval_seconds: int = None):
+    """启动后台自动压缩 + L4 轮换线程
+
+    Args:
+        interval_seconds: 检测间隔(秒)，默认 _COMPACT_INTERVAL (48h)
+    """
+    if interval_seconds is None:
+        interval_seconds = _COMPACT_INTERVAL
 
     def _loop():
-        log.info(f"自动压缩后台线程启动 (间隔={interval_seconds}s)")
+        log.info(f"后台维护线程启动 (间隔={interval_seconds/3600:.0f}h)")
         while True:
             auto_compact()
+            rotate_l4_sessions()
             time.sleep(interval_seconds)
 
     t = threading.Thread(target=_loop, daemon=True)
