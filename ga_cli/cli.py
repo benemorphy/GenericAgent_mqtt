@@ -87,6 +87,11 @@ COMMANDS = {
         "cmd": None,
         "internal": True,
     },
+    "curious": {
+        "help": "发起好奇心讨论",
+        "desc": "启动 Agent 会话，读取 CuriosityBoard 并参与讨论",
+        "cmd": ["python", "{PROJECT_DIR}/agentmain.py"],
+    },
     "list": {
         "help": "列出所有可用前端/服务",
         "desc": "显示所有注册的命令",
