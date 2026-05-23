@@ -34,12 +34,14 @@ if static_dir.is_dir():
 
 # ── 路由注册 ──
 from frontends.gateway.routers import auth, boards, agents, dashboard, docs_proxy
+from frontends.playground.router import router as play_router
 
 app.include_router(auth.router)         # /login, /register, /api/login, /api/register
 app.include_router(boards.router)       # /boards, /boards/{id}
 app.include_router(agents.router)       # /agents, /agents/{id}
 app.include_router(dashboard.router)    # /dashboard, /api/dashboard/*
 app.include_router(docs_proxy.router)   # /docs/{path:path}
+app.include_router(play_router)         # /play/*
 
 
 # ── 根路径 ──
