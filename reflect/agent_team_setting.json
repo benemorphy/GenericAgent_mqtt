@@ -1,0 +1,10 @@
+{
+  "name": "team_worker_01",
+  "broker_host": "127.0.0.1",
+  "broker_port": 1883,
+  "capabilities": [
+    "analyse",
+    "scan",
+    "code_driven_visual_web_design"
+  ]
+}

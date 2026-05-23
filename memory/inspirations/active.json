@@ -1,0 +1,302 @@
+[
+  {
+    "id": 42,
+    "title": "[Dream] 全栈 × dream_工程师",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 18:08",
+    "updated_at": "2026-05-20 18:08",
+    "_post_id": 224
+  },
+  {
+    "id": 43,
+    "title": "[Dream] dream_工程师 × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 20:21",
+    "updated_at": "2026-05-20 20:21",
+    "_post_id": 226
+  },
+  {
+    "id": 44,
+    "title": "[Dream] 核心架构 × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 20:21",
+    "updated_at": "2026-05-20 20:21",
+    "_post_id": 228
+  },
+  {
+    "id": 45,
+    "title": "[Dream] dream_理论家 × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 20:21",
+    "updated_at": "2026-05-20 20:21",
+    "_post_id": 230
+  },
+  {
+    "id": 46,
+    "title": "[Dream] dream_理论家 × auto",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 20:21",
+    "updated_at": "2026-05-20 20:21",
+    "_post_id": 232
+  },
+  {
+    "id": 47,
+    "title": "[Dream] 核心 × dream_实践者",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 23:50",
+    "updated_at": "2026-05-20 23:50",
+    "_post_id": 234
+  },
+  {
+    "id": 48,
+    "title": "[Dream] dream_理论家 × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 23:50",
+    "updated_at": "2026-05-20 23:50",
+    "_post_id": 236
+  },
+  {
+    "id": 49,
+    "title": "[Dream] dream_工程师 × dream_实践者",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 23:57",
+    "updated_at": "2026-05-20 23:57",
+    "_post_id": 238
+  },
+  {
+    "id": 50,
+    "title": "[Dream] 全栈 × dream_理论家",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 23:57",
+    "updated_at": "2026-05-20 23:57",
+    "_post_id": 240
+  },
+  {
+    "id": 51,
+    "title": "[Dream] dream_理论家 × dream_工程师",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 23:59",
+    "updated_at": "2026-05-20 23:59",
+    "_post_id": 242
+  },
+  {
+    "id": 52,
+    "title": "[Dream] dream_工程师 × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-20 23:59",
+    "updated_at": "2026-05-20 23:59",
+    "_post_id": 244
+  },
+  {
+    "id": 53,
+    "title": "[Dream] dream_实践者 × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-21 00:00",
+    "updated_at": "2026-05-21 00:00",
+    "_post_id": 246
+  },
+  {
+    "id": 54,
+    "title": "[Dream] dream_实践者 × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-21 00:00",
+    "updated_at": "2026-05-21 00:00",
+    "_post_id": 248
+  },
+  {
+    "id": 55,
+    "title": "[Dream] dream_工程师 × dream_理论家",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-21 00:00",
+    "updated_at": "2026-05-21 00:00",
+    "_post_id": 250
+  },
+  {
+    "id": 56,
+    "title": "[Dream] auto × dream_理论家",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-21 00:00",
+    "updated_at": "2026-05-21 00:00",
+    "_post_id": 252
+  },
+  {
+    "id": 57,
+    "title": "[Dream] 核心 × auto",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-21 00:08",
+    "updated_at": "2026-05-21 00:08",
+    "_post_id": 254
+  },
+  {
+    "id": 58,
+    "title": "[Dream] auto × dream_工程师",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-21 00:08",
+    "updated_at": "2026-05-21 00:08"
+  },
+  {
+    "id": 59,
+    "title": "建筑构件RFID传感 + 本体建模智能分析系统",
+    "detail": "建筑关键构件植入RFID传感器，物业人员每天持RFID读取器巡检扫描。数据通过MQTT协议实时传输到中央数据库，建立建筑构件本体模型(Ontology Model)。通过本体推理与智能分析，实现：\n1. 构件全生命周期追踪与状态感知\n2. 基于本体推理的潜在问题预警（如应力异常/腐蚀趋势/连接松动）\n3. 自动生成维护方案与优先级排序\n4. 向物业管理层提交可视化报告与推进建议\n\n技术栈: RFID Reader + MQTT Broker + 时序数据库 + OWL/RDF本体 + 规则推理引擎\n\n价值: 变被动维修为主动预防，降低建筑运维成本30%+",
+    "tags": [
+      "IoT",
+      "Ontology",
+      "RFID",
+      "Building",
+      "MQTT",
+      "Predictive Maintenance"
+    ],
+    "source": "user",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-21 06:27",
+    "updated_at": "2026-05-21 06:27"
+  },
+  {
+    "id": 60,
+    "title": "[Dream] 核心架构 × multi-agent",
+    "detail": "score=0.25 (hard): 本轮脑暴产出MQTT P0统一信封+Goal驱动Agent+环境感知三大方向,可在三元架构(编排层/执行层/基础设施层)中统一落地",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "thinking",
+    "agent_notes": "\n[Agent思考 05-22 16:54]: 可行性评分=0.25，难度=hard，因子={'has_existing_tool': 0.0, 'domain_familiarity': 0, 'scope_small': 0.1, 'resource_available': 0.15}",
+    "created_at": "2026-05-22 16:54",
+    "updated_at": "2026-05-22 16:54"
+  },
+  {
+    "id": 61,
+    "title": "[Dream] auto × dream_理论家",
+    "detail": "score=0.30 (medium): Agent Dreaming的跨域联想与自主行动SOP的TODO队列可融合: 联想出的灵感自动进入TODO队列,按优先级排序执行",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "thinking",
+    "agent_notes": "\n[Agent思考 05-22 16:54]: 可行性评分=0.3，难度=medium，因子={'has_existing_tool': 0.0, 'domain_familiarity': 0.05, 'scope_small': 0.1, 'resource_available': 0.15}",
+    "created_at": "2026-05-22 16:54",
+    "updated_at": "2026-05-22 16:54"
+  }
+]

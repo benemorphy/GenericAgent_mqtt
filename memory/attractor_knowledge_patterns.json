@@ -1,0 +1,87 @@
+[
+  {
+    "id": "P_attractor_arch",
+    "principle": "Attractor Model架构：Backbone提出初始嵌入→Attractor模块通过不动点迭代精化→隐式微分联合训练（解耦深度与精度）→770M参数超越1.3B Transformer",
+    "confidence": 95,
+    "level": "domain",
+    "source": "arXiv:2605.12466 Fein-Ashley & Rashidinejad 2026",
+    "tags": [
+      "attractor_model",
+      "architecture",
+      "implicit_differentiation"
+    ]
+  },
+  {
+    "id": "P_equilibrium_internalization",
+    "principle": "Equilibrium Internalization：Attractor Model训练中学会内化递归计算，推理时可移除solver而不显著降级——模型从'需要循环'变为'学会循环'",
+    "confidence": 90,
+    "level": "domain",
+    "source": "arXiv:2605.12466 Fein-Ashley 2026",
+    "tags": [
+      "attractor_model",
+      "equilibrium",
+      "internalization"
+    ]
+  },
+  {
+    "id": "P_directional_attractor",
+    "principle": "方向吸引子：LLM推理轨迹在嵌入空间中存在方向性偏置——相似语义检索产生两种吸引子：Fix-attractor（提升准确率）和Break-attractor（降低准确率）",
+    "confidence": 88,
+    "level": "domain",
+    "source": "arXiv:2601.08846 Tekin et al. 2026",
+    "tags": [
+      "directional_attractor",
+      "reasoning_trajectory",
+      "embedding"
+    ]
+  },
+  {
+    "id": "P_attractor_symbolic",
+    "principle": "吸引子动力学的符号表示：神经随机动力系统模型将连续表示空间分割为离散basin，吸引子状态对应符号序列——无监督学习实现组合性+语义性，统一符号与亚符号处理",
+    "confidence": 85,
+    "level": "domain",
+    "source": "arXiv:2310.01807 Nam, Bengio et al. 2023",
+    "tags": [
+      "attractor_dynamics",
+      "symbolic",
+      "plof"
+    ]
+  },
+  {
+    "id": "P_contraction_attractor",
+    "principle": "收缩映射吸引子：在度量空间嵌入特征→通过收缩映射迭代趋于稳定吸引子→定义潜在亚组→结合LLM作为元进化层（双层级架构：NetraAI实验者+LLM理论家）",
+    "confidence": 82,
+    "level": "domain",
+    "source": "arXiv:2506.14782 Geraci et al. 2025",
+    "tags": [
+      "contraction_mapping",
+      "attractor",
+      "clinical",
+      "meta_evolution"
+    ]
+  },
+  {
+    "id": "P_fixed_point_reasoning",
+    "principle": "固定点迭代推理：将推理过程建模为嵌入空间中的固定点迭代——Attractor模块逐步精化表示直至收敛，自适应迭代深度而非固定层数",
+    "confidence": 80,
+    "level": "basic",
+    "source": "arXiv:2605.12466",
+    "tags": [
+      "fixed_point",
+      "iterative_refinement",
+      "reasoning"
+    ]
+  },
+  {
+    "id": "P_semantic_cache_reasoning",
+    "principle": "语义缓存推理优化：InftyThink with Cross-Chain Memory——在迭代推理中嵌入语义缓存（embedding-based），检索最相似的成功推理模式，引导后续推理步，避免无限扩展上下文窗口",
+    "confidence": 80,
+    "level": "domain",
+    "source": "arXiv:2601.08846 Tekin et al. 2026",
+    "tags": [
+      "semantic_cache",
+      "reasoning",
+      "inftythink"
+    ]
+  }
+]

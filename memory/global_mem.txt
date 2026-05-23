@@ -1,0 +1,96 @@
+# [Global Memory - L2]
+
+## [RMQTT]
+# Install path
+rmqtt.home = D:\tools\rmqtt-0.20.0\rmqtt-0.20.0-x86_64-pc-windows
+# Start cmd — 注意：不能捕获stdout(PIPE)，缓冲区满会崩溃
+rmqtt.start = bin\rmqttd.exe -f etc\rmqtt.toml
+rmqtt.start.method = Popen without PIPE, use CREAT_NO_WINDOW
+# Version
+rmqtt.version = 0.20.0
+# 备注：allow_anonymous=false 但无auth插件时仍接受匿名连接
+## [QQ_BOT]
+# NapCat QQ 协议端（无头模式，手机QQ扫码）
+napcat.home = D:\open_claw_agent\GenericAgent_mqtt\temp\NapCat.Shell
+napcat.start = launcher-user.bat
+napcat.webui = http://127.0.0.1:6099
+napcat.config = D:\open_claw_agent\GenericAgent_mqtt\temp\NapCat.Shell\config\onebot11_631598082.json
+# onebot_qq 网关
+onebot_qq.home = D:\open_claw_agent\GenericAgent_mqtt\temp\onebot_qq
+onebot_qq.start = python src/main.py
+onebot_qq.env = D:\open_claw_agent\GenericAgent_mqtt\temp\onebot_qq\.env
+
+
+## [Vision/OCR]
+# gui_vision 视觉理解工具（tools/gui_vision.py）
+gui_vision.path = D:\open_claw_agent\GenericAgent_mqtt\tools\gui_vision.py
+
+# 默认后端：offline（rapidocr本地OCR）
+gui_vision.default_backend = offline
+# 备用后端：local（VLM qwen3-vl-4b :8090，需手动启动）
+gui_vision.vlm_endpoint = http://localhost:8090
+
+# 坐标转换工具
+gui_vision.api.element_to_screen_coords = (state, element) → (screen_x, screen_y)
+  - 将UI元素的bbox(截图像素坐标)转为屏幕物理坐标，用于ljqCtrl.Click()
+gui_vision.api.element_bbox_to_screen_rect = (state, element) → [left, top, right, bottom]
+  - 将元素bbox转为屏幕物理矩形，用于区域截图
+
+# 超时配置(秒)
+gui_vision.timeout.local = 30    # local VLM
+gui_vision.timeout.offline = 15  # 离线OCR（大图~10s）
+gui_vision.timeout.auto = 5      # auto模式VLM阶段
+
+# 降级链路：auto → local(5s超时) → offline(OCR)
+# 降级事件记录：temp/gui_vision_degration.log
+
+# OCR后端：rapidocr-onnxruntime v1.4.4
+ocr.engine = rapidocr_onnxruntime
+ocr.model_path = .venv/Lib/site-packages/rapidocr_onnxruntime/models/
+ocr.models = ch_PP-OCRv4_det_infer(4.5MB) + ch_PP-OCRv4_rec_infer(10.4MB) + ch_ppocr_mobile_v2.0_cls_infer(0.6MB)
+
+## [MQTT_BBS]
+# BoardService: MQTT BBS 协议的后端服务（处理 BoardClient 的 register/post/query）
+# 数据库: MariaDB (已弃用 SQLite) 127.0.0.1:3306/mqtt_bbs
+# 表: bbs_users(token/name/board/created_at), bbs_posts(id/board/author/content/created_at)
+# 若不启动，BoardClient 超时、BBS 协议不可用
+bbs.service = mqtt_bbs.board_service
+bbs.start = python -m mqtt_bbs.board_service
+bbs.board = agent-bbs-test, agent-inspiration (boards.json 定义)
+bbs.boards_json = D:\open_claw_agent\GenericAgent_mqtt\boards.json
+# BoardClient 连接配置（在 mqtt_bbs/config.py 中，默认 127.0.0.1:1883）
+# 插件系统: ./plugins/ 目录自动扫描加载，事件发布到 agent/bbs/{board}/events/{event}
+# 迁移 SOP: memory/sqlite_to_mariadb_sop.md
+
+## [FEISHU]
+# 飞书 Bot 前端入口
+feishu.app = D:\open_claw_agent\GenericAgent_mqtt\frontends\fsapp.py
+# SOP: memory/feishu_connect_sop.md（含配置/启动/排障）
+feishu.sop = memory/feishu_connect_sop.md
+# 启动方式（需用 .venv Python，uv Python 缺 lark_oapi）
+feishu.python = .venv\Scripts\python.exe
+feishu.workdir = D:\open_claw_agent\GenericAgent_mqtt
+# 启动命令（在 workdir 中执行）： Start-Process -FilePath .venv\Scripts\python.exe -ArgumentList "frontends\fsapp.py" -WorkingDirectory $workdir -WindowStyle Normal
+
+## [MQTT_STRESS]
+# 压力测试模板: tests/stress_run.py (5 workers × 30 tasks, 纯BBSClient无MariaDB)
+# 注意：BBSClientWithPersistence 会耗尽MariaDB连接池(1040)，改用纯BBSClient
+# Worker agent 用 BBSClient 直连MQTT，订阅 node/{wname}/task/input
+# 坑：subprocess.PIPE 缓冲区满会导致Worker进程阻塞(静默丢消息)
+# 坑：Chinese/Unicode字符通过PIPE读取会引发UnicodeDecodeError，必须用文件输出+ -X utf8
+# 修复：Worker stdout/stderr -> subprocess.DEVNULL，改用日志文件记录输出
+# 已验证：5w*30t=150/150 全通过，0丢失
+# 扩展验证（2026-05-20全面压测）：10w*50t=500(166tps/6ms), 500KB payload零丢失,
+#   3Master并发+10Worker, Worker kill/restart风暴100%恢复, MQTTv5 Session离线消息,
+#   50并发连接0.17s, BoardService CRUD(30注册/150发帖3947posts/s)
+
+## [LLM_PROVIDER_FACTORY]
+# Provider工厂模块（2026-05-21 重构，llmcore.py → tools/llm_providers/）
+llm.factory = tools/llm_providers/
+llm.factory.registry = tools/llm_providers/__init__.py  # ProviderProtocol + ProviderRegistry
+llm.factory.claude = tools/llm_providers/claude.py       # ClaudeProvider + SSE解析器
+# 注册模式：各Provider模块在模块级自行 ProviderRegistry.register(cls)
+# 自动加载：__init__.py 中 for _mod in ['claude','openai']: importlib.import_module(...)
+# 坑：SSE解析器提取时需传递 record_usage 参数（原 llmcore 使用全局变量 _record_usage）
+# 坑：惰性导入避免循环依赖（tools.llm_providers ←llmcore→ tools.llm_providers）
+# 已验证：旧resolve_session()硬编码if/else → ProviderRegistry.create()，行为一致
