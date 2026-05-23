@@ -49,6 +49,15 @@ pub async fn handle_post(state: &Arc<AppState>, topic: &str, payload: &[u8]) {
     let resp = serde_json::json!({"id": post_id, "author": user.name, "created_at": created_at});
     publish_response(&state.mqtt_client, reply_to, &board_key, "post/response", corr_id, &resp).await;
     
+    // 发布新帖通知 (兼容 Python BoardClient)
+    let notify_topic = format!("agent/bbs/{}/new_post", board_key);
+    let notify_payload = serde_json::json!({
+        "id": post_id, "author": user.name, "content": content,
+        "board": board_key, "created_at": created_at
+    });
+    let _ = state.mqtt_client.publish(&notify_topic, rumqttc::QoS::AtMostOnce, false,
+        serde_json::to_vec(&notify_payload).unwrap()).await;
+    
     // 发布事件 (for Plugin订阅)
     let event_topic = format!("events/{}/post", board_key);
     let event_payload = serde_json::json!({
