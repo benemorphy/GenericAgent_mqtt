@@ -70,6 +70,8 @@ async fn main() -> anyhow::Result<()> {
     mqtt_client.subscribe("node/+/heartbeat", rumqttc::QoS::AtLeastOnce).await?;
     mqtt_client.subscribe("node/+/capability", rumqttc::QoS::AtLeastOnce).await?;
     mqtt_client.subscribe("board/capability/query", rumqttc::QoS::AtLeastOnce).await?;
+    mqtt_client.subscribe("agent/ontology/#", rumqttc::QoS::AtLeastOnce).await?;
+    mqtt_client.subscribe("board/ontology/query", rumqttc::QoS::AtLeastOnce).await?;
     
     tracing::info!("MQTT 订阅完成 (broker={}:{})", config.broker_host, config.broker_port);
     
