@@ -338,6 +338,8 @@ class BaseSession:
             if content.strip() and not content.startswith("!!!Error:"): self.history.append({"role": "assistant", "content": [{"type": "text", "text": content}]})
         return _ask_gen() if self.stream else ''.join(list(_ask_gen()))
 
+
+
 def _keep_claude_block(b): return not isinstance(b, dict) or b.get("type") != "thinking" or b.get("signature")
 def _drop_unsigned_thinking(messages):
     for m in messages:
@@ -356,7 +358,6 @@ def _ensure_thinking_blocks(messages, model):
         if not has_thinking: m["content"] = [{"type": "thinking", "thinking": "...", "signature": "placeholder"}, *c]
     return messages
 
-class ClaudeSession(BaseSession):
     @retry_stream()
     def raw_ask(self, messages):
         messages = _fix_messages(messages)
@@ -376,9 +377,6 @@ class ClaudeSession(BaseSession):
             msgs[idx]["content"][-1] = dict(msgs[idx]["content"][-1], cache_control={"type": "ephemeral"})
         return msgs
 
-class LLMSession(BaseSession):
-    def raw_ask(self, messages): return (yield from _openai_stream(self, messages))
-    def make_messages(self, raw_list): return _msgs_claude2oai(_fix_messages(raw_list))
 
 def _fix_messages(messages):
     """修复 messages 符合 Claude API：交替、tool_use/tool_result 配对"""
@@ -666,6 +664,63 @@ def tryparse(json_str):
     if '}' in json_str: json_str = json_str[:json_str.rfind('}') + 1]
     return json.loads(json_str)
 
+THINKING_PROMPT_ZH = """
+### 行动规范（持续有效）
+每次回复（含工具调用轮）都先在回复文字中包含一个<summary></summary> 中输出极简单行（<30字）物理快照：上次结果新信息+本次意图。此内容进入长期工作记忆。
+\n**若用户需求未完成，必须进行工具调用！**
+""".strip()
+THINKING_PROMPT_EN = """
+### Action Protocol (always in effect)
+The reply body should first include a minimal one-line (<30 words) physical snapshot in <summary></summary>: new info from last result + current intent. This goes into long-term working memory.
+\n**If the user's request is not yet complete, tool calls are required!**
+""".strip()
+
+
+class ClaudeSession(BaseSession):
+    @retry_stream()
+    def raw_ask(self, messages):
+        messages = _fix_messages(messages)
+        if self.max_tokens is None: self.max_tokens = 8192
+        headers = {"x-api-key": self.api_key, "Content-Type": "application/json", "anthropic-version": "2023-06-01", "anthropic-beta": "prompt-caching-2024-07-31"}
+        payload = {"model": self.model, "messages": messages, "max_tokens": self.max_tokens, "stream": self.stream}
+        if self.temperature != 1: payload["temperature"] = self.temperature
+        self._apply_claude_thinking(payload)
+        if self.system: payload["system"] = [{"type": "text", "text": self.system, "cache_control": {"type": "persistent"}}]
+        url = auto_make_url(self.api_base, "messages")
+        parse_fn = (lambda r: _parse_claude_sse(r.iter_lines(), _record_usage)) if self.stream else (lambda r: _parse_claude_json(r.json(), _record_usage))
+        return (yield from _raw_api_post(self, url, headers, payload, parse_fn))
+    def make_messages(self, raw_list):
+        msgs = _drop_unsigned_thinking([{"role": m['role'], "content": list(m['content'])} for m in raw_list])
+        user_idxs = [i for i, m in enumerate(msgs) if m['role'] == 'user']
+        for idx in user_idxs[-2:]:
+            msgs[idx]["content"][-1] = dict(msgs[idx]["content"][-1], cache_control={"type": "ephemeral"})
+        return msgs
+
+
+class LLMSession(BaseSession):
+    def raw_ask(self, messages): return (yield from _openai_stream(self, messages))
+    def make_messages(self, raw_list): return _msgs_claude2oai(_fix_messages(raw_list))
+
+def _fix_messages(messages):
+    """修复 messages 符合 Claude API：交替、tool_use/tool_result 配对"""
+    if not messages: return messages
+    _wrap = lambda c: c if isinstance(c, list) else [{"type": "text", "text": str(c)}]
+    fixed = []
+    for m in messages:
+        if fixed and m['role'] == fixed[-1]['role']:
+            fixed[-1] = {**fixed[-1], 'content': _wrap(fixed[-1]['content']) + [{"type": "text", "text": "\n"}] + _wrap(m['content'])}; continue
+        if fixed and fixed[-1]['role'] == 'assistant' and m['role'] == 'user':
+            uses = [b.get('id') for b in fixed[-1].get('content', []) if isinstance(b, dict) and b.get('type') == 'tool_use' and b.get('id')]
+            has = {b.get('tool_use_id') for b in _wrap(m['content']) if isinstance(b, dict) and b.get('type') == 'tool_result'}
+            miss = [uid for uid in uses if uid not in has]
+            if miss: m = {**m, 'content': [{"type": "tool_result", "tool_use_id": uid, "content": "(error)"} for uid in miss] + _wrap(m['content'])}
+            orphan = has - set(uses)
+            if orphan: m = {**m, 'content': [{"type":"text","text":str(b.get('content',''))} if isinstance(b,dict) and b.get('type')=='tool_result' and b.get('tool_use_id') in orphan else b for b in _wrap(m['content'])]}
+        fixed.append(m)
+    while fixed and fixed[0]['role'] != 'user': fixed.pop(0)
+    return fixed
+
+
 class MixinSession:
     """Multi-session fallback with spring-back to primary."""
     def __init__(self, all_sessions, cfg):
@@ -742,6 +797,8 @@ The reply body should first include a minimal one-line (<30 words) physical snap
 \n**If the user's request is not yet complete, tool calls are required!**
 """.strip()
 
+
+
 class NativeToolClient:
     @staticmethod
     def _thinking_prompt(): return THINKING_PROMPT_EN if os.environ.get('GA_LANG') == 'en' else THINKING_PROMPT_ZH
@@ -811,3 +868,4 @@ def fast_ask(prompt, cfg_name):
     sess = resolve_session(cfg_name)
     if not sess: raise ValueError(f"fast_ask: '{cfg_name}' unsupported")
     return "".join(sess.raw_ask([{"role": "user", "content": prompt}]))
+

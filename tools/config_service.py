@@ -15,7 +15,10 @@ ConfigService — 统一配置服务
   Phase 3: 引入 schema 校验 + secrets 管理
 """
 
-import os, json, importlib, time
+import os, json, importlib, time, logging
+
+logger = logging.getLogger("config_service")
+
 
 class ConfigService:
     """统一配置服务 — 单例"""
@@ -136,7 +139,7 @@ class ConfigService:
                                if not k.startswith('_')}
                 changed = True
             except ImportError:
-                print(f"[ConfigService] Profile '{self._profile}' not found, "
+                logger.info(f"[ConfigService] Profile '{self._profile}' not found, "
                       f"falling back to default mykey.py")
                 self._profile = 'default'
 
@@ -173,7 +176,7 @@ class ConfigService:
                 try:
                     cb(self._config)
                 except Exception as e:
-                    print(f"[ConfigService] Listener error: {e}")
+                    logger.warning(f"[ConfigService] Listener error: {e}")
 
         return self._config, changed
 
