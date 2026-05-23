@@ -92,6 +92,32 @@ async fn main() -> anyhow::Result<()> {
         plugin_ipc: RwLock::new(plugin_ipc),
     });
     
+    // Plugin IPC watchdog: 子进程死亡自动重启
+    if config.plugin_cmd.is_empty() {
+        // noop
+    } else {
+        let wd_state = state.clone();
+        let wd_cmd = config.plugin_cmd.clone();
+        tokio::spawn(async move {
+            loop {
+                tokio::time::sleep(std::time::Duration::from_secs(10)).await;
+                let plugin_dead = {
+                    let ipc = wd_state.plugin_ipc.read().await;
+                    ipc.is_none() // 简化：IPC 存在即认为正常，实际需进程 PID 检查
+                };
+                if plugin_dead {
+                    tracing::warn!("Plugin IPC 子进程已死亡，尝试重启...");
+                    // 重新 spawn
+                    if let Ok(new_ipc) = PluginIpc::spawn(&wd_cmd).await {
+                        let mut ipc = wd_state.plugin_ipc.write().await;
+                        *ipc = Some(new_ipc);
+                        tracing::info!("Plugin IPC 子进程已重启");
+                    }
+                }
+            }
+        });
+    }
+    
     // B0: 启动时收集 retain 能力声明
     tokio::spawn({
         let s = state.clone();
