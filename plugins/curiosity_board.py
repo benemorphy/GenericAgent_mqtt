@@ -41,6 +41,8 @@ class CuriosityBoardPlugin(Plugin):
     def __init__(self):
         super().__init__()
         self._posts: dict[str, dict] = {}  # id → post
+        self._voters: dict[str, set] = {}  # post_id → {agent_ids} 去重
+        self._archive_timer = None
 
     def on_load(self, ctx):
         # 订阅好奇心发布和讨论
@@ -50,6 +52,8 @@ class CuriosityBoardPlugin(Plugin):
         ctx.subscribe(f"{POST_BASE}/query", self._on_query)
         ctx.subscribe(f"{POST_BASE}/status/+", self._on_status)
         ctx.subscribe(f"{POST_BASE}/hot", self._on_hot)
+        # P1: 投票
+        ctx.subscribe(f"{POST_BASE}/vote/+", self._on_vote)
 
         # 加载已有帖子（如果配置了持久化路径）
         data_file = ctx.get_config("data_file", "")
@@ -74,6 +78,29 @@ class CuriosityBoardPlugin(Plugin):
             with open(data_file, 'w', encoding='utf-8') as f:
                 json.dump(self._posts, f, ensure_ascii=False, indent=2)
 
+    @staticmethod
+    def _is_duplicate(a: dict, b: dict) -> bool:
+        """判断两条帖子是否相似（关键词重叠率 > 0.7 且同 author 同 type）"""
+        if a.get("author") != b.get("author") or a.get("type") != b.get("type"):
+            return False
+        words_a = set(a.get("reason", "").lower().split()[:10])
+        words_b = set(b.get("reason", "").lower().split()[:10])
+        if not words_a or not words_b:
+            return False
+        overlap = len(words_a & words_b) / max(len(words_a), len(words_b))
+        return overlap > 0.7
+
+    def _archive_stale(self):
+        """归档 48 小时无回应的帖子"""
+        cutoff = time.time() - 172800  # 48h
+        archived = 0
+        for pid, post in list(self._posts.items()):
+            if post["status"] in ("open",) and post["created_at"] < cutoff:
+                post["status"] = "archived"
+                archived += 1
+        if archived:
+            print(f"  [Curiosity] 归档 {archived} 条过期好奇心")
+
     def _respond(self, topic_suffix: str, corr_id: str, data: dict):
         """向请求者发送响应"""
         topic = f"curiosity/{topic_suffix}/response/{corr_id}"
@@ -87,6 +114,13 @@ class CuriosityBoardPlugin(Plugin):
             return
         corr_id = payload.get("corr_id", str(uuid.uuid4()))
         now = time.time()
+
+        # P1: 去重 — 24h 内同作者同类型相似内容
+        for existing in self._posts.values():
+            if existing["created_at"] > now - 86400 and self._is_duplicate(existing, payload):
+                self._respond("post", corr_id, {"ok": True, "id": existing["id"], "status": "duplicate"})
+                print(f"  [Curiosity] 去重: 定向到 #{existing['id']}")
+                return
 
         post_id = str(uuid.uuid4())[:8]
         post = {
@@ -109,6 +143,14 @@ class CuriosityBoardPlugin(Plugin):
         self.ctx.publish(f"{POST_BASE}/new", post)
 
         # 回复创建者
+        # P1: 标签订阅 — 按标签发布到独立 topic
+        tags = payload.get("tags", []) if isinstance(payload, dict) else []
+        for tag in tags:
+            tag_clean = tag.strip().lstrip("#")
+            self.ctx.publish(f"{POST_BASE}/tag/{tag_clean}", {
+                "id": post_id, "type": post["type"],
+                "reason": post["reason"][:100], "author": post["author"],
+            })
         self._respond("post", corr_id, {"ok": True, "id": post_id, "status": "open"})
         print(f"  [Curiosity] 新帖子 #{post_id}: [{post['type']}] {post['reason'][:60]}")
 
@@ -156,6 +198,26 @@ class CuriosityBoardPlugin(Plugin):
 
         self._respond("discuss", corr_id, {"ok": True, "post_id": post_id, "response_count": len(post["responses"])})
         print(f"  [Curiosity] #{post_id} 收到新回复 ({len(post['responses'])} 条)")
+
+    def _on_vote(self, topic: str, payload):
+        """投票: board/curiosity/vote/{post_id}"""
+        if not isinstance(payload, dict):
+            return
+        parts = topic.split("/")
+        if len(parts) < 4:
+            return
+        post_id = parts[-1]
+        change = int(payload.get("change", 1))
+        agent = payload.get("agent_id", "")
+        # 去重: 每个 agent 只算一次
+        if post_id in self._voters and agent in self._voters[post_id]:
+            return
+        post = self._posts.get(post_id)
+        if post is None:
+            return
+        self._voters.setdefault(post_id, set()).add(agent)
+        post["votes"] = post.get("votes", 0) + change
+        print(f"  [Curiosity] #{post_id} 投票: {change:+d} (now {post['votes']})")
 
     def _on_status(self, topic: str, payload):
         """更新帖子状态"""
