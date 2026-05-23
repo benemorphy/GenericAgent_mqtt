@@ -66,7 +66,7 @@ pub async fn handle_file_commit(state: &Arc<AppState>, topic: &str, payload: &[u
     
     if session.received_chunks < session.chunk_count {
         publish_response(&state.mqtt_client, reply_to, &board_key, "file/response", corr_id,
-            &serde_json::json!({"error": format!("incomplete: {}/{}", session.received_chunks, session.chunk_count)}));
+            &serde_json::json!({"error": format!("incomplete: {}/{}", session.received_chunks, session.chunk_count)})).await;
         return;
     }
     
