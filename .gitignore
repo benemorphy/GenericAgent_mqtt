@@ -91,3 +91,5 @@ assets/copilot_proxy.pyw
 *.zip
 *.exe
 *.ffs_db
+
+# ci trigger
