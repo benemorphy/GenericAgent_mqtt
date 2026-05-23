@@ -222,9 +222,13 @@ class BoardService:
         self._db_io_lock = threading.RLock()  # SQLite 线程安全锁（所有DB操作共用）
         self._running = False
         self._client = BBSClient(agent_id, host=self._host, port=self._port)
-        self._registry = CapabilityRegistry(self._client)
+        self._registry = RetainCapabilityRegistry(self._client)
         self._webhooks: dict[str, list[str]] = {}  # board_key → [webhook_urls]
         self._plugin_mgr = PluginManager(self._client)
+
+        # P0-A: 生命周期管理
+        self._healthcheck_enabled = os.environ.get("GATEWAY_HEALTHCHECK", "true").lower() == "true"
+        self._start_time = time.time()
 
     # ── 公开 API ──
 
@@ -266,6 +270,17 @@ class BoardService:
             loaded = self._plugin_mgr.discover_and_load()
             if loaded:
                 log.info(f"[Plugin] 已加载 {len(loaded)} 个插件: {', '.join(loaded)}")
+
+            # P0-A: SIGTERM 信号处理
+            import signal
+            signal.signal(signal.SIGTERM, lambda *a: self.stop())
+
+            # P0-A: Healthcheck 订阅
+            if self._healthcheck_enabled:
+                self._client.subscribe("system/healthcheck", self._on_healthcheck)
+                self._client.subscribe("system/healthcheck/liveness", self._on_hc_liveness)
+                self._client.subscribe("system/healthcheck/readiness", self._on_hc_readiness)
+                log.info("  Healthcheck enabled: system/healthcheck, /liveness, /readiness")
         except Exception as e:
             log.error(f"BoardService 初始化失败: {e}")
             import traceback; traceback.print_exc()
@@ -499,6 +514,31 @@ class BoardService:
         board_key = self._board_from_topic(topic)
         if not board_key or not isinstance(payload, dict):
             return
+
+    # ── P0-A: Healthcheck ──
+
+    def _on_healthcheck(self, topic: str, payload):
+        """system/healthcheck: 返回完整状态"""
+        self._client.publish(f"{topic}/response", {
+            "status": "ok" if self._running else "stopped",
+            "uptime": time.time() - self._start_time,
+            "boards": len(self._boards),
+            "version": "0.3.0",
+        })
+
+    def _on_hc_liveness(self, topic: str, payload):
+        """system/healthcheck/liveness: 存活检测"""
+        self._client.publish(f"{topic}/response", {"status": "ok"})
+
+    def _on_hc_readiness(self, topic: str, payload):
+        """system/healthcheck/readiness: 就绪检测"""
+        db_ok = self._mariadb is not None
+        mqtt_ok = self._client.is_connected
+        self._client.publish(f"{topic}/response", {
+            "status": "ready" if (db_ok and mqtt_ok) else "not_ready",
+            "db": "ok" if db_ok else "down",
+            "mqtt": "ok" if mqtt_ok else "down",
+        })
         action = payload.get("action", "set")
         url = payload.get("url", "")
         if not url:
