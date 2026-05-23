@@ -415,7 +415,17 @@ class BoardService:
         if not db:
             return
 
-        token = uuid.uuid4().hex[:16]
+        # P0.5-C: 动态 JWT 发行
+        import jwt as _jwt
+        _jwt_secret = os.environ.get("JWT_SECRET", "dev-secret-change-in-production")
+        token = _jwt.encode({
+            "sub": agent_id,
+            "name": name,
+            "role": "worker",
+            "board": board_key,
+            "exp": int(time.time()) + 86400 * 7,  # 7天过期
+            "iat": int(time.time()),
+        }, _jwt_secret, algorithm="HS256")
         with self._db_io_lock:
             try:
                 db.execute("INSERT INTO bbs_users(token,name,board,created_at) VALUES(%s,%s,%s,NOW())", (token, name, board_key))
