@@ -1,17 +1,12 @@
 /// Rust WorkerAgent — 任务执行者 (替代 Python bbs.py WorkerAgent)
 ///
 /// 订阅任务 input → 认领 → 执行 → 输出 + 信号 → 完成
-use crate::models::BbsRequest;
-use crate::client::bbs_client::BBSClient;
+use crate::client::bbs_client::{BBSClient, Callback};
 use serde_json::Value;
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::Duration;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use uuid::Uuid;
 use std::collections::HashSet;
-
-const V2_TASK_TOPIC: &str = "v2/task";
 
 pub struct WorkerAgent {
     pub agent_id: String,
@@ -42,26 +37,29 @@ impl WorkerAgent {
         ).await;
 
         // 订阅任务输入 (board + v2 双订阅)
-        self.client.subscribe("agent/board/task/+/input", {
-            let agent_id = self.agent_id.clone();
-            move |topic, payload| {
-                let agent_id = agent_id.clone();
-                tokio::spawn(async move {
-                    // parse task_id from topic
-                    // TODO: implement task handling
-                });
-            }
-        }).await;
+        self.client.subscribe("agent/board/task/+/input", 
+            Arc::new(move |_topic: String, _payload: Value| {
+                let _ = _topic;
+                let _ = _payload;
+            }) as Callback
+        ).await;
 
         // 订阅定向任务
         self.client.subscribe(
             &format!("agent/node/{}/task/input", self.agent_id),
-            |topic, payload| {},
+            Arc::new(|_topic: String, _payload: Value| {}) as Callback,
         ).await;
 
         // 订阅全局信号
-        self.client.subscribe("agent/board/global/signal", |topic, payload| {}).await;
+        self.client.subscribe("agent/board/global/signal", 
+            Arc::new(|_topic: String, _payload: Value| {}) as Callback,
+        ).await;
 
+        // 启动心跳
+        self.start_heartbeat();
+        // 发布能力声明
+        self.announce_capabilities(&self.capabilities.iter().map(|s| s.as_str()).collect::<Vec<_>>()).await;
+        
         tracing::info!("[WorkerAgent] {} 已启动 (capabilities={:?})", self.agent_id, self.capabilities);
     }
 
@@ -121,10 +119,34 @@ impl WorkerAgent {
         tracing::info!("[WorkerAgent] {} 完成任务: {} ({})", self.agent_id, task_id, status);
     }
 
+
+    /// 启动心跳循环 (node/{agent_id}/heartbeat, 每30秒)
+    fn start_heartbeat(&self) {
+        let aid = self.agent_id.clone();
+        let client = self.client.clone();
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(std::time::Duration::from_secs(30));
+            loop {
+                interval.tick().await;
+                client.publish(
+                    &format!("agent/node/{}/heartbeat", aid),
+                    &serde_json::json!({"ts": chrono::Utc::now().timestamp(), "status": "online"})
+                ).await;
+            }
+        });
+    }
+
+    /// 发布能力声明 (node/{agent_id}/capability, retain)
+    async fn announce_capabilities(&self, caps: &[&str]) {
+        self.client.publish(
+            &format!("agent/node/{}/capability", self.agent_id),
+            &serde_json::to_value(caps).unwrap_or_default(),
+        ).await;
+    }
     async fn unsubscribe_dynamic(&self) {
         let mut subs = self.subscribed_dynamic.lock().await;
         for topic in subs.iter() {
-            self.client.unsubscribe(topic);
+            self.client.unsubscribe(topic).await;
         }
         subs.clear();
     }
