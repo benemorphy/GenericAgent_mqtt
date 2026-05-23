@@ -45,3 +45,5 @@
 1. GNU vs MSVC: 当前GNU, 无需VS。如需MSVC原生性能可装VS Build Tools后切换
 2. 交叉编译: 需 `rustup target add x86_64-unknown-linux-gnu`
 3. 构建产出: `rust*/target/` 应加入 `.gitignore`
+4. **`getrandom` 编译失败 (dlltool: Invalid bfd target)**: `$env:PATH` 前插 `rustlib\x86_64-pc-windows-gnu\bin\self-contained\` 目录，使用 Rust 自带的 MinGW dlltool 替代系统 MinGW
+5. **`jsonwebtoken` 依赖 `ring`/`aws-lc-sys` 原生 C 编译失败**: 使用 `default-features = false` 跳过 ring，纯 Rust HMAC 即可支持 HS256

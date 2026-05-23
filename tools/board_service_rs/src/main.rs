@@ -92,6 +92,34 @@ async fn main() -> anyhow::Result<()> {
         plugin_ipc: RwLock::new(plugin_ipc),
     });
     
+    // B0: 启动时收集 retain 能力声明
+    tokio::spawn({
+        let s = state.clone();
+        async move {
+            tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+            tracing::info!("B0: 启动后等待 retain 消息收集...");
+            // retain 消息会在连接后自动推送, 等待 2s 让它们到达
+            tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+            let count = s.capabilities.read().await.len();
+            tracing::info!("B0: 已收集 {} 个 Agent 能力声明", count);
+        }
+    });
+    
+    // B0: SIGTERM 处理
+    let sig_state = state.clone();
+    tokio::spawn(async move {
+        tokio::signal::ctrl_c().await.expect("信号处理失败");
+        tracing::info!("B0: 收到 SIGTERM, 正在关闭...");
+        // 发布离线状态
+        if let Err(e) = sig_state.mqtt_client.publish(
+            &format!("node/{}/status", sig_state.config.agent_id),
+            rumqttc::QoS::AtLeastOnce, true, b"offline"
+        ).await {
+            tracing::warn!("发布离线状态失败: {}", e);
+        }
+        std::process::exit(0);
+    });
+    
     // 启动心跳发布
     let hb_state = state.clone();
     tokio::spawn(async move {
