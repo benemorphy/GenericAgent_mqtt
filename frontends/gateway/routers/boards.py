@@ -48,20 +48,43 @@ def boards_search(
     return _render("boards/index.html", user=user, boards=get_boards(), search_q=q, search_results=results)
 
 
-@router.get("/boards/{board_id}", response_class=HTMLResponse)
-def board_posts(
+@router.get("/boards/diagnosis", response_class=HTMLResponse)
+def boards_diagnosis(
     request: Request,
-    board_id: str,
-    page: int = Query(1, ge=1),
-    q: str = Query(""),
     user: dict = Depends(require_user),
 ):
-    """板块帖子列表"""
-    board = get_board(board_id)
+    """系统诊断页面"""
+    from frontends.bbs_browser.database import get_board, query_posts
+    board = get_board("agent-diagnosis")
     if not board:
-        return _render("error.html", user=user, error="板块不存在")
-    posts, total = query_posts(board, page=page, q=q)
-    limit = 50
-    total_pages = max(1, (total + limit - 1) // limit)
-    return _render("boards/board.html", user=user, board=board, posts=posts,
-                   total=total, page=page, total_pages=total_pages, q=q)
+        board = {"id": "agent-diagnosis", "name": "诊断板", "icon": "🔬",
+                 "description": "系统健康检查与本体模型偏差报告",
+                 "source_table": "bbs_posts", "source_filter": "board='agent-diagnosis'",
+                 "post_count": 0, "order": 99}
+    posts, total = query_posts(board, page=1, limit=50)
+    return _render("boards/diagnosis.html", user=user, posts=posts, total=total)
+
+
+@router.post("/boards/diagnosis/run", response_class=HTMLResponse)
+def boards_diagnosis_run(request: Request, user: dict = Depends(require_user)):
+    """触发系统诊断"""
+    import subprocess, sys, os
+    root = str(Path(__file__).resolve().parent.parent.parent.parent)
+    scripts = os.path.join(root, "tools", "diagnosis_agent.py")
+    if not os.path.isfile(scripts):
+        return _render("error.html", user=user, error="诊断脚本不存在")
+    try:
+        env = os.environ.copy()
+        subprocess.Popen([sys.executable, scripts], cwd=root, env=env,
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        from frontends.bbs_browser.database import query_posts, get_board
+        board = get_board("agent-diagnosis") or {"id": "agent-diagnosis", "source_table": "bbs_posts",
+                 "source_filter": "board='agent-diagnosis'", "post_count": 0}
+        posts, total = query_posts(board, page=1, limit=50)
+        return _render("boards/diagnosis.html", user=user, posts=posts, total=total,
+                       message="诊断已触发，请刷新查看结果")
+    except Exception as e:
+        return _render("error.html", user=user, error=f"诊断触发失败: {e}")
+
+
+@router.get("/boards/{board_id}", response_class=HTMLResponse)

@@ -63,7 +63,41 @@ ENTITIES = [
               "D:\tools\mosquitto\mosquitto_passwd", 3),
     Component("DEEPSEEK_API_KEY", "credential", "env_var", "updated",
               "setx DEEPSEEK_API_KEY", 3),
+    # ── 反省发现: 代码中存在但本体缺失的实体 ──
+    Component("DiagnosisAgent", "tool", "python", "stable",
+              "tools/diagnosis_agent.py", 1),
+    Component("ReflectionEngine", "tool", "python", "stable",
+              "tools/reflection_engine.py", 1),
+    Component("ontology_model", "library", "python", "stable",
+              "tools/ontology_model.py", 2),
+    Component("bbs.py", "library", "python", "stable",
+              "mqtt_bbs/bbs.py", 5),
+    Component("dag", "library", "python", "stable",
+              "mqtt_bbs/dag.py", 2),
+    Component("scheduler", "library", "python", "stable",
+              "mqtt_bbs/scheduler.py", 1),
+    Component("whiteboard", "library", "python", "stable",
+              "mqtt_bbs/whiteboard.py", 1),
+    Component("file_transfer_v2", "library", "python", "stable",
+              "mqtt_bbs/file_transfer_v2.py", 1),
+    Component("persistence", "library", "python", "stable",
+              "mqtt_bbs/persistence.py", 3),
+    Component("persistence_worker", "library", "python", "stable",
+              "mqtt_bbs/persistence_worker.py", 1),
+    Component("StateKV", "library", "rust", "compiled",
+              "tools/mqtt_bbs_rs/src/state_kv.rs", 2),
+    Component("FileTransferRS", "library", "rust", "compiled",
+              "tools/mqtt_bbs_rs/src/file_transfer.rs", 1),
+    Component("DAGWorkflowRS", "library", "rust", "compiled",
+              "tools/mqtt_bbs_rs/src/dag.rs", 1),
+    Component("SchedulerRS", "library", "rust", "compiled",
+              "tools/mqtt_bbs_rs/src/scheduler.rs", 1),
+    Component("config.py", "config", "python", "stable",
+              "mqtt_bbs/config.py", 3),
+    Component("boards.json", "config", "json", "static",
+              "boards.json", 2),
 ]
+
 
 
 # ══════════════════════════════════════════════════════════════
@@ -109,7 +143,24 @@ RELATIONS = [
     Relation("mqtt_bbs_rs", "contains", "BBSClient (Rust)", "src/client/bbs_client.rs", True),
     Relation("mqtt_bbs_rs", "contains", "BoardClient (Rust)", "src/client/board_client.rs", True),
     Relation("board_service_rs", "contains", "CapabilityRegistry", "src/capability.rs", True),
+    # ── 反省发现: 诊断与反省模块的关系 ──
+    Relation("DiagnosisAgent", "subscribes-to", "BoardService",
+             "system/healthcheck/+/response", True),
+    Relation("DiagnosisAgent", "subscribes-to", "World",
+             "node/+/status + events/+/error", True),
+    Relation("ReflectionEngine", "reads", "ontology_model",
+             "导入 ENTITIES/RELATIONS 做偏差检测", True),
+    Relation("ReflectionEngine", "reads", "mqtt_bbs", "扫描 Python 模块", True),
+    Relation("DiagnosisAgent", "publishes-to", "BoardService",
+             "board/diagnosis/post/ + board/diagnosis/summary", True),
+    Relation("ontology_model", "drives", "DiagnosisAgent",
+             "约束和推理来自模型", True),
+    Relation("ontology_model", "drives", "ReflectionEngine",
+             "偏差检测基准来自模型", True),
+    Relation("ReflectionEngine", "updates", "ontology_model",
+             "偏差发现后自动更新实体列表", True),
 ]
+
 
 
 # ══════════════════════════════════════════════════════════════
@@ -185,12 +236,13 @@ CONSTRAINTS = [
     ),
     Constraint(
         "本体查询必须传 reply_to 字段",
-        "board/ontology/query 请求中应含 \"reply_to\": \"board/ontology/query/response/\"",
+        'board/ontology/query 请求中应含 "reply_to": "board/ontology/query/response/"',
         "warning",
         "PR #105: query 响应主题不匹配",
         "默认 fallback 到 board/ontology/query/response/"
     ),
 ]
+
 
 
 # ══════════════════════════════════════════════════════════════
