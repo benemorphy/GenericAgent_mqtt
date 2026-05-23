@@ -3,7 +3,6 @@
 /// 通过 MQTT 发布任务到 BoardService, 等待 WorkerAgent 认领执行。
 /// 完全向后兼容 Python AgentBoard 的协议和主题格式。
 use serde::{Serialize, Deserialize};
-use crate::models::BbsRequest;
 use crate::client::bbs_client::BBSClient;
 use serde_json::Value;
 use std::time::Duration;
@@ -82,15 +81,16 @@ pub struct AgentBoard {
 impl AgentBoard {
     /// 创建新的 AgentBoard
     pub async fn new(agent_id: &str, host: &str, port: u16) -> Self {
-        let client = Arc::new(BBSClient::new(agent_id, host, port).await);
+        let (inner, _el): (BBSClient, _) = BBSClient::new(agent_id, host, port, None, None);
+        let client = Arc::new(inner);
         let pending: Arc<Mutex<std::collections::HashMap<String, tokio::sync::oneshot::Sender<Value>>>> = 
             Arc::new(Mutex::new(std::collections::HashMap::new()));
         
         // 订阅响应槽
         let p = pending.clone();
-        let c = client.clone();
+        let _c = client.clone();
         let aid = agent_id.to_string();
-        client.subscribe(&format!("v2/agent/{}/rpc/res/#", agent_id), move |topic, payload| {
+        client.subscribe(&format!("v2/agent/{}/rpc/res/#", agent_id), Arc::new(move |topic: String, payload: Value| {
             let corr_id = topic.rsplit('/').next().unwrap_or("").to_string();
             let p = p.clone();
             tokio::spawn(async move {
@@ -99,7 +99,7 @@ impl AgentBoard {
                     let _ = tx.send(payload);
                 }
             });
-        }).await;
+        })).await;
         
         Self { client, agent_id: aid, pending }
     }
@@ -124,7 +124,7 @@ impl AgentBoard {
                 .duration_since(std::time::UNIX_EPOCH).unwrap().as_secs_f64(),
         };
         let payload = serde_json::to_value(&msg).map_err(|e| e.to_string())?;
-        let sig = calc_hmac(&task_id, task_type, &task_input);
+        let _sig = calc_hmac(&task_id, task_type, &task_input);
         
         // 发布 input + 状态 (v2 双写)
         self.client.publish(
@@ -145,7 +145,7 @@ impl AgentBoard {
     }
     
     /// 等待任务完成 (对标 Python AgentBoard.wait_task)
-    pub async fn wait_task(&self, task_id: &str, timeout: Duration) -> Result<TaskOutput, String> {
+    pub async fn wait_task(&self, _task_id: &str, timeout: Duration) -> Result<TaskOutput, String> {
         let corr_id = Uuid::new_v4().to_string()[..8].to_string();
         let (tx, rx) = oneshot::channel();
         
@@ -155,7 +155,7 @@ impl AgentBoard {
         }
         
         // 订阅 output 和 signal 主题
-        let resp_topic = format!("v2/agent/{}/rpc/res/{}", self.agent_id, corr_id);
+        let _resp_topic = format!("v2/agent/{}/rpc/res/{}", self.agent_id, corr_id);
         // 使用现有响应槽
         
         let result = tokio::time::timeout(timeout, rx).await
@@ -200,4 +200,28 @@ impl AgentBoard {
         
         Ok(result["agents"].as_array().cloned().unwrap_or_default())
     }
+    /// 启动心跳循环 (node/{agent_id}/heartbeat, 每30秒)
+    pub async fn start_heartbeat(&self) {
+        let aid = self.agent_id.clone();
+        let client = self.client.clone();
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(std::time::Duration::from_secs(30));
+            loop {
+                interval.tick().await;
+                client.publish(
+                    &format!("agent/node/{}/heartbeat", aid),
+                    &serde_json::json!({"ts": chrono::Utc::now().timestamp(), "status": "online"})
+                ).await;
+            }
+        });
+    }
+
+    /// 发布能力声明 (node/{agent_id}/capability, retain)
+    pub async fn announce_capabilities(&self, capabilities: &[&str]) {
+        self.client.publish(
+            &format!("agent/node/{}/capability", self.agent_id),
+            &serde_json::to_value(capabilities).unwrap_or_default(),
+        ).await;
+    }
+
 }
