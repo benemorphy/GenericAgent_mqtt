@@ -47,3 +47,5 @@ class MockBBSClientWithPersistence:
 mock_persistence = types.ModuleType("mqtt_bbs.persistence")
 mock_persistence.BBSClientWithPersistence = MockBBSClientWithPersistence
 sys.modules["mqtt_bbs.persistence"] = mock_persistence
+
+# CI: mock pymysql + persistence for MariaDB-free test environment
