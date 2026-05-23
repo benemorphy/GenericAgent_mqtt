@@ -37,6 +37,9 @@ all-frontends = [
 requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.pytest.ini_options]
+testpaths = ["tests/test_bbs.py", "tests/test_board_service.py"]
+
 [tool.setuptools.packages.find]
 include = ["ga_cli*", "mqtt_bbs*"]
 
