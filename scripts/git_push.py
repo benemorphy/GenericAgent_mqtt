@@ -194,8 +194,37 @@ def main():
     run(f"git pull", check=False)
     
     logger.info("=" * 50)
+    logger.info("=" * 50)
     print(f"推送完成！已通过 PR #{pr_number} squash-merge 到 main")
     print(f"{'='*50}")
+    
+    # P2: 清理远程超过7天的 auto-push 分支
+    _clean_old_branches()
+
+
+def _clean_old_branches(days: int = 7):
+    """删除远程超过 days 天的 auto-push 分支"""
+    try:
+        result = subprocess.run(
+            ["git", "branch", "-r", "--format=%(refname:short)"],
+            capture_output=True, text=True, timeout=10
+        )
+        for branch in result.stdout.strip().split("\n"):
+            if "auto-push" not in branch:
+                continue
+            info = subprocess.run(
+                ["git", "log", "-1", "--format=%ct", branch],
+                capture_output=True, text=True, timeout=10
+            )
+            if info.stdout.strip():
+                ts = int(info.stdout.strip())
+                if time.time() - ts > days * 86400:
+                    remote_name = branch.split("/", 1)[-1]
+                    subprocess.run(["git", "push", "origin", "--delete", remote_name],
+                                   capture_output=True, timeout=10)
+                    logger.info(f"  已清理远程分支: {remote_name}")
+    except Exception as e:
+        logger.warning(f"  清理远程分支失败(非致命): {e}")
 
 
 if __name__ == "__main__":
