@@ -11,6 +11,14 @@
     </form>
 </div>
 <div class="card-grid">
+    <a href="/boards/diagnosis" style="text-decoration:none;color:inherit;">
+        <div class="card board-card" style="border:2px solid #2563eb;">
+            <div class="icon">🔬</div>
+            <div class="name">系统诊断</div>
+            <div class="count">实时</div>
+            <div class="desc">系统健康检查与本体模型偏差报告</div>
+        </div>
+    </a>
     {% for board in boards %}
     <a href="/boards/{{ board.id }}" style="text-decoration:none;color:inherit;">
         <div class="card board-card">
