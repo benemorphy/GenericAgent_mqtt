@@ -148,14 +148,9 @@ class ReflectionEngine:
         # 4. 文件规模变化 — 判断实体活跃度
         py_files = self._scan_python_modules()
         for name, info in py_files.items():
-            # 找到本体中对应的实体
             for ent in ENTITIES:
                 if name.lower() in ent.name.lower():
-                    # 检测活动性变化
-                    old_size = ent.metadata.get("size", 0)
-                    new_size = info["size"]
-                    if old_size and abs(new_size - old_size) > 500:
-                        drifts.append(f"[变化] 实体 '{ent.name}' 文件大小变化: {old_size}B → {new_size}B")
+                    drifts.append(f"[活动] '{name}' ({info['size']}B, {info['modified']:.0f} 最后修改)")
         
         return drifts
     
