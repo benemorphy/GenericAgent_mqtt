@@ -45,12 +45,20 @@ memory/L4_raw_sessions/*
 memory/*.db
 memory/*.zip
 
-# Tests — track test code, ignore __pycache__
-tests/
-!tests/*.py
+# Tests — only ignore __pycache__
+tests/__pycache__/
 
 # Config
 config/
+
+# Skills learning — track metadata, ignore practice data
+skills_learning/
+!skills_learning/**/[rt]racker*.json
+!skills_learning/**/[rt]eview_*.json
+!skills_learning/**/failure_*.json
+!skills_learning/**/skill_*.json
+skills_learning/**/practice/
+skills_learning/**/all_cases*.json
 .llm_cache/
 .claude/
 .trae/
