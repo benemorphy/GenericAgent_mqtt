@@ -35,6 +35,10 @@ pub async fn event_loop(state: Arc<AppState>, mut event_loop: rumqttc::EventLoop
                     handle_node_topic(&state, topic_str, &payload).await;
                 } else if topic_str == "board/capability/query" {
                     handlers::capability::handle_cap_query(&state, &payload).await;
+                } else if topic_str.starts_with("agent/ontology/") {
+                    handle_ontology_topic(&state, topic_str, &payload).await;
+                } else if topic_str == "board/ontology/query" {
+                    handlers::ontology::handle_ontology_query(&state, topic_str, &payload).await;
                 }
             }
             Ok(Event::Incoming(Incoming::ConnAck(_))) => {
@@ -82,6 +86,20 @@ async fn handle_node_topic(state: &Arc<AppState>, topic: &str, payload: &[u8]) {
         "heartbeat" => handlers::capability::handle_heartbeat(state, topic, payload).await,
         "capability" => handlers::capability::handle_capability(state, topic, payload).await,
         _ => tracing::debug!("未知 node 消息类型: {}", msg_type),
+    }
+}
+
+/// 分发 ontology/ 主题
+async fn handle_ontology_topic(state: &Arc<AppState>, topic: &str, payload: &[u8]) {
+    // agent/ontology/{agent_id}/{sub_type}
+    let parts: Vec<&str> = topic.split('/').collect();
+    if parts.len() < 4 { return; }
+    let sub_type = parts[3];
+    match sub_type {
+        "identity" | "capability" | "knowledge" | "relations" => {
+            handlers::ontology::handle_identity(state, topic, payload).await;
+        }
+        _ => tracing::debug!("未知 ontology 子类型: {}", sub_type),
     }
 }
 
