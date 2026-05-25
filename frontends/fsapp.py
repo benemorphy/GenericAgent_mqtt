@@ -277,16 +277,27 @@ def _init_bbs_push():
     global _bbs_push_client
     if _bbs_push_client is not None:
         return
+    # 加载 MQTT 认证凭据（优先从环境变量读取，避免硬编码密钥）
+    if not os.environ.get('MQTT_USERNAME'):
+        os.environ['MQTT_USERNAME'] = 'feishu_bbs_bridge'
+    if not os.environ.get('MQTT_PASSWORD'):
+        # 从 mykeys 读取密码（如未配置，在本地 dev 环境使用默认密码）
+        _mqtt_pwd = str(mykeys.get("mqtt_password", "") or "").strip()
+        if _mqtt_pwd:
+            os.environ['MQTT_PASSWORD'] = _mqtt_pwd
+        else:
+            print("[WARN] MQTT_PASSWORD 未设置，使用开发环境默认密码")
+            os.environ['MQTT_PASSWORD'] = 'feishu_bridge_2024'
     for _retry in range(3):
         try:
             from mqtt_bbs.board_client import BoardClient as _BC
             _bbs_push_client = _BC("feishu_bbs_bridge", board="agent-bbs-test")
             _bbs_push_client.connect()
             _bbs_push_client.subscribe("bbs/+/post", _on_bbs_new_post)
-            print("[BBS桥接] ✅ BBS→飞书 推送已启动")
+            print("[BBS桥接] ✅ BBS->飞书 推送已启动")
             break
         except Exception as e:
-            print(f"[BBS桥接] ⚠️ 初始化失败(第{_retry+1}次): {e}")
+            print(f"[BBS桥接] 初始化失败(第{_retry+1}次): {e}")
             if _retry < 2:
                 import time; time.sleep(2 ** _retry)
 
@@ -323,7 +334,8 @@ def _query_db_output(task_id):
     """从MariaDB查任务output（绕过wait_task时序）"""
     try:
         import pymysql
-        conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='mariadb',
+        _db_pwd = os.environ.get('DB_PASSWORD', 'mariadb')
+        conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', password=_db_pwd,
                                database='mqtt_bbs', connect_timeout=3, autocommit=True)
         cur = conn.cursor()
         cur.execute("SELECT payload FROM retained_messages WHERE topic=%s",
@@ -898,7 +910,8 @@ def handle_command(open_id, cmd, chat_id=None):
     elif op == "/dream":
         from tools.dream_engine import replay_memories, associate_random
         import pymysql as _pm
-        _conn = _pm.connect(host='127.0.0.1', port=3306, user='root', password='mariadb', database='mqtt_bbs')
+        _db_pwd = os.environ.get('DB_PASSWORD', 'mariadb')
+        _conn = _pm.connect(host='127.0.0.1', port=3306, user='root', password=_db_pwd, database='mqtt_bbs')
         _cur = _conn.cursor()
         _cur.execute("SELECT COUNT(*) FROM dream_memories")
         _cnt = _cur.fetchone()[0]
