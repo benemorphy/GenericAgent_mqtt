@@ -158,3 +158,64 @@ pub async fn cleanup_file_chunks(pool: &DbPool, session_id: &str) -> anyhow::Res
         .bind(session_id).execute(pool).await?;
     Ok(())
 }
+
+// ── 能力注册表持久化 (P1.1) ──
+
+pub async fn init_capabilities_table(pool: &DbPool) -> anyhow::Result<()> {
+    sqlx::query(
+        "CREATE TABLE IF NOT EXISTS bbs_capabilities (
+            agent_id VARCHAR(128) PRIMARY KEY,
+            capabilities JSON NOT NULL,
+            version BIGINT NOT NULL DEFAULT 1,
+            status VARCHAR(32) DEFAULT 'online',
+            last_seen BIGINT NOT NULL,
+            load DOUBLE DEFAULT 0.0,
+            ttl BIGINT DEFAULT 180,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+    )
+    .execute(pool).await?;
+    tracing::info!("DB: bbs_capabilities 表就绪");
+    Ok(())
+}
+
+pub async fn upsert_capability(pool: &DbPool, agent_id: &str, capabilities: &[String],
+    version: u64, status: &str, last_seen: i64, load: f64, ttl: u64) -> anyhow::Result<()> {
+    let caps_json = serde_json::to_string(capabilities).unwrap_or_default();
+    sqlx::query(
+        "INSERT INTO bbs_capabilities (agent_id, capabilities, version, status, last_seen, load, ttl)
+         VALUES (?, ?, ?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE
+            capabilities = VALUES(capabilities),
+            version = VALUES(version),
+            status = VALUES(status),
+            last_seen = VALUES(last_seen),
+            load = VALUES(load),
+            ttl = VALUES(ttl)"
+    )
+    .bind(agent_id)
+    .bind(&caps_json)
+    .bind(version as i64)
+    .bind(status)
+    .bind(last_seen)
+    .bind(load)
+    .bind(ttl as i64)
+    .execute(pool).await?;
+    Ok(())
+}
+
+pub async fn load_capabilities(pool: &DbPool) -> anyhow::Result<Vec<(String, String, i64, String, i64, f64, i64)>> {
+    let rows = sqlx::query_as::<_, (String, String, i64, String, i64, f64, i64)>(
+        "SELECT agent_id, capabilities, version, status, last_seen, load, ttl
+         FROM bbs_capabilities WHERE status = 'online'"
+    )
+    .fetch_all(pool).await?;
+    Ok(rows)
+}
+
+pub async fn remove_capability(pool: &DbPool, agent_id: &str) -> anyhow::Result<()> {
+    sqlx::query("DELETE FROM bbs_capabilities WHERE agent_id = ?")
+        .bind(agent_id)
+        .execute(pool).await?;
+    Ok(())
+}
