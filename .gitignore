@@ -93,3 +93,6 @@ assets/copilot_proxy.pyw
 *.ffs_db
 
 # ci trigger
+
+# Config templates
+.env.template
