@@ -36,11 +36,11 @@
     "last": "2026-05-20"
   },
   "global_mem_insight.txt": {
-    "count": 47,
+    "count": 53,
     "last": "2026-05-25"
   },
   "global_mem.txt": {
-    "count": 54,
+    "count": 61,
     "last": "2026-05-25"
   },
   "skills_learning_sop.md": {
@@ -56,16 +56,16 @@
     "last": "2026-05-13"
   },
   "autonomous_operation_sop.md": {
-    "count": 30,
-    "last": "2026-05-23"
+    "count": 31,
+    "last": "2026-05-25"
   },
   "task_planning.md": {
     "count": 7,
     "last": "2026-05-21"
   },
   "subagent.md": {
-    "count": 13,
-    "last": "2026-05-22"
+    "count": 14,
+    "last": "2026-05-25"
   },
   "memory_cleanup_sop.md": {
     "count": 2,
@@ -180,8 +180,8 @@
     "last": "2026-05-25"
   },
   "qq_deploy_sop.md": {
-    "count": 2,
-    "last": "2026-05-20"
+    "count": 3,
+    "last": "2026-05-25"
   },
   "ljqCtrl.py": {
     "count": 1,
@@ -196,7 +196,7 @@
     "last": "2026-05-25"
   },
   "git_push_sop.md": {
-    "count": 13,
+    "count": 14,
     "last": "2026-05-25"
   },
   "active.json": {
@@ -232,15 +232,15 @@
     "last": "2026-05-20"
   },
   "memory": {
-    "count": 4,
-    "last": "2026-05-23"
+    "count": 5,
+    "last": "2026-05-25"
   },
   "failure_driven_learning_sop.md": {
     "count": 3,
     "last": "2026-05-21"
   },
   "push_cleanup_sop.md": {
-    "count": 6,
+    "count": 7,
     "last": "2026-05-25"
   },
   "spaced_repetition_sop.md": {
