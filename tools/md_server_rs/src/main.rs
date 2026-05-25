@@ -110,7 +110,7 @@ fn parse(s: &mut TcpStream) -> Option<Req> {
 
 fn handle(mut s: TcpStream, served: &Path, proj: &Path) {
     let Some(req) = parse(&mut s) else { return };
-    let path = req.path.trim_start_matches('/').to_string();
+    let path = url_decode(&req.path.trim_start_matches('/')).to_string();
     let q = req.query;
     let body = req.body;
 
@@ -253,6 +253,43 @@ fn walk(dir: &Path, name: &str) -> Option<PathBuf> {
 
 fn process_md(html: &str) -> String {
     html.to_string()
+}
+
+fn url_decode(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    let mut b = [0u8; 3];
+    let mut i = 0;
+    let bytes = s.as_bytes();
+    while i < bytes.len() {
+        if bytes[i] == b'%' && i + 2 < bytes.len() {
+            let hi = (bytes[i+1] as char).to_digit(16).unwrap_or(0) as u8;
+            let lo = (bytes[i+2] as char).to_digit(16).unwrap_or(0) as u8;
+            b[0] = (hi << 4) | lo;
+            // try utf8 decode: 1-3 bytes
+            let n = if b[0] & 0x80 == 0 { 1 }
+                else if b[0] & 0xE0 == 0xC0 { 2 }
+                else if b[0] & 0xF0 == 0xE0 { 3 }
+                else { 1 };
+            if n > 1 {
+                for j in 1..n {
+                    if i + 2 + j*3 + 2 < bytes.len() && bytes[i + j*3] == b'%' {
+                        let hi2 = (bytes[i+1+j*3] as char).to_digit(16).unwrap_or(0) as u8;
+                        let lo2 = (bytes[i+2+j*3] as char).to_digit(16).unwrap_or(0) as u8;
+                        b[j] = (hi2 << 4) | lo2;
+                    } else { return s.to_string(); }
+                }
+            }
+            out.push_str(std::str::from_utf8(&b[..n]).unwrap_or("?"));
+            i += n * 3;
+        } else if bytes[i] == b'+' {
+            out.push(' ');
+            i += 1;
+        } else {
+            out.push(bytes[i] as char);
+            i += 1;
+        }
+    }
+    out
 }
 
 fn esc(s: &str) -> String {
