@@ -23,6 +23,14 @@ from mqtt_bbs.client import BBSClient
 
 class ReflectionEngine:
     
+    @staticmethod
+    def _snake_to_camel(name: str) -> str:
+        """文件名/模块名下划线→驼峰映射: board_service -> BoardService.
+        对已驼峰的字符串保持原样: BoardClient -> BoardClient
+        """
+        parts = name.replace('-', '_').split('_')
+        return ''.join(p[0].upper() + p[1:] if p else '' for p in parts)
+    
     def __init__(self):
         self.root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.bbs = BoardClient("reflection_engine", board="agent-diagnosis")
@@ -114,9 +122,12 @@ class ReflectionEngine:
         """检测本体模型与实际系统的偏差"""
         drifts = []
         
-        # 1. 实体: 扫描的文件 vs 本体
-        actual_py = set(self._scan_python_modules().keys())
-        actual_rs = set(f.replace('.rs','').replace('/','_') for f in self._scanned_rs_files)
+        # 实体: 扫描的文件 vs 本体（支持下划线→驼峰映射）
+        actual_py = set(self._snake_to_camel(name) for name in self._scan_python_modules().keys())
+        actual_rs = set(
+            self._snake_to_camel(f.replace('.rs','').replace('/','_'))
+            for f in self._scanned_rs_files
+        )
         actual_all = actual_py | actual_rs
         
         # 本体中的实体名
@@ -135,21 +146,27 @@ class ReflectionEngine:
         model_services = set(e.name for e in ENTITIES if any(rel.target == e.name or rel.source == e.name for rel in RELATIONS))
         
         for s in running:
-            if s not in model_services:
+            # 去掉后缀 (Rust)/(HTTP) 提高匹配率
+            s_base = s.split('(')[0].strip()
+            if s_base not in model_services and s not in model_services:
                 drifts.append(f"[运行中] 服务 '{s}' 在运行但本体模型中缺少")
         
-        # 3. 技能检测
+        # 3. 技能检测 — 使用 register_skills 生成实体和关系
         skills = self._scan_skills()
-        # 检查是否有 skills_learning 目录中的技能但不在本体知识中
-        # (简化: 只是记录偏差)
         if skills:
-            drifts.append(f"[知识] 发现 {len(skills)} 个技能: {', '.join(skills[:5])}")
+            from tools.ontology_model import register_skills
+            skill_entities, skill_relations = register_skills()
+            if skill_entities:
+                drifts.append(f"[知识] 新增 {len(skill_entities)} 个技能实体: {', '.join(s[:20] for s in skills[:3])}...")
+                # 这里只报告，不自动写入 ENTITIES 常量（防止反复修改 .py 文件）
+                # 实际运行时可以动态合并
         
-        # 4. 文件规模变化 — 判断实体活跃度
+        # 4. 文件规模变化 — 判断实体活跃度（支持下划线→驼峰映射）
         py_files = self._scan_python_modules()
         for name, info in py_files.items():
+            camel_name = self._snake_to_camel(name)
             for ent in ENTITIES:
-                if name.lower() in ent.name.lower():
+                if camel_name == ent.name or name.lower() in ent.name.lower():
                     drifts.append(f"[活动] '{name}' ({info['size']}B, {info['modified']:.0f} 最后修改)")
         
         return drifts
