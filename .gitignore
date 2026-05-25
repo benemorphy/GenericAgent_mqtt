@@ -82,6 +82,12 @@ sche_tasks/
 archive/
 CLEAR=1/
 
+# Docs — 外部项目分析文档
+docs/
+!docs/architecture/
+!docs/INDEX.md
+!docs/GA_design_overview.html
+
 # Misc
 skills_learning/
 restore_commit.txt
