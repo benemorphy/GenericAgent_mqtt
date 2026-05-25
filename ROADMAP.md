@@ -1,7 +1,7 @@
 # GenericAgent_mqtt 基础设施路线图
 
 > 聚焦 `mqtt_bbs/` 层，从本地部署演进为云端可运营的多Agent基础设施服务。
-> 更新: 2026-05-25 (上次: 2026-05-22)
+> 更新: 2026-05-25 (最终版)
 
 ---
 
@@ -26,63 +26,25 @@ print() 日志                 Prometheus + Grafana 观测
 
 ---
 
-## 二、现状 (2026-05-25)
+## 二、当前状态
 
-### 已完成
 
-#### 基础设施层
 
-| 项目 | 状态 | 文件 |
+| 缺口 | 级别 | 说明 |
 |------|------|------|
-| Payload Schema 统一 | ✓ P0 实施 | `client.py`, `board_client.py`, `bbs.py`, `whiteboard.py` |
-| 响应槽预订阅 | ✓ 半成品完善 | `board_client.py` |
-| MQTT 基础设施脑暴 | ✓ 6方案文档 | `docs/architecture/brainstorm_mqtt_multiagent_infrastructure.md` |
-| 云端就绪度评估 | ✓ 8缺口分析 | `docs/architecture/infrastructure_cloud_readiness.md` |
-
-#### 诊断与本体层
-
-| 项目 | 状态 | 文件 |
-|------|------|------|
-| 本体模型 (72实体/56关系/9约束/6推理) | ✓ 覆盖度 64% | `tools/ontology_model.py` |
-| 诊断 Agent (规则+LLM) | ✓ 运行中 | `tools/diagnosis_agent.py` |
-| 反省引擎 (偏差检测+自动匹配优化) | ✓ 蛇形→驼峰映射已修复 | `tools/reflection_engine.py` |
-| 约束自动化 (check_fn 可执行函数) | ✓ 替代字符串 eval | `tools/ontology_model.py` |
-| 技能关联 (register_skills 动态注册) | ✓ 40技能→80关系 | `tools/ontology_model.py` |
-| FeishuBot MQTT 认证修复 | ✓ mosquitto 密码统一 | `frontends/fsapp.py`, `.env` |
-| BoardService RS 运行 | ✓ 单实例稳定 | `tools/board_service_rs/target/release/board_service_rs.exe` |
-| Gateway HTTP → MQTT 诊断链路 | ✓ 端到端打通 | `frontends/gateway/routers/boards.py` |
-
-### 当前缺口摘要
-
-| 缺口 | 级别 | 说明 | 状态 |
-|------|------|------|------|
-| 零观测性 | ~~P1~~ | 无 metrics, 无结构化日志, 无 HTTP 健康检查端点 | **已闭环**: /healthz/readyz/metrics + JSON日志 |
-| 无状态化 | ~~P1~~ | 进程内 dict, 多实例不一致 | **已闭环**: DB持久化+版本号+僵尸清理 |
-| 无数据库迁移 | P1(延后) | `CREATE TABLE IF NOT EXISTS` 无版本控制 | 多实例部署前提条件, 当前跳过 |
-| 文件存储本地化 | P1(延后) | 上传文件在本地磁盘, 多实例无法共享 | S3/OSS需求出现时实现 |
-
-> 共 8 项已闭环（P0x3 + P0.5x3 + P1x2），2 项延后
+| 无数据库迁移 | P1(延后) | `CREATE TABLE IF NOT EXISTS` 无版本控制, 多实例时实施 |
+| 文件存储本地化 | P1(延后) | 上传文件在本地磁盘, 多实例无法共享, S3需求时实施 |
 
 ---
 
 ## 三、路线图
 
-### Phase 0 和 Phase 0.5 — 容器化 + 安全加固（已完成）
+### Phase 1 — 延后项（多实例部署触发）
 
-见上方"已完成"章节。所有 5 项缺口（P0x3 + P0.5x1 + P1x1）均已闭环。
-
----
-
-### Phase 1 — 生产可用（已完成 2/4，剩余 2 项延后）
-
-> P1-A 无状态化 + P1-B 观测性已闭环。P1-C DB迁移 + P1-D S3存储延后（多实例时再做）。
-
-| 项目 | 状态 | 交付物 |
+| 项目 | 条件 | 交付物 |
 |------|------|--------|
-| **P1-A**: 无状态化 | **已完成** (PR #124/#130) | CapabilityRegistry 版本号TTL+DB持久化, 僵尸清理120s |
-| **P1-B**: 结构化日志 + Metrics | **已完成** (PR #128/#129) | JSON日志, /healthz/readyz/metrics (port 9100) |
-| **P1-C**: 数据库迁移系统 | **延后** | 当前单实例, `CREATE TABLE IF NOT EXISTS` 已够用 |
-| **P1-D**: S3 存储后端 | **延后** | 无S3部署需求, 需时预留 StorageBackend 接口 |
+| **P1-C**: 数据库迁移系统 | 首次多实例部署 | `_schema_version` 表 + 幂等迁移执行器 |
+| **P1-D**: S3 存储后端 | S3/OSS 需求出现 | `StorageBackend` 抽象基类, `LocalStorage` + `S3Storage` 实现 |
 
 ```
 Phase 1 观测栈:
@@ -144,28 +106,14 @@ Helm 部署拓扑:
 ## 四、依赖关系
 
 ```
-Phase 0 ──────────────────────────────────────────────────────────
-  ├── P0-A (生命周期)
-  ├── P0-B (配置环境变量化)
-  └── P0-C (Container) ──→ 依赖 P0-A + P0-B
-
-Phase 0.5 ────────────────────────────────────────────────────────
-  ├── P0.5-A (Secrets) ──→ 依赖 P0-B
-  ├── P0.5-B (Git清理)
-  └── P0.5-C (JWT动态) ──→ 依赖 P0.5-A
-
 Phase 1 ──────────────────────────────────────────────────────────
-  ├── P1-A (无状态化) ──→ 依赖 Phase 0
-  ├── P1-B (观测性) ──→ 依赖 Phase 0 (独立, 可并行)
-  ├── P1-C (DB迁移) ──→ 依赖 Phase 0 (独立, 可并行)
-  └── P1-D (S3) ──→ 依赖 Phase 0 (独立, 可并行)
+  ├── P1-C (DB迁移) ──→ 多实例部署时
+  └── P1-D (S3) ──→ S3 需求出现时
 
 Phase 1.5 ──→ 依赖 Phase 1
 Phase 2 ────→ 依赖 Phase 1.5
 Phase 3 ────→ 依赖 Phase 2
 ```
-
-P1-B, P1-C, P1-D 可并行执行。
 
 ---
 
@@ -173,11 +121,8 @@ P1-B, P1-C, P1-D 可并行执行。
 
 | 风险 | 概率 | 影响 | 缓解 |
 |------|------|------|------|
-| 无状态化增加延迟 | 中 | 能力查询从 10ms → 100ms | 内存缓存 + TTL=30s |
 | S3 延迟高于本地文件 | 高 | 上传增加 50-200ms | 文件元数据走 MQTT, 内容异步上传 |
-| 结构化日志增加 CPU | 低 | 吞吐降 ~5% | 开发环境用文本, 生产用 JSON |
-| JWT 动态发行引入依赖 | 中 | Agent 启动必须等 BoardService | Fallback 静态 token 模式 |
-| Phase 间依赖阻塞 | 低 | 关键路径: P0→P1→P1.5→P2 | P1 子项可并行, 减少阻塞 |
+| Phase 间依赖阻塞 | 低 | 关键路径: Phase 1→1.5→2→3 | 前序条件已全部闭环 |
 
 ---
 
