@@ -60,64 +60,15 @@ print() 日志                 Prometheus + Grafana 观测
 | 无数据库迁移 | P1 | `CREATE TABLE IF NOT EXISTS` 无版本控制, 升级依赖手动执行 |
 | 文件存储本地化 | P1 | 上传文件在本地磁盘, 多实例无法共享 |
 
-> 已解决: P0x3(生命周期/配置/容器) + P0.5x1(Secrets运行时生成) + P1x1(CapabilityRegistry持久化)
-> 共 5 个缺口已闭环，剩余 3 个 P1 待处理
+> 共 5 个缺口已闭环（P0x3 + P0.5x1 + P1x1），剩余 3 个 P1 待处理
 
 ---
 
 ## 三、路线图
 
-### Phase 0 — 容器化打底（已完成）
+### Phase 0 和 Phase 0.5 — 容器化 + 安全加固（已完成）
 
-### Phase 0.5 — 安全加固（已完成）
-
-| 项目 | 状态 | 文件 |
-|------|------|------|
-| **P0.5-A**: Secrets 管理 | **已完成** | `tools/secrets.py` (统一凭据加载), `k8s/secrets.template.yaml` (K8s Secret 模板) |
-| **P0.5-B**: Git 清理 | **已完成** | agent.env 在 .gitignore 中, 从未被提交 |
-| **P0.5-C**: JWT 动态发行 | **已完成** | `register.rs` 注册时用 `JWT_SECRET` 动态签发, 过期24h |
-
-> 目标: BoardService 能跑在 Docker / K8s 上
-
-| 项目 | 工时 | 交付物 |
-|------|------|--------|
-| **P0-A**: 生命周期管理 | **已完成** | `tools/board_service_rs/src/main.rs` 内置 SIGTERM + offline MQTT 通知 |
-| **P0-B**: 配置环境变量化 | **已完成** | startall.py/ontology_model.py 路径环境变量化, .env.template |
-| **P0-C**: Container 化 | 4h | `Dockerfile.board_service`, `docker-compose.yml`, `.dockerignore` |
-
-```
-Phase 0 架构:
-  K8s Pod
-  ┌─────────────────────────┐
-  │ python -m mqtt_bbs.\     │
-  │   board_service          │
-  │                          │
-  │ signal(SIGTERM) ──→      │
-  │   disconnect MQTT        │
-  │   close DB               │
-  │                          │
-  │ healthcheck: /metrics    │
-  └─────────────────────────┘
-```
-
----
-
-### Phase 0.5 — 安全加固（估计 3 小时）
-
-| 项目 | 工时 | 交付物 |
-|------|------|--------|
-| **P0.5-A**: Secrets 管理 | 2h | `secrets.py` 模块, K8s Secret 文件支持, 动态 JWT 发行 |
-| **P0.5-B**: Git 清理 | 0.5h | `agent.env` 加入 `.gitignore`, 移除历史记录 |
-| **P0.5-C**: JWT 动态发行 | 0.5h | BoardService 注册时生成临时 JWT, 代替预生成 |
-
-```
-Agent 注册流程 (改造后):
-  Agent ──register──→ BoardService
-                        │
-                        ├── 验证请求
-                        ├── 发行 JWT (含过期时间)
-                        └── 返回 {"token": "eyJ...", "exp": 1712345678}
-```
+见上方"已完成"章节。所有 5 项缺口（P0x3 + P0.5x1 + P1x1）均已闭环。
 
 ---
 
