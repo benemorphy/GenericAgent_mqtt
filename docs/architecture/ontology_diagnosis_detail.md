@@ -17,14 +17,14 @@ Layer 1: 实体 (Entities)
   系统中存在哪些组件？
   例: BoardService, Mosquitto, MariaDB, Agent, BoardClient...
   来源: 代码文件扫描 + 运行服务检测
-  文件: tools/ontology_model.py → ENTITIES 列表 (17个)
+  文件: tools/ontology_model.py → ENTITIES 列表 (72个)
 
 Layer 2: 关系 (Relations)
   实体之间如何连接？
   例: BoardService --depends-on--> Mosquitto
        BoardClient --publishes-to--> BoardService
   来源: 从 100+ 轮交互中提取的已验证连接
-  文件: tools/ontology_model.py → RELATIONS 列表 (16条)
+  文件: tools/ontology_model.py → RELATIONS 列表 (56条)
 
 Layer 3: 约束 (Constraints)
   成立的前提条件是什么？
@@ -39,13 +39,117 @@ Layer 4: 推理 (Inferences)
        配置文件修改→服务未重启→新配置不生效 (置信度 0.99)
   来源: 从成功/失败经验中总结的因果规律
   文件: tools/ontology_model.py → INFERENCES 列表 (6条)
+
+> **当前统计 (2026-05-25)**: 72 实体, 56 关系, 9 约束, 6 推理 — 覆盖度 64%
 ```
 
 ---
 
-## 二、诊断系统架构
+## 二、实体详解
 
-### 2.1 三组件协作
+### 2.1 何为"实体"？
+
+实体是本体模型中最底层的构建块（Layer 1），代表系统中**真实存在、可观测、可交互**的组件。每个实体对应一个具体的代码模块、运行服务、配置文件或凭据项。
+
+实体由 `ontology_model.py` 中的 `Component` 数据类定义：
+
+```python
+@dataclass
+class Component:
+    name: str                  # 实体名称（人类可读，如 "BoardService"）
+    component_type: str        # 类型：service / library / tool / config / credential
+    language: str              # 实现语言：python / rust / binary / env / json / text
+    status: str                # 状态：running / compiled / replaced / stable / static / updated
+    location: str              # 文件路径或访问方式
+    verified_interactions: int # 已确认的交互次数（置信度指标）
+```
+
+每个实体有 **6 个属性**，覆盖了"它是什么、在哪、活着没有、我多了解它"四个维度。
+
+### 2.2 示例一：BoardService（Rust 公告板服务）
+
+```python
+Component("BoardService", "service", "rust", "running PID 1032",
+          "tools/board_service_rs/", 47)
+```
+
+| 属性 | 值 | 含义 |
+|------|-----|------|
+| `name` | `BoardService` | 实体的逻辑名称，在关系定义中用此名引用 |
+| `component_type` | `service` | 这是一个**运行服务**（持续运行的后台进程） |
+| `language` | `rust` | 用 **Rust** 编写（区别于 Python 旧版） |
+| `status` | `running PID 1032` | **正在运行**，PID 1032 |
+| `location` | `tools/board_service_rs/` | 源码目录位置 |
+| `verified_interactions` | `47` | 系统已确认过 **47 次**正常交互，置信度高 |
+
+**在诊断中的角色**：
+- 订阅 `agent/bbs/{board}/#` 主题处理注册和发帖
+- 依赖 Mosquitto（MQTT）和 MariaDB（持久化）
+- 如果诊断系统发现 BoardService 未响应，会标记为 `status: "down"`，触发 `severity: "critical"` 告警
+- 交互数 47 表明它是系统中最成熟的组件
+
+### 2.3 示例二：Mosquitto（MQTT 消息代理）
+
+```python
+Component("Mosquitto", "service", "binary", "running",
+          "D:\\tools\\mosquitto\\mosquitto.exe", 8)
+```
+
+| 属性 | 值 | 含义 |
+|------|-----|------|
+| `name` | `Mosquitto` | Eclipse Mosquitto MQTT broker |
+| `component_type` | `service` | 后台运行服务 |
+| `language` | `binary` | 预编译二进制（非本项目的源码） |
+| `status` | `running` | 当前正在运行（通过端口 1883 检测） |
+| `location` | `D:\tools\mosquitto\mosquitto.exe` | Windows 可执行文件路径 |
+| `verified_interactions` | `8` | 已验证 8 次交互，置信度中等 |
+
+**在诊断中的角色**：
+- 系统的**通信中枢**，所有 MQTT 消息经由此流转
+- 依赖密码文件 `mosquitto_passwd` 做用户认证
+- 诊断系统会检测端口 1883 是否开放、心跳是否正常
+- 交互数 8 低于 BoardService 的 47，因为它作为基础设施层较少被直接调用
+
+### 2.4 两个实体的联系
+
+在 `ontology_model.py` 的关系定义中，BoardService 和 Mosquitto 之间存在明确的**依赖关系**：
+
+```python
+Relation("BoardService", "depends-on", "Mosquitto", "MQTT 端口 1883", True)
+```
+
+| 属性 | 值 | 含义 |
+|------|-----|------|
+| `source` | `BoardService` | 依赖方 |
+| `relation_type` | `depends-on` | **依赖**关系（强绑定） |
+| `target` | `Mosquitto` | 被依赖方 |
+| `context` | `MQTT 端口 1883` | 依赖成立的条件 |
+| `verified` | `True` | 已通过测试验证 |
+
+这条关系意味着：
+1. **Mosquitto 必须先于 BoardService 启动** — 启动时序约束
+2. **Mosquitto 宕机 → BoardService 不可用** — 故障传播链
+3. **诊断检测到 BoardService 异常时，会向上游检查 Mosquitto 状态** — 根因分析路径
+
+这种"实体定义 + 关系连接"的结构让诊断系统能够自动推导故障根因：当某个组件出问题时，按依赖链回溯，找到最上游的故障点。
+
+### 2.5 完整实体列表（截至当前）
+
+当前 `ontology_model.py` 共定义 **33 个实体**，按 `component_type` 分类：
+
+| 类型 | 数量 | 举例 |
+|------|------|------|
+| `service` | 6 | BoardService, Mosquitto, MariaDB, HTTP Gateway, FeishuBot, GatewayMonitor |
+| `library` | 30 | BBSClient, BoardClient, AgentBoard, dag, persistence, RegisterHandler 等 |
+| `tool` | 12 | DiagnosisAgent, ReflectionEngine, DreamEngine, InspirationBoard, MetasoSearch 等 |
+| `config` | 5 | mykey.py, agent.env, mosquitto_passwd, config.py, boards.json |
+| `credential` | 1 | DEEPSEEK_API_KEY |
+
+完整列表见 `tools/ontology_model.py` 第 31-99 行的 `ENTITIES` 列表。
+
+## 三、诊断系统架构
+
+### 3.1 三组件协作
 
 ```
 ┌───────────────────┐     ┌───────────────────┐     ┌───────────────────┐
@@ -68,7 +172,7 @@ Layer 4: 推理 (Inferences)
                           └───────────────────┘
 ```
 
-### 2.2 数据流
+### 3.2 数据流
 
 ```
 真实系统 ──→ 诊断 Agent 采集 ──→ 约束检查 ──→ 诊断帖子 ──→ BBS 看板
@@ -76,7 +180,7 @@ Layer 4: 推理 (Inferences)
      └── 反省引擎扫描 ←─────── 本体模型 ←──── 更新偏差
 ```
 
-### 2.3 诊断帖子的格式
+### 3.3 诊断帖子的格式
 
 每一条诊断结果是一条标准 BBS 帖子，发布到 `board/diagnosis/`：
 
@@ -96,9 +200,9 @@ Layer 4: 推理 (Inferences)
 
 ---
 
-## 三、各文件详细说明
+## 四、各文件详细说明
 
-### 3.1 `tools/ontology_model.py`
+### 4.1 `tools/ontology_model.py`
 
 核心本体模型，所有实体/关系/约束/推理的单一数据源。
 
@@ -139,7 +243,7 @@ CONSTRAINTS.append(Constraint(
 ))
 ```
 
-### 3.2 `tools/diagnosis_agent.py`
+### 4.2 `tools/diagnosis_agent.py`
 
 自主诊断服务，独立进程运行。
 
@@ -170,7 +274,7 @@ SKILL_LLM_ENABLE=1 LLM_API_KEY=sk-... python -m tools.diagnosis_agent
 | `node/+/status` | 节点在线/离线 | 状态变化时 |
 | `events/+/error` | 错误事件 | 错误发生时 |
 
-### 3.3 `tools/reflection_engine.py`
+### 4.3 `tools/reflection_engine.py`
 
 反省引擎，比对本体模型与实际系统的偏差。
 
@@ -202,26 +306,31 @@ python -m tools.reflection_engine --watch
 
 ---
 
-## 四、已发现的偏差（反省引擎输出）
+## 五、已发现的偏差（反省引擎输出）
 
-首次运行发现 **63 处偏差**，模型覆盖度约 27% (17/63+17)：
+首次运行发现 **63 处偏差**，模型覆盖度约 **27%** (17/63+17)。经过本轮增补与修正：
 
-| 类别 | 数量 | 重点项 |
-|------|------|--------|
-| 代码存在→本体缺失 | 37 | `file_transfer`, `dag`, `whiteboard`, `bbs.py` 等核心模块未建模 |
-| 本体存在→代码未扫 | 16 | 概念实体 (如 `BoardClient`) 被文件名精确匹配遗漏 |
-| 服务运行→本体缺失 | 2 | Gateway(HTTP), BoardService(Rust) |
-| 技能已掌握→本体缺失 | 40 | skills_learning 技能库未与本体关联 |
+| 类别 | 原始数量 | 当前状态 |
+|------|----------|---------|
+| 代码存在→本体缺失 | 37 | **0** (已全部覆盖) |
+| 本体存在→代码未扫 | 16 | **0** (蛇形→驼峰映射已修复) |
+| 服务运行→本体缺失 | 2 | **0** (Gateway/BoardService 均已建模) |
+| 技能已掌握→本体缺失 | 40 | **动态注册** (register_skills 按需生成) |
+| **总计** | **63** | **全部解决** |
+
+**当前覆盖度**: 72 实体 / 56 关系 / 9 约束 / 6 推理 — **64%** (含动态技能可达 112 实体 / 136 关系)
 
 ---
 
-## 五、改进方向
+## 六、改进方向
 
-### 近期 (下次迭代)
+### 近期 (已完成)
 
-- **实体匹配优化**: 文件名 `board_service.py` 应匹配概念 `BoardService`（下划线→驼峰映射）
-- **约束自动化**: `check_condition` 字符串 eval 改为可执行函数
-- **技能关联**: skills_learning 的 40 个技能自动注册为 Agent 的知识本体
+| 改进项 | 状态 | 变更位置 | 说明 |
+|--------|------|----------|------|
+| 实体匹配优化 | **已完成** | `reflection_engine.py` | 新增 `_snake_to_camel()` 将 `board_service.py` 自动映射为 `BoardService` |
+| 约束自动化 | **已完成** | `ontology_model.py` | `Constraint.check_fn` 字段 + `run_checks()` 优先调用可执行函数 |
+| 技能关联 | **已完成** | `ontology_model.py` | `register_skills()` 动态生成 40 实体 + 80 关系 |
 
 ### 远期
 

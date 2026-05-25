@@ -27,7 +27,7 @@ class DiagnosisAgent:
         self.board = "agent-diagnosis"
         self.agent_id = "diagnosis_agent"
         self.bbs = BoardClient(self.agent_id, board=self.board)
-        self.client = BBSClient(self.agent_id)
+        self.client = BBSClient("diagnosis_agent_listener")  # use distinct client_id to avoid kicking BoardClient's internal connection
         self.token = None
         self._running = False
         
