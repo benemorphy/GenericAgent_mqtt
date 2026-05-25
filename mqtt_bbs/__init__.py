@@ -17,5 +17,6 @@ from .board_client import BoardClient
 from .client import BBSClient
 from .bbs import AgentBoard, WorkerAgent
 from .whiteboard import WhiteboardKV
+from .persistence import AgentBoardWithPersistence, BBSClientWithPersistence, WorkerAgentWithPersistence
 
 __version__ = "0.3.0"
