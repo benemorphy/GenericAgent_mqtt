@@ -31,6 +31,7 @@ def _make_diag_board():
     return {"id": "agent-diagnosis", "name": "诊断板", "icon": "\U0001f52c",
             "description": "系统健康检查与本体模型偏差报告",
             "source_table": "bbs_posts", "source_filter": "board='agent-diagnosis'",
+            "sort_field": "created_at", "sort_dir": "DESC",
             "post_count": 0, "order": 99}
 
 
