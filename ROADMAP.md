@@ -1,6 +1,7 @@
 # GenericAgent_mqtt 基础设施路线图
 
 > 聚焦 `mqtt_bbs/` 层，从本地部署演进为云端可运营的多Agent基础设施服务。
+> 更新: 2026-05-25 (上次: 2026-05-22)
 
 ---
 
@@ -25,9 +26,11 @@ print() 日志                 Prometheus + Grafana 观测
 
 ---
 
-## 二、现状 (2026-05-22)
+## 二、现状 (2026-05-25)
 
 ### 已完成
+
+#### 基础设施层
 
 | 项目 | 状态 | 文件 |
 |------|------|------|
@@ -36,12 +39,25 @@ print() 日志                 Prometheus + Grafana 观测
 | MQTT 基础设施脑暴 | ✓ 6方案文档 | `docs/architecture/brainstorm_mqtt_multiagent_infrastructure.md` |
 | 云端就绪度评估 | ✓ 8缺口分析 | `docs/architecture/infrastructure_cloud_readiness.md` |
 
+#### 诊断与本体层
+
+| 项目 | 状态 | 文件 |
+|------|------|------|
+| 本体模型 (72实体/56关系/9约束/6推理) | ✓ 覆盖度 64% | `tools/ontology_model.py` |
+| 诊断 Agent (规则+LLM) | ✓ 运行中 | `tools/diagnosis_agent.py` |
+| 反省引擎 (偏差检测+自动匹配优化) | ✓ 蛇形→驼峰映射已修复 | `tools/reflection_engine.py` |
+| 约束自动化 (check_fn 可执行函数) | ✓ 替代字符串 eval | `tools/ontology_model.py` |
+| 技能关联 (register_skills 动态注册) | ✓ 40技能→80关系 | `tools/ontology_model.py` |
+| FeishuBot MQTT 认证修复 | ✓ mosquitto 密码统一 | `frontends/fsapp.py`, `.env` |
+| BoardService RS 运行 | ✓ 单实例稳定 | `tools/board_service_rs/target/release/board_service_rs.exe` |
+| Gateway HTTP → MQTT 诊断链路 | ✓ 端到端打通 | `frontends/gateway/routers/boards.py` |
+
 ### 当前缺口摘要
 
 | 缺口 | 级别 | 说明 |
 |------|------|------|
 | 无生命周期管理 | P0 | 无 SIGTERM, 无 healthcheck, 无法容器化 |
-| 配置硬编码 | P0 | DB密码明文, 路径硬编码, JWT明文检入Git |
+| 配置硬编码 | P0 | DB密码明文, 路径硬编码, JWT明文已检出 (需清理Git历史) |
 | 无 Container | P0 | 无 Dockerfile, 无 docker-compose |
 | 有状态 CapabilityRegistry | P1 | 进程内 dict, 多实例不一致 |
 | 零观测性 | P1 | 无 metrics, 无结构化日志 |
