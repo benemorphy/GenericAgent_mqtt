@@ -9,10 +9,8 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 from fastapi import APIRouter, Request, Query, Depends
 from fastapi.responses import HTMLResponse
-
 from frontends.bbs_browser.auth import require_user
 from frontends.bbs_browser.database import get_boards, get_board, query_posts, query_all_posts as search_all
-
 from jinja2 import Environment, FileSystemLoader
 
 _TEMPLATES = Environment(loader=FileSystemLoader(
@@ -28,6 +26,14 @@ def _render(name: str, **ctx) -> str:
     return _TEMPLATES.get_template(name).render(user=user, nav_active='boards', **ctx)
 
 
+def _make_diag_board():
+    """动态创建诊断板块字典（如果数据库中没有）"""
+    return {"id": "agent-diagnosis", "name": "诊断板", "icon": "\U0001f52c",
+            "description": "系统健康检查与本体模型偏差报告",
+            "source_table": "bbs_posts", "source_filter": "board='agent-diagnosis'",
+            "post_count": 0, "order": 99}
+
+
 @router.get("/boards", response_class=HTMLResponse)
 def boards_index(request: Request, user: dict = Depends(require_user)):
     """板块广场"""
@@ -36,11 +42,7 @@ def boards_index(request: Request, user: dict = Depends(require_user)):
 
 
 @router.get("/boards/search", response_class=HTMLResponse)
-def boards_search(
-    request: Request,
-    q: str = Query(""),
-    user: dict = Depends(require_user),
-):
+def boards_search(request: Request, q: str = Query(""), user: dict = Depends(require_user)):
     """跨板块搜索"""
     results = []
     if q:
@@ -49,20 +51,17 @@ def boards_search(
 
 
 @router.get("/boards/diagnosis", response_class=HTMLResponse)
-def boards_diagnosis(
-    request: Request,
-    user: dict = Depends(require_user),
-):
+def boards_diagnosis(request: Request, user: dict = Depends(require_user)):
     """系统诊断页面"""
-    from frontends.bbs_browser.database import query_posts
-    posts, total = query_posts("agent-diagnosis", page=1, limit=50)
+    board = get_board("agent-diagnosis") or _make_diag_board()
+    posts, total = query_posts(board, page=1, limit=50)
     return _render("boards/diagnosis.html", user=user, posts=posts, total=total)
 
 
 @router.post("/boards/diagnosis/run", response_class=HTMLResponse)
 def boards_diagnosis_run(request: Request, user: dict = Depends(require_user)):
     """触发系统诊断"""
-    import subprocess, sys, os
+    import subprocess
     root = str(Path(__file__).resolve().parent.parent.parent.parent)
     scripts = os.path.join(root, "tools", "diagnosis_agent.py")
     if not os.path.isfile(scripts):
@@ -70,9 +69,9 @@ def boards_diagnosis_run(request: Request, user: dict = Depends(require_user)):
     try:
         env = os.environ.copy()
         subprocess.Popen([sys.executable, scripts], cwd=root, env=env,
-                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        from frontends.bbs_browser.database import query_posts
-        posts, total = query_posts("agent-diagnosis", page=1, limit=50)
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        board = get_board("agent-diagnosis") or _make_diag_board()
+        posts, total = query_posts(board, page=1, limit=50)
         return _render("boards/diagnosis.html", user=user, posts=posts, total=total,
                        message="诊断已触发，请刷新查看结果")
     except Exception as e:
@@ -80,3 +79,14 @@ def boards_diagnosis_run(request: Request, user: dict = Depends(require_user)):
 
 
 @router.get("/boards/{board_id}", response_class=HTMLResponse)
+def board_posts(request: Request, board_id: str, page: int = Query(1, ge=1),
+               q: str = Query(""), user: dict = Depends(require_user)):
+    """板块帖子列表"""
+    board = get_board(board_id)
+    if not board:
+        return _render("error.html", user=user, error="板块不存在")
+    posts, total = query_posts(board, page=page, q=q)
+    limit = 50
+    total_pages = max(1, (total + limit - 1) // limit)
+    return _render("boards/board.html", user=user, board=board, posts=posts,
+                   total=total, page=page, total_pages=total_pages, q=q)

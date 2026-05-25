@@ -18,6 +18,8 @@ subprocess = _sp
 _THRESHOLD_KB = 500          # 超过此大小触发压缩
 _COMPACT_INTERVAL = 172800    # 压缩检测间隔(秒) = 48 小时
 _RETENTION_DAYS = 30         # L4 原始会话保留天数
+_COOLDOWN_DAYS = 7           # 压缩冷却期(天)
+_COMPACT_SCRIPT = None       # 压缩脚本路径缓存
 
 # ── L4 路径 ──
 def _get_l4_path() -> str:
@@ -57,6 +59,7 @@ def _get_compact_script() -> str:
     candidates = [
         os.path.join(os.path.dirname(os.path.abspath(__file__)), 'compress_session.py'),
         os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'tools', 'compress_session.py'),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'memory', 'L4_raw_sessions', 'compress_session.py'),
     ]
     for p in candidates:
         p = os.path.abspath(p)
