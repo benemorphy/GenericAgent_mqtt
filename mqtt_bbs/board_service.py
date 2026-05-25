@@ -222,7 +222,7 @@ class BoardService:
         self._db_io_lock = threading.RLock()  # SQLite 线程安全锁（所有DB操作共用）
         self._running = False
         self._client = BBSClient(agent_id, host=self._host, port=self._port)
-        self._registry = RetainCapabilityRegistry(self._client)
+        self._registry = CapabilityRegistry(self._client)
         self._webhooks: dict[str, list[str]] = {}  # board_key → [webhook_urls]
         self._plugin_mgr = PluginManager(self._client)
 

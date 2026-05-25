@@ -94,6 +94,11 @@ feishu.workdir = D:\open_claw_agent\GenericAgent_mqtt
 #   3Master并发+10Worker, Worker kill/restart风暴100%恢复, MQTTv5 Session离线消息,
 #   50并发连接0.17s, BoardService CRUD(30注册/150发帖3947posts/s)
 
+## [FILE_SEARCH]
+# 搜索能力: 使用 tools/file_search.py（Python pathlib.rglob/glob）
+# 替代 es.exe（未安装）。提供 search_files/search_name/search_content
+file_search.tool = tools/file_search.py
+
 ## [LLM_PROVIDER_FACTORY]
 # Provider工厂模块（2026-05-21 重构，llmcore.py → tools/llm_providers/）
 llm.factory = tools/llm_providers/
