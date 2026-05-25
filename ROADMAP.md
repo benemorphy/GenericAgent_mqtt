@@ -54,13 +54,14 @@ print() 日志                 Prometheus + Grafana 观测
 
 ### 当前缺口摘要
 
-| 缺口 | 级别 | 说明 |
-|------|------|------|
-| 零观测性 | P1 | 无 metrics, 无结构化日志, 无 HTTP 健康检查端点 |
-| 无数据库迁移 | P1 | `CREATE TABLE IF NOT EXISTS` 无版本控制, 升级依赖手动执行 |
-| 文件存储本地化 | P1 | 上传文件在本地磁盘, 多实例无法共享 |
+| 缺口 | 级别 | 说明 | 状态 |
+|------|------|------|------|
+| 零观测性 | ~~P1~~ | 无 metrics, 无结构化日志, 无 HTTP 健康检查端点 | **已闭环**: /healthz/readyz/metrics + JSON日志 |
+| 无状态化 | ~~P1~~ | 进程内 dict, 多实例不一致 | **已闭环**: DB持久化+版本号+僵尸清理 |
+| 无数据库迁移 | P1(延后) | `CREATE TABLE IF NOT EXISTS` 无版本控制 | 多实例部署前提条件, 当前跳过 |
+| 文件存储本地化 | P1(延后) | 上传文件在本地磁盘, 多实例无法共享 | S3/OSS需求出现时实现 |
 
-> 共 5 个缺口已闭环（P0x3 + P0.5x1 + P1x1），剩余 3 个 P1 待处理
+> 共 8 项已闭环（P0x3 + P0.5x3 + P1x2），2 项延后
 
 ---
 
@@ -72,16 +73,16 @@ print() 日志                 Prometheus + Grafana 观测
 
 ---
 
-### Phase 1 — 生产可用（估计 13 小时）
+### Phase 1 — 生产可用（已完成 2/4，剩余 2 项延后）
 
-> 目标: 可观测、可扩展、可运维
+> P1-A 无状态化 + P1-B 观测性已闭环。P1-C DB迁移 + P1-D S3存储延后（多实例时再做）。
 
-| 项目 | 工时 | 交付物 |
+| 项目 | 状态 | 交付物 |
 |------|------|--------|
-| **P1-A**: 无状态化 | 4h | CapabilityRegistry 去进程 dict, 利用 MQTT Retain + DB 共享状态 |
-| **P1-B**: 结构化日志 + Metrics | 4h | `structlog` 集成, Prometheus `Counter`/`Histogram`/`Gauge`, `/metrics` HTTP 端点 |
-| **P1-C**: 数据库迁移系统 | 2h | `_schema_version` 表 + 幂等迁移执行器 |
-| **P1-D**: S3 存储后端 | 3h | `StorageBackend` 抽象基类, `LocalStorage` + `S3Storage` 实现 |
+| **P1-A**: 无状态化 | **已完成** (PR #124/#130) | CapabilityRegistry 版本号TTL+DB持久化, 僵尸清理120s |
+| **P1-B**: 结构化日志 + Metrics | **已完成** (PR #128/#129) | JSON日志, /healthz/readyz/metrics (port 9100) |
+| **P1-C**: 数据库迁移系统 | **延后** | 当前单实例, `CREATE TABLE IF NOT EXISTS` 已够用 |
+| **P1-D**: S3 存储后端 | **延后** | 无S3部署需求, 需时预留 StorageBackend 接口 |
 
 ```
 Phase 1 观测栈:
