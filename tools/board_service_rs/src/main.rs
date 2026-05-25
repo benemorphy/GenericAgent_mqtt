@@ -85,6 +85,9 @@ async fn main() -> anyhow::Result<()> {
         Some(PluginIpc::spawn(&config.plugin_cmd).await?)
     };
     
+    // 保留 db_pool 的 clone 供后续线程使用
+    let db_pool_clone = db_pool.clone();
+
     // 构建 AppState
     let state = Arc::new(AppState {
         config: config.clone(),
@@ -122,7 +125,7 @@ async fn main() -> anyhow::Result<()> {
     }
     
     // B0: 启动时收集 retain 能力声明（含DB持久化）
-    let cap_db = db_pool.clone();
+    let cap_db = db_pool_clone;
     tokio::spawn({
         let s = state.clone();
         async move {
