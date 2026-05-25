@@ -35,7 +35,7 @@ ENTITIES = [
     Component("BoardService (Python)", "service", "python", "replaced",
               "mqtt_bbs/board_service.py", 12),
     Component("Mosquitto", "service", "binary", "running",
-              "D:\tools\mosquitto\mosquitto.exe", 8),
+              os.environ.get("MOSQUITTO_HOME", r"D:\\tools\\mosquitto") + "/" + os.environ.get("MOSQUITTO_EXE", "mosquitto.exe"), 8),
     Component("MariaDB", "service", "binary", "running",
               "127.0.0.1:3306", 6),
     Component("HTTP Gateway", "service", "python", "running",
@@ -61,7 +61,7 @@ ENTITIES = [
     Component("agent.env", "config", "env", "static",
               "mqtt_bbs/agent.env", 5),
     Component("mosquitto_passwd", "config", "text", "static",
-              "D:\tools\mosquitto\mosquitto_passwd", 3),
+              os.environ.get("MOSQUITTO_HOME", r"D:\\tools\\mosquitto") + "/" + os.environ.get("MOSQUITTO_PASSWD", "mosquitto_passwd"), 3),
     Component("DEEPSEEK_API_KEY", "credential", "env_var", "updated",
               "setx DEEPSEEK_API_KEY", 3),
     # ── 反省发现: 代码中存在但本体缺失的实体 ──
