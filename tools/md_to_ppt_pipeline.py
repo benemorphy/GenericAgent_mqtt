@@ -20,9 +20,9 @@ API_URL = "https://api.deepseek.com/v1/chat/completions"
 try:
     import sys as _sys
     _sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-    from mykey import deepseek_api_key as _k
-    API_KEY = _k
-except (ImportError, AttributeError):
+    from mykey import native_oai_config as _cfg
+    API_KEY = _cfg.get('apikey', '')
+except (ImportError, AttributeError, KeyError):
     pass
 
 # 其次从环境变量读取
