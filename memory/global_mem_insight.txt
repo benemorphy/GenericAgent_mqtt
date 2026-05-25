@@ -18,7 +18,7 @@ Scheduling: scheduled_task_sop | Autonomous: autonomous_operation_sop | watchdog
 Mobile: adb_ui.py
 
 [RULES]
-1. Search first: must use es for filename search (no PS recursion/no dir traversal), always prefer Google for web search (no duckduckgo etc), check cwd first, no guessing paths
+1. Search first: use Python pathlib.rglob/glob for filename search (no PS recursion/no dir traversal), or use Everything SDK via tools/file_search.py; always prefer Google for web search (no duckduckgo etc), check cwd first, no guessing paths
 2. Cross-verify: never trust summaries, verify numbers on detail pages
 3. Encoding safety: use file_read not PS cat/type; read before modify; import memory modules directly (already in PATH, no fake prefixes)
 4. Close the loop: confirm after physical simulation; request intervention after 3 failures; complete Git workflow

@@ -49,6 +49,7 @@
 | `tools/ljqCtrl_sop+.py` | 键鼠自动化操作 |
 | `tools/tmwebdriver_sop+.py` | 浏览器自动化（文件上传/截图/CDP） |
 | `tools/feishu_reminder.py` | 飞书Bot集成：定时提醒与群聊交互 |
+| `tools/file_search.py` | 文件搜索工具：pathlib rglob/glob + Everything SDK 支持 |
 | `tools/board_service_rs/` | Rust BoardService：高性能MQTT服务 |
 | `tools/md_server_rs/` | Rust文档服务器：高性能Markdown渲染 |
 | `skills_learning/` | 案例驱动的技能学习体系 |

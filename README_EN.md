@@ -49,6 +49,7 @@ Thanks to upstream author lsdefine for the open-source contribution.
 | `tools/ljqCtrl_sop+.py` | Keyboard & mouse automation |
 | `tools/tmwebdriver_sop+.py` | Browser automation (file upload/screenshot/CDP) |
 | `tools/feishu_reminder.py` | Feishu Bot integration: scheduled reminders & group chat |
+| `tools/file_search.py` | File search utility: pathlib rglob/glob + Everything SDK support |
 | `tools/board_service_rs/` | Rust BoardService: high-performance MQTT service |
 | `tools/md_server_rs/` | Rust doc server: high-performance Markdown rendering |
 | `skills_learning/` | Case-driven skill learning system |
