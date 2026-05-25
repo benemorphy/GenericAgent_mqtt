@@ -11,7 +11,7 @@ Core change: replaces file-based agent communication with an MQTT message bus fo
 GenericAgent_mqtt/
 ├── Part 1: Agent Core         ← What you interact with daily
 ├── Part 2: MQTT Infrastructure  ← Services to run on a VPS
-└── Part 3: GA_viewer             ← Standalone viewer/converter tools
+└── Part 3: GA_tools             ← Standalone viewer/converter tools
 ```
 
 ---
@@ -85,12 +85,12 @@ rmqtt start
 python -m mqtt_bbs.board_service
 
 # 3. Or use Rust version (high performance)
-cd GA_viewer && ./md_server_rs/target/release/board_service_rs
+cd GA_tools && ./md_server_rs/target/release/board_service_rs
 ```
 
 ---
 
-## Part 3: GA_viewer (Standalone Tools)
+## Part 3: GA_tools (Standalone Tools)
 
 Independent viewer/conversion tools, usable separately from the agent.
 

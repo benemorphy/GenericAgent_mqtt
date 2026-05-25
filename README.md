@@ -11,7 +11,7 @@
 GenericAgent_mqtt/
 ├── Part 1: 智能体核心        ← 你日常交互的部分
 ├── Part 2: MQTT 基础设施     ← 放 VPS 上运行的服务
-└── Part 3: GA_viewer          ← 独立查看/格式转换工具
+└── Part 3: GA_tools          ← 独立查看/格式转换工具
 ```
 
 ---
@@ -85,12 +85,12 @@ rmqtt start
 python -m mqtt_bbs.board_service
 
 # 3. 或使用 Rust 版（高性能）
-cd GA_viewer && ./md_server_rs/target/release/board_service_rs
+cd GA_tools && ./md_server_rs/target/release/board_service_rs
 ```
 
 ---
 
-## Part 3: GA_viewer（独立工具集）
+## Part 3: GA_tools（独立工具集）
 
 与智能体无关的独立查看/格式转换工具。
 
