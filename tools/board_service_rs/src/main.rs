@@ -182,6 +182,40 @@ async fn main() -> anyhow::Result<()> {
         mqtt_handler::heartbeat_loop(hb_state).await;
     });
     
+    // P1-A: 定期清理僵尸 Agent (每120s)
+    let cleanup_state = state.clone();
+    let cleanup_db = db_pool_clone;
+    tokio::spawn(async move {
+        let mut interval = tokio::time::interval(std::time::Duration::from_secs(120));
+        loop {
+            interval.tick().await;
+            let mut caps = cleanup_state.capabilities.write().await;
+            let before = caps.len();
+            let now = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_secs() as i64;
+            caps.retain(|_id, info| (info.last_seen + info.ttl as i64) > now);
+            let removed = before - caps.len();
+            if removed > 0 {
+                tracing::warn!("清理 {} 个僵尸 Agent (在线: {})", removed, caps.len());
+                let offline: Vec<String> = caps.iter()
+                    .filter(|(_, v)| (v.last_seen + v.ttl as i64) <= now)
+                    .map(|(k, _)| k.clone())
+                    .collect();
+                drop(caps);
+                for agent_id in offline {
+                    let _ = db::remove_capability(&cleanup_db, &agent_id).await;
+                }
+            }
+        }
+    });
+                    let _ = db::remove_capability(&cleanup_db, &agent_id).await;
+                }
+            }
+        }
+    });
+    
     // 事件循环
     // P1-B: 启动 Metrics HTTP 服务
     if config.metrics_port > 0 {
