@@ -1,6 +1,7 @@
 mod mqtt_handler;
 mod models;
 mod plugin_ipc;
+mod observability;
 mod handlers;
 
 mod config;
@@ -39,6 +40,7 @@ async fn main() -> anyhow::Result<()> {
     // 初始化日志
     tracing_subscriber::fmt()
         .with_env_filter(EnvFilter::new(&config.log_level))
+        .json()  // P1-B: JSON 结构化日志
         .init();
     
     tracing::info!("BoardService RS 启动 (agent_id={})", config.agent_id);
@@ -181,6 +183,18 @@ async fn main() -> anyhow::Result<()> {
     });
     
     // 事件循环
+    // P1-B: 启动 Metrics HTTP 服务
+    if config.metrics_port > 0 {
+        let port = config.metrics_port;
+        tokio::spawn(async move {
+            observability::serve_metrics(port).await;
+        });
+        tracing::info!("Metrics HTTP 服务已启动 (port={})", config.metrics_port);
+    }
+
+    // P1-B: MQTT 连接成功后标记就绪
+    observability::READY.store(true, std::sync::atomic::Ordering::Relaxed);
+
     tracing::info!("BoardService RS 启动完成，等待消息...");
     mqtt_handler::event_loop(state, event_loop).await?;
     
