@@ -20,6 +20,13 @@ if env_path.exists():
                 k, v = line.split('=', 1)
                 os.environ[k.strip()] = v.strip()
 
+# 默认路径: 优先从环境变量读取，fallback到本地硬编码
+_DEFAULT_MOSQUITTO_HOME = r'D:\tools\mosquitto'
+os.environ.setdefault('MOSQUITTO_HOME', _DEFAULT_MOSQUITTO_HOME)
+os.environ.setdefault('MOSQUITTO_EXE', 'mosquitto.exe')
+os.environ.setdefault('MOSQUITTO_CONF', 'mosquitto.conf')
+os.environ.setdefault('MOSQUITTO_PASSWD', 'mosquitto_passwd')
+
 PYTHON = sys.executable  # or str(ROOT / '.venv' / 'Scripts' / 'python.exe')
 
 
@@ -84,9 +91,9 @@ def main():
     if 'mosquitto.exe' in r.stdout:
         print('  [OK] Mosquitto (1883) 已在运行')
     else:
-        mosq = r'D:\tools\mosquitto\mosquitto.exe'
+        mosq = os.path.join(os.environ['MOSQUITTO_HOME'], os.environ['MOSQUITTO_EXE'])
         if os.path.exists(mosq):
-            p = start_proc([mosq, '-c', r'D:\tools\mosquitto\mosquitto.conf'], 'Mosquitto', timeout=3)
+            p = start_proc([mosq, '-c', os.path.join(os.environ['MOSQUITTO_HOME'], os.environ['MOSQUITTO_CONF'])], 'Mosquitto', timeout=3)
             if p.poll() is None:
                 procs.append(p)
         else:
