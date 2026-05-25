@@ -176,13 +176,13 @@ class GenericAgent:
 
 GeneraticAgent = GenericAgent    
 
-    # P2: 启动后台自动压缩（daemon 线程，不阻塞）
-    try:
-        from tools.session_compactor import start_auto_compact
-        start_auto_compact()
-        log.debug("后台自动压缩已启动")
-    except Exception:
-        pass
+# P2: 启动后台自动压缩（daemon 线程，不阻塞）
+try:
+    from tools.session_compactor import start_auto_compact
+    start_auto_compact()
+    log.debug("后台自动压缩已启动")
+except Exception:
+    pass
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()

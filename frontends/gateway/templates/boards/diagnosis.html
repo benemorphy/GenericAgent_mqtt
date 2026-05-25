@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}系统诊断 - BBS 网关{% endblock %}
+{% block nav_active %}boards{% endblock %}
+{% block content %}
+<a href="/boards" class="back-link">&larr; 板块列表</a>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+    <h2 style="margin:0;">🔬 系统诊断</h2>
+    <button onclick="runDiagnosis()" style="padding:8px 20px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">▶ 开始诊断</button>
+</div>
+<p style="color:#888;font-size:14px;margin-bottom:16px;">系统组件健康状态与本体模型偏差报告</p>
+
+<div id="diagnosis-status" style="margin-bottom:16px;"></div>
+
+{% if posts %}
+<div class="post-list">
+    {% for post in posts %}
+    <div class="post-card" style="border-left:4px solid 
+        {% if 'critical' in (post.content[:200]|lower) %}#dc2626
+        {% elif 'warning' in (post.content[:200]|lower) %}#f59e0b
+        {% else %}#22c55e{% endif %};">
+        <div class="meta">
+            <span>{{ post.created_at or '' }}</span>
+            <span style="margin-left:8px;font-size:12px;padding:2px 6px;border-radius:4px;
+                {% if 'critical' in (post.content[:200]|lower) %}background:#fef2f2;color:#dc2626;
+                {% elif 'warning' in (post.content[:200]|lower) %}background:#fffbeb;color:#f59e0b;
+                {% else %}background:#f0fdf4;color:#22c55e;{% endif %}">
+                {% if 'critical' in (post.content[:200]|lower) %}严重
+                {% elif 'warning' in (post.content[:200]|lower) %}警告
+                {% else %}正常{% endif %}
+            </span>
+        </div>
+        <div class="content">{{ post.content[:300] }}</div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty" id="no-posts">暂无诊断记录。点击"开始诊断"按钮触发一次系统检查。</div>
+{% endif %}
+
+<script>
+async function runDiagnosis() {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = '⏳ 诊断中...';
+    document.getElementById('diagnosis-status').innerHTML = '<div style="padding:12px;background:#f0f9ff;border-radius:6px;color:#0369a1;">正在运行系统诊断...</div>';
+    
+    try {
+        const resp = await fetch('/boards/diagnosis/run', { method: 'POST' });
+        const html = await resp.text();
+        document.getElementById('no-posts')?.remove();
+        location.reload();
+    } catch(e) {
+        document.getElementById('diagnosis-status').innerHTML = 
+            '<div style="padding:12px;background:#fef2f2;border-radius:6px;color:#dc2626;">诊断失败: ' + e.message + '</div>';
+        btn.disabled = false;
+        btn.textContent = '▶ 开始诊断';
+    }
+}
+</script>
+{% endblock %}
