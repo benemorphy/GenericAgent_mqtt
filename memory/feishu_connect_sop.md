@@ -7,6 +7,8 @@
 
 | 项目 | 内容 |
 |------|------|
+| 配置文件 | `mykey.py` — 优先从环境变量读取: `FEISHU_APP_ID`, `FEISHU_APP_SECRET`, `FEISHU_ENCRYPT_KEY` |
+| 环境变量 | `FEISHU_APP_ID`, `FEISHU_APP_SECRET`, `FEISHU_ENCRYPT_KEY`, `FEISHU_IS_LARK` |
 | Bot 入口 | `frontends/fsapp.py` |
 | 配置文件 | `mykey.py` — `fs_app_id`, `fs_app_secret`, `fs_allowed_users` |
 | 启动方式 | `python frontends/fsapp.py` (需要 lark-oapi 库) |
