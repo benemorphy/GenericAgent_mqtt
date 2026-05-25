@@ -69,6 +69,14 @@ print() 日志                 Prometheus + Grafana 观测
 
 ### Phase 0 — 容器化打底（已完成）
 
+### Phase 0.5 — 安全加固（已完成）
+
+| 项目 | 状态 | 文件 |
+|------|------|------|
+| **P0.5-A**: Secrets 管理 | **已完成** | `tools/secrets.py` (统一凭据加载), `k8s/secrets.template.yaml` (K8s Secret 模板) |
+| **P0.5-B**: Git 清理 | **已完成** | agent.env 在 .gitignore 中, 从未被提交 |
+| **P0.5-C**: JWT 动态发行 | **已完成** | `register.rs` 注册时用 `JWT_SECRET` 动态签发, 过期24h |
+
 > 目标: BoardService 能跑在 Docker / K8s 上
 
 | 项目 | 工时 | 交付物 |
