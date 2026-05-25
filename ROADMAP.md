@@ -56,9 +56,9 @@ print() 日志                 Prometheus + Grafana 观测
 
 | 缺口 | 级别 | 说明 |
 |------|------|------|
-| 无生命周期管理 | P0 | 无 SIGTERM, 无 healthcheck, 无法容器化 |
-| 配置硬编码 | P0 | DB密码明文, 路径硬编码, JWT明文已检出 (需清理Git历史) |
-| 无 Container | P0 | 无 Dockerfile, 无 docker-compose |
+| ~~无生命周期管理~~ | ~~P0~~ | **已解决**: BoardService RS 已有 SIGTERM + MQTT 离线通知 |
+| ~~配置硬编码~~ | ~~P0~~ | **已解决**: 路径/env 环境变量化, .env.template, Git历史确认无JWT泄露 |
+| ~~无 Container~~ | ~~P0~~ | **已解决**: Dockerfile.board_service_rs (多阶段Rust构建) + Dockerfile.board_service (Python) |
 | 有状态 CapabilityRegistry | P1 | 进程内 dict, 多实例不一致 |
 | 零观测性 | P1 | 无 metrics, 无结构化日志 |
 | 无数据库迁移 | P1 | `CREATE TABLE IF NOT EXISTS` 无版本 |
@@ -69,14 +69,14 @@ print() 日志                 Prometheus + Grafana 观测
 
 ## 三、路线图
 
-### Phase 0 — 容器化打底（估计 7 小时）
+### Phase 0 — 容器化打底（已完成）
 
 > 目标: BoardService 能跑在 Docker / K8s 上
 
 | 项目 | 工时 | 交付物 |
 |------|------|--------|
-| **P0-A**: 生命周期管理 | 2h | SIGTERM 处理器 + `system/healthcheck`、`system/healthcheck/liveness`、`system/healthcheck/readiness` 订阅 |
-| **P0-B**: 配置环境变量化 | 1h | `config.py` 全部从环境变量读取, 去掉硬编码默认值 |
+| **P0-A**: 生命周期管理 | **已完成** | `tools/board_service_rs/src/main.rs` 内置 SIGTERM + offline MQTT 通知 |
+| **P0-B**: 配置环境变量化 | **已完成** | startall.py/ontology_model.py 路径环境变量化, .env.template |
 | **P0-C**: Container 化 | 4h | `Dockerfile.board_service`, `docker-compose.yml`, `.dockerignore` |
 
 ```
