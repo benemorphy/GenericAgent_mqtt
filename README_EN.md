@@ -38,11 +38,19 @@ Thanks to upstream author lsdefine for the open-source contribution.
 |------|-------------|
 | `mqtt_bbs/` | MQTT communication layer, core differentiator |
 | `ga_cli/` | CLI commands: `ga gui`, `ga agent`, `ga list`, `ga web`, `ga hub` |
+| `tools/llm_providers/` | LLM Provider Factory: unified multi-model interface (Claude/OpenAI etc., registry pattern) |
+| `tools/security_audit.py` | Security audit: automatic secret scanning before push |
+| `tools/brainstorm_swarm.py` | Brainstorm Swarm: Round Robin + Delphi multi-Agent ideation |
+| `tools/curiosity_engine.py` | Curiosity Engine: proactive exploration learning & signal detection |
+| `tools/reflection_engine.py` | Reflection Engine: post-task introspection & skill extraction |
 | `tools/dream_engine.py` | Agent Dreaming: memory digestion & cross-domain association |
 | `tools/inspiration_board.py` | Inspiration board: MQTT-driven creative collaboration |
 | `tools/gui_vision.py` | GUI vision perception & OCR |
 | `tools/ljqCtrl_sop+.py` | Keyboard & mouse automation |
 | `tools/tmwebdriver_sop+.py` | Browser automation (file upload/screenshot/CDP) |
+| `tools/feishu_reminder.py` | Feishu Bot integration: scheduled reminders & group chat |
+| `tools/board_service_rs/` | Rust BoardService: high-performance MQTT service |
+| `tools/md_server_rs/` | Rust doc server: high-performance Markdown rendering |
 | `skills_learning/` | Case-driven skill learning system |
 
 ---
@@ -64,7 +72,7 @@ Supports MariaDB persistence:
 
 ```bash
 export DB_HOST=127.0.0.1
-export DB_PASSWORD=mariadb
+export DB_PASSWORD=your_password
 python -m mqtt_bbs.board_service           # BoardService with built-in persistence
 python -m mqtt_bbs.persistence_worker      # Full message log Worker (optional)
 ```

@@ -38,11 +38,19 @@
 |------|------|
 | `mqtt_bbs/` | MQTT 通信层，核心差异点 |
 | `ga_cli/` | CLI 命令：`ga gui`, `ga agent`, `ga list`, `ga web`, `ga hub` |
+| `tools/llm_providers/` | LLM Provider工厂：多模型统一接口（Claude/OpenAI等，注册表模式） |
+| `tools/security_audit.py` | 安全审计：推送前自动扫描密钥泄露 |
+| `tools/brainstorm_swarm.py` | 脑暴集群：Round Robin + Delphi 多Agent创意生成 |
+| `tools/curiosity_engine.py` | 好奇引擎：主动探测式学习与信号检测 |
+| `tools/reflection_engine.py` | 反省引擎：任务后反思与技能提取 |
 | `tools/dream_engine.py` | Agent Dreaming 记忆消化与跨域联想 |
 | `tools/inspiration_board.py` | 灵感板 — MQTT 驱动的创意协作 |
 | `tools/gui_vision.py` | GUI 视觉感知与 OCR |
 | `tools/ljqCtrl_sop+.py` | 键鼠自动化操作 |
 | `tools/tmwebdriver_sop+.py` | 浏览器自动化（文件上传/截图/CDP） |
+| `tools/feishu_reminder.py` | 飞书Bot集成：定时提醒与群聊交互 |
+| `tools/board_service_rs/` | Rust BoardService：高性能MQTT服务 |
+| `tools/md_server_rs/` | Rust文档服务器：高性能Markdown渲染 |
 | `skills_learning/` | 案例驱动的技能学习体系 |
 
 ---
@@ -64,7 +72,7 @@
 
 ```bash
 export DB_HOST=127.0.0.1
-export DB_PASSWORD=mariadb
+export DB_PASSWORD=your_password
 python -m mqtt_bbs.board_service   # BoardService 自带持久化
 python -m mqtt_bbs.persistence_worker  # 全量消息日志 Worker（可选）
 ```
