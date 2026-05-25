@@ -13,8 +13,25 @@ DARK = RGBColor(0x1A,0x1A,0x2E); WHITE = RGBColor(0xFF,0xFF,0xFF)
 GRAY = RGBColor(0x88,0x99,0xBB); BLUE = RGBColor(0x43,0x69,0xE8)
 LIGHT = RGBColor(0xF5,0xF7,0xFA)
 
-API_KEY = "sk-REDACTED"
+API_KEY = ""
 API_URL = "https://api.deepseek.com/v1/chat/completions"
+
+# 优先从 mykey 导入（本地配置，.gitignore排除）
+try:
+    import sys as _sys
+    _sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+    from mykey import deepseek_api_key as _k
+    API_KEY = _k
+except (ImportError, AttributeError):
+    pass
+
+# 其次从环境变量读取
+if not API_KEY:
+    API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
+
+if not API_KEY:
+    print("[WARN] DEEPSEEK_API_KEY 未配置，LLM功能不可用")
+    print("[WARN] 请设置环境变量或在 mykey.py 中配置 deepseek_api_key")
 
 def llm_call(prompt, model="deepseek-v4-flash", max_tokens=4096):
     data = json.dumps({"model":model,"messages":[{"role":"user","content":prompt}],"max_tokens":max_tokens}).encode()
@@ -67,7 +84,11 @@ def gen_html(analysis, stem):
 def search_image(keyword, max_results=3):
     """Search for suitable presentation images for a keyword"""
     import urllib.request, json, pathlib
-    api_key = "sk-REDACTED"
+    # 使用模块级 API_KEY（来源：mykey.py 或 环境变量）
+    _key = API_KEY
+    if not _key:
+        print("[WARN] search_image: DEEPSEEK_API_KEY 未配置，使用占位图")
+        return ["https://via.placeholder.com/400x300?text=" + urllib.parse.quote(keyword)]
     # Use LLM to suggest suitable image search terms and find free image URLs
     prompt = """You are an image search assistant. For the topic """ + '"' + keyword + '"' + """, suggest 2 relevant image search terms and provide verified direct image URLs from unsplash source.
     Output JSON: {"terms":["term1","term2"],"urls":["https://images.unsplash.com/photo-XXXX?w=400&h=300&fit=crop"]}
@@ -75,7 +96,7 @@ def search_image(keyword, max_results=3):
     try:
         data = json.dumps({"model":"deepseek-v4-flash","messages":[{"role":"user","content":prompt}],"max_tokens":500}).encode()
         req = urllib.request.Request("https://api.deepseek.com/v1/chat/completions", data,
-            {"Content-Type":"application/json","Authorization":"Bearer "+api_key})
+            {"Content-Type":"application/json","Authorization":"Bearer "+_key})
         resp = json.loads(urllib.request.urlopen(req, timeout=15).read())
         result = json.loads(resp["choices"][0]["message"]["content"])
         urls = result.get("urls", [])
