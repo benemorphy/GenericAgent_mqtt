@@ -9,6 +9,16 @@ rmqtt.start.method = Popen without PIPE, use CREAT_NO_WINDOW
 # Version
 rmqtt.version = 0.20.0
 # 备注：allow_anonymous=false 但无auth插件时仍接受匿名连接
+
+## [MOSQUITTO]
+# 实际运行的MQTT Broker（非RMQTT）
+mosquitto.home = D:\tools\mosquitto
+mosquitto.exe = D:\tools\mosquitto\mosquitto.exe
+mosquitto.conf = D:\tools\mosquitto\mosquitto.conf (listener 1883, allow_anonymous false)
+mosquitto.passwd = D:\tools\mosquitto\mosquitto_passwd
+mosquitto.passwd_tool = D:\tools\mosquitto\mosquitto_passwd.exe
+# 预置用户: feishu_bbs_bridge (密码 feishu_bridge_2024), test_user (test123), board, dashboard, agent_gpt 等
+# 修改密码后需重启mosquitto才能生效
 ## [QQ_BOT]
 # NapCat QQ 协议端（无头模式，手机QQ扫码）
 napcat.home = D:\open_claw_agent\GenericAgent_mqtt\temp\NapCat.Shell
