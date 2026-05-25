@@ -169,7 +169,7 @@ pub async fn init_capabilities_table(pool: &DbPool) -> anyhow::Result<()> {
             version BIGINT NOT NULL DEFAULT 1,
             status VARCHAR(32) DEFAULT 'online',
             last_seen BIGINT NOT NULL,
-            load DOUBLE DEFAULT 0.0,
+            `load` DOUBLE DEFAULT 0.0,
             ttl BIGINT DEFAULT 180,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
