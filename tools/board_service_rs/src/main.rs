@@ -46,6 +46,7 @@ async fn main() -> anyhow::Result<()> {
     // 初始化数据库连接池
     let db_pool = db::init_pool(&config.db_url, config.db_pool_size).await?;
     tracing::info!("数据库连接池就绪 ({} connections)", config.db_pool_size);
+    db::init_capabilities_table(&db_pool).await?;
     
     // 初始化 MQTT 客户端
     let client_id = format!("{}_{}", config.agent_id, uuid::Uuid::new_v4().to_string().split('-').next().unwrap());
@@ -120,7 +121,8 @@ async fn main() -> anyhow::Result<()> {
         });
     }
     
-    // B0: 启动时收集 retain 能力声明
+    // B0: 启动时收集 retain 能力声明（含DB持久化）
+    let cap_db = db_pool.clone();
     tokio::spawn({
         let s = state.clone();
         async move {
@@ -130,6 +132,27 @@ async fn main() -> anyhow::Result<()> {
             tokio::time::sleep(std::time::Duration::from_secs(2)).await;
             let count = s.capabilities.read().await.len();
             tracing::info!("B0: 已收集 {} 个 Agent 能力声明", count);
+            
+            // 从DB加载持久化的能力（补充retain未覆盖的离线但已注册Agent）
+            if let Ok(rows) = db::load_capabilities(&cap_db).await {
+                let mut caps = s.capabilities.write().await;
+                for (agent_id, caps_json, version, status, last_seen, load, ttl) in rows {
+                    let capabilities: Vec<String> = serde_json::from_str(&caps_json).unwrap_or_default();
+                    caps.entry(agent_id.clone()).or_insert_with(|| {
+                        tracing::debug!("B0: 从DB恢复Agent: {}", agent_id);
+                        crate::capability::AgentInfo {
+                            agent_id,
+                            capabilities,
+                            version: version as u64,
+                            status,
+                            last_seen,
+                            load,
+                            ttl: ttl as u64,
+                        }
+                    });
+                }
+                tracing::info!("B0: DB恢复完成, 总Agent: {}", s.capabilities.read().await.len());
+            }
         }
     });
     

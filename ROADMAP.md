@@ -59,6 +59,8 @@ print() 日志                 Prometheus + Grafana 观测
 | ~~无生命周期管理~~ | ~~P0~~ | **已解决**: BoardService RS 已有 SIGTERM + MQTT 离线通知 |
 | ~~配置硬编码~~ | ~~P0~~ | **已解决**: 路径/env 环境变量化, .env.template, Git历史确认无JWT泄露 |
 | ~~无 Container~~ | ~~P0~~ | **已解决**: Dockerfile.board_service_rs (多阶段Rust构建) + Dockerfile.board_service (Python) |
+| ~~有状态 CapabilityRegistry~~ | ~~P1~~ | **已解决**: 版本号+TTL+僵尸清理+DB持久化 bbs_capabilities 表 |
+| ~~Secrets 明文~~ | ~~P0.5~~ | **已解决**: gen_jwt.py 运行时生成, 不存明文 |
 | 有状态 CapabilityRegistry | P1 | 进程内 dict, 多实例不一致 |
 | 零观测性 | P1 | 无 metrics, 无结构化日志 |
 | 无数据库迁移 | P1 | `CREATE TABLE IF NOT EXISTS` 无版本 |

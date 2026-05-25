@@ -8,16 +8,11 @@ pub async fn handle_status(state: &Arc<AppState>, topic: &str, payload: &[u8]) {
     let status = String::from_utf8_lossy(payload).trim().to_string();
     
     let mut caps = state.capabilities.write().await;
-    let entry = caps.entry(agent_id.to_string()).or_insert_with(|| AgentInfo {
-        agent_id: agent_id.to_string(),
-        capabilities: vec![],
-        status: "unknown".to_string(),
-        last_seen: chrono::Utc::now().timestamp(),
-        load: 0.0,
-    });
+    let entry = caps.entry(agent_id.to_string()).or_insert_with(|| AgentInfo::new(agent_id));
     entry.status = status.clone();
     entry.last_seen = chrono::Utc::now().timestamp();
-    tracing::debug!("Agent 状态: {} = {}", agent_id, status);
+    entry.version += 1;
+    tracing::debug!("Agent 状态: {} = {} (v{})", agent_id, status, entry.version);
 }
 
 pub async fn handle_heartbeat(state: &Arc<AppState>, topic: &str, payload: &[u8]) {
@@ -40,42 +35,41 @@ pub async fn handle_capability(state: &Arc<AppState>, topic: &str, payload: &[u8
     
     if let Ok(caps) = serde_json::from_slice::<Vec<String>>(payload) {
         let mut cap_reg = state.capabilities.write().await;
-        let entry = cap_reg.entry(agent_id.to_string()).or_insert_with(|| AgentInfo {
-            agent_id: agent_id.to_string(),
-            capabilities: vec![],
-            status: "online".to_string(),
-            last_seen: chrono::Utc::now().timestamp(),
-            load: 0.0,
-        });
+        let entry = cap_reg.entry(agent_id.to_string()).or_insert_with(|| AgentInfo::new(agent_id));
         entry.capabilities = caps;
         entry.last_seen = chrono::Utc::now().timestamp();
-        tracing::info!("Agent 能力: {} = {:?}", agent_id, entry.capabilities);
+        entry.status = "online".to_string();
+        entry.version += 1;
+        tracing::info!("Agent 能力: {} v{} = {:?}", agent_id, entry.version, entry.capabilities);
     }
 }
 
 pub async fn handle_cap_query(state: &Arc<AppState>, payload: &[u8]) {
     let req: serde_json::Value = serde_json::from_slice(payload).unwrap_or_default();
     let corr_id = req.get("corr_id").and_then(|v| v.as_str()).unwrap_or("");
-    let filter = req.get("filter").and_then(|v| v.as_str()).unwrap_or("");
     
-    let cap_reg = state.capabilities.read().await;
-    let agents: Vec<&AgentInfo> = cap_reg.values()
-        .filter(|a| a.status != "offline")
-        .filter(|a| filter.is_empty() || a.capabilities.iter().any(|c| c.contains(filter)))
-        .collect();
+    let caps = state.capabilities.read().await;
+    let agent_list: Vec<&AgentInfo> = caps.values().filter(|a| !a.is_zombie()).collect();
     
     let resp = serde_json::json!({
-        "type": "capability_list",
-        "agents": agents,
-        "count": agents.len(),
-        "timestamp": chrono::Utc::now().timestamp(),
+        "agents": agent_list.iter().map(|a| serde_json::json!({
+            "agent_id": a.agent_id,
+            "capabilities": a.capabilities,
+            "version": a.version,
+            "status": a.status,
+            "last_seen": a.last_seen,
+            "load": a.load,
+        })).collect::<Vec<_>>(),
+        "total": agent_list.len(),
     });
     
-    if !corr_id.is_empty() {
-        let topic = format!("board/capability/query/response/{}", corr_id);
-        if let Err(e) = state.mqtt_client.publish(&topic, rumqttc::QoS::AtLeastOnce, false,
-            serde_json::to_vec(&resp).unwrap()).await {
-            tracing::warn!("能力查询响应发布失败: {}", e);
-        }
+    tracing::debug!("Capability 查询: {} active agents (corr_id={})", agent_list.len(), corr_id);
+    drop(caps);
+    
+    let resp_topic = "board/capability/query/response";
+    if let Ok(payload) = serde_json::to_vec(&resp) {
+        let _ = state.mqtt_client.publish(
+            resp_topic, rumqttc::QoS::AtLeastOnce, false, payload
+        ).await;
     }
 }
