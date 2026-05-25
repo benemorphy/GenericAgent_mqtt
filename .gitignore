@@ -99,7 +99,8 @@ assets/copilot_proxy.pyw
 *.exe
 *.ffs_db
 
-# ci trigger
+# GA_viewer — 独立工具集，不上传
+GA_viewer/
 
 # Config templates
 .env.template
