@@ -9,7 +9,8 @@ Project Ontology — 基于反省的要素-关系-约束-推理模型
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Callable
+import os
 
 
 # ══════════════════════════════════════════════════════════════
@@ -70,19 +71,19 @@ ENTITIES = [
               "tools/reflection_engine.py", 1),
     Component("ontology_model", "library", "python", "stable",
               "tools/ontology_model.py", 2),
-    Component("bbs.py", "library", "python", "stable",
+    Component("Bbs", "library", "python", "stable",
               "mqtt_bbs/bbs.py", 5),
-    Component("dag", "library", "python", "stable",
+    Component("Dag", "library", "python", "stable",
               "mqtt_bbs/dag.py", 2),
-    Component("scheduler", "library", "python", "stable",
+    Component("Scheduler", "library", "python", "stable",
               "mqtt_bbs/scheduler.py", 1),
-    Component("whiteboard", "library", "python", "stable",
+    Component("Whiteboard", "library", "python", "stable",
               "mqtt_bbs/whiteboard.py", 1),
-    Component("file_transfer_v2", "library", "python", "stable",
+    Component("FileTransferV2", "library", "python", "stable",
               "mqtt_bbs/file_transfer_v2.py", 1),
-    Component("persistence", "library", "python", "stable",
+    Component("Persistence", "library", "python", "stable",
               "mqtt_bbs/persistence.py", 3),
-    Component("persistence_worker", "library", "python", "stable",
+    Component("PersistenceWorker", "library", "python", "stable",
               "mqtt_bbs/persistence_worker.py", 1),
     Component("StateKV", "library", "rust", "compiled",
               "tools/mqtt_bbs_rs/src/state_kv.rs", 2),
@@ -92,10 +93,96 @@ ENTITIES = [
               "tools/mqtt_bbs_rs/src/dag.rs", 1),
     Component("SchedulerRS", "library", "rust", "compiled",
               "tools/mqtt_bbs_rs/src/scheduler.rs", 1),
-    Component("config.py", "config", "python", "stable",
+    Component("Config", "config", "python", "stable",
               "mqtt_bbs/config.py", 3),
+    Component("Client", "library", "python", "stable",
+              "mqtt_bbs/client.py", 15),
     Component("boards.json", "config", "json", "static",
               "boards.json", 2),
+    # ── 前端界面 ──
+    Component("FeishuBot", "service", "python", "running",
+              "frontends/fsapp.py", 1),
+    Component("GatewayMonitor", "service", "python", "running",
+              "frontends/dashboard_mqtt.py", 1),
+    Component("ChatAppCommon", "library", "python", "stable",
+              "frontends/chatapp_common.py", 4),
+    # ── 关键工具 ──
+    Component("DreamEngine", "tool", "python", "stable",
+              "tools/dream_engine.py", 3),
+    Component("InspirationBoard", "tool", "python", "stable",
+              "tools/inspiration_board.py", 2),
+    Component("MetasoSearch", "tool", "python", "stable",
+              "tools/metaso_search.py", 2),
+    Component("CuriosityEngine", "tool", "python", "stable",
+              "tools/curiosity_trigger.py + curiosity_hooks.py", 1),
+    Component("BrainstormSwarm", "tool", "python", "stable",
+              "tools/brainstorm_swarm.py", 1),
+    Component("FailureTracker", "tool", "python", "stable",
+              "tools/failure_tracker.py", 2),
+    Component("Observability", "tool", "python", "stable",
+              "tools/observability.py", 1),
+    Component("PiiMasker", "tool", "python", "stable",
+              "tools/pii_masker.py", 1),
+    Component("FeishuReminder", "tool", "python", "stable",
+              "tools/feishu_reminder.py", 1),
+    # ── skill 学习系统 ──
+    Component("SkillsLearning", "library", "python", "stable",
+              "skills_learning/", 3),
+    # ── Rust BoardService 内部处理模块 ──
+    Component("RegisterHandler", "library", "rust", "compiled",
+              "tools/board_service_rs/src/handlers/register.rs", 1),
+    Component("PostHandler", "library", "rust", "compiled",
+              "tools/board_service_rs/src/handlers/post.rs", 1),
+    Component("QueryHandler", "library", "rust", "compiled",
+              "tools/board_service_rs/src/handlers/query.rs", 1),
+    Component("FileHandler", "library", "rust", "compiled",
+              "tools/board_service_rs/src/handlers/file.rs", 1),
+    Component("WebhookHandler", "library", "rust", "compiled",
+              "tools/board_service_rs/src/handlers/webhook.rs", 1),
+    Component("Models", "library", "rust", "compiled",
+              "tools/board_service_rs/src/models.rs", 1),
+    Component("PluginIPC", "library", "rust", "compiled",
+              "tools/board_service_rs/src/plugin_ipc.rs", 1),
+    # ── 反省检测: mqtt_bbs Python 缺失模块 ──
+    Component("BBSClient (Python)", "library", "python", "stable",
+              "mqtt_bbs/client.py", 30),
+    Component("MqttAgentRunner", "library", "python", "stable",
+              "mqtt_bbs/mqtt_agent_runner.py", 2),
+    Component("Plugin", "library", "python", "stable",
+              "mqtt_bbs/plugin.py", 2),
+    Component("Registry", "library", "python", "stable",
+              "mqtt_bbs/registry.py", 3),
+    # ── 反省检测: board_service_rs Rust 模块 ──
+    Component("MqttHandler", "library", "rust", "compiled",
+              "tools/board_service_rs/src/mqtt_handler.rs", 2),
+    Component("AppState", "library", "rust", "compiled",
+              "tools/board_service_rs/src/app_state.rs", 1),
+    Component("Db", "library", "rust", "compiled",
+              "tools/board_service_rs/src/db.rs", 2),
+    Component("Capability", "library", "rust", "compiled",
+              "tools/board_service_rs/src/capability.rs", 1),
+    Component("FileTransfer (Rust)", "library", "rust", "compiled",
+              "tools/board_service_rs/src/file_transfer.rs", 1),
+    # ── 运行服务 ──
+    Component("Gateway", "service", "python", "running",
+              "frontends/gateway/main.py", 3),
+    # ── 修复断裂关系: 实体别名 ──
+    Component("board_service_rs", "library", "rust", "compiled",
+              "tools/board_service_rs/", 47),
+    Component("BoardClient (Python)", "library", "python", "stable",
+              "mqtt_bbs/board_client.py", 15),
+    Component("BoardService (Rust)", "service", "rust", "running",
+              "tools/board_service_rs/", 47),
+    Component("skills_learning", "library", "python", "stable",
+              "skills_learning/", 40),
+    Component("mqtt_bbs_rs", "library", "rust", "compiled",
+              "tools/mqtt_bbs_rs/", 8),
+    Component("mqtt_bbs", "library", "python", "stable",
+              "mqtt_bbs/", 15),
+    Component("Observation", "tool", "python", "stable",
+              "tools/observability.py", 1),
+    Component("World", "service", "concept", "reference",
+              "外部系统与数据源", 1),
 ]
 
 
@@ -122,7 +209,19 @@ RELATIONS = [
     Relation("BoardClient (Rust)", "depends-on", "BBSClient (Rust)", "crate mqtt_bbs_rs", True),
     Relation("AgentBoard", "depends-on", "BBSClient (Rust)", "use BBSClient", True),
     Relation("WorkerAgent", "depends-on", "BBSClient (Rust)", "use BBSClient", True),
-    Relation("HTTP Gateway", "depends-on", "BoardClient (Python)", "转发请求", True),
+    Relation("Gateway", "depends-on", "BoardClient (Python)", "转发请求到 BBS", True),
+    # ── 新增: mqtt_bbs Python 模块依赖 ──
+    Relation("MqttAgentRunner", "depends-on", "BBSClient (Python)", "import mqtt_bbs.client", True),
+    Relation("PluginManager", "depends-on", "Plugin", "管理 plugin.py 插件", True),
+    Relation("Registry", "depends-on", "BBSClient (Python)", "服务注册/发现", True),
+    # ── 新增: board_service_rs 内部结构 ──
+    Relation("board_service_rs", "contains", "MqttHandler", "src/mqtt_handler.rs", True),
+    Relation("board_service_rs", "contains", "AppState", "src/app_state.rs", True),
+    Relation("board_service_rs", "contains", "Db", "src/db.rs", True),
+    Relation("board_service_rs", "contains", "Capability", "src/capability.rs", True),
+    Relation("board_service_rs", "contains", "FileTransfer (Rust)", "src/file_transfer.rs", True),
+    # ── 新增: Gateway 数据流 ──
+    Relation("Gateway", "publishes-to", "BoardService", "HTTP → MQTT 转发", True),
     Relation("skills_learning", "depends-on", "DEEPSEEK_API_KEY", "LLM 增强需要 API Key", True),
 
     # ── 通信关系 ──
@@ -159,6 +258,46 @@ RELATIONS = [
              "偏差检测基准来自模型", True),
     Relation("ReflectionEngine", "updates", "ontology_model",
              "偏差发现后自动更新实体列表", True),
+    # ── 前端 → 后端 ──
+    Relation("FeishuBot", "depends-on", "Mosquitto", "MQTT BBS BoardClient 推送", True),
+    Relation("FeishuBot", "depends-on", "BoardClient (Python)", "import mqtt_bbs.board_client", True),
+    Relation("GatewayMonitor", "depends-on", "Mosquitto", "MQTT 实时推送 Dashboard", True),
+    # ── 工具 → 基础设施 ──
+    Relation("DreamEngine", "depends-on", "BoardClient (Python)", "发布梦境帖子到 BBS", True),
+    Relation("InspirationBoard", "depends-on", "BoardService", "BBS 后端支持", True),
+    Relation("MetasoSearch", "depends-on", "DEEPSEEK_API_KEY", "LLM 增强搜索需要 API Key", True),
+    Relation("CuriosityEngine", "depends-on", "BoardClient (Python)", "好奇心帖子通过 BBS 发布", True),
+    Relation("BrainstormSwarm", "depends-on", "BoardClient (Python)", "多智能体讨论发帖", True),
+    Relation("FailureTracker", "depends-on", "Mosquitto", "跟踪 MQTT 消息失败模式", True),
+    Relation("PiiMasker", "depends-on", "Observation", "日志隐写需要观测数据源", False),
+    # ── 诊断体系 ──
+    Relation("DiagnosisAgent", "depends-on", "CuriosityEngine",
+             "好奇心触发是诊断的前置探测", True),
+    Relation("DiagnosisAgent", "depends-on", "DreamEngine",
+             "梦境引擎提供联想发散，辅助诊断", True),
+    Relation("SkillsLearning", "depends-on", "DEEPSEEK_API_KEY",
+             "技能学习依赖 LLM 推理", True),
+    Relation("SkillsLearning", "depends-on", "ontology_model",
+             "技能知识点应注册到本体", False),
+    # ── Rust BoardService 内部包含关系 ──
+    Relation("board_service_rs", "contains", "RegisterHandler",
+             "src/handlers/register.rs", True),
+    Relation("board_service_rs", "contains", "PostHandler",
+             "src/handlers/post.rs", True),
+    Relation("board_service_rs", "contains", "QueryHandler",
+             "src/handlers/query.rs", True),
+    Relation("board_service_rs", "contains", "FileHandler",
+             "src/handlers/file.rs", True),
+    Relation("board_service_rs", "contains", "WebhookHandler",
+             "src/handlers/webhook.rs", True),
+    Relation("board_service_rs", "contains", "Models",
+             "src/models.rs", True),
+    Relation("board_service_rs", "contains", "PluginIPC",
+             "src/plugin_ipc.rs", True),
+    Relation("RegisterHandler", "publishes-to", "BoardClient (Python)",
+             "注册成功后广播 agent/bbs/{board}/registered", True),
+    Relation("PostHandler", "publishes-to", "BoardClient (Python)",
+             "新帖广播 agent/bbs/{board}/new_post", True),
 ]
 
 
@@ -171,10 +310,36 @@ RELATIONS = [
 class Constraint:
     """必须成立的条件 — 不满足时系统异常"""
     description: str
-    predicate: str               # 可检查的条件表达式
+    predicate: str               # 可检查的条件表达式（向后兼容，eval 执行）
     severity: str                # error / warning / info
     source: str                  # 从哪次失败中提取的
     fix: str                     # 修复方式
+    check_fn: Optional[Callable] = None  # 可执行检查函数（优先于 predicate 字符串）
+
+
+def run_checks(context: dict) -> list:
+    """运行所有约束检查，返回 [ (约束, 通过/失败, 详情) ] 列表
+    
+    Args:
+        context: 包含检查所需变量的字典
+                 
+                 
+    Returns:
+        每个元素: (constraint, passed: bool, detail: str)
+    """
+    results = []
+    for c in CONSTRAINTS:
+        try:
+            if c.check_fn is not None:
+                # 使用可执行函数（优先）
+                passed = c.check_fn(context)
+            else:
+                # 向后兼容：eval 字符串表达式
+                passed = eval(c.predicate, {"__builtins__": {}}, context)
+            results.append((c, bool(passed), ""))
+        except Exception as e:
+            results.append((c, False, f"检查异常: {e}"))
+    return results
 
 
 CONSTRAINTS = [
@@ -329,3 +494,53 @@ def query_relations(entity: str, relation_type: str = None) -> list[Relation]:
 def chain_inference(premise: str) -> list[Inference]:
     """根据前提推理结论"""
     return [i for i in INFERENCES if i.premise.lower() in premise.lower()]
+
+
+def register_skills(skills_dir: str = None) -> tuple:
+    """扫描 skills_learning/ 目录，将每个技能注册为实体+关系
+    
+    Args:
+        skills_dir: skills_learning 目录路径（默认自动查找）
+    
+    Returns:
+        (new_entities, new_relations) 动态生成的实体和关系列表
+    """
+    if skills_dir is None:
+        _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        skills_dir = os.path.join(_root, 'skills_learning')
+    
+    if not os.path.isdir(skills_dir):
+        return [], []
+    
+    existing_names = set(e.name for e in ENTITIES)
+    new_entities = []
+    new_relations = []
+    
+    for skill_name in sorted(os.listdir(skills_dir)):
+        skill_path = os.path.join(skills_dir, skill_name)
+        if not os.path.isdir(skill_path):
+            continue
+        if skill_name in existing_names:
+            continue
+        
+        n_files = sum(1 for f in os.listdir(skill_path) 
+                     if os.path.isfile(os.path.join(skill_path, f)))
+        entity = Component(
+            name=skill_name,
+            component_type="knowledge",
+            language="text",
+            status="learned",
+            location=skill_path,
+            verified_interactions=max(1, n_files)
+        )
+        new_entities.append(entity)
+        new_relations.append(Relation(
+            skill_name, "depends-on", "DEEPSEEK_API_KEY",
+            "LLM 增强技能学习", True
+        ))
+        new_relations.append(Relation(
+            "SkillsLearning", "contains", skill_name,
+            skill_path, True
+        ))
+    
+    return new_entities, new_relations
