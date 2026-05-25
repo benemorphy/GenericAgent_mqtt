@@ -48,6 +48,14 @@ pub struct Config {
     #[arg(long, default_value = "board-service-rs")]
     pub agent_id: String,
 
+    /// Metrics HTTP 端口 (0=禁用)
+    #[arg(long, default_value_t = 9100, env = "METRICS_PORT")]
+    pub metrics_port: u16,
+
+    /// 结构化日志 (json/text)
+    #[arg(long, default_value = "text", env = "LOG_FORMAT")]
+    pub log_format: String,
+
     /// Heartbeat 超时 (秒)
     #[arg(long, default_value_t = 90)]
     pub heartbeat_timeout: u64,
