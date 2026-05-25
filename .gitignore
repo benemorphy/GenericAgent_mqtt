@@ -31,6 +31,7 @@ auth.json
 
 # Environments & secrets
 .env
+.env.*
 mykey*.py
 profiles/*.py
 !profiles/__init__.py
