@@ -1,0 +1,853 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GenericAgent 鏅鸿兘浣撶郴缁熻璁℃€昏</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f5f5; color: #333; line-height: 1.7; }
+.toc { position: fixed; left: 0; top: 0; width: 280px; height: 100vh; overflow-y: auto; background: #1a1a2e; color: #ddd; padding: 20px; z-index: 100; }
+.toc h2 { color: #e94560; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+.toc a { display: block; color: #aaa; text-decoration: none; font-size: 13px; padding: 4px 0 4px 12px; border-left: 2px solid transparent; transition: 0.2s; }
+.toc a:hover { color: #fff; border-left-color: #e94560; padding-left: 16px; }
+.toc .l2 { padding-left: 24px; font-size: 12px; }
+.toc .l3 { padding-left: 36px; font-size: 11px; color: #888; }
+.main { margin-left: 300px; padding: 30px 40px 80px; max-width: 1000px; }
+h1 { font-size: 28px; color: #1a1a2e; margin-bottom: 10px; }
+.subtitle { color: #666; font-size: 14px; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #e94560; }
+h2 { font-size: 22px; color: #1a1a2e; margin: 40px 0 15px; padding-bottom: 8px; border-bottom: 1px solid #ddd; }
+h3 { font-size: 17px; color: #2d3436; margin: 25px 0 10px; }
+h4 { font-size: 15px; color: #555; margin: 18px 0 8px; }
+p { margin: 10px 0; text-align: justify; }
+ul, ol { margin: 8px 0 8px 20px; }
+li { margin: 4px 0; }
+code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 13px; color: #c0392b; font-family: 'Consolas', 'Source Code Pro', monospace; }
+pre { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 13px; line-height: 1.5; margin: 12px 0; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+th { background: #f8f9fa; font-weight: 600; color: #444; }
+tr:nth-child(even) { background: #fafafa; }
+.tag { display: inline-block; background: #e94560; color: #fff; padding: 1px 8px; border-radius: 10px; font-size: 11px; margin-right: 4px; }
+.tag-blue { background: #3498db; }
+.tag-green { background: #27ae60; }
+.tag-orange { background: #f39c12; }
+.card { background: #fff; border-radius: 8px; padding: 20px; margin: 15px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.diagram { background: #f8f9fa; padding: 20px; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.4; white-space: pre; overflow-x: auto; margin: 12px 0; }
+.highlight { background: #fff3cd; padding: 2px 6px; border-radius: 3px; }
+@media (max-width: 768px) { .toc { display: none; } .main { margin-left: 0; padding: 20px; } }
+
+/* ===== 鏆楅粦妯″紡 ===== */
+@media (prefers-color-scheme: dark) {
+body { background: #12121e; color: #d0d0d8; }
+.toc { background: #0d0d18; }
+.toc h2 { border-bottom-color: #333; }
+.toc a { color: #999; }
+.toc a:hover { color: #fff; }
+.toc .l3 { color: #777; }
+.main { }
+h1 { color: #e8e8f0; }
+.subtitle { color: #999; border-bottom-color: #b03050; }
+h2 { color: #e0e0ea; border-bottom-color: #333; }
+h3 { color: #ccd; }
+h4 { color: #aaa; }
+p { color: #c8c8d0; }
+code { background: #2a2a3c; color: #ff7b72; }
+pre { background: #0d0d18; color: #c8c8d0; border: 1px solid #2a2a3c; }
+table { }
+th, td { border-color: #2a2a3c; }
+th { background: #1a1a2e; color: #bbb; }
+tr:nth-child(even) { background: #18182a; }
+tr:nth-child(odd) { background: #12121e; }
+.tag { }
+.tag-blue { }
+.tag-green { }
+.tag-orange { }
+.card { background: #1a1a2e; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.diagram { background: #1a1a2e; color: #c8c8d0; }
+.highlight { background: #3a3a00; color: #ddd; }
+.card p { color: #c8c8d0; }
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js" defer></script>
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+  var dark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+  mermaid.initialize({startOnLoad:true, theme: dark?'dark':'default'});
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(e){
+    location.reload();
+  });
+});</script>
+</head>
+<body>
+
+<div class="toc">
+<h2>馃摉 鐩綍</h2>
+<a href="#intro">姒傝堪</a>
+<a href="#design" class="l2">鏍稿績璁捐鍘熷垯</a>
+<a href="#arch" class="l2">绯荤粺鏋舵瀯</a>
+<a href="#arch-core" class="l3">鏍稿績妯″潡</a>
+<a href="#arch-dir" class="l3">鐩綍缁撴瀯</a>
+
+<a href="#exec">鎵ц妯″紡</a>
+<a href="#exec-interactive" class="l2">浜や簰妯″紡</a>
+<a href="#exec-reflect" class="l2">鍙嶅皠妯″紡</a>
+
+<a href="#tools">宸ュ叿绯荤粺</a>
+<a href="#tools-def" class="l2">瀹氫箟涓庡姞杞?/a>
+<a href="#tools-flow" class="l2">璋冪敤娴佺▼</a>
+<a href="#tools-create" class="l2">鍒涘缓鏂板伐鍏?/a>
+<a href="#tools-principle" class="l2">璁捐鍘熷垯</a>
+
+<a href="#memory">鍒嗗眰璁板繂绯荤粺</a>
+<a href="#memory-hierarchy" class="l2">L0~L4 灞傜骇</a>
+<a href="#memory-flow" class="l2">璁块棶涓庡啓鍏ユ祦绋?/a>
+
+<a href="#cognition">璁ょ煡鏋舵瀯</a>
+<a href="#cog-perception" class="l2">鐜鎰熺煡</a>
+<a href="#cog-resource" class="l2">璧勬簮瀹氫綅</a>
+<a href="#cog-loop" class="l2">闂瑙ｅ喅寰幆</a>
+
+<a href="#reflection">鑷垜鍙嶇渷鏈哄埗</a>
+<a href="#ref-layers" class="l2">浜斿眰鍙嶇渷浣撶郴</a>
+<a href="#ref-fail" class="l2">澶辫触鍗囩骇閾?/a>
+
+<a href="#goal">鐩爣璁惧畾涓庨獙璇?/a>
+<a href="#goal-layers" class="l2">鍥涘眰鐩爣闂幆</a>
+<a href="#goal-verify" class="l2">鐙珛楠岃瘉鏈哄埗</a>
+
+<a href="#multi">澶氭櫤鑳戒綋绯荤粺</a>
+<a href="#multi-master" class="l2">涓讳粠妯″紡</a>
+<a href="#multi-map" class="l2">Map骞惰妯″紡</a>
+<a href="#multi-super" class="l2">鐩戝療鑰呮ā寮?/a>
+<a href="#multi-shared" class="l2">鍏变韩璁板繂</a>
+<a href="#multi-model" class="l2">澶氭ā鍨嬮厤缃?/a>
+
+<a href="#startup">鍚姩鏂瑰紡</a>
+<a href="#startup-compare" class="l2">妗岄潰 vs Web</a>
+
+<a href="#evolution">鑷垜杩涘寲</a>
+<a href="#evol-skills" class="l2">鎶€鑳芥爲涓庤嚜涓绘帰绱?/a>
+</div>
+
+<div class="main">
+
+<h1>GenericAgent 鏅鸿兘浣撶郴缁熻璁℃€昏</h1>
+<div class="subtitle">鍩轰簬 docs/ 涓嬪叏閮ㄦ枃妗ｇ殑缁煎悎鏁寸悊 |<div class="subtitle">基于 docs/ 下全部文档的综合整理 | 2026-05-25 (本体72实体/诊断全链路/MQTT可观测)</div>
+
+<!-- ==================== 姒傝堪 ==================== -->
+<h2 id="intro">姒傝堪</h2>
+<p><strong>GenericAgent锛圙A锛?/strong>鏄竴涓€氱敤鍨嬭嚜杩涘寲LLM鏅鸿兘浣撶郴缁燂紝鏃ㄥ湪瀹炵幇鏈湴璁＄畻鐜鍐呬换鍔¤嚜鍔ㄥ寲銆傚叾鏍稿績璁捐鐞嗗康鏄€氳繃浼樺寲涓婁笅鏂囦俊鎭瘑搴︽潵鎻愬崌鏅鸿兘浣撴€ц兘锛岃€岄潪鍗曠函鎵╁睍涓婁笅鏂囬暱搴︺€?/p>
+
+<div class="card">
+<h4>鏍稿績瀹氫綅</h4>
+<ul>
+<li><strong>妯″瀷鏃犲叧</strong>锛氬簳灞傛帹鐞嗗紩鎿庯紙Claude銆丟PT銆丟emini绛夛級鍙浛鎹紝涓嶅奖鍝嶆墽琛岄€昏緫銆佸伐鍏锋帴鍙ｄ笌鍐呭瓨鏋舵瀯</li>
+<li><strong>缁熶竴鏅鸿兘浣撳惊鐜?/strong>锛氭瘡涓€姝ュ皢鍏ㄥ眬璁板繂涓庡綋鍓嶄换鍔¤鑼冪粨鍚堝舰鎴愭墽琛屼笂涓嬫枃</li>
+<li><strong>涓ょ鎵ц妯″紡</strong>锛氫氦浜掓ā寮忥紙鐢ㄦ埛鍙戣捣锛変笌鍙嶅皠妯″紡锛堢幆澧冭Е鍙戯級</li>
+<li><strong>浠ｇ爜鏋佺畝</strong>锛氭牳蹇冧唬鐮佸簱绾?K琛岋紝鏍稿績鏅鸿兘浣撳惊鐜害鐧捐</li>
+</ul>
+</div>
+
+<h3 id="design">鏍稿績璁捐鍘熷垯</h3>
+<table>
+<tr><th>鍘熷垯</th><th>鎻忚堪</th></tr>
+<tr><td><strong>宸ュ叿鏈€灏忓寲</strong></td><td>灏嗗伐鍏烽檺鍒跺湪蹇呰鐨勬渶灏忛泦鍚堝唴锛岄伩鍏嶄笂涓嬫枃鑶ㄨ儉锛涙弧瓒冲師瀛愭€т笌缁勫悎娉涘寲</td></tr>
+<tr><td><strong>鍒嗗眰璁板繂</strong></td><td>浠呬繚鐣欏皬鍨嬪父椹诲彲瑙佸眰锛圠1锛夛紝娣卞眰璁板繂锛圠2~L4锛夋寜闇€璁块棶</td></tr>
+<tr><td><strong>鑷垜杩涘寲</strong></td><td>閫氳繃璁板綍涓庢洿鏂颁俊鎭幆澧冨疄鐜拌法浠诲姟缁忛獙鏁村悎锛屼笉淇敼鍩虹妯″瀷</td></tr>
+<tr><td><strong>涓婁笅鏂囧帇缂?/strong></td><td>璁惧畾&lt;3涓囨爣璁扮揣缂╅绠楋紝閲囩敤瀛楃鍩熷惎鍙戝紡鏂规硶绠＄悊</td></tr>
+</table>
+
+<!-- ==================== 绯荤粺鏋舵瀯 ==================== -->
+
+<h4>浠ｇ爜渚嬭瘉锛氭牳蹇冩墽琛屽惊鐜?/h4>
+<p>涓嬫柟鏄?<code>agent_loop.py</code> 涓?<code>agent_runner_loop</code> 鍑芥暟鐨勫畬鏁磀ocstring锛屽畠鎻忚堪浜嗙粺涓€鐨勬櫤鑳戒綋鎵ц寰幆锛?/p>
+<pre>def agent_runner_loop(client, system_prompt, user_input, handler, tools_schema, max_turns=40, verbose=True, initial_user_content=None):
+    """閫氱敤鏅鸿兘浣撴牳蹇冩墽琛屽惊鐜€傛瘡涓€姝ュ皢鍏ㄥ眬璁板繂涓庡綋鍓嶄换鍔¤鑼冪粨鍚堝舰鎴愭墽琛屼笂涓嬫枃锛孡LM澶勭悊鍚庣敓鎴愯緭鍑烘垨宸ュ叿璋冪敤锛?
+    宸ュ叿鎵ц缁撴灉浠ョ粨鏋勫寲淇″彿鏇存柊绯荤粺鐘舵€併€?
+
+    GA鏀寔涓ょ鎵ц妯″紡锛?
+    1. 浜や簰妯″紡锛氬鐞嗙敤鎴峰彂璧风殑浠诲姟锛屽浠ｇ爜鎵ц銆佷俊鎭绱€佹枃浠舵搷浣?
+    2. 鍙嶅皠妯″紡锛氭棤闇€鐢ㄦ埛鎸囦护锛屾寔缁洃鎺х幆澧冨彉鍖栵紝妫€娴嬪埌鐗瑰畾鏉′欢鑷姩瑙﹀彂瀵瑰簲浠诲姟
+
+    寰幆娴佺▼锛氭瀯寤烘秷鎭?鈫?璋冪敤LLM 鈫?瑙ｆ瀽宸ュ叿璋冪敤 鈫?鎵ц宸ュ叿 鈫?鏇存柊涓婁笅鏂?鈫?閲嶅鐩村埌瀹屾垚/閫€鍑?
+    """</pre>
+
+<h2 id="arch">绯荤粺鏋舵瀯</h2>
+
+<h3 id="arch-core">鏍稿績妯″潡</h3>
+<table>
+<tr><th>妯″潡</th><th>鏂囦欢</th><th>鑱岃矗</th></tr>
+<tr><td>鏅鸿兘浣撴墽琛屽惊鐜?/td><td><code>agent_loop.py</code></td><td>鏋勫缓娑堟伅鈫掕皟鐢↙LM鈫掕В鏋愬伐鍏疯皟鐢ㄢ啋鎵ц鈫掓洿鏂颁笂涓嬫枃</td></tr>
+<tr><td>宸ュ叿寮曟搸</td><td><code>ga.py</code></td><td>9绉嶅師瀛愬伐鍏风殑瑙ｆ瀽銆佸垎鍙戜笌鎵ц</td></tr>
+<tr><td>LLM浼氳瘽绠＄悊</td><td><code>llmcore.py</code></td><td>鏀寔ClaudeSession銆丩LMSession銆丮ixinSession绛夊绉嶅悗绔?/td></tr>
+<tr><td>涓诲叆鍙?/td><td><code>agentmain.py</code></td><td>CLI鍙傛暟瑙ｆ瀽銆佸伐鍏稪SON鍔犺浇銆佷换鍔￠槦鍒楃鐞?/td></tr>
+<tr><td>鍓嶇鐣岄潰</td><td><code>frontends/</code></td><td>CLI/妗岄潰瀹犵墿/Streamlit Web/椋炰功/寰俊/Telegram</td></tr>
+</table>
+
+<h3 id="arch-dir">椤圭洰鐩綍缁撴瀯</h3>
+<div class="mermaid">
+flowchart TB
+    subgraph 鎵ц妯″紡
+        A[浜や簰妯″紡] -->|鐢ㄦ埛鍙戣捣| M[Agent Loop]
+        B[鍙嶅皠妯″紡] -->|鐜瑙﹀彂| M
+    end
+    subgraph 鏍稿績缁勪欢
+        M --> T[ga.py 宸ュ叿寮曟搸]
+        M --> L[llmcore.py LLM浼氳瘽绠＄悊]
+        T --> F[鏂囦欢鎿嶄綔 code_run绛塢
+        T --> W[web_scan绛塢
+        T --> MM[file_read绛塢
+        T --> H[ask_user]
+    end
+    subgraph 鍓嶇
+        CLI[鍛戒护琛宂 --> M
+        WEB[Streamlit] --> M
+        DESK[妗岄潰瀹犵墿] --> M
+    end
+    subgraph 鍙嶅皠鑴氭湰
+        ATO[autonomous.py] --> B
+        SCH[scheduler.py] --> B
+    end</div>
+<div class="diagram">GenericAgent/
+鈹溾攢鈹€ agentmain.py          # 涓诲叆鍙?
+鈹溾攢鈹€ agent_loop.py         # 鏅鸿兘浣撴墽琛屽惊鐜?
+鈹溾攢鈹€ ga.py                 # 宸ュ叿寮曟搸
+鈹溾攢鈹€ llmcore.py            # LLM浼氳瘽绠＄悊
+鈹溾攢鈹€ mykey.py              # 瀵嗛挜閰嶇疆
+鈹溾攢鈹€ assets/
+鈹?  鈹斺攢鈹€ tools_schema.json # 宸ュ叿瀹氫箟鏂囦欢
+鈹溾攢鈹€ memory/               # 鍒嗗眰璁板繂绯荤粺
+鈹?  鈹溾攢鈹€ global_mem_insight.txt  # L1 绱㈠紩
+鈹?  鈹溾攢鈹€ global_mem.txt          # L2 浜嬪疄
+鈹?  鈹溾攢鈹€ *.md / *.py             # L3 SOP/宸ュ叿
+鈹?  鈹斺攢鈹€ L4_raw_sessions/        # L4 褰掓。
+鈹溾攢鈹€ frontends/            # 鍓嶇鐣岄潰
+鈹?  鈹溾攢鈹€ stapp.py / stapp2.py  # Streamlit Web
+鈹?  鈹溾攢鈹€ desktop_pet.pyw       # 妗岄潰瀹犵墿
+鈹?  鈹斺攢鈹€ subagent_dashboard.py # 澶欰gent浠〃鐩?
+鈹溾攢鈹€ temp/                 # 杩愯鏃朵复鏃舵枃浠?
+鈹溾攢鈹€ docs/                 # 绯荤粺鏂囨。
+鈹斺攢鈹€ plugins/              # 鎻掍欢</div>
+
+<!-- ==================== 鎵ц妯″紡 ==================== -->
+<h2 id="exec">鎵ц妯″紡</h2>
+
+<h3 id="exec-interactive">浜や簰妯″紡</h3>
+<p>鐢ㄦ埛閫氳繃CLI鎴栧墠绔晫闈㈠彂璧蜂换鍔★紝鏅鸿兘浣撴寜姝ラ鎵ц锛氱敤鎴疯緭鍏?鈫?<code>put_task(query)</code> 鈫?鏋勫缓prompt璋冪敤LLM 鈫?LLM杩斿洖鍝嶅簲(鍚伐鍏疯皟鐢? 鈫?鎵ц宸ュ叿 鈫?鏇存柊涓婁笅鏂?鈫?寰幆鐩村埌瀹屾垚銆?/p>
+<div class="mermaid">
+sequenceDiagram
+    participant U as 鐢ㄦ埛
+    participant CLI as 鍛戒护琛?
+    participant A as GenericAgent
+    participant T as 宸ュ叿寮曟搸
+    participant L as 璇█妯″瀷
+    U->>CLI: 杈撳叆浠诲姟鎸囦护
+    CLI->>A: put_task(query)
+    A->>L: 鏋勫缓prompt璋冪敤
+    L->>A: 杩斿洖鍝嶅簲(鍚伐鍏疯皟鐢?
+    A->>T: 鎵ц宸ュ叿
+    T->>A: 杩斿洖缁撴灉
+    loop 寰幆鐩村埌瀹屾垚
+        A->>L: 鏇存柊涓婁笅鏂?缁х画
+        L->>A: 杩斿洖鍝嶅簲
+    end
+    A->>CLI: 鏈€缁堢粨鏋?
+    CLI->>U: 鏄剧ず缁撴灉
+</div>
+<div class="mermaid">
+flowchart TD
+    A[寮€濮媇 --> B[鏋勫缓娑堟伅]
+    B --> C[璋冪敤LLM]
+    C --> D{瑙ｆ瀽宸ュ叿璋冪敤}
+    D -->|鏈夊伐鍏疯皟鐢▅ E[鎵ц宸ュ叿]
+    D -->|鏃犲伐鍏疯皟鐢▅ F[鐩存帴鍝嶅簲]
+    E --> G[鏇存柊涓婁笅鏂嘳
+    G --> H{鏄惁瀹屾垚}
+    H -->|鍚 B
+    H -->|鏄瘄 I[缁撴潫]
+    F --> I
+</div>
+
+<h3 id="exec-reflect">鍙嶅皠妯″紡</h3>
+
+<h4>浠ｇ爜渚嬭瘉锛氬惊鐜牳蹇冨疄鐜?/h4>
+<p>浠ヤ笅鏄?<code>agent_loop.py</code> 涓惊鐜牳蹇冪殑浠ｇ爜楠ㄦ灦锛屽睍绀轰簡娑堟伅鎷兼帴銆佸伐鍏疯皟鐢ㄨВ鏋愩€佺粨鏋滃洖浼犵殑鍏抽敭閫昏緫锛?/p>
+<pre>messages = [
+    {"role": "system", "content": system_prompt},
+    {"role": "user", "content": initial_user_content if initial_user_content is not None else user_input}
+]
+turn = 0;  handler.max_turns = max_turns
+while turn &lt; handler.max_turns:
+    turn += 1
+    response_gen = client.chat(messages=messages, tools=tools_schema)
+    response = yield from response_gen
+    if not response.tool_calls:
+        tool_calls = [{"tool_name": "no_tool", "args": {}}]
+    else:
+        tool_calls = [{"tool_name": tc.function.name,
+                       "args": json.loads(tc.function.arguments)}
+                      for tc in response.tool_calls]
+    for tc in tool_calls:
+        outcome = handler.dispatch(tc["tool_name"], tc["args"], response)
+        if outcome.should_exit: break
+        if outcome.next_prompt:
+            next_prompts.add(outcome.next_prompt)
+    # 鏂版秷鎭洿鏂颁笂涓嬫枃锛屽巻鍙茬敱 Session 缁存姢
+    messages = [{"role": "user", "content": next_prompt, "tool_results": tool_results}]</pre>
+
+<p>鏃犻渶鐢ㄦ埛鎸囦护锛屾寔缁洃鎺х幆澧冨彉鍖栵細鍔犺浇鐩戞帶鑴氭湰 鈫?瀹氭椂杞 <code>check()</code> 鈫?鏉′欢婊¤冻鏃惰Е鍙戜换鍔°€?/p>
+<div class="mermaid">
+flowchart TD
+    A["鍚姩鍙嶅皠妯″紡"] --> B["鍔犺浇鐩戞帶鑴氭湰"]
+    B --> C["瀹氭椂杞 check()"]
+    C --> D{鏉′欢婊¤冻?}
+    D -->|鏄瘄 E["瑙﹀彂浠诲姟"]
+    D -->|鍚 C
+    E --> F["鎵ц浠诲姟"]
+    F --> G["璁板綍鏃ュ織"]
+    G --> C
+</div>
+<p><strong>鍏稿瀷搴旂敤</strong>锛氱湅闂ㄧ嫍锛堢洃鎺ф枃浠?鏃ュ織鍙樺寲锛夈€佸畾鏃朵换鍔★紙鎸夋椂闂磋鍒欑敓鎴怗A浠诲姟锛?/p>
+
+<!-- ==================== 宸ュ叿绯荤粺 ==================== -->
+
+<h4>浠ｇ爜渚嬭瘉锛氬弽灏勬ā寮忚剼鏈?/h4>
+
+<p><strong>鈶?鑷富鐪嬮棬鐙楋紙<code>reflect/autonomous.py</code>锛?/strong>鈥斺€旀渶绠€鍗曠殑鍙嶅皠妯″紡瀹炵幇锛氭娴嬬敤鎴风寮€瓒?0鍒嗛挓鏃惰嚜鍔ㄨЕ鍙戜换鍔★細</p>
+<pre># reflect/autonomous.py
+INTERVAL = 1800
+ONCE = False
+
+def check():
+    return "[AUTO]馃 鐢ㄦ埛宸茬粡绂诲紑瓒呰繃30鍒嗛挓锛屼綔涓鸿嚜涓绘櫤鑳戒綋锛岃闃呰鑷姩鍖杝op锛屾墽琛岃嚜鍔ㄤ换鍔°€?</pre>
+
+<p><strong>鈶?瀹氭椂璋冨害鍣紙<code>reflect/scheduler.py</code>锛?/strong>鈥斺€斿畬鏁寸殑瀹氭椂浠诲姟寮曟搸锛屾敮鎸乧ron寮忚皟搴︺€佸喎鍗村懆鏈熴€佸懆鏈烦杩囥€佹墽琛岀獥鍙ｉ檺鍒讹細</p>
+<pre>INTERVAL = 120  # 杞闂撮殧
+
+def _parse_cooldown(repeat):
+    """瑙ｆ瀽repeat涓哄喎鍗存椂闂?""
+    if repeat == 'once': return timedelta(days=999999)
+    if repeat in ('daily', 'weekday'): return timedelta(hours=20)
+    if repeat == 'weekly': return timedelta(days=6)
+    if repeat.startswith('every_'):
+        parts = repeat.split('_')
+        n = int(parts[1].rstrip('hdm'))
+        u = parts[1][-1]
+        if u == 'h': return timedelta(hours=n)
+        if u == 'm': return timedelta(minutes=n)
+        if u == 'd': return timedelta(days=n)
+    return timedelta(hours=20)
+
+def check():
+    # L4 archive cron (silent, every 12h)
+    # 閬嶅巻 sche_tasks/ 涓嬬殑 .json 浠诲姟鏂囦欢
+    for f in sorted(os.listdir(TASKS)):
+        if not f.endswith('.json'): continue
+        task = json.load(open(os.path.join(TASKS, f)))
+        if not task.get('enabled', False): continue
+        # 妫€鏌?schedule 鏃堕棿 + max_delay 绐楀彛
+        # 妫€鏌ュ喎鍗存湡
+        # 婊¤冻鏉′欢 鈫?杩斿洖浠诲姟 prompt 瑙﹀彂鎵ц
+    return None</pre>
+
+<h2 id="tools">宸ュ叿绯荤粺</h2>
+
+<h3 id="tools-def">瀹氫箟涓庡姞杞?/h3>
+<p>宸ュ叿瀹氫箟鍦?<code>assets/tools_schema.json</code>锛岄噰鐢∣penAI Function Calling鏍煎紡銆傚惎鍔ㄦ椂鐢?code>agentmain.py</code>璇诲彇锛?/p>
+<pre>TS = open('assets/tools_schema.json').read()
+TOOLS_SCHEMA = json.loads(TS)</pre>
+
+<p><strong>9涓唴缃伐鍏?/strong>锛?/p>
+
+<pre># assets/tools_schema.json 鏄?OpenAI Function Calling 鏍煎紡鐨勫伐鍏峰畾涔夋枃浠?
+# 浠ヤ笅灞曠ず鍏朵腑涓€涓伐鍏风殑瀹屾暣瀹氫箟锛?
+{"type": "function", "function": {
+  "name": "code_run",
+  "description": "Code executor. Prefer python. Multi-call OK, use script param...",
+  "parameters": {"type": "object", "properties": {
+    "script": {"type": "string", "description": "[Mutually exclusive]..."},
+    "type": {"type": "string", "enum": ["python", "powershell"], "default": "python"},
+    "timeout": {"type": "integer", "description": "in seconds", "default": 60},
+    "cwd": {"type": "string", "description": "Working directory"}
+  }}
+}}
+
+# agentmain.py 涓殑鍔犺浇閫昏緫锛?
+def load_tool_schema(suffix=""):
+    global TOOLS_SCHEMA
+    TS = open(f"assets/tools_schema{suffix}.json").read()
+    TOOLS_SCHEMA = json.loads(TS.replace("powershell", "bash") if os.name != "nt" else TS)</pre>
+
+<table>
+<tr><th>绫诲埆</th><th>宸ュ叿</th><th>鍔熻兘</th></tr>
+<tr><td rowspan="3">鏂囦欢鎿嶄綔</td><td><code>file_read</code></td><td>璇诲彇鏂囦欢锛屾敮鎸佸叧閿瘝鎼滅储</td></tr>
+<tr><td><code>file_patch</code></td><td>绮惧噯缂栬緫锛屽敮涓€鍖归厤鏇挎崲</td></tr>
+<tr><td><code>file_write</code></td><td>瑕嗙洊/杩藉姞/鍓嶇疆鍐欏叆</td></tr>
+<tr><td>浠ｇ爜鎵ц</td><td><code>code_run</code></td><td>鍙楁帶杩愯鏃舵墽琛孭ython/PowerShell</td></tr>
+<tr><td rowspan="2">Web浜や簰</td><td><code>web_scan</code></td><td>鑾峰彇娴忚鍣ㄩ〉闈TML/Tab鍒楄〃</td></tr>
+<tr><td><code>web_execute_js</code></td><td>鎵цJS鎺у埗娴忚鍣?/td></tr>
+<tr><td rowspan="2">鍐呭瓨绠＄悊</td><td><code>update_working_checkpoint</code></td><td>鐭湡宸ヤ綔璁板繂</td></tr>
+<tr><td><code>start_long_term_update</code></td><td>闀挎湡璁板繂钂搁</td></tr>
+<tr><td>浜烘満鍗忎綔</td><td><code>ask_user</code></td><td>闇€瑕佺敤鎴峰喅绛栨椂涓柇浠诲姟</td></tr>
+</table>
+
+<h3 id="tools-flow">璋冪敤娴佺▼</h3>
+<div class="diagram">鐢ㄦ埛杈撳叆
+  鈫?
+LLM 鏀跺埌 tools=TOOLS_SCHEMA
+  鈫?
+LLM 鍐冲畾璋冪敤鍝釜宸ュ叿 鈫?杩斿洖 function_call
+  鈫?
+agent_runner_loop() 瑙ｆ瀽 鈫?鏄犲皠鍒板悓鍚?Python 鍑芥暟
+  鈫?
+鎵ц缁撴灉閫佸洖 LLM 鈫?缁х画鎺ㄧ悊鎴栬緭鍑哄洖澶?/div>
+
+<h3 id="tools-create">鍒涘缓鏂板伐鍏?/h3>
+<div class="card">
+<h4>鉁?鍙互锛氳剼鏈骇宸ュ叿</h4>
+<p>閫氳繃 <code>file_write</code> + <code>code_run</code> 杩愯鏃跺垱寤恒€備緥锛氬浘搴婃湇鍔°€丱CR璋冭瘯鑴氭湰銆?/p>
+<h4>鉂?涓嶅彲浠ワ細鍔ㄦ€佹敞鍐孎C宸ュ叿</h4>
+<p><code>tools=[]</code> 鍒楄〃鍦ㄥ璇濆紑濮嬫椂鍥哄畾锛屼腑閫斾笉鑳借拷鍔犮€傞渶瑕佺紪杈?<code>assets/tools_schema.json</code> + 鍐橮ython瀹炵幇锛屼笅杞細璇濈敓鏁堛€?/p>
+<h4>绛栫暐</h4>
+<ul>
+<li>鍙嶅浣跨敤鐨勮兘鍔?鈫?鍐欐垚 <code>.py</code> 妯″潡鏀?<code>memory/</code> 涓?/li>
+<li>涓€娆℃€т换鍔?鈫?鐩存帴鐢?<code>code_run</code> 鍐呰仈浠ｇ爜</li>
+<li>鎸佷箙鍖栨湇鍔★紙濡傚浘搴婏級 鈫?<code>file_write</code> 鍒涘缓 鈫?<code>code_run</code> 鍚姩鍚庡彴杩涚▼</li>
+</ul>
+</div>
+
+<h3 id="tools-principle">璁捐鍘熷垯</h3>
+
+<h4>浠ｇ爜渚嬭瘉锛氬畨鍏ㄦ嫤鎴満鍒?/h4>
+<p><code>ga.py</code> 涓殑 <code>code_run</code> 鍑芥暟鍐呯疆浜嗛珮鍗辨搷浣滈粦鍚嶅崟锛岄€氳繃姝ｅ垯鍖归厤鎷︽埅鐮村潖鎬у懡浠わ細</p>
+<pre>DANGEROUS_PATTERNS = [
+    (r'\brm\s+(-[rR]+|-[rR][fF]|-[fF][rR])\s*/[/\s]', '閫掑綊鍒犻櫎鏍圭洰褰?),
+    (r'\brd\s+/[sS]\s+/[qQ]\s+[A-Za-z]:\\', '閫掑綊鍒犻櫎椹卞姩鍣?),
+    (r'\bformat\s+[A-Za-z]:', '鏍煎紡鍖栫鐩?),
+    (r'\bshutdown\s+[/-][sprh]', '鍏虫満/閲嶅惎鎿嶄綔'),
+    (r':\(\)\s*\{\s*:\s*\|\s*:&\s*\}\s*;?\s*:', 'fork 鐐稿脊'),
+    (r'\bchmod\s+-R\s+0{2,3}\s+', '閫掑綊娓呴櫎鏉冮檺'),
+    (r'\breg\s+delete\s+HK', '鍒犻櫎娉ㄥ唽琛ㄩ」'),
+    (r'\btaskkill\s+/[fF]\s+/[iI][Mm]\s+', '寮哄埗缁堟杩涚▼'),
+]
+# 浠ｇ爜鎵ц鍓嶅厛鎵弿锛屽懡涓垯鎷︽埅
+for pattern, desc in DANGEROUS_PATTERNS:
+    if re.search(pattern, _code_lower):
+        return {"status": "blocked", "reason": f"楂樺嵄鍛戒护琚嫤鎴? {desc}"}</pre>
+
+<ul>
+<li><strong>鎻忚堪鍗宠涓虹害鏉?/strong>锛氬伐鍏风殑description鐩存帴褰卞搷LLM浣跨敤鍐崇瓥</li>
+<li><strong>鍙傛暟椹卞姩</strong>锛氭墍鏈変氦浜掗€氳繃鍙傛暟浼犻€?/li>
+<li><strong>涓€娆′竴涓伐鍏?/strong>锛氭瘡杞甃LM鍙緭鍑轰竴涓伐鍏疯皟鐢ㄦ垨绾洖澶?/li>
+<li><strong>澶辫触鍥炴函</strong>锛氶敊璇俊鎭€佸洖LLM锛岃嚜涓婚噸璇曟垨鎹㈡柟妗?/li>
+</ul>
+
+<!-- ==================== 鍒嗗眰璁板繂 ==================== -->
+
+<h4>浠ｇ爜渚嬭瘉锛氫笂涓嬫枃鍘嬬缉锛堝洓闃舵淇壀锛?/h4>
+<p><code>ga.py</code> 鐨?<code>smart_format</code> 鍑芥暟瀹炵幇浜嗗瓧绗﹀煙鍚彂寮忓帇缂┾€斺€旇繖鏄?涓婁笅鏂囧帇缂?璁捐鍘熷垯鐨勫叿浣撳疄鐜帮細</p>
+<pre>def smart_format(data, max_str_len=100, omit_str=" ... "):
+    """涓婁笅鏂囨埅鏂笌鍘嬬缉锛氶噰鐢ㄩ灏剧瓥鐣ュ鍐呭杩涜鎴柇锛岄檺鍒跺崟鏉℃秷鎭暱搴︺€?
+    GA閲囩敤瀛楃鍩熷惎鍙戝紡鏂规硶绠＄悊涓婁笅鏂囬绠楋紝閫氳繃鍥涢樁娈典慨鍓満鍒舵帶鍒堕暱搴︼細
+    1. 宸ュ叿杈撳嚭鎴柇锛氬崟宸ュ叿杈撳嚭瓒呴槇鍊兼椂淇濈暀棣栧熬锛屾浛鎹腑闂撮儴鍒?
+    2. 鏍囩绾у帇缂╋細姣忎簲杞浛鎹㈤噸澶嶅伐浣滆蹇嗗潡涓哄崰浣嶇
+    3. 娑堟伅娓呯悊锛氳秴棰勭畻鏃堕噸鏂板帇缂╁苟鎸夊厛杩涘厛鍑哄垹闄ゆ棫娑堟伅
+    4. 宸ヤ綔璁板繂閿氬畾锛氭瘡鏉℃柊娑堟伅闄勫姞鏈€鏂板璇濇憳瑕併€佽疆娆＄紪鍙蜂笌鍏抽敭淇℃伅
+    """
+    if not isinstance(data, str): data = str(data)
+    if len(data) &lt; max_str_len + len(omit_str)*2: return data
+    return f"{data[:max_str_len//2]}{omit_str}{data[-max_str_len//2:]}"</pre>
+
+<h4>浠ｇ爜渚嬭瘉锛氬伐鍏峰垎鍙戞満鍒?/h4>
+<p><code>ga.py</code> 鐨?<code>BaseHandler.dispatch</code> 鏂规硶灏哃LM杩斿洖鐨勫伐鍏疯皟鐢ㄥ悕鏄犲皠鍒板悓鍚峆ython鏂规硶锛?/p>
+<pre>def dispatch(self, tool_name, args, response, index=0):
+    method_name = f"do_{tool_name}"
+    if hasattr(self, method_name):
+        return (yield from getattr(self, method_name)(args, response))
+    elif tool_name == "bad_json":
+        return StepOutcome(None, next_prompt=args.get("msg", "bad_json"))
+    else:
+        return StepOutcome(None, next_prompt=f"鏈煡宸ュ叿 {tool_name}")</pre>
+
+<h2 id="memory">鍒嗗眰璁板繂绯荤粺</h2>
+
+<h3 id="memory-hierarchy">L0~L4 灞傜骇</h3>
+<table>
+<tr><th>灞傜骇</th><th>瀛樺偍璺緞</th><th>鍐呭</th><th>鐗圭偣</th></tr>
+<tr><td><strong>L0 鍏冭鑼?/strong></td><td><code>memory/memory_management_sop.md</code></td><td>璁板繂绠＄悊鐨勫厓瑙勫垯</td><td>鍐欒蹇嗗墠蹇呰</td></tr>
+<tr><td><strong>L1 绱㈠紩灞?/strong></td><td><code>memory/global_mem_insight.txt</code></td><td>绱у噾鎸囬拡銆佸叧閿瘝鏄犲皠銆佺‖绾︽潫</td><td>甯搁┗鍐呭瓨鏍稿績锛屸墹30琛?/td></tr>
+<tr><td><strong>L2 浜嬪疄灞?/strong></td><td><code>memory/global_mem.txt</code></td><td>缁忛獙璇佺殑闀挎湡浜嬪疄</td><td>涓ユ牸鍑嗗叆锛屾帓闄ょ灛鎬佷俊鎭?/td></tr>
+<tr><td><strong>L3 SOP灞?/strong></td><td><code>memory/*.md / *.py</code></td><td>鍙鐢ㄦ祦绋嬫€х煡璇?/td><td>宸ヤ綔娴併€佸墠缃潯浠躲€佹晠闅滃鐞?/td></tr>
+<tr><td><strong>L4 褰掓。灞?/strong></td><td><code>memory/L4_raw_sessions/</code></td><td>鍘嗗彶浼氳瘽鍘熷鏁版嵁</td><td>鑷姩鏀堕泦锛岃建杩归噸鏋?/td></tr>
+</table>
+
+<h3 id="memory-flow">璁块棶涓庡啓鍏ユ祦绋?/h3>
+
+<h4>浠ｇ爜渚嬭瘉锛歀1 Insight 瀹為檯鍐呭</h4>
+<p>浠ヤ笅鏄?<code>memory/global_mem_insight.txt</code> 鐨勫疄闄呭唴瀹癸紙涓ユ牸鎺у埗鍦?3琛岋紝&lt;30琛岀害鏉燂級锛屽睍绀轰簡鏋佺畝绱㈠紩灞傜殑鐪熷疄闈㈣矊锛?/p>
+<pre># [Global Memory Insight]
+闇€瑕佹椂read L2 鎴?ls ../memory/ 鏌3
+L0(META-SOP): memory_management_sop
+L2: 鐜扮┖
+L3: memory_cleanup_sop(璁板繂鏁寸悊) | skill_search | ui_detect.py | ocr_utils.py
+    | clipboard_ocr / clipboard_ocr_sop | subagent | web_setup_sop | plan_sop
+    | procmem_scanner | keychain | ljqCtrl_sop+.py | tmwebdriver_sop
+    | autonomous_operation_sop | scheduled_task_sop | vision_sop | adb_ui.py
+    | metaso_search
+L4: L4_raw_sessions/ 鍘嗗彶浼氳瘽
+
+娴忚鍣ㄧ壒娈婃搷浣? tmwebdriver_sop(...)
+閿紶: ljqCtrl_sop(绂乸yautogui/鍏坅ctivate)
+鎴浘/瑙嗚: ocr/vision_sop | 绂佸叏灞忔埅鍥撅紝浼樺厛绐楀彛
+瀹氭椂:scheduled_task_sop | 鑷富:autonomous_operation_sop
+鎵嬫満:adb_ui.py
+
+[RULES]
+1. 鎼滅储鍏堣: 鎼滄枃浠跺悕涓ョ涓嶇敤es(绂丳S閫掑綊/绂乨ir閬嶅巻)...
+2. 浜ゅ弶楠岃瘉: 绂佷俊鎽樿, 鏁板€艰繘璇︽儏椤垫牳瀹?
+...</pre>
+
+<div class="mermaid">
+graph LR
+    L1[L1 绱㈠紩灞?甯搁┗鍐呭瓨] -- 蹇€熷鑸?--> L2[L2 浜嬪疄灞俔
+    L1 -- 蹇€熷鑸?--> L3[L3 SOP灞俔
+    L2 -- 缁忛獙鏁村悎 --> L3
+    M[鏅鸿兘浣揮 -- 鎸夐渶璁块棶 --> L1
+    M -- 瑙﹀彂寮忔彁浜?--> L2
+    M -- 瑙﹀彂寮忔彁浜?--> L3
+    M -- 杞ㄨ抗閲嶆瀯 --> L4[L4 褰掓。灞?鍘嗗彶浼氳瘽]
+</div>
+<div class="diagram">鏀跺埌浠诲姟 鈫?璇籐1 Insight 鈫?鍙戠幇SOP鍚?鈫?璇籐3 SOP 鈫?鎸塖OP鎵ц
+  鈫?
+浠诲姟瀹屾垚 鈫?鎻愬彇缁忛獙 鈫?鎸塎ETA-SOP鍐崇瓥鏍戝垎绫?
+  鈹溾攢 鐜浜嬪疄 鈫?L2 global_mem.txt
+  鈹溾攢 閫氱敤瑙勫垯 鈫?L1 RULES
+  鈹斺攢 鐗瑰畾鎶€鏈?鈫?L3 SOP/utils</div>
+
+<p><strong>瑙勮寖椤荤煡</strong>锛氫慨鏀筁1/L2鍙兘鐢?<code>file_patch</code> 灏戦噺淇敼锛涘啓璁板繂鍓嶅厛璇籑ETA-SOP(L0)鏍搁獙锛汱2/L3鍙樻洿鏃跺悓姝ユ洿鏂癓1绱㈠紩銆?/p>
+
+<h4>浠ｇ爜渚嬭瘉锛氳蹇嗗啓鍏ュ喅绛栨爲锛圡ETA-SOP锛?/h4>
+<p><code>memory/memory_management_sop.md</code>锛圠0鍏冭鑼冿級涓畾涔変簡淇℃伅鍒嗙被蹇€熷喅绛栨爲锛屾寚瀵兼櫤鑳戒綋鍒ゆ柇淇℃伅搴斿瓨鍏ュ摢涓€灞傦細</p>
+<pre>"杩欐潯淇℃伅璇ユ斁鍝眰锛?
+
+鏄€庣幆澧冪壒寮傛€т簨瀹炪€? (IP銆侀潪鏍囪矾寰勩€佸嚟璇併€両D銆丄PI瀵嗛挜绛?
+  鈹溾攢 YES 鈫?L2 (global_mem.txt)锛岀劧鍚庢寜棰戠巼褰掑叆L1灞傜骇
+  鈹斺攢 NO
+       鈫?
+       鏄€庨€氱敤鎿嶄綔瑙勫緥銆? (鍏ㄥ眬鎬ч伩鍧戞寚鍗椼€佹帓鏌ユ柟娉?
+       鈹溾攢 YES 鈫?L1 [RULES] (浠呴檺1鍙ュ帇缂╁噯鍒?
+       鈹斺攢 NO
+            鈫?
+            鏄€庣壒瀹氫换鍔℃妧鏈€? (鑹伴毦灏濊瘯鎵嶈兘鎴愬姛锛屼笖鏈潵杩樿兘鐢ㄥ埌鐨?
+            鈹溾攢 YES 鈫?L3 (涓撻」SOP鎴栬剼鏈?
+            鈹斺攢 NO 鈫?鍒ゅ畾涓哄啑浣欎俊鎭紝涓ョ瀛樺偍鐩存帴涓㈠純</pre>
+
+<h4>浠ｇ爜渚嬭瘉锛歀1 鍔犺浇鍒颁笂涓嬫枃</h4>
+<p><code>ga.py</code> 鐨?<code>get_global_memory()</code> 鍑芥暟灞曠ず浜?L1 濡備綍琚敞鍏ュ埌姣忔瀵硅瘽鐨勭郴缁熸彁绀轰腑锛?/p>
+<pre>def get_global_memory():
+    prompt = "\n"
+    with open("memory/global_mem_insight.txt", "r") as f:
+        insight = f.read()
+    with open("assets/insight_fixed_structure.txt", "r") as f:
+        structure = f.read()
+    prompt += f"cwd = {os.path.join(script_dir, \"temp\")}\n"
+    prompt += structure + "\n../memory/global_mem_insight.txt:\n"
+    prompt += insight + "\n"
+    return prompt</pre>
+
+
+<!-- ==================== 璁ょ煡鏋舵瀯 ==================== -->
+<h2 id="cognition">璁ょ煡鏋舵瀯</h2>
+
+<h3 id="cog-perception">鐜鎰熺煡</h3>
+<p><strong>闈欐€佷笂涓嬫枃</strong>锛堟瘡娆″璇濇敞鍏ワ級锛欳ONSTITUTION锛?鏉￠搧寰嬶級銆丷ULES銆丟lobal Memory Insight銆乀ool Definitions銆?/p>
+<p><strong>鍔ㄦ€佷笂涓嬫枃</strong>锛堣繍琛屾椂娉ㄥ叆锛夛細<code>cwd</code>銆?code>Today</code>銆乄orking Memory锛?code>update_working_checkpoint</code>锛夈€佷細璇濆巻鍙层€?/p>
+<p><strong>鎺㈡祴鎵嬫</strong>锛?/p>
+<ul>
+<li><code>file_read</code> 鈫?璇绘枃浠跺唴瀹?/li>
+<li><code>web_scan</code> 鈫?鑾风煡娴忚鍣═ab + 椤甸潰HTML</li>
+<li><code>code_run</code> 鈫?鎵цPython鎺㈡祴绯荤粺鐘舵€?/li>
+<li>闂存帴锛氬伐鍏疯繑鍥炲€奸敊璇俊鎭€佺敤鎴峰弽棣?/li>
+</ul>
+
+<h3 id="cog-resource">璧勬簮瀹氫綅</h3>
+<table>
+<tr><th>浼樺厛绾?/th><th>鏂规硶</th><th>閫傜敤鍦烘櫙</th></tr>
+<tr><td>1</td><td>鏌?Global Memory Insight</td><td>宸茬煡鍐呭瓨涓湁浠€涔?/td></tr>
+<tr><td>2</td><td>璇?SOP / import Utils</td><td>鏈夌幇鎴愭柟妗?/td></tr>
+<tr><td>3</td><td><code>code_run</code> 鎺㈡祴</td><td>妫€鏌ョ郴缁熺姸鎬?鏂囦欢瀛樺湪鎬?/td></tr>
+<tr><td>4</td><td>Metaso API 鎼滅储</td><td>鏌ユ妧鏈枃妗?API</td></tr>
+<tr><td>5</td><td>娴忚鍣?Bing 鎼滅储</td><td>鍏滃簳</td></tr>
+</table>
+<p><strong>鎼滅储閾佸緥</strong>锛?code>鎼滄枃浠跺悕涓ョ涓嶇敤es(绂丳S閫掑綊/绂乨ir閬嶅巻)</code> 鈥?浼樺厛鎼滅储绱㈠紩锛屼笉鏆村姏閬嶅巻銆?/p>
+
+<h3 id="cog-loop">闂瑙ｅ喅寰幆</h3>
+<div class="diagram">鎺ユ敹浠诲姟 鈫?鏌ヨ蹇?璇籗OP 鈫?鎺㈡祴鐜鐘舵€?
+  鈫?鎵ц涓€姝ユ搷浣?鈫?楠岃瘉缁撴灉
+    鈹溾攢 鎴愬姛 鈫?缁х画涓嬩竴姝?
+    鈹斺攢 澶辫触 鈫?鍗囩骇绛栫暐
+        鈹溾攢 1娆★細璇婚敊璇棩蹇?
+        鈹溾攢 2娆★細鎺㈡祴鐜
+        鈹斺攢 3娆★細鎹㈡柟妗堟垨闂敤鎴?
+  鈫?闂幆纭锛堜繚瀛樿蹇?Git锛?/div>
+
+<p><strong>鏍稿績鍘熷垯</strong>锛?/p>
+<table>
+<tr><th>鍘熷垯</th><th>璇存槑</th></tr>
+<tr><td>鎺㈡祴浼樺厛</td><td>涓嶇┖鎯崇粨鏋滐紝鍏堢敤宸ュ叿鑾峰彇鐪熷疄淇℃伅</td></tr>
+<tr><td>鍒嗘鎵ц</td><td>闄愬埗澶辫触鍗婂緞锛屽皬姝ュ揩璺?/td></tr>
+<tr><td>澶辫触鍗囩骇</td><td>绂佹鏃犳柊淇℃伅鐨勯噸澶嶆搷浣?/td></tr>
+<tr><td>浜ゅ弶楠岃瘉</td><td>涓嶄俊鎽樿锛屾暟鍊艰繘璇︽儏椤垫牳瀹?/td></tr>
+<tr><td>闂幆</td><td>鐗╃悊妯℃嫙鍚庣‘璁わ紝Git瀹屾暣闂幆</td></tr>
+</table>
+
+<!-- ==================== 鑷垜鍙嶇渷 ==================== -->
+
+<h4>浠ｇ爜渚嬭瘉锛氬け璐ュ崌绾ч摼鈥斺€?娆℃硶鍒?/h4>
+<p>浠ヤ笅浠ｇ爜锛堟憳鑷?<code>ga.py</code> 鐨?<code>file_read</code> 鍑芥暟锛夊睍绀轰簡"绗?娆″け璐モ啋鏅鸿兘閲嶈瘯"妯″紡锛氭壘涓嶅埌鏂囦欢鏃惰嚜鍔ㄦ壂鎻忕浉浼兼枃浠跺悕锛?/p>
+<pre>except FileNotFoundError:
+    msg = f"Error: File not found: {path}"
+    tgt = os.path.basename(path)
+    # 鑷姩鎵弿鐩綍鎵剧浉浼兼枃浠?
+    cands = list(itertools.islice(
+        (c for base in roots for c in _scan_files(base)), 2000))
+    top = sorted([(difflib.SequenceMatcher(None, tgt.lower(),
+                  c[0].lower()).ratio(), c) for c in cands[:2000]],
+                 key=lambda x: -x[0])[:5]
+    if top: msg += "\n\nDid you mean:\n" + \n           "\n".join(f"  {c[1]}  ({s:.0%})" for s, c in top)
+    return msg</pre>
+
+<h2 id="reflection">鑷垜鍙嶇渷鏈哄埗</h2>
+<p>鍙嶇渷鑳藉姏閫氳繃<strong>缁撴瀯鍖栫殑澶氬眰鍙嶉鍥炶矾</strong>鍜?strong>寮哄埗鍏冭鐭ユ満鍒?/strong>瀹炵幇锛岃€岄潪鎷熶汉鍖栫殑鎰忚瘑娲诲姩銆?/p>
+
+<h3 id="ref-layers">浜斿眰鍙嶇渷浣撶郴</h3>
+<table>
+<tr><th>缁村害</th><th>瀹炵幇鏂瑰紡</th><th>鏃堕棿鑼冨洿</th></tr>
+<tr><td>鍗虫椂鍙嶇渷</td><td><code>&lt;summary&gt;</code> 寮哄埗鍥為【涓婃缁撴灉+鏈疆鎰忓浘</td><td>姣忚疆瀵硅瘽</td></tr>
+<tr><td>浠诲姟涓弽鐪?/td><td><code>update_working_checkpoint</code> 淇濆瓨妫€鏌ョ偣</td><td>浠诲姟涓€?/td></tr>
+<tr><td>澶辫触鍙嶇渷</td><td>3娆″崌绾ч摼锛氳鏃ュ織鈫掓帰鐜鈫掓崲鏂规</td><td>澶辫触鏃跺埢</td></tr>
+<tr><td>闀挎湡鍙嶇渷</td><td>璁板繂钂搁 + META-SOP 鍐欏墠鏍￠獙</td><td>璺ㄤ細璇?/td></tr>
+<tr><td>瀛︿範鍙嶇渷</td><td><code>start_long_term_update</code> 绯荤粺鎬у洖椤?/td><td>闀夸换鍔″畬鎴愭椂</td></tr>
+</table>
+
+<h3 id="ref-fail">澶辫触鍗囩骇閾撅紙3娆℃硶鍒欙級</h3>
+
+<h4>浠ｇ爜渚嬭瘉锛氬己鍒?summary 鏈哄埗</h4>
+<p><code>ga.py</code> 涓?<code>turn_end_callback</code> 鍑芥暟鐨勬憳瑕佹彁鍙栭€昏緫锛岀‘淇濇瘡涓€杞兘鐢熸垚 <code>&lt;summary&gt;</code> 鏍囩锛?/p>
+<pre>def turn_end_callback(self, response, tool_calls, tool_results, turn, next_prompt, exit_reason):
+    _c = re.sub(r"```.*?```|&lt;thinking&gt;.*?&lt;/thinking&gt;", "", response.content, flags=re.DOTALL)
+    rsumm = re.search(r"&lt;summary&gt;(.*?)&lt;/summary&gt;", _c, re.DOTALL)
+    if rsumm:
+        summary = rsumm.group(1).strip()
+    else:
+        # 鏈緭鍑簊ummary鏃惰嚜鍔ㄧ敓鎴愪竴涓?
+        tc = tool_calls[0]
+        summary = f"璋冪敤宸ュ叿{tc['tool_name']}, args: {tc['args']}"
+        if tc["tool_name"] == "no_tool":
+            summary = "鐩存帴鍥炵瓟浜嗙敤鎴烽棶棰?
+        # 鍚屾椂娉ㄥ叆鎻愮ず瑕佹眰琛ュ厖summary
+        next_prompt += "\n\n\nUSER: &lt;summary&gt;鍛紵锛燂紵锛乗n\n"
+    # 瀛樺叆鍘嗗彶鐢ㄤ簬鍚庣画涓婁笅鏂囨敞鍏?
+    self.history_info.append(f"[Agent] {summary}")</pre>
+
+<div class="card">
+<p><span class="tag">绗?娆″け璐?/span> 璇婚敊璇棩蹇楋紝鐞嗚В鍘熷洜 鈥?<em>琚姩鍙嶇渷</em></p>
+<p><span class="tag tag-blue">绗?娆″け璐?/span> 鎺㈡祴鐜鐘舵€侊紝鑾峰彇鏇村涓婁笅鏂?鈥?<em>涓诲姩鍙嶇渷</em></p>
+<p><span class="tag tag-orange">绗?娆″け璐?/span> 娣卞害鍒嗘瀽鍚庢崲鏂规鎴栭棶鐢ㄦ埛 鈥?<em>鏍规湰鎬ц皟鏁?/em></p>
+<p><strong>鏍稿績绾︽潫</strong>锛?span class="highlight">绂佹鏃犳柊淇℃伅鐨勯噸澶嶅皾璇?/span>銆傛瘡娆￠噸璇曞繀椤诲熀浜庢柊鐨勪俊鎭垨涓嶅悓绛栫暐銆?/p>
+</div>
+
+<!-- ==================== 鐩爣楠岃瘉 ==================== -->
+<h2 id="goal">鐩爣璁惧畾涓庨獙璇佹満鍒?/h2>
+<p>鏍稿績鎬濇兂锛?strong>姣忎釜绮掑害鐨勮鍔ㄩ兘鏈夋槑纭殑棰勬湡鐩爣锛屾墽琛屽悗蹇呴』楠岃瘉鐩爣鏄惁杈炬垚</strong>銆?/p>
+
+<h3 id="goal-layers">鍥涘眰鐩爣闂幆</h3>
+<table>
+<tr><th>灞傜骇</th><th>绮掑害</th><th>鏈哄埗</th></tr>
+<tr><td>浼氳瘽绾?/td><td>璺ㄤ换鍔?/td><td><code>start_long_term_update</code> 钂搁鍥為【</td></tr>
+<tr><td>浠诲姟绾?/td><td>瀹屾暣浠诲姟</td><td><code>plan.md</code> 缁堟妫€鏌?+ 鐙珛Subagent楠岃瘉</td></tr>
+<tr><td>姝ラ绾?/td><td>鍗曚竴姝ラ</td><td><code>[ ]</code> 鏍囪 + Mini楠岃瘉锛堢‘璁ゆ枃浠跺瓨鍦?exit code/椤甸潰鐘舵€侊級</td></tr>
+<tr><td>鍗曡疆绾?/td><td>姣忚疆</td><td><code>&lt;summary&gt;</code> 鎰忓浘澹版槑 + 缁撴灉纭</td></tr>
+</table>
+
+<h3 id="goal-verify">鐙珛楠岃瘉鏈哄埗</h3>
+<p>鎵€鏈?plan mode 浠诲姟瀹屾垚鍚庯紝<strong>寮哄埗鍚姩鐙珛楠岃瘉 subagent</strong>锛?/p>
+<ul>
+<li>鍒涘缓 <code>verify_context.json</code>锛堜换鍔℃弿杩般€乸lan璺緞銆佷氦浠樼墿娓呭崟銆佸繀鍋氭鏌ワ級</li>
+<li>鍚姩楠岃瘉 subagent 鈫?瀵规姉鎬ч獙璇侊紙"璇佹槑浜や粯鐗╀笉鑳界敤"锛?/li>
+<li>杈撳嚭 VERDICT锛?span class="tag-green">PASS 鉁?/span> / <span class="tag">FAIL 鉂?/span> / <span class="tag-orange">PARTIAL 鈿?/span></li>
+</ul>
+
+<!-- ==================== 澶氭櫤鑳戒綋 ==================== -->
+
+<h4>浠ｇ爜渚嬭瘉锛氶獙璇?SOP 鍔ㄤ綔琛?/h4>
+<p><code>memory/verify_sop.md</code> 瀹氫箟浜嗘寜浜х墿绫诲瀷鐨勯獙璇佸姩浣滆鑼冿細</p>
+<pre>| 浜х墿绫诲瀷 | 蹇呭仛 |
+|---|---|
+| 缃戦〉/鍓嶇 | 鎵撳紑+鎴浘 鈫?console閿欒 鈫?纭闈炵┖澹?|
+| 鑴氭湰/CLI | 鎵ц 鈫?妫€鏌tdout/stderr/exit code 鈫?杈圭晫杈撳叆鍐嶈窇 |
+| 鏁版嵁鏂囦欢 | 鏍煎紡鏍￠獙 鈫?琛屾暟 鈫?鎶芥煡棣?涓?灏?鏉?|
+| API/鏈嶅姟 | 璋冪敤endpoint 鈫?鍝嶅簲褰㈢姸(涓嶅彧200) 鈫?閿欒杈撳叆 |
+| 閰嶇疆/鏂囨。 | file_read瀹屾暣鍐呭 鈫?鏍煎紡璇硶 鈫?鏈牬鍧忓凡鏈?|
+| Bug淇   | 澶嶇幇鍘焍ug 鈫?楠岃瘉淇 鈫?鍥炲綊娴嬭瘯 |
+| 鎵归噺鎿嶄綔  | 鎬绘暟 鈫?鎶芥煡棣?涓?灏?鈫?閲嶅/閬楁紡 鈫?涓棿澶辫触涓€鑷存€?|
+
+# 瀵规姉鎬ф帰娴嬶紙鑷冲皯杩愯涓€涓級
+杈圭晫鍊?0/绌?瓒呴暱/unicode) 路 骞傜瓑鎬?鍚屼竴鎿嶄綔涓ゆ) 路 缂哄け渚濊禆 路 瀛ゅ効ID</pre>
+
+<h2 id="multi">澶氭櫤鑳戒綋绯荤粺</h2>
+<p>GenericAgent 鏀寔鍥涚澶氭櫤鑳戒綋鍗忎綔妯″紡锛屾牳蹇冮€氳鍩轰簬<strong>鏂囦欢绯荤粺寮傛IO鍗忚 + 鍏变韩璁板繂</strong>銆?/p>
+
+<h3 id="multi-master">涓讳粠妯″紡锛圡aster-Subagent锛?/h3>
+<p>涓籄gent閫氳繃鏂囦欢绯荤粺涓嶴ubagent閫氳锛?/p>
+<table>
+<tr><th>鏂囦欢</th><th>鏂瑰悜</th><th>鐢ㄩ€?/th></tr>
+<tr><td><code>input.txt</code></td><td>涓烩啋瀛?/td><td>浠诲姟鐩爣涓庣害鏉?/td></tr>
+<tr><td><code>context.json</code></td><td>涓烩啋瀛?/td><td>缁濆璺緞銆佷氦浠樼墿娓呭崟</td></tr>
+<tr><td><code>output.txt</code></td><td>瀛愨啋涓?/td><td>鎵ц杈撳嚭锛?code>[ROUND END]</code>鏍囪杞</td></tr>
+<tr><td><code>reply.txt</code></td><td>涓烩啋瀛?/td><td>缁х画瀵硅瘽/杩藉姞鎸囦护</td></tr>
+<tr><td><code>_intervene</code></td><td>涓烩啋瀛?/td><td>绾犲亸鎸囦护</td></tr>
+<tr><td><code>_keyinfo</code></td><td>涓烩啋瀛?/td><td>娉ㄥ叆working memory</td></tr>
+<tr><td><code>_stop</code></td><td>涓烩啋瀛?/td><td>缁堟淇″彿</td></tr>
+</table>
+
+<p><strong>鍚姩鏂瑰紡</strong>锛?/p>
+<pre>python agentmain.py --task my_task --input "浠诲姟鎻忚堪" [--bg] [--llm_no N]</pre>
+
+<h3 id="multi-map">Map骞惰妯″紡</h3>
+<p>閫傜敤鐙珛鍚屾瀯瀛愪换鍔＄殑鎵归噺澶勭悊锛?/p>
+<ol>
+<li>涓籄gent鍑嗗N涓嫭绔嬭緭鍏ユ枃浠?/li>
+<li>瀵规瘡涓枃浠跺惎鍔ㄤ竴涓?Subagent锛?code>--bg</code> 鍚庡彴锛?/li>
+<li>绛夋墍鏈夊畬鎴?鈫?璇诲彇鍚?<code>output*.txt</code> 鈫?姹囨€荤粨鏋?/li>
+</ol>
+
+<h3 id="multi-super">鐩戝療鑰呮ā寮忥紙Supervisor-Worker锛?/h3>
+<div class="diagram">鐩戝療鑰咃紙Supervisor锛夆€?鍙銆佸彧鍒ゆ柇銆佸彧骞查锛屼笉涓嬪満骞叉椿
+    鈹?璇?output.txt锛堣瀵熻繘搴︼級
+    鈹?鍐?_intervene / _keyinfo锛堢籂鍋忥級
+    鈻?
+宸ヤ綔Agent锛圵orker锛?鈥?瀹為檯鎵ц浠诲姟</div>
+<p>鐩戝療鑰呭共棰勬竻鍗曪細璺虫銆佺粏鑺傞仐婕忋€佸厜璇翠笉鍋氥€佹柇瑷€鏃犳嵁銆佽繛缁け璐ョ瓑銆?/p>
+
+<h3 id="multi-shared">鍏变韩璁板繂鏈哄埗</h3>
+<p>鎵€鏈堿gent鍏变韩鍚屼竴濂楄蹇嗙郴缁燂細L1 Insight銆丩2 Facts銆丩3 SOP/utils銆乲eychain銆佹枃浠剁郴缁熴€?/p>
+
+<h3 id="multi-model">澶氭ā鍨嬮厤缃?/h3>
+<p>閫氳繃 <code>--llm_no N</code> 鍙傛暟涓轰笉鍚孲ubagent鎸囧畾涓嶅悓澶фā鍨嬶細</p>
+<pre># OCR 鏅鸿兘浣?鈫?瑙嗚妯″瀷 (llmclients[0])
+python agentmain.py --task 鎴浘鍒嗘瀽 --input "..." --llm_no 0 --bg
+
+# 鏂囨湰鏅鸿兘浣?鈫?绾枃鏈ā鍨?(llmclients[1])
+python agentmain.py --task 鏂囨湰鎽樿 --input "..." --llm_no 1 --bg</pre>
+<p>鍦?<code>mykey.py</code> 涓畾涔夊涓?session config锛堝彉閲忓悕闇€鍚?<code>api</code> / <code>config</code> / <code>cookie</code>锛夈€?/p>
+
+<!-- ==================== 鍚姩鏂瑰紡 ==================== -->
+
+<h4>浠ｇ爜渚嬭瘉锛氬妯″瀷鍔犺浇閫昏緫</h4>
+<p><code>agentmain.py</code> 鐨?<code>load_llm_sessions()</code> 鍑芥暟灞曠ず浜嗗浣曚粠 <code>mykey.py</code> 鍔ㄦ€佸姞杞藉涓狶LM鍚庣锛?/p>
+<pre>def load_llm_sessions(self):
+    mykeys, changed = reload_mykeys()
+    llm_sessions = []
+    for k, cfg in mykeys.items():
+        if not any(x in k for x in ["api", "config", "cookie"]): continue
+        if "native" in k and "claude" in k:
+            llm_sessions += [NativeToolClient(NativeClaudeSession(cfg=cfg))]
+        elif "native" in k and "oai" in k:
+            llm_sessions += [NativeToolClient(NativeOAISession(cfg=cfg))]
+        elif "claude" in k:
+            llm_sessions += [ToolClient(ClaudeSession(cfg=cfg))]
+        elif "oai" in k:
+            llm_sessions += [ToolClient(LLMSession(cfg=cfg))]
+        elif "mixin" in k:
+            llm_sessions += [{"mixin_cfg": cfg}]
+    return llm_sessions
+
+# Subagent 鍚庡彴鍚姩妯″紡
+def run():
+    # ...
+    gen = agent_runner_loop(self.llmclient, sys_prompt, raw_query,
+                            handler, TOOLS_SCHEMA, max_turns=70, verbose=self.verbose)
+    for chunk in gen:
+        if consume_file(self.task_dir, "_stop"): self.abort()
+        if self.stop_sig: break
+        # 瀹炴椂鎺ㄩ€佽緭鍑哄埌 display_queue</pre>
+
+<h2 id="startup">鍚姩鏂瑰紡</h2>
+
+<h3 id="startup-compare">妗岄潰鐗?vs Web鐗?/h3>
+<table>
+<tr><th>瀵规瘮缁村害</th><th><code>python launch.pyw</code></th><th><code>streamlit run stapp.py</code></th></tr>
+<tr><td>鏈川</td><td>妗岄潰鍘熺敓绐楀彛鍖呰鍣?/td><td>绾疭treamlit Web鐣岄潰</td></tr>
+<tr><td>UI杞戒綋</td><td>pywebview 鍘熺敓绐楀彛</td><td>娴忚鍣?Web 椤甸潰</td></tr>
+<tr><td>JS鈫擯ython閫氫俊</td><td>鉁?鏈夛紙inject/PASTE_HOOK_JS锛?/td><td>鉂?鏃?/td></tr>
+<tr><td>绌洪棽鐩戞帶</td><td>鉁?30鍒嗛挓鑷姩娉ㄥ叆浠诲姟</td><td>鉂?鏃?/td></tr>
+<tr><td>Bot鏀寔</td><td>鉁?Telegram/QQ/椋炰功/浼佷笟寰俊/閽夐拤</td><td>鉂?鏃?/td></tr>
+</table>
+
+<!-- ==================== 鑷垜杩涘寲 ==================== -->
+
+<h4>浠ｇ爜渚嬭瘉锛歋treamlit Web 鍓嶇</h4>
+<p><code>frontends/stapp.py</code> 灞曠ず浜咷A濡備綍宓屽叆Web鐣岄潰锛屽疄鐜板妯″瀷鍒囨崲銆佷换鍔℃帶鍒躲€佺┖闂茬洃鎺э細</p>
+<pre>import streamlit as st
+from agentmain import GeneraticAgent
+
+@st.cache_resource
+def init():
+    agent = GeneraticAgent()
+    if agent.llmclient is None:
+        st.error("鈿狅笍 鏈厤缃换浣曞彲鐢ㄧ殑 LLM 鎺ュ彛")
+        st.stop()
+    else:
+        threading.Thread(target=agent.run, daemon=True).start()
+    return agent
+
+agent = init()
+# 渚ц竟鏍忥細LLM鍒囨崲 / 绌洪棽鏃堕棿 / 鍋滄鎸夐挳 / 妗岄潰瀹犵墿
+llm_options = agent.list_llms()
+selected_idx = st.selectbox("澶囩敤閾捐矾", [...], format_func=llm_labels.get)
+if selected_idx != current_idx:
+    agent.next_llm(selected_idx)
+if st.button("寮鸿鍋滄浠诲姟"): agent.abort()
+if st.button("閲嶆柊娉ㄥ叆宸ュ叿"): agent.llmclient.last_tools = ''</pre>
+
+<h2 id="evolution">鑷垜杩涘寲</h2>
+<p>GA涓嶄慨鏀瑰熀纭€妯″瀷锛岄€氳繃璁板綍涓庢洿鏂颁俊鎭幆澧冨疄鐜拌繘鍖栥€傛牳蹇冪瓥鐣ワ細<strong>杩涘寲绛栫暐鑰岄潪宸ュ叿</strong>锛屽浐瀹氬伐鍏峰眰涓庤繘鍖栫煡璇嗗眰鍒嗙銆?/p>
+
+<h3 id="evol-skills">鎶€鑳芥爲涓庤嚜涓绘帰绱?/h3>
+<table>
+<tr><th>缁勪欢</th><th>璇存槑</th></tr>
+<tr><td>鎶€鑳芥爲</td><td>涓ょ骇缁撴瀯锛氱被鍒紙web鑷姩鍖?鏁版嵁澶勭悊锛夆啋 鍏峰悕鎶€鑳斤紝璁板綍鑴氭湰涓庝娇鐢ㄦ鏁?/td></tr>
+<tr><td>瑙﹀彂鏈哄埗</td><td>浠诲姟妯″紡锛堟枃浠剁郴缁熸彁浜わ級鎴栧弽灏勬ā寮忥紙瀹氭椂杞锛?/td></tr>
+<tr><td>浠诲姟鐢熸垚</td><td>浠庡箍搴︺€佹繁搴︺€佹晥鐢ㄣ€佸垱鏂版€у洓缁村害鍔犳潈璇勫垎</td></tr>
+<tr><td>鎵ц娴佺▼</td><td>涓婁笅鏂囧姞杞解啋鎶€鑳芥悳绱⑩啋娌欑洅鎵ц鈫掓挵鍐欐姤鍛娾啋鎶€鑳芥暣鍚?/td></tr>
+<tr><td>璐ㄩ噺璇勪及</td><td>鍩轰簬浠诲姟瀹為檯浣跨敤鐜囪皟鏁磋瘎鍒嗘潈閲?/td></tr>
+</table>
+
+<div class="card" style="margin-top: 40px; border-left: 4px solid #e94560;">
+
+<h4>浠ｇ爜渚嬭瘉锛氳蹇嗚捀棣忔満鍒?/h4>
+<p><code>ga.py</code> 鐨?<code>do_start_long_term_update</code> 瀹炵幇浜?鑷垜杩涘寲"鈥斺€斿皢浠诲姟缁忛獙钂搁涓洪暱鏈熻蹇嗭細</p>
+<pre>def do_start_long_term_update(self, args, response):
+    prompt = """### [鎬荤粨鎻愮偧缁忛獙]
+鎻愬彇鏈€杩戜竴娆′换鍔′腑銆愪簨瀹為獙璇佹垚鍔熶笖闀挎湡鏈夋晥銆戠殑淇℃伅锛?
+- 鐜浜嬪疄锛堣矾寰?鍑瘉/閰嶇疆锛夆啋 file_patch 鏇存柊 L2锛屽悓姝?L1
+- 澶嶆潅浠诲姟缁忛獙锛堝叧閿潙鐐?鍓嶇疆鏉′欢锛夆啋 L3 绮剧畝 SOP
+**鍙兘鎻愬彇琛屽姩楠岃瘉鎴愬姛鐨勪俊鎭?*
+**绂佹**锛氫复鏃跺彉閲忋€佸叿浣撴帹鐞嗚繃绋嬨€佹湭楠岃瘉淇℃伅銆侀€氱敤甯歌瘑
+"""
+    yield "[Info] Start distilling good memory for long-term storage.\n"
+    path = "./memory/memory_management_sop.md"
+    if os.path.exists(path):
+        result = "鑷姩璇诲彇L0鍐呭锛歕n" + file_read(path, show_linenos=False)
+    else:
+        result = "Memory Management SOP not found. Do not update memory."
+    return StepOutcome(result, next_prompt=prompt)</pre>
+
+<p><strong>馃搶 浣撶郴鐗圭偣</strong>锛欸A鐨勬牳蹇冧环鍊煎湪浜庯紝閫氳繃<strong>宸ュ叿鏈€灏忓寲 + 鍒嗗眰璁板繂 + 寮哄埗鍙嶇渷 + 鏂囦欢绯荤粺IPC</strong>鐨勭粍鍚堬紝鍦ㄦ瀬绠€鏋舵瀯锛垀3K琛屾牳蹇冧唬鐮侊級涓婂疄鐜颁簡鑷垜杩涘寲銆佸鏅鸿兘浣撳崗浣溿€佸弽灏勫紡鐩戞帶绛夐珮绾ц兘鍔涖€傝繖浜涜兘鍔涗笉鏄鍏堣璁＄殑鐗规€э紝鑰屾槸浠庡簳灞傛灦鏋勪腑鑷劧娑岀幇鐨勩€?/p>
+</div>
+
+</div>
+</body>
+</html>
