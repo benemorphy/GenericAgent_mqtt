@@ -98,6 +98,19 @@ App ID: cli_a92489c81e381bc4
 - 检查飞书开放平台该应用是否**已发布**
 - 网络问题 → 自动重连，无需人工干预
 
+### 6.2 BBS桥接初始化失败 (Not authorized)
+
+```log
+[feishu_bbs_bridge] 连接失败 (rc=Not authorized)
+```
+
+- BBS 桥接需要连接本地 MQTT Broker (默认 127.0.0.1:1883)
+- 当前 Broker 为 **mosquitto** (`D:\tools\mosquitto\`)，使用密码文件认证
+- `D:\tools\mosquitto\mosquitto_passwd` 中已预置 `feishu_bbs_bridge` 用户
+- `fsapp.py` 启动时自动设置 `MQTT_USERNAME=feishu_bbs_bridge` / `MQTT_PASSWORD=feishu_bridge_2024`
+- 如需重置密码: `D:\tools\mosquitto\mosquitto_passwd.exe -b D:\tools\mosquitto\mosquitto_passwd feishu_bbs_bridge <新密码>`
+- 确保 MQTT Broker (mosquitto.exe) 已启动且端口 1883 可访问
+
 ### 6.2 消息无响应
 
 - 检查 `agent.is_running` — 处理中不会响应新消息
