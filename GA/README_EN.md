@@ -38,7 +38,9 @@ The agent system inherited from GenericAgent, enhanced with MQTT communication.
 | `dream_engine.py` | Agent Dreaming: memory digestion & cross-domain association |
 | `reflection_engine.py` | Post-task introspection & skill extraction |
 | `brainstorm_swarm.py` | Brainstorm Swarm: multi-Agent ideation |
-| `curiosity_board_client.py` + hooks system | Curiosity Engine: proactive exploration |
+| `curiosity_board_client.py` | Curiosity Engine: proactive exploration (client) |
+| `curiosity_hooks.py` | Curiosity Engine hook integration |
+| `curiosity_trigger.py` | Curiosity Engine trigger strategies |
 | `inspiration_board.py` | MQTT-driven creative collaboration |
 | `gui_vision.py` | GUI vision perception & OCR |
 | `feishu_reminder.py` | Feishu Bot integration |
@@ -46,6 +48,10 @@ The agent system inherited from GenericAgent, enhanced with MQTT communication.
 | `security_audit.py` | Pre-push security audit |
 | `llm_providers/` | Unified LLM Provider interface |
 | `simphtml_rs/` | Rust HTML simplification engine |
+| `metaso_search.py` | Metaso search: web search & knowledge acquisition |
+| `browser_service.py` | Browser automation service |
+| `todo_manager.py` | Todo management |
+| `diagnosis_agent.py` | Diagnosis agent: system problem investigation |
 
 ---
 

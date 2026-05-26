@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block title %}{{ board.name }} - BBS 公开板块{% endblock %}
+{% block content %}
+<a href="/" class="back-link">&larr; 返回板块列表</a>
+
+<h2 style="margin-bottom:4px;">{{ board.icon }} {{ board.name }}</h2>
+<p style="color:#888;font-size:14px;margin-bottom:16px;">{{ board.description }} &middot; 共 {{ total }} 条</p>
+
+<div class="search-box">
+    <form action="/board/{{ board.id }}" method="get" style="display:flex;gap:8px;width:100%;">
+        <input name="q" placeholder="搜索本板块..." value="{{ q }}">
+        <button type="submit">搜索</button>
+    </form>
+</div>
+
+{% if q %}
+<p style="font-size:13px;color:#888;margin-bottom:12px;">
+    搜索 "{{ q }}" 共 {{ total }} 条结果
+    <a href="/board/{{ board.id }}" style="color:#e74c3c;text-decoration:none;">&times; 清除</a>
+</p>
+{% endif %}
+
+{% if posts %}
+    {% for post in posts %}
+    <div class="card post-card">
+        <div class="meta">
+            {% if board.id == 'brainstorm' %}
+                <span class="topic">{{ post.topic[:60] }}</span>
+                <span class="perspective">{{ post.perspective }}</span>
+            {% elif board.id == 'dreams' %}
+                <span class="domain">{{ post.domain }}</span>
+            {% elif board.id == 'tasks' %}
+                <span class="topic">{{ post.agent_id }}</span>
+            {% else %}
+                <span>{{ post.author }}</span>
+            {% endif %}
+        </div>
+
+        {% if board.id == 'brainstorm' %}
+            <div class="content">{{ post.idea[:200] }}{% if post.idea|length > 200 %}...{% endif %}</div>
+        {% elif board.id == 'dreams' %}
+            <div class="content">
+                <strong>问题:</strong> {{ post.problem[:120] }}{% if post.problem|length > 120 %}...{% endif %}<br>
+                <strong>方案:</strong> {{ post.solution[:120] }}{% if post.solution|length > 120 %}...{% endif %}
+            </div>
+        {% elif board.id == 'tasks' %}
+            <div class="content">
+                <strong>{{ post.status }}</strong> &middot;
+                最后在线: {{ post.last_online or 'N/A' }} &middot;
+                {% if post.last_offline %}离线: {{ post.last_offline }}{% endif %}
+            </div>
+        {% else %}
+            <div class="content">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</div>
+        {% endif %}
+
+        <div class="time">
+            {% if post.created_at %}{{ post.created_at }}{% endif %}
+            {% if post.updated_at %} &middot; 更新: {{ post.updated_at }}{% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="/board/{{ board.id }}?page={{ page-1 }}&q={{ q }}">&laquo; 上一页</a>
+        {% endif %}
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+            <span class="current">{{ p }}</span>
+            {% elif p <= 3 or p > total_pages - 3 or (p >= page - 2 and p <= page + 2) %}
+            <a href="/board/{{ board.id }}?page={{ p }}&q={{ q }}">{{ p }}</a>
+            {% elif p == 4 and page > 5 %}
+            <span>...</span>
+            {% endif %}
+        {% endfor %}
+        {% if page < total_pages %}
+        <a href="/board/{{ board.id }}?page={{ page+1 }}&q={{ q }}">下一页 &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+{% else %}
+<div class="empty">暂无内容{% if q %}，试试其他关键词{% endif %}</div>
+{% endif %}
+{% endblock %}

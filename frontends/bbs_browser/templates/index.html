@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}BBS 公开板块{% endblock %}
+{% block content %}
+<div class="search-box">
+    <form action="/search" method="get" style="display:flex;gap:8px;width:100%;">
+        <input name="q" placeholder="搜索所有板块..." value="">
+        <button type="submit">搜索</button>
+    </form>
+</div>
+
+<div class="card-grid">
+    {% for board in boards %}
+    <a href="/board/{{ board.id }}" style="text-decoration:none;color:inherit;">
+        <div class="card board-card">
+            <div class="icon">{{ board.icon }}</div>
+            <div class="name">{{ board.name }}</div>
+            <div class="count">{{ board.post_count }} 条内容</div>
+            <div class="desc">{{ board.description }}</div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

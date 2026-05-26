@@ -38,7 +38,9 @@ GenericAgent_mqtt/
 | `dream_engine.py` | Agent Dreaming：记忆消化与跨域联想 |
 | `reflection_engine.py` | 任务后反思与技能提取 |
 | `brainstorm_swarm.py` | 脑暴集群：Round Robin + Delphi 多Agent创意生成 |
-| `curiosity_board_client.py` + 钩子系统 | 好奇引擎：主动探测式学习与信号检测 |
+| `curiosity_board_client.py` | 好奇引擎：主动探测式学习与信号检测（客户端） |
+| `curiosity_hooks.py` | 好奇引擎钩子集成 |
+| `curiosity_trigger.py` | 好奇引擎触发策略 |
 | `inspiration_board.py` | 灵感板 — MQTT 驱动的创意协作 |
 | `gui_vision.py` | GUI 视觉感知与 OCR |
 | `feishu_reminder.py` | 飞书Bot集成：定时提醒与群聊交互 |
@@ -46,6 +48,10 @@ GenericAgent_mqtt/
 | `security_audit.py` | 推送前安全审计 |
 | `llm_providers/` | LLM Provider 工厂：多模型统一接口 |
 | `simphtml_rs/` | Rust HTML 简化引擎 |
+| `metaso_search.py` | Metaso 搜索：联网搜索与知识获取 |
+| `browser_service.py` | 浏览器自动化服务 |
+| `todo_manager.py` | 待办事项管理 |
+| `diagnosis_agent.py` | 诊断代理：系统问题排查 |
 
 ---
 
