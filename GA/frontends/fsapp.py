@@ -1,7 +1,11 @@
 import glob, json, os, queue as Q, re, sys, threading, time
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+GA_ROOT = os.path.join(PROJECT_ROOT, "GA")
+FRONTENDS_ROOT = os.path.join(GA_ROOT, "frontends")
 sys.path.insert(0, PROJECT_ROOT)
+sys.path.insert(0, FRONTENDS_ROOT)
+sys.path.insert(0, GA_ROOT)
 os.chdir(PROJECT_ROOT)
 from agentmain import GeneraticAgent
 from frontends.chatapp_common import format_restore, create_agent
