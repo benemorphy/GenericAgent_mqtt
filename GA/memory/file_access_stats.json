@@ -32,20 +32,20 @@
     "last": "2026-05-25"
   },
   "memory_management_sop.md": {
-    "count": 10,
-    "last": "2026-05-20"
+    "count": 12,
+    "last": "2026-05-26"
   },
   "global_mem_insight.txt": {
-    "count": 55,
+    "count": 60,
     "last": "2026-05-26"
   },
   "global_mem.txt": {
-    "count": 65,
+    "count": 66,
     "last": "2026-05-26"
   },
   "skills_learning_sop.md": {
-    "count": 24,
-    "last": "2026-05-25"
+    "count": 25,
+    "last": "2026-05-26"
   },
   "skills_learning_sop": {
     "count": 2,
@@ -192,7 +192,7 @@
     "last": "2026-05-21"
   },
   "feishu_connect_sop.md": {
-    "count": 12,
+    "count": 13,
     "last": "2026-05-26"
   },
   "git_push_sop.md": {
@@ -236,11 +236,11 @@
     "last": "2026-05-25"
   },
   "failure_driven_learning_sop.md": {
-    "count": 3,
-    "last": "2026-05-21"
+    "count": 5,
+    "last": "2026-05-26"
   },
   "push_cleanup_sop.md": {
-    "count": 15,
+    "count": 16,
     "last": "2026-05-26"
   },
   "spaced_repetition_sop.md": {
@@ -260,8 +260,8 @@
     "last": "2026-05-21"
   },
   "metacognition_sop.md": {
-    "count": 2,
-    "last": "2026-05-21"
+    "count": 4,
+    "last": "2026-05-26"
   },
   "verify_sop.md": {
     "count": 1,
@@ -280,8 +280,8 @@
     "last": "2026-05-23"
   },
   "emqtt_design_principles.md": {
-    "count": 4,
-    "last": "2026-05-22"
+    "count": 5,
+    "last": "2026-05-26"
   },
   "MQTT_STRESS.md": {
     "count": 1,
@@ -298,5 +298,13 @@
   "RUST_ENV": {
     "count": 1,
     "last": "2026-05-23"
+  },
+  "MQTT_SERVICE_CHAIN.md": {
+    "count": 1,
+    "last": "2026-05-26"
+  },
+  "mqtt_service_config.md": {
+    "count": 1,
+    "last": "2026-05-26"
   }
 }

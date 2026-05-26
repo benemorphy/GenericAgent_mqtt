@@ -5,7 +5,7 @@ L2: Vision/OCR(模型/API) | RMQTT(broker启动) | MQTT_BBS(BoardService必启) 
 L3: memory_cleanup_sop(memory cleanup) | skill_search | skills_learning_sop(案例驱动技能学习) | metacognition_sop(元认知/学习日志) | failure_driven_learning_sop(失败驱动学习) | clipboard_ocr | vision_api | gui_vision | adb_ui | keychain | ljqCtrl_sop+.py | metaso_search | ocr_utils | procmem_scanner | ui_detect | subagent | web_setup_sop | plan_sop 
 | tmwebdriver_sop | autonomous_operation_sop | scheduled_task_sop | vision_sop
 | git_push_sop(Git推送审计+自动PR绕过保护) | feishu_connect_sop(飞书Bot连接与运维) | push_cleanup_sop(整理推送流程)
-| RUST_ENV(Rust 1.95.0 GNU工具链,本地开发环境) |
+| RUST_ENV(Rust 1.95.0 MSVC工具链+5个项目) | MQTT_SERVICE_CHAIN(8服务启动链+主题拓扑+认证) |
 | agent_dreaming_sop(Agent Dreaming联想发散SOP) | dream_engine(梦境引擎工具) | board_stress_sop(BoardService MQTT协议压测) | spaced_repetition_sop(间隔重复技能复习:复习已知) | sqlite_to_mariadb_sop(SQLite->MariaDB迁移)
 | aesthetic_design_sop(美学设计) | clipboard_ocr_sop(剪贴板OCR) | code_review_principles(代码审查原则) | dream_command_rule(梦境指令规则) | emqtt_design_principles(EMQTT设计原则) | github_contribution_sop(GitHub贡献)
 | goal_mode_sop(目标模式) | procmem_scanner_sop(进程内存扫描SOP) | qq_deploy_sop(QQ部署) | search_skills_sop(技能搜索) | shutdown_rule(关机规则) | supervisor_sop(监控SOP)
@@ -28,3 +28,4 @@ Mobile: adb_ui.py
 8. SOP: read SOPs not from memory, must use utils if available | complex long-running/user mentions planning -> read plan_sop
 9. Git: push 前必须审计（自动执行），使用 scripts/git_push.py 替代直接 git push（自动建 PR + squash-merge 绕过保护）
 10. Encoding: 代码/注释/日志中禁止使用 emoji，统一使用纯文本表达
+11. MQTT topic 调试: 发送端/接收端/中间件三者对 topic 格式假设独立, 排查时先用独立 paho 客户端直连做收发对比验证物理消息流; 当 BoardClient 注册超时时, 用 monitor 订阅所有相关 topic 捕获实际发出的 topic 路径, 检查 BBSClient.publish 自动前缀叠加

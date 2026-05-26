@@ -47,7 +47,7 @@ DB_CONFIG = {
     "host": _os.environ.get("DB_HOST", "127.0.0.1"),
     "port": int(_os.environ.get("DB_PORT", "3306")),
     "user": _os.environ.get("DB_USER", "root"),
-    "password": _os.environ.get("DB_PASSWORD", ""),
+    "password": _os.environ.get("DB_PASSWORD") or _os.environ.get("mariadb_password") or "",
     "database": _os.environ.get("DB_NAME", "Mqtt_bbs"),
     "charset": "utf8mb4",
 }

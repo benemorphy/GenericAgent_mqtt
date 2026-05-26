@@ -298,5 +298,14 @@
     "agent_notes": "\n[Agent思考 05-22 16:54]: 可行性评分=0.3，难度=medium，因子={'has_existing_tool': 0.0, 'domain_familiarity': 0.05, 'scope_small': 0.1, 'resource_available': 0.15}",
     "created_at": "2026-05-22 16:54",
     "updated_at": "2026-05-22 16:54"
+  },
+  {
+    "id": 62,
+    "title": "本体论与中医经脉论",
+    "detail": "",
+    "tags": [],
+    "source": "user",
+    "status": "new",
+    "created_at": 1779784699
   }
 ]

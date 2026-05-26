@@ -1,5 +1,24 @@
 # [Global Memory - L2]
 
+## [RUST_ENV]
+# Rust toolchain — MSVC target
+rust.toolchain = stable-x86_64-pc-windows-msvc
+rustc.version = 1.95.0 (59807616e 2026-04-14)
+cargo.version = 1.95.0 (f2d3ce0bd 2026-03-21)
+# VS Build Tools 2022 (VC++ 14.4x linker cl.exe)
+# 安装路径: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools
+# Windows SDK 10.0.20348 (含 Lib/Include 用于 link.exe)
+# MinGW/GNU 工具链 (rustup toolchain stable-x86_64-pc-windows-gnu) 不可用: ld 2.28 不支持 --high-entropy-va
+# 编译方式: cargo build 自动调用 vcvars64.bat 设置环境变量后使用 MSVC linker
+# 5个Rust项目 (tools/ 下):
+#   board_service_rs  — Rust BoardService (MQTT BBS 持久化, MariaDB)
+#   mqtt_bbs_rs       — Rust BBS 客户端库 (rumqttc 0.25)
+#   rmqtt_auth_rs     — RMQTT HTTP Auth 服务 (验证MQTT凭据, MariaDB bbs_users)
+#   rmqtt_webui_rs    — Broker监控面板 (8900, rumqttc 0.24)
+#   simphtml_rs       — HTML简化提取工具 (8901)
+# 编译产物: tools/*/target/(debug|release)/*.exe
+# 关键依赖: rumqttc(0.24/0.25), tokio(1), serde(1), sqlx(0.8 mysql), ureq(2)
+
 ## [RMQTT]
 # Install path
 rmqtt.home = D:\tools\rmqtt-0.20.0\rmqtt-0.20.0-x86_64-pc-windows
@@ -17,8 +36,28 @@ mosquitto.exe = D:\tools\mosquitto\mosquitto.exe
 mosquitto.conf = D:\tools\mosquitto\mosquitto.conf (listener 1883, allow_anonymous false)
 mosquitto.passwd = D:\tools\mosquitto\mosquitto_passwd
 mosquitto.passwd_tool = D:\tools\mosquitto\mosquitto_passwd.exe
-# 预置用户: feishu_bbs_bridge (密码 feishu_bridge_2024), test_user (test123), board, dashboard, agent_gpt 等
+# 预置用户: feishu_bbs_bridge, test_user, board, dashboard, agent_gpt 等（密码见 keychain）
 # 修改密码后需重启mosquitto才能生效
+## [MQTT_SERVICE_CHAIN]
+# 服务启动顺序 (start_all.ps1):
+#   1. MariaDB (3306) — 数据库
+#   2. Mosquitto (1883) — MQTT Broker
+#   3. simphtml_rs (8901, release) — HTML简化工具
+#   4. rmqtt_webui_rs (8900, debug) — 监控面板, 需 MQTT_USERNAME/PASSWORD env (dashboard用户)
+#      订阅: node/#, $SYS/broker/#
+#      关键: start_all.ps1 需通过 ProcessStartInfo.EnvironmentVariables 传凭证
+#   5. md_server_rs (8899) — Markdown服务器
+#   6. BoardService RS — Rust版BoardService (MQTT BBS协议持久化)
+#   7. Gateway (8000) — Python HTTP网关
+#   8. Default WorkerAgent — Python WorkerAgent (Mqtt_bbs.bbs.WorkerAgent)
+# MQTT主题拓扑:
+#   node/#            — Agent节点状态/任务消息
+#   $SYS/broker/#     — Mosquitto Broker统计指标
+#   agent/bbs/        — BBS协议主题
+#   board/            — 板块通信主题
+# 连接认证: allow_anonymous false, 使用 password_file 验证
+# 启动rmqtt_webui_rs时必须在环境变量中设置 MQTT_USERNAME=dashboard + MQTT_PASSWORD(JWT)  
+# JWT密码来源: tools/rmqtt_webui_rs/start_worker.py L5
 ## [QQ_BOT]
 # NapCat QQ 协议端（无头模式，手机QQ扫码）
 napcat.home = D:\open_claw_agent\GenericAgent_mqtt\temp\NapCat.Shell

@@ -1,0 +1,49 @@
+{
+  "date": "2026-05-26",
+  "session_id": "R32",
+  "task": "MQTT_BBS注册全链路排查与修复",
+  "category": "system",
+  "result": "success",
+  "learning_strategy": "probe-first",
+  "strategies_used": [
+    "code_run_test",
+    "paho直连对比",
+    "monitor订阅捕获实际topic",
+    "逐层分析调用链",
+    "物理进程状态确认"
+  ],
+  "what_worked": [
+    "用独立paho MQTT客户端直连对比测试（隔离BoardClient逻辑，直接验证MQTT层通断）",
+    "用monitor客户端订阅所有相关topic，捕获实际发出的消息",
+    "逐层读源码：BoardClient.register->BBSClient.publish->发现topic前缀叠加",
+    "保持Rust进程独立运行（start_auth.bat新窗口），避免subprocess超时kill",
+    "建立控制变量思维：一次只改一个变量(paho直连vs BoardClient, 不同broker, Rust进程有无)"
+  ],
+  "what_didnt": [
+    "过早假设Rust进程有问题（浪费多轮验证event_loop/stderr/stdin阻塞）",
+    "早期信任monitor不切topic验证（直到monitor也收不到0条才意识到是发送端问题）",
+    "被双重agent/前缀现象迷惑，先入为主以为TOPIC_BBS=agent/bbs更合理（用户偏好影响判断）",
+    "修复后未立即检查Git的push_cleanup/audit流程",
+    "多次使用subprocess.Popen启动Rust进程导致被超时kill，干扰判断"
+  ],
+  "key_insight": "MQTT topic路径的隐形前缀是分布式系统中最难定位的一类Bug：发送端(BBSClient.publish)自动加前缀、接收端(Rust)固定前缀匹配、中间件(Mosquitto)无日志，三者对topic格式的假设各自独立，任何一处不一致都导致消息静默丢失。解决这类问题的最佳调试范式是用独立paho客户端同时作发送方和监听方，直接验证物理消息流是否存在。",
+  "time_spent_min": 45,
+  "satisfaction": 4,
+  "failure_count": 3,
+  "tools_used": [
+    "code_run",
+    "file_read",
+    "file_patch",
+    "ask_user",
+    "update_working_checkpoint"
+  ],
+  "subtasks": [
+    "fsapp.py导入链修复",
+    "mqtt_bbs->Mqtt_bbs改名合并",
+    "BoardClient注册超时排查",
+    "Rust board_service_rs构建与启动",
+    "TOPIC_BBS前缀设计决策",
+    "MQTT凭据验证",
+    "最终修复与推送"
+  ]
+}
