@@ -1,0 +1,52 @@
+use std::sync::Arc;
+use crate::{AppState, models::BbsRequest};
+use crate::mqtt_handler::publish_response;
+use crate::db;
+
+pub async fn handle_register(state: &Arc<AppState>, topic: &str, payload: &[u8]) {
+    let (board_key, req) = match parse_register(topic, payload) {
+        Some(v) => v,
+        None => return,
+    };
+    
+    let token = uuid::Uuid::new_v4().to_string()[..16].to_string();
+    let name = req.name.as_deref().unwrap_or("anonymous");
+    let agent_id = req.agent_id.as_deref().unwrap_or(name);
+    
+    // P1.4: 签发 JWT
+    let jwt_secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "bbs-jwt-secret-key".to_string());
+    let jwt = jsonwebtoken::encode(
+        &jsonwebtoken::Header::default(),
+        &serde_json::json!({
+            "sub": name, "agent_id": agent_id,
+            "exp": chrono::Utc::now().timestamp() + 86400,
+            "iat": chrono::Utc::now().timestamp(),
+        }),
+        &jsonwebtoken::EncodingKey::from_secret(jwt_secret.as_bytes())
+    ).unwrap_or_default();
+    
+    if let Err(e) = db::upsert_user(&state.db_pool, &board_key, name, &token).await {
+        tracing::error!("注册 DB 错误: {}", e);
+        return;
+    }
+    
+    let reply_to = req.reply_to.as_deref();
+    let corr_id = req.corr_id.as_deref().unwrap_or("");
+    
+    let resp = serde_json::json!({"token": token, "name": name, "jwt": jwt});
+    publish_response(&state.mqtt_client, reply_to, &board_key, "register/response", corr_id, &resp).await;
+    
+    tracing::info!("注册: {} → token={} (board: {}, jwt={})", name, &token[..8], board_key, &jwt[..20]);
+}
+
+fn parse_register(topic: &str, payload: &[u8]) -> Option<(String, BbsRequest)> {
+    let parts: Vec<&str> = topic.split('/').collect();
+    if parts.len() < 4 { return None; }
+    let board_key = parts[2].to_string();
+    
+    let req: BbsRequest = serde_json::from_slice(payload).ok()?;
+    if req.name.as_deref().unwrap_or("").is_empty() {
+        return None;
+    }
+    Some((board_key, req))
+}

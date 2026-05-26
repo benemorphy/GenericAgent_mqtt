@@ -218,7 +218,9 @@ fn mqtt_loop(state: Arc<Mutex<AppState>>) {
         }
         let (client, mut eventloop) = AsyncClient::new(opts, 100);
 
-        let _ = client.subscribe("agent/#", QoS::AtMostOnce).await;
+        let _ = client.subscribe("node/#", QoS::AtMostOnce).await;
+        // Also subscribe to Mosquitto $SYS topics for broker stats
+        let _ = client.subscribe("$SYS/broker/#", QoS::AtMostOnce).await;
 
         loop {
             match eventloop.poll().await {
@@ -226,9 +228,11 @@ fn mqtt_loop(state: Arc<Mutex<AppState>>) {
                     let topic = p.topic.clone();
                     let payload = String::from_utf8_lossy(&p.payload).to_string();
                     let parts: Vec<&str> = topic.split('/').collect();
-                    if parts.len() >= 4 && parts[1] == "node" && parts[3] == "status" {
+
+                    // Agent status updates - actual topic: node/{id}/status
+                    if parts.len() >= 3 && parts[0] == "node" && parts[2] == "status" {
                         let mut st = state.lock().unwrap();
-                        let id = parts[2].to_string();
+                        let id = parts[1].to_string();
                         if let Some(a) = st.agents.iter_mut().find(|a| a.id == id) {
                             a.status = payload.clone();
                             a.last_seen = format!("{}s", Instant::now().elapsed().as_secs());
@@ -236,10 +240,35 @@ fn mqtt_loop(state: Arc<Mutex<AppState>>) {
                             st.agents.push(AgentInfo { id, status: payload.clone(), last_seen: "now".to_string() });
                         }
                     }
-                    if parts.len() >= 4 && parts[1] == "task" && parts[3] == "status" {
+                    // Agent capability declaration - also register agent
+                    if parts.len() >= 3 && parts[0] == "node" && parts[2] == "capability" {
+                        let mut st = state.lock().unwrap();
+                        let id = parts[1].to_string();
+                        if !st.agents.iter().any(|a| a.id == id) {
+                            st.agents.push(AgentInfo { id: id.clone(), status: "online".to_string(), last_seen: "now".to_string() });
+                        }
+                    }
+                    // Task status updates - actual topic: board/task/{id}/status or board/task/{id}/output
+                    if parts.len() >= 4 && parts[0] == "board" && parts[1] == "task" && parts[3] == "status" {
                         let mut st = state.lock().unwrap();
                         st.tasks.push(TaskInfo { id: parts[2].to_string(), agent: parts.get(4).unwrap_or(&"?").to_string(), status: payload.clone() });
                         if st.tasks.len() > 100 { st.tasks.remove(0); }
+                    }
+                    // Mosquitto $SYS broker stats
+                    if topic.starts_with("$SYS/broker/") {
+                        let mut st = state.lock().unwrap();
+                        match topic.as_str() {
+                            "$SYS/broker/clients/connected" => {
+                                st.stats.connections = payload.trim().parse().unwrap_or(0);
+                            }
+                            "$SYS/broker/clients/total" => {
+                                // kept for info but connections is what we display
+                            }
+                            "$SYS/broker/subscriptions/count" => {
+                                st.stats.subscriptions = payload.trim().parse().unwrap_or(0);
+                            }
+                            _ => {}
+                        }
                     }
                 }
                 Ok(_) => {}
@@ -253,41 +282,15 @@ fn mqtt_loop(state: Arc<Mutex<AppState>>) {
 }
 
 fn broker_poll(state: Arc<Mutex<AppState>>) {
+    // Mosquitto 没有 HTTP API，broker 统计通过 $SYS MQTT 主题获取
+    // 此线程仅保留占位，stats 由 mqtt_loop 中的 $SYS 订阅更新
     loop {
-        thread::sleep(Duration::from_secs(3));
-        let mut stats = BrokerStats::default();
-
-        // Poll rmqtt API
-        let endpoints = [
-            ("/api/v1/brokers", "brokers"),
-            ("/api/v1/clients", "clients"),
-            ("/api/v1/stats", "stats"),
-        ];
-
-        for (ep, _) in &endpoints {
-            let url = format!("{}{}", RMQTT_API, ep);
-            if let Ok(resp) = ureq::get(&url).timeout(Duration::from_secs(2)).call() {
-                if let Ok(body) = resp.into_string() {
-                    if let Ok(v) = serde_json::from_str::<serde_json::Value>(&body) {
-                        if *ep == "/api/v1/stats" {
-                            // stats API returns [{node:{}, stats:{...}}]
-                            if let Some(arr) = v.as_array() {
-                                if let Some(first) = arr.first() {
-                                    if let Some(s) = first.get("stats") {
-                                        stats.connections = s.get("connections.count").and_then(|x| x.as_u64()).unwrap_or(0) as u32;
-                                        stats.topics = s.get("topics.count").and_then(|x| x.as_u64()).unwrap_or(0) as u32;
-                                        stats.subscriptions = s.get("subscriptions.count").and_then(|x| x.as_u64()).unwrap_or(0) as u32;
-                                        stats.routes = s.get("routes.count").and_then(|x| x.as_u64()).unwrap_or(0) as u32;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        thread::sleep(Duration::from_secs(30));
+        // 定期清理过期的 agents（30s 无更新视为离线）
         let mut st = state.lock().unwrap();
-        st.stats = stats;
+        st.agents.retain(|a| {
+            let secs = a.last_seen.trim_end_matches('s').parse::<u64>().unwrap_or(0);
+            secs < 60
+        });
     }
 }

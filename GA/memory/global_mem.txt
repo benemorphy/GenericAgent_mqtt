@@ -33,7 +33,7 @@ onebot_qq.env = D:\open_claw_agent\GenericAgent_mqtt\temp\onebot_qq\.env
 
 ## [Vision/OCR]
 # gui_vision 视觉理解工具（tools/gui_vision.py）
-gui_vision.path = D:\open_claw_agent\GenericAgent_mqtt\tools\gui_vision.py
+gui_vision.path = D:\open_claw_agent\GenericAgent_mqtt\GA\tools\gui_vision.py
 
 # 默认后端：offline（rapidocr本地OCR）
 gui_vision.default_backend = offline
