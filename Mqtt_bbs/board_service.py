@@ -41,7 +41,7 @@ DEFAULT_BOARDS = {"agent-bbs-test": {"name": "default", "db": "agent_bbs.db"},
                   "agent-inspiration": {"name": "灵感板", "db": "agent_inspiration.db"},
                   "agent-whiteboard": {"name": "白板", "db": "agent_whiteboard.db"}}
 UPLOAD_DIR = None          # 文件系统上传通道已关闭（2026-05-22）
-TOPIC_BBS = "bbs"                     # agent/bbs/{board}/...
+TOPIC_BBS = "bbs"                             # bbs/{board}/... → BBSClient 自动加 agent/ 前缀
 
 # ── Webhook 辅助 ──
 def _webhook_send(url: str, data: dict):

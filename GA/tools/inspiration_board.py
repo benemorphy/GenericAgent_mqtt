@@ -74,6 +74,10 @@ class Board:
 
     def _connect_bbs(self):
         """连接 BBS 并注册，返回 BoardClient 实例"""
+        # 确保 MQTT 认证环境变量已设置 (参考 start_auth.bat)
+        if not os.environ.get('MQTT_USERNAME'):
+            os.environ.setdefault('MQTT_USERNAME', 'board-service-rs')
+            os.environ.setdefault('MQTT_PASSWORD', 'board-service-rs')
         if self._bbs is not None:
             if self._bbs.is_connected:
                 return self._bbs
