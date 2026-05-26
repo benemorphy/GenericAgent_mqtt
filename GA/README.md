@@ -38,14 +38,31 @@ GenericAgent_mqtt/
 | `dream_engine.py` | Agent Dreaming：记忆消化与跨域联想 |
 | `reflection_engine.py` | 任务后反思与技能提取 |
 | `brainstorm_swarm.py` | 脑暴集群：Round Robin + Delphi 多Agent创意生成 |
-| `curiosity_board_client.py` + 钩子系统 | 好奇引擎：主动探测式学习与信号检测 |
+| `curiosity_board_client.py` | 好奇引擎：主动探测式学习与信号检测（客户端） |
+| `curiosity_hooks.py` | 好奇引擎钩子集成 |
+| `curiosity_trigger.py` | 好奇引擎触发策略 |
 | `inspiration_board.py` | 灵感板 — MQTT 驱动的创意协作 |
 | `gui_vision.py` | GUI 视觉感知与 OCR |
 | `feishu_reminder.py` | 飞书Bot集成：定时提醒与群聊交互 |
 | `file_search.py` | 文件搜索（pathlib + Everything SDK）|
 | `security_audit.py` | 推送前安全审计 |
+| `agent_runner.py` | 独立 Agent 运行器：`python agent_runner.py name cap1,cap2` |
+| `config_service.py` | 统一配置加载与热重载 |
+| `constraint_dashboard.py` | 约束状态感知仪表盘 |
+| `failure_tracker.py` | 失败驱动学习跟踪器 |
+| `hitl_approval.py` | 人在回路审批管理 |
+| `observability.py` | 结构化日志 + Prometheus 指标 |
+| `pii_masker.py` | LLM 调用前私域信息脱敏中间层 |
+| `session_compactor.py` | 后台自动压缩 L4 原始历史会话 |
+| `skill_review.py` | 间隔重复技能复习 |
+| `step_detector.py` | 实时步骤检测：运行时追踪工具执行异常 |
+| `turn_policy.py` | 可插拔回合策略链 |
 | `llm_providers/` | LLM Provider 工厂：多模型统一接口 |
 | `simphtml_rs/` | Rust HTML 简化引擎 |
+| `metaso_search.py` | Metaso 搜索：联网搜索与知识获取 |
+| `browser_service.py` | 浏览器自动化服务 |
+| `todo_manager.py` | 待办事项管理 |
+| `diagnosis_agent.py` | 诊断代理：系统问题排查 |
 
 ---
 
@@ -56,11 +73,7 @@ GenericAgent_mqtt/
 | 组件 | 说明 | 部署方式 |
 |------|------|----------|
 | `mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m mqtt_bbs.board_service` |
-| `tools/board_service_rs/` | Rust 高性能 BoardService | 独立二进制 |
-| `tools/mqtt_bbs_rs/` | Rust MQTT BBS 组件 | 独立二进制 |
 | `tools/rmqtt_webui.py` | MQTT Broker Web 仪表盘 | `python tools/rmqtt_webui.py` |
-| `tools/rmqtt_webui_rs/` | Rust Web 仪表盘 | 独立二进制 |
-| `tools/rmqtt_auth_rs/` | Rust MQTT 认证扩展 | 独立二进制 |
 | `tools/gen_jwt.py` | JWT Token 生成 | 工具脚本 |
 | `tools/secrets.py` | 机密管理 | 工具脚本 |
 | `docker/` / `Dockerfile.*` | Docker 部署 | `docker-compose up` |
@@ -81,11 +94,8 @@ GenericAgent_mqtt/
 # 1. 启动 MQTT Broker
 rmqtt start
 
-# 2. 启动 BoardService（Python）
+# 2. 启动 BoardService
 python -m mqtt_bbs.board_service
-
-# 3. 或使用 Rust 版（高性能）
-cd GA_tools && ./md_server_rs/target/release/board_service_rs
 ```
 
 ---
