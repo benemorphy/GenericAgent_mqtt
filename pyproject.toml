@@ -42,6 +42,7 @@ testpaths = ["tests/test_bbs.py::TestHMAC"]
 filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.setuptools.packages.find]
+where = [".", "GA"]
 include = ["ga_cli*", "mqtt_bbs*"]
 
 [project.scripts]
