@@ -1,11 +1,26 @@
 @echo off
-cd /d D:\open_claw_agent\GenericAgent_mqtt\tools\rmqtt_webui_rs
+chcp 65001 >nul
+cd /d %~dp0
+
+:: åŠ è½½ agent.envï¼ˆJWT ä»¤ç‰Œ + è¿æ¥å‡­æ®ï¼‰
+if not defined DASHBOARD_USERNAME (
+    if exist "..\..\agent.env" (
+        for /f "usebackq tokens=1,* delims==" %%a in ("..\..\agent.env") do (
+            if "%%a"=="DASHBOARD_USERNAME" set "DASHBOARD_USERNAME=%%b"
+            if "%%a"=="DASHBOARD_PASSWORD" set "DASHBOARD_PASSWORD=%%b"
+        )
+    )
+)
+
+:: è®¾ç½® MQTT å‡­æ®
+set MQTT_USERNAME=%DASHBOARD_USERNAME%
+set MQTT_PASSWORD=%DASHBOARD_PASSWORD%
+
 set PATH=C:\Users\user\.cargo\bin;C:\Users\user\.rustup\toolchains\stable-x86_64-pc-windows-gnu\bin;D:\tools\w64devkit\bin;C:\Windows\system32;C:\Windows
-echo [1/2] ±àÒë rmqtt_webui_rs ...
+
+echo [1/2] ç¼–è¯‘ rmqtt_webui_rs ...
 cargo build
 echo.
-echo [2/2] Æô¶¯ Dashboard£¨°´ Ctrl+C Í£Ö¹£©...
-set MQTT_USERNAME=dashboard_agent
-set MQTT_PASSWORD=dashboard_agent
+echo [2/2] å¯åŠ¨ Dashboardï¼ŒæŒ‰ Ctrl+C åœæ­¢...
 target\debug\rmqtt_webui_rs.exe
 pause
