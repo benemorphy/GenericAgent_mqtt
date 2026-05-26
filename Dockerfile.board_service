@@ -9,13 +9,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # 复制项目
 COPY pyproject.toml .
-COPY mqtt_bbs/ mqtt_bbs/
+COPY Mqtt_bbs/ Mqtt_bbs/
 
 # 安装
 RUN pip install --no-cache-dir -e .
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD python -c "from mqtt_bbs.client import BBSClient; print('ok')" || exit 1
+    CMD python -c "from Mqtt_bbs.client import BBSClient; print('ok')" || exit 1
 
-ENTRYPOINT ["python", "-m", "mqtt_bbs.board_service"]
+ENTRYPOINT ["python", "-m", "Mqtt_bbs.board_service"]

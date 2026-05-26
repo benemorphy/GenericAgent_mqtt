@@ -82,7 +82,7 @@ class Board:
                 self._bbs.disconnect()
             except Exception:
                 pass
-        from mqtt_bbs.board_client import BoardClient
+        from Mqtt_bbs.board_client import BoardClient
         self._bbs = BoardClient("inspiration_board", board=self.bbs_board)
         self._bbs.connect()
         reg = self._bbs.register(self._bbs_reg_name, timeout=5)
@@ -412,7 +412,7 @@ class Board:
         # 方式一：BoardClient BBS 协议（主路径）
         bbs_ok = False
         try:
-            from mqtt_bbs.board_client import BoardClient
+            from Mqtt_bbs.board_client import BoardClient
             with BoardClient("inspiration_board", board="agent-bbs-test") as bbs:
                 reg = bbs.register("灵感板", timeout=5)
                 if reg.get("token"):
@@ -434,7 +434,7 @@ class Board:
         # 方式二：原始 MQTT 直发（降级/兼容，保留 open 主题）
         try:
             import paho.mqtt.client as mqtt
-            from mqtt_bbs.config import BROKER_HOST, BROKER_PORT
+            from Mqtt_bbs.config import BROKER_HOST, BROKER_PORT
 
             client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
             client.connect(BROKER_HOST, BROKER_PORT, 5)

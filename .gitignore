@@ -102,5 +102,8 @@ assets/copilot_proxy.pyw
 # GA_viewer — 独立工具集，不上传
 GA_tools/
 
+# mqtt_bbs — 已重命名为 Mqtt_bbs（大小写重定向）
+mqtt_bbs/
+
 # Config templates
 .env.template

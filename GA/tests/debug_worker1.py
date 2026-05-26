@@ -14,7 +14,7 @@ with open(worker_py, 'w', encoding='utf-8') as f:
 import sys, time, json, os
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _ROOT)
-from mqtt_bbs.client import BBSClient
+from Mqtt_bbs.client import BBSClient
 import logging
 logging.basicConfig(level=logging.WARN)
 wname = sys.argv[1]
@@ -91,7 +91,7 @@ def run_test(test_name, worker_names):
     
     print("  OK: all ready")
     
-    from mqtt_bbs.client import BBSClient
+    from Mqtt_bbs.client import BBSClient
     master = BBSClient("dm", host="127.0.0.1", port=1883, mqtt_version=5)
     master.connect()
     master.wait_connected(5)

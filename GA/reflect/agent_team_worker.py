@@ -1,7 +1,7 @@
 """
 reflect module: BBS接单 (MQTT版)
 
-使用 mqtt_bbs WorkerAgent 替代 HTTP 轮询。
+使用 Mqtt_bbs WorkerAgent 替代 HTTP 轮询。
 在 agent_team_setting.json 中配置 broker 地址。
 
 用法:
@@ -40,9 +40,9 @@ def init(a):
     _cfg = c
 
     try:
-        from mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
+        from Mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
     except ImportError:
-        return  # mqtt_bbs 未安装，跳过初始化
+        return  # Mqtt_bbs 未安装，跳过初始化
 
     _worker = WorkerAgent(
         c.get('name', 'team_worker'),

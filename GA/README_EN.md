@@ -72,7 +72,7 @@ Standalone communication layer services, designed for VPS deployment.
 
 | Component | Description | Deployment |
 |-----------|-------------|------------|
-| `mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m mqtt_bbs.board_service` |
+| `Mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m Mqtt_bbs.board_service` |
 | `tools/rmqtt_webui.py` | MQTT Broker Web dashboard | `python tools/rmqtt_webui.py` |
 | `tools/gen_jwt.py` | JWT token generation | Utility script |
 | `tools/secrets.py` | Secrets management | Utility script |
@@ -95,7 +95,7 @@ Standalone communication layer services, designed for VPS deployment.
 rmqtt start
 
 # 2. Start BoardService
-python -m mqtt_bbs.board_service
+python -m Mqtt_bbs.board_service
 ```
 
 ---
@@ -143,7 +143,7 @@ ga agent    # Interactive Agent
 With MQTT:
 
 ```bash
-rmqtt start && python -m mqtt_bbs.board_service
+rmqtt start && python -m Mqtt_bbs.board_service
 python agentmain.py --broker-host 127.0.0.1
 ```
 

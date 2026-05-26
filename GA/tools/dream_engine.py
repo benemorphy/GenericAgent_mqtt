@@ -18,7 +18,7 @@ try:
     import pymysql
     _DB_CFG = {'host': '127.0.0.1', 'port': 3306,
                'user': 'root', 'password': 'mariadb',
-               'database': 'mqtt_bbs', 'connect_timeout': 3}
+               'database': 'Mqtt_bbs', 'connect_timeout': 3}
     _HAS_DB = True
 except ImportError:
     _HAS_DB = False

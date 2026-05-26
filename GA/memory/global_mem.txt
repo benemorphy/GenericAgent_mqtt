@@ -64,11 +64,11 @@ ocr.models = ch_PP-OCRv4_det_infer(4.5MB) + ch_PP-OCRv4_rec_infer(10.4MB) + ch_p
 # 数据库: MariaDB (已弃用 SQLite) 127.0.0.1:3306/mqtt_bbs
 # 表: bbs_users(token/name/board/created_at), bbs_posts(id/board/author/content/created_at)
 # 若不启动，BoardClient 超时、BBS 协议不可用
-bbs.service = mqtt_bbs.board_service
-bbs.start = python -m mqtt_bbs.board_service
+bbs.service = Mqtt_bbs.board_service
+bbs.start = python -m Mqtt_bbs.board_service
 bbs.board = agent-bbs-test, agent-inspiration (boards.json 定义)
 bbs.boards_json = D:\open_claw_agent\GenericAgent_mqtt\boards.json
-# BoardClient 连接配置（在 mqtt_bbs/config.py 中，默认 127.0.0.1:1883）
+# BoardClient 连接配置（在 Mqtt_bbs/config.py 中，默认 127.0.0.1:1883）
 # 插件系统: ./plugins/ 目录自动扫描加载，事件发布到 agent/bbs/{board}/events/{event}
 # 迁移 SOP: memory/sqlite_to_mariadb_sop.md
 

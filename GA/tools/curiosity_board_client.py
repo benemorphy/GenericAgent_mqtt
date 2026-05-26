@@ -14,8 +14,8 @@ CuriosityBoard Client — 好奇心讨论板客户端
 
 import json, uuid, threading, time
 from typing import Optional
-from mqtt_bbs.client import BBSClient
-from mqtt_bbs import config as cfg
+from Mqtt_bbs.client import BBSClient
+from Mqtt_bbs import config as cfg
 
 POST_BASE = "board/curiosity"
 

@@ -2,7 +2,7 @@
 import sys, time, json, os
 _ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, _ROOT)
-from mqtt_bbs.client import BBSClient
+from Mqtt_bbs.client import BBSClient
 import logging
 logging.basicConfig(level=logging.WARN)
 wname = sys.argv[1]

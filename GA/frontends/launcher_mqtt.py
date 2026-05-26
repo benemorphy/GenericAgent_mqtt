@@ -38,7 +38,7 @@ def launch_worker(name: str, capabilities: list, broker_host: str = "127.0.0.1",
     env["MQTT_HOST"] = broker_host
     env["MQTT_PORT"] = str(broker_port)
 
-    cmd = [sys.executable, "-m", "mqtt_bbs.examples.worker_factory"]
+    cmd = [sys.executable, "-m", "Mqtt_bbs.examples.worker_factory"]
     proc = subprocess.Popen(
         cmd,
         env=env,

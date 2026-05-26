@@ -16,7 +16,7 @@ from tools.feishu_reminder import ReminderManager, start_reminder_checker, forma
 from tools.todo_manager import TodoManager, _TODO_HELP as TODO_HELP
 from tools.hitl_approval import submit_decision, approve, reject, get_pending_list, _HITL_HELP
 from tools.inspiration_board import Board as InspirationBoard, list_all as list_inspirations
-from mqtt_bbs import AgentBoardWithPersistence
+from Mqtt_bbs import AgentBoardWithPersistence
 
 import traceback
 import lark_oapi as lark
@@ -294,7 +294,7 @@ def _init_bbs_push():
             os.environ['MQTT_PASSWORD'] = 'feishu_bridge_2024'
     for _retry in range(3):
         try:
-            from mqtt_bbs.board_client import BoardClient as _BC
+            from Mqtt_bbs.board_client import BoardClient as _BC
             _bbs_push_client = _BC("feishu_bbs_bridge", board="agent-bbs-test")
             _bbs_push_client.connect()
             _bbs_push_client.subscribe("bbs/+/post", _on_bbs_new_post)
@@ -949,7 +949,7 @@ def handle_command(open_id, cmd, chat_id=None):
         # BBS 广播：将梦境结果广播到 agent-dream board
         if _new_ideas:
             try:
-                from mqtt_bbs.board_client import BoardClient as _BC
+                from Mqtt_bbs.board_client import BoardClient as _BC
                 with _BC("feishu_bot_dream", board="agent-dream") as _bbs_d:
                     _reg = _bbs_d.register("飞书Bot", timeout=5)
                     if _reg and _reg.get("token"):
@@ -971,7 +971,7 @@ def handle_command(open_id, cmd, chat_id=None):
         elif parts[1] == "post":
             content = " ".join(parts[2:])
             try:
-                from mqtt_bbs.board_client import BoardClient as _BC
+                from Mqtt_bbs.board_client import BoardClient as _BC
                 with _BC("feishu_bot_bridge", board="agent-bridge") as _bbs:
                     reg = _bbs.register("飞书Bot", timeout=5)
                     if reg and reg.get("token"):

@@ -27,7 +27,7 @@ Topics:
 """
 
 import json, uuid, time
-from mqtt_bbs.plugin import Plugin, plugin_hook
+from Mqtt_bbs.plugin import Plugin, plugin_hook
 
 POST_BASE = "board/curiosity"
 POST_TOPIC = f"{POST_BASE}/post"

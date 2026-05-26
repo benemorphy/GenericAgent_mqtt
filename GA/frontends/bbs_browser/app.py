@@ -3,7 +3,7 @@
 import os, sys
 from pathlib import Path
 
-# ── 确保能找到 mqtt_bbs 包 ──
+# ── 确保能找到 Mqtt_bbs 包 ──
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))

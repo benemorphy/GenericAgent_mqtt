@@ -238,10 +238,10 @@ if __name__ == '__main__':
     agent.verbose = args.verbose
     threading.Thread(target=agent.run, daemon=True).start()
 
-    # MQTT WorkerAgent 模式 — 委托给独立模块 (mqtt_bbs/mqtt_agent_runner.py)
+    # MQTT WorkerAgent 模式 — 委托给独立模块 (Mqtt_bbs/mqtt_agent_runner.py)
     agent.peer_hint = False
     try:
-        from mqtt_bbs.mqtt_agent_runner import start_mqtt_agent
+        from Mqtt_bbs.mqtt_agent_runner import start_mqtt_agent
         start_mqtt_agent(args)
     except ImportError as e:
         print(f"[MQTT] 初始化失败: {e} (需要 pip install paho-mqtt)")

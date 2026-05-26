@@ -72,7 +72,7 @@ GenericAgent_mqtt/
 
 | 组件 | 说明 | 部署方式 |
 |------|------|----------|
-| `mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m mqtt_bbs.board_service` |
+| `Mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m Mqtt_bbs.board_service` |
 | `tools/rmqtt_webui.py` | MQTT Broker Web 仪表盘 | `python tools/rmqtt_webui.py` |
 | `tools/gen_jwt.py` | JWT Token 生成 | 工具脚本 |
 | `tools/secrets.py` | 机密管理 | 工具脚本 |
@@ -95,7 +95,7 @@ GenericAgent_mqtt/
 rmqtt start
 
 # 2. 启动 BoardService
-python -m mqtt_bbs.board_service
+python -m Mqtt_bbs.board_service
 ```
 
 ---
@@ -143,7 +143,7 @@ ga agent    # 交互式 Agent
 启用 MQTT 模式：
 
 ```bash
-rmqtt start && python -m mqtt_bbs.board_service
+rmqtt start && python -m Mqtt_bbs.board_service
 python agentmain.py --broker-host 127.0.0.1
 ```
 

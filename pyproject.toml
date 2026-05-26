@@ -43,7 +43,7 @@ filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.setuptools.packages.find]
 where = [".", "GA"]
-include = ["ga_cli*", "mqtt_bbs*"]
+include = ["ga_cli*", "Mqtt_bbs*"]
 
 [project.scripts]
 ga = "ga_cli.cli:main"

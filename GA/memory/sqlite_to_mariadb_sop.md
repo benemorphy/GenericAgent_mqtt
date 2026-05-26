@@ -42,7 +42,7 @@ BoardService 使用 MariaDB (config.DB_CONFIG)，不再使用 SQLite。
 ## 当代码被多次 patch 改乱时的恢复策略
 ```python
 # 不要继续 patch 了！直接 git restore + 干净重做
-git checkout <clean_commit> -- mqtt_bbs/board_service.py
+git checkout <clean_commit> -- Mqtt_bbs/board_service.py
 # 然后在一轮内完成全部修改
 ```
 

@@ -4,7 +4,7 @@ import sys, os, time, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 print("[MASTER] 启动...", flush=True)
 
-from mqtt_bbs.bbs import AgentBoard
+from Mqtt_bbs.bbs import AgentBoard
 
 print("[MASTER] 已导入AgentBoard", flush=True)
 board = AgentBoard("test_master", host="127.0.0.1", port=1883)

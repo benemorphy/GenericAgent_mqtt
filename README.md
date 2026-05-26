@@ -55,7 +55,7 @@ GenericAgent_mqtt/
 
 | 组件 | 说明 | 部署方式 |
 |------|------|----------|
-| `mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m mqtt_bbs.board_service` |
+| `Mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m Mqtt_bbs.board_service` |
 | `tools/board_service_rs/` | Rust 高性能 BoardService | 独立二进制 |
 | `tools/mqtt_bbs_rs/` | Rust MQTT BBS 组件 | 独立二进制 |
 | `tools/rmqtt_webui.py` | MQTT Broker Web 仪表盘 | `python tools/rmqtt_webui.py` |
@@ -82,7 +82,7 @@ GenericAgent_mqtt/
 rmqtt start
 
 # 2. 启动 BoardService（Python）
-python -m mqtt_bbs.board_service
+python -m Mqtt_bbs.board_service
 
 # 3. 或使用 Rust 版（高性能）
 cd GA_tools && ./md_server_rs/target/release/board_service_rs
@@ -133,7 +133,7 @@ ga agent    # 交互式 Agent
 启用 MQTT 模式：
 
 ```bash
-rmqtt start && python -m mqtt_bbs.board_service
+rmqtt start && python -m Mqtt_bbs.board_service
 python agentmain.py --broker-host 127.0.0.1
 ```
 

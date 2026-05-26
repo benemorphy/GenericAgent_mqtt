@@ -55,7 +55,7 @@ Standalone communication layer services, designed for VPS deployment.
 
 | Component | Description | Deployment |
 |-----------|-------------|------------|
-| `mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m mqtt_bbs.board_service` |
+| `Mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m Mqtt_bbs.board_service` |
 | `tools/board_service_rs/` | Rust high-performance BoardService | Standalone binary |
 | `tools/mqtt_bbs_rs/` | Rust MQTT BBS components | Standalone binary |
 | `tools/rmqtt_webui.py` | MQTT Broker Web dashboard | `python tools/rmqtt_webui.py` |
@@ -82,7 +82,7 @@ Standalone communication layer services, designed for VPS deployment.
 rmqtt start
 
 # 2. Start BoardService (Python)
-python -m mqtt_bbs.board_service
+python -m Mqtt_bbs.board_service
 
 # 3. Or use Rust version (high performance)
 cd GA_tools && ./md_server_rs/target/release/board_service_rs
@@ -133,7 +133,7 @@ ga agent    # Interactive Agent
 With MQTT:
 
 ```bash
-rmqtt start && python -m mqtt_bbs.board_service
+rmqtt start && python -m Mqtt_bbs.board_service
 python agentmain.py --broker-host 127.0.0.1
 ```
 

@@ -19,12 +19,12 @@ import sys, os, time, json, glob, re, ast
 _script_dir = os.path.dirname(os.path.abspath(__file__))       # GA/tools/
 _ga_dir = os.path.dirname(_script_dir)                         # GA/
 _root_dir = os.path.dirname(_ga_dir)                           # 项目根
-sys.path.insert(0, _root_dir)   # 确保能找到 mqtt_bbs 包
+sys.path.insert(0, _root_dir)   # 确保能找到 Mqtt_bbs 包
 sys.path.insert(0, _ga_dir)     # 确保能找到 tools.* 包
 
 from tools.ontology_model import ENTITIES, RELATIONS, CONSTRAINTS, INFERENCES
-from mqtt_bbs.board_client import BoardClient
-from mqtt_bbs.client import BBSClient
+from Mqtt_bbs.board_client import BoardClient
+from Mqtt_bbs.client import BBSClient
 
 
 class ReflectionEngine:
@@ -54,7 +54,7 @@ class ReflectionEngine:
     def _scan_python_modules(self):
         """扫描 Python 模块 → 提取实际存在的类/函数/模块"""
         found = {}
-        py_dir = os.path.join(self.root, "mqtt_bbs")
+        py_dir = os.path.join(self.root, "Mqtt_bbs")
         if not os.path.isdir(py_dir):
             return found
         for f in sorted(glob.glob(os.path.join(py_dir, "*.py"))):
@@ -72,7 +72,7 @@ class ReflectionEngine:
         """扫描 Rust 模块"""
         found = {}
         rs_dirs = [
-            os.path.join(self.root, "Mqtt_bbs", "tools", "mqtt_bbs_rs"),
+            os.path.join(self.root, "Mqtt_bbs", "tools", "Mqtt_bbs_rs"),
             os.path.join(self.root, "Mqtt_bbs", "tools", "board_service_rs"),
         ]
         for rs_dir in rs_dirs:
