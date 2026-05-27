@@ -39,7 +39,7 @@ _FILE_TYPE_MAP = {
 }
 _MSG_TYPE_MAP = {"image": "[image]", "audio": "[audio]", "file": "[file]", "media": "[media]", "sticker": "[sticker]"}
 
-TEMP_DIR = os.path.join(PROJECT_ROOT, "temp")
+TEMP_DIR = os.path.join(GA_ROOT, "temp")
 MEDIA_DIR = os.path.join(TEMP_DIR, "feishu_media")
 os.makedirs(MEDIA_DIR, exist_ok=True)
 

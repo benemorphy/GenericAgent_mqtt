@@ -5,7 +5,7 @@ Reads MQTT_USERNAME/MQTT_PASSWORD from environment.
 import sys, time, json, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))  # Mqtt_bbs/ root
 
-from Mqtt_bbs.bbs import WorkerAgent
+from Mqtt_bbs_server.bbs import WorkerAgent
 
 w = WorkerAgent('default_worker', capabilities=['scan', 'analyze', 'monitor', 'report', 'ops'])
 

@@ -6,7 +6,8 @@ from Mqtt_bbs_client.client import BBSClient
 import logging
 logging.basicConfig(level=logging.WARN)
 wname = sys.argv[1]
-log = open(os.path.join(_ROOT, 'temp', f'wd_{wname}.txt'), 'w', encoding='utf-8', buffering=1)
+_GA_DIR = os.path.join(_ROOT, 'GA')
+log = open(os.path.join(_GA_DIR, 'temp', f'wd_{wname}.txt'), 'w', encoding='utf-8', buffering=1)
 log.write("[" + wname + "] START\n")
 log.flush()
 c = BBSClient(wname, host="127.0.0.1", port=1883, mqtt_version=5)

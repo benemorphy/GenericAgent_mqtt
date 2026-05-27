@@ -36,7 +36,7 @@
     "last": "2026-05-27"
   },
   "global_mem_insight.txt": {
-    "count": 64,
+    "count": 65,
     "last": "2026-05-27"
   },
   "global_mem.txt": {
@@ -196,7 +196,7 @@
     "last": "2026-05-26"
   },
   "git_push_sop.md": {
-    "count": 24,
+    "count": 23,
     "last": "2026-05-27"
   },
   "active.json": {
@@ -240,8 +240,8 @@
     "last": "2026-05-26"
   },
   "push_cleanup_sop.md": {
-    "count": 16,
-    "last": "2026-05-26"
+    "count": 17,
+    "last": "2026-05-27"
   },
   "spaced_repetition_sop.md": {
     "count": 2,
@@ -332,6 +332,10 @@
     "last": "2026-05-27"
   },
   "skills_learned_from_anthropic_kwp.md": {
+    "count": 1,
+    "last": "2026-05-27"
+  },
+  "rust_env_config.md": {
     "count": 1,
     "last": "2026-05-27"
   }

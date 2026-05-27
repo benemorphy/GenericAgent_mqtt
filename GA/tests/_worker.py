@@ -10,7 +10,8 @@ import sys
 wid = int(sys.argv[1]) if len(sys.argv) > 1 else 0
 delay = float(sys.argv[2]) if len(sys.argv) > 2 else 0.05
 wname = f"sw_{wid}"
-log = open(os.path.join(_ROOT, 'temp', f'log_{wid}.txt'), 'w', encoding='utf-8', buffering=1)
+_GA_DIR = os.path.join(_ROOT, 'GA')
+log = open(os.path.join(_GA_DIR, 'temp', f'log_{wid}.txt'), 'w', encoding='utf-8', buffering=1)
 
 log.write(f"[{wname}] 启动\n")
 log.flush()

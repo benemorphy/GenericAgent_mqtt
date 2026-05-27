@@ -6,7 +6,7 @@ _ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__
 sys.path.insert(0, _ROOT)
 workdir = _ROOT
 python_exe = os.path.join(workdir, '.venv', 'Scripts', 'python.exe')
-log_dir = os.path.join(workdir, 'temp')
+log_dir = os.path.join(workdir, 'GA', 'temp')
 
 worker_py = os.path.join(workdir, 'tests', '_worker_debug.py')
 with open(worker_py, 'w', encoding='utf-8') as f:

@@ -221,9 +221,9 @@ class BBScheduler:
             self._last_l4_archive = _time.time()
             try:
                 import sys
-                sys.path.insert(0, os.path.join(_dir, '..', 'memory', 'L4_raw_sessions'))
+                sys.path.insert(0, os.path.join(_dir, '..', 'GA', 'memory', 'L4_raw_sessions'))
                 from compress_session import batch_process  # type: ignore
-                raw_dir = os.path.join(_dir, '..', 'temp', 'model_responses')
+                raw_dir = os.path.join(_dir, '..', 'GA', 'temp', 'model_responses')
                 r = batch_process(raw_dir, dry_run=False)
                 log.info(f'[L4 cron] {r}')
             except Exception as e:
