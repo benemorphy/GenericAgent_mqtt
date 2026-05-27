@@ -9,7 +9,7 @@ MQTT BBS Server — Agent协作消息总线服务端
 
 from .bbs import AgentBoard, WorkerAgent, TaskStatus
 from .board_service import BoardService
-from .board_client import BoardClient
+from Mqtt_bbs_client.board_client import BoardClient
 from .persistence import (
     BBSClientWithPersistence, MariaDBConn,
     AgentBoardWithPersistence, WorkerAgentWithPersistence

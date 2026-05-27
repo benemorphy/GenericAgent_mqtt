@@ -24,7 +24,7 @@ from Mqtt_bbs_client import config
 def _bbs_notify(event: str, task_id: str, detail: dict):
     """通过 BoardClient BBS 协议发布任务事件通知（失败不阻塞，仅告警）"""
     try:
-        from .board_client import BoardClient
+        from Mqtt_bbs_client.board_client import BoardClient
         with BoardClient(f"bbs_notifier_{task_id[:4]}", board="agent-bbs-test") as bbs:
             reg = bbs.register("bbs_notifier", timeout=2)
             token = reg.get("token", "")

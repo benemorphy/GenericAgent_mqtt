@@ -86,7 +86,7 @@ class Board:
                 self._bbs.disconnect()
             except Exception:
                 pass
-        from Mqtt_bbs_server.board_client import BoardClient
+        from Mqtt_bbs_client.board_client import BoardClient
         self._bbs = BoardClient("inspiration_board", board=self.bbs_board)
         self._bbs.connect()
         reg = self._bbs.register(self._bbs_reg_name, timeout=5)
@@ -416,7 +416,7 @@ class Board:
         # 方式一：BoardClient BBS 协议（主路径）
         bbs_ok = False
         try:
-            from Mqtt_bbs_server.board_client import BoardClient
+            from Mqtt_bbs_client.board_client import BoardClient
             with BoardClient("inspiration_board", board="agent-bbs-test") as bbs:
                 reg = bbs.register("灵感板", timeout=5)
                 if reg.get("token"):

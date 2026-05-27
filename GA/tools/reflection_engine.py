@@ -23,7 +23,7 @@ sys.path.insert(0, _root_dir)   # 确保能找到 Mqtt_bbs 包
 sys.path.insert(0, _ga_dir)     # 确保能找到 tools.* 包
 
 from tools.ontology_model import ENTITIES, RELATIONS, CONSTRAINTS, INFERENCES
-from Mqtt_bbs_server.board_client import BoardClient
+from Mqtt_bbs_client.board_client import BoardClient
 from Mqtt_bbs_client.client import BBSClient
 
 

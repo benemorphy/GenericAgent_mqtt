@@ -43,7 +43,7 @@ ENTITIES = [
     Component("BBSClient", "library", "python", "stable",
               "Mqtt_bbs/client.py", 25),
     Component("BoardClient", "library", "python", "stable",
-              "Mqtt_bbs/board_client.py", 30),
+              "Mqtt_bbs_client/board_client.py", 30),
     Component("BBSClient (Rust)", "library", "rust", "compiled",
               "tools/Mqtt_bbs_rs/", 8),
     Component("BoardClient (Rust)", "library", "rust", "compiled",
@@ -170,7 +170,7 @@ ENTITIES = [
     Component("board_service_rs", "library", "rust", "compiled",
               "tools/board_service_rs/", 47),
     Component("BoardClient (Python)", "library", "python", "stable",
-              "Mqtt_bbs/board_client.py", 15),
+              "Mqtt_bbs_client/board_client.py", 15),
     Component("BoardService (Rust)", "service", "rust", "running",
               "tools/board_service_rs/", 47),
     Component("skills_learning", "library", "python", "stable",
@@ -260,7 +260,7 @@ RELATIONS = [
              "偏差发现后自动更新实体列表", True),
     # ── 前端 → 后端 ──
     Relation("FeishuBot", "depends-on", "Mosquitto", "MQTT BBS BoardClient 推送", True),
-    Relation("FeishuBot", "depends-on", "BoardClient (Python)", "import Mqtt_bbs_server.board_client", True),
+    Relation("FeishuBot", "depends-on", "BoardClient (Python)", "import Mqtt_bbs_client.board_client", True),
     Relation("GatewayMonitor", "depends-on", "Mosquitto", "MQTT 实时推送 Dashboard", True),
     # ── 工具 → 基础设施 ──
     Relation("DreamEngine", "depends-on", "BoardClient (Python)", "发布梦境帖子到 BBS", True),
