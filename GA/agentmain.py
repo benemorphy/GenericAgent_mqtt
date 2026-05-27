@@ -64,7 +64,7 @@ class GenericAgent:
             try:
                 if 'mixin' in k: llm_sessions += [{'mixin_cfg': cfg}]
                 elif c := resolve_client(k): llm_sessions += [c]
-            except Exception as e: print(f'[WARN] Failed to init session {k}: {e}')
+            except Exception: pass
         for i, s in enumerate(llm_sessions):
             if isinstance(s, dict) and 'mixin_cfg' in s:
                 try:

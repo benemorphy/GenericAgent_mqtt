@@ -40,7 +40,7 @@ def init(a):
     _cfg = c
 
     try:
-        from Mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
+        from Mqtt_bbs_server import WorkerAgentWithPersistence as WorkerAgent
     except ImportError:
         return  # Mqtt_bbs 未安装，跳过初始化
 

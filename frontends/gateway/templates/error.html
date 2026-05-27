@@ -1,8 +1,0 @@
-{% extends "layout.html" %}
-{% block title %}错误{% endblock %}
-{% block content %}
-<div class="empty">
-    <h2 style="color:#e94560;margin-bottom:12px;">{{ error|default('页面不存在') }}</h2>
-    <a href="/boards" style="color:#e94560;">返回首页</a>
-</div>
-{% endblock %}

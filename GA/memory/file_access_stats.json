@@ -32,16 +32,16 @@
     "last": "2026-05-25"
   },
   "memory_management_sop.md": {
-    "count": 12,
-    "last": "2026-05-26"
+    "count": 13,
+    "last": "2026-05-27"
   },
   "global_mem_insight.txt": {
-    "count": 60,
-    "last": "2026-05-26"
+    "count": 64,
+    "last": "2026-05-27"
   },
   "global_mem.txt": {
-    "count": 66,
-    "last": "2026-05-26"
+    "count": 67,
+    "last": "2026-05-27"
   },
   "skills_learning_sop.md": {
     "count": 25,
@@ -196,8 +196,8 @@
     "last": "2026-05-26"
   },
   "git_push_sop.md": {
-    "count": 22,
-    "last": "2026-05-26"
+    "count": 23,
+    "last": "2026-05-27"
   },
   "active.json": {
     "count": 3,
@@ -306,5 +306,33 @@
   "mqtt_service_config.md": {
     "count": 1,
     "last": "2026-05-26"
+  },
+  "meridian_ontology.md": {
+    "count": 6,
+    "last": "2026-05-26"
+  },
+  "meridians_perspective_on_ontology.md": {
+    "count": 1,
+    "last": "2026-05-27"
+  },
+  "ai_creation_emergence_brainstorm.md": {
+    "count": 6,
+    "last": "2026-05-27"
+  },
+  "ai_creation_scenarios.md": {
+    "count": 3,
+    "last": "2026-05-27"
+  },
+  "ai_creation_scenarios_deep.md": {
+    "count": 2,
+    "last": "2026-05-27"
+  },
+  "ai_creation_brainstorm_per_scene.md": {
+    "count": 5,
+    "last": "2026-05-27"
+  },
+  "skills_learned_from_anthropic_kwp.md": {
+    "count": 1,
+    "last": "2026-05-27"
   }
 }

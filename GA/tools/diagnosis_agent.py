@@ -16,8 +16,8 @@ Diagnosis Agent v2 — 本体驱动 + 真实数据 + LLM 分析 + 反省增强
 import sys, os, time, json, threading, statistics, collections
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from Mqtt_bbs.board_client import BoardClient
-from Mqtt_bbs.client import BBSClient
+from Mqtt_bbs_server.board_client import BoardClient
+from Mqtt_bbs_client.client import BBSClient
 from tools.ontology_model import ENTITIES, RELATIONS, CONSTRAINTS, INFERENCES
 
 

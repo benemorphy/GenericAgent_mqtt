@@ -324,7 +324,7 @@ class AgentChatMixin:
                 _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                 if _root not in _sys.path:
                     _sys.path.insert(0, _root)
-                from Mqtt_bbs.board_client import BoardClient as _BC
+                from Mqtt_bbs_server.board_client import BoardClient as _BC
                 content = " ".join(parts[2:])
                 board = "agent-bridge"
                 if content.startswith("-b "):
