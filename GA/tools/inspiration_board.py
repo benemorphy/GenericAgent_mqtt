@@ -182,10 +182,14 @@ class Board:
         # BBS 模式：从 BBS 加载，失败降级到文件
         if self.bbs_backend:
             bbs_ideas = self._bbs_load_all()
-            if bbs_ideas is not None:
+            if bbs_ideas is not None and bbs_ideas:
                 return bbs_ideas
-            # BBS 失败，降级到文件
-            logger.info("[Board] 降级到本地文件")
+            if bbs_ideas is not None and not bbs_ideas:
+                logger.info("[Board] BBS 中无灵感数据，检查本地文件")
+                # 不直接返回空，继续检查本地文件
+            else:
+                # BBS 失败（返回 None），降级到文件
+                logger.info("[Board] BBS 加载失败，降级到本地文件")
         # 文件模式
         if not ACTIVE_FILE.exists():
             return []

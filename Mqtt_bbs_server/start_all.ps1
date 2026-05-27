@@ -66,13 +66,12 @@ if (-not (Test-Path $exe)) {
     $exe = Join-Path $root 'tools\rmqtt_webui_rs\target\debug\rmqtt_webui_rs.exe'
 }
 if (Test-Path $exe) {
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = $exe
-    $psi.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
-    $psi.EnvironmentVariables['MQTT_USERNAME'] = 'dashboard'
-    $psi.EnvironmentVariables['MQTT_PASSWORD'] = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJzdWIiOiAiZGFzaGJvYXJkIiwgImNsaWVudGlkIjogImRhc2hib2FyZCIsICJ1c2VybmFtZSI6ICJkYXNoYm9hcmQiLCAicm9sZSI6ICJvYnNlcnZlciIsICJleHAiOiAxODEwNTM1NTczLCAiaWF0IjogMTc3ODk5OTU3M30.h_4qJej8QnJ8BXOknx5fF7mBQS2obEH7d6r2sZkMpfA'
-    [System.Diagnostics.Process]::Start($psi)
-    Start-Sleep 2; Write-Host '[OK] rmqtt Web UI 已启动 (8900)' -Fore Green
+    $env:MQTT_USERNAME = 'dashboard'
+    $env:MQTT_PASSWORD = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJzdWIiOiAiZGFzaGJvYXJkIiwgImNsaWVudGlkIjogImRhc2hib2FyZCIsICJ1c2VybmFtZSI6ICJkYXNoYm9hcmQiLCAicm9sZSI6ICJvYnNlcnZlciIsICJleHAiOiAxODEwNTM1NTczLCAiaWF0IjogMTc3ODk5OTU3M30.h_4qJej8QnJ8BXOknx5fF7mBQS2obEH7d6r2sZkMpfA'
+    Start-Process -FilePath $exe -WindowStyle Hidden
+    Start-Sleep 3
+    try { $null = Get-NetTCPConnection -LocalPort 8900 -ErrorAction Stop; Write-Host '[OK] rmqtt Web UI 已启动 (8900)' -Fore Green }
+    catch { Write-Host '[!] rmqtt Web UI 启动失败 (8900 端口未监听)' -Fore Red }
 }
 else { Write-Host '[!] rmqtt_webui_rs debug未编译，跳过' -Fore Yellow }
 
@@ -110,8 +109,12 @@ if (-not (Test-Path $bs_exe)) {
 }
 if (Test-Path $bs_exe) {
     $pw = [Environment]::GetEnvironmentVariable('DB_PASSWORD','Process')
-    Start-Process $bs_exe -ArgumentList "--db-url ""mysql://root:$pw@127.0.0.1/Mqtt_bbs_server""" -WindowStyle Hidden
-    Start-Sleep 3; Write-Host '[OK] BoardService RS 已启动' -Fore Green
+    $env:MQTT_USERNAME = 'board-service-rs'
+    $env:MQTT_PASSWORD = 'board-service-rs'
+    Start-Process $bs_exe -ArgumentList "--db-url ""mysql://root:$pw@127.0.0.1/mqtt_bbs""" -WindowStyle Hidden
+    Start-Sleep 3
+    try { $null = Get-NetTCPConnection -LocalPort 9100 -ErrorAction SilentlyContinue; Write-Host '[OK] BoardService RS 已启动' -Fore Green }
+    catch { Write-Host '[!] BoardService RS 启动可能失败' -Fore Yellow }
 } else { Write-Host '[!] BoardService RS 未编译，跳过' -Fore Yellow }
 
 # 7. Gateway (8000) - 强制重启以使用正确的 MQTT 凭据

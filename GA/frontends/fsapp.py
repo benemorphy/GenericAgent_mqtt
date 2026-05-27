@@ -692,10 +692,27 @@ def _make_task_hook(card, done_event, on_final):
     return hook
 
 
+_dedup_msg_ids = {}  # message_id -> timestamp, 5秒去重
+
+def _is_duplicate_msg(message_id: str) -> bool:
+    now = time.time()
+    # 清理过期记录
+    stale = [k for k, v in _dedup_msg_ids.items() if now - v > 5]
+    for k in stale:
+        del _dedup_msg_ids[k]
+    if message_id in _dedup_msg_ids:
+        return True
+    _dedup_msg_ids[message_id] = now
+    return False
+
 def handle_message(data):
     event, message, sender = data.event, data.event.message, data.event.sender
     open_id = sender.sender_id.open_id
     chat_id = message.chat_id
+    # 消息去重（飞书长连接重连可能重放事件）
+    if hasattr(message, 'message_id') and _is_duplicate_msg(message.message_id):
+        print(f"[去重] 忽略重复消息: {message.message_id}")
+        return
     if not PUBLIC_ACCESS and open_id not in ALLOWED_USERS:
         print(f"未授权用户: {open_id}")
         return
