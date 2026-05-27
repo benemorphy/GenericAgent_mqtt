@@ -23,8 +23,8 @@ sys.path.insert(0, _root_dir)   # 确保能找到 Mqtt_bbs 包
 sys.path.insert(0, _ga_dir)     # 确保能找到 tools.* 包
 
 from tools.ontology_model import ENTITIES, RELATIONS, CONSTRAINTS, INFERENCES
-from Mqtt_bbs.board_client import BoardClient
-from Mqtt_bbs.client import BBSClient
+from Mqtt_bbs_server.board_client import BoardClient
+from Mqtt_bbs_client.client import BBSClient
 
 
 class ReflectionEngine:
@@ -54,7 +54,7 @@ class ReflectionEngine:
     def _scan_python_modules(self):
         """扫描 Python 模块 → 提取实际存在的类/函数/模块"""
         found = {}
-        py_dir = os.path.join(self.root, "Mqtt_bbs")
+        py_dir = os.path.join(self.root, "Mqtt_bbs_server")
         if not os.path.isdir(py_dir):
             return found
         for f in sorted(glob.glob(os.path.join(py_dir, "*.py"))):

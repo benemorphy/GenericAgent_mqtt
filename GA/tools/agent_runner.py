@@ -6,7 +6,7 @@ os.environ["MQTT_PORT"] = "1883"
 import logging
 logging.basicConfig(level=logging.WARN)
 
-from Mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
+from Mqtt_bbs_server import WorkerAgentWithPersistence as WorkerAgent
 
 NAME = sys.argv[1]
 CAPS = sys.argv[2].split(",") if len(sys.argv) > 2 else ["test"]

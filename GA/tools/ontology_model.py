@@ -205,13 +205,13 @@ RELATIONS = [
     # ── 依赖关系 ──
     Relation("BoardService", "depends-on", "Mosquitto", "MQTT 端口 1883", True),
     Relation("BoardService", "depends-on", "MariaDB", "DB 连接 mysql://root:mariadb@127.0.0.1", True),
-    Relation("BoardClient (Python)", "depends-on", "BBSClient (Python)", "import Mqtt_bbs.client", True),
+    Relation("BoardClient (Python)", "depends-on", "BBSClient (Python)", "import Mqtt_bbs_client.client", True),
     Relation("BoardClient (Rust)", "depends-on", "BBSClient (Rust)", "crate Mqtt_bbs_rs", True),
     Relation("AgentBoard", "depends-on", "BBSClient (Rust)", "use BBSClient", True),
     Relation("WorkerAgent", "depends-on", "BBSClient (Rust)", "use BBSClient", True),
     Relation("Gateway", "depends-on", "BoardClient (Python)", "转发请求到 BBS", True),
     # ── 新增: Mqtt_bbs Python 模块依赖 ──
-    Relation("MqttAgentRunner", "depends-on", "BBSClient (Python)", "import Mqtt_bbs.client", True),
+    Relation("MqttAgentRunner", "depends-on", "BBSClient (Python)", "import Mqtt_bbs_client.client", True),
     Relation("PluginManager", "depends-on", "Plugin", "管理 plugin.py 插件", True),
     Relation("Registry", "depends-on", "BBSClient (Python)", "服务注册/发现", True),
     # ── 新增: board_service_rs 内部结构 ──
@@ -260,7 +260,7 @@ RELATIONS = [
              "偏差发现后自动更新实体列表", True),
     # ── 前端 → 后端 ──
     Relation("FeishuBot", "depends-on", "Mosquitto", "MQTT BBS BoardClient 推送", True),
-    Relation("FeishuBot", "depends-on", "BoardClient (Python)", "import Mqtt_bbs.board_client", True),
+    Relation("FeishuBot", "depends-on", "BoardClient (Python)", "import Mqtt_bbs_server.board_client", True),
     Relation("GatewayMonitor", "depends-on", "Mosquitto", "MQTT 实时推送 Dashboard", True),
     # ── 工具 → 基础设施 ──
     Relation("DreamEngine", "depends-on", "BoardClient (Python)", "发布梦境帖子到 BBS", True),
