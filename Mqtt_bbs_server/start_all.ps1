@@ -104,13 +104,13 @@ if (Test-Path $exe) {
 else { Write-Host '[!] md_server_rs 未编译，跳过 (cargo build --release 编译)' -Fore Yellow }
 
 # 6. BoardService RS
-$bs_exe = Join-Path $projectRoot 'Mqtt_bbs\tools\board_service_rs\target\release\board_service_rs.exe'
+$bs_exe = Join-Path $projectRoot 'Mqtt_bbs_server\tools\board_service_rs\target\release\board_service_rs.exe'
 if (-not (Test-Path $bs_exe)) {
-    $bs_exe = Join-Path $projectRoot 'Mqtt_bbs\tools\board_service_rs\target\debug\board_service_rs.exe'
+    $bs_exe = Join-Path $projectRoot 'Mqtt_bbs_server\tools\board_service_rs\target\debug\board_service_rs.exe'
 }
 if (Test-Path $bs_exe) {
     $pw = [Environment]::GetEnvironmentVariable('DB_PASSWORD','Process')
-    Start-Process $bs_exe -ArgumentList "--db-url ""mysql://root:$pw@127.0.0.1/mqtt_bbs""" -WindowStyle Hidden
+    Start-Process $bs_exe -ArgumentList "--db-url ""mysql://root:$pw@127.0.0.1/Mqtt_bbs_server""" -WindowStyle Hidden
     Start-Sleep 3; Write-Host '[OK] BoardService RS 已启动' -Fore Green
 } else { Write-Host '[!] BoardService RS 未编译，跳过' -Fore Yellow }
 
