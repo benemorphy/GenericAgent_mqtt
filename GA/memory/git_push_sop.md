@@ -13,7 +13,7 @@
 
 ### 2. 一键推送（自动绕过 PR 保护）
 ```bash
-python scripts/git_push.py "提交信息"
+python GA/scripts/git_push.py "提交信息"
 ```
 自动完成：
 1. 创建临时分支 → commit → push
@@ -21,10 +21,11 @@ python scripts/git_push.py "提交信息"
 3. squash-merge 到 main
 4. 删除临时分支
 5. 切回 main 并 pull
+（注：必须在仓库根目录 `D:\open_claw_agent\Beneh` 下执行）
 
 ### 3. 跳过审计（仅确认安全时）
 ```bash
-python scripts/git_push.py "提交信息" --skip-audit
+python GA/scripts/git_push.py "提交信息" --skip-audit
 ```
 
 ## 配置要求
