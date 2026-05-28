@@ -19,6 +19,17 @@ pub struct UserRow {
     pub board: String,
 }
 
+/// Email 注册用户（users 表，Gateway 管理）
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+pub struct UserInfo {
+    pub user_id: i64,
+    pub email: String,
+    pub nickname: String,
+    pub role: String,
+    pub status: i8,
+    pub created_at: chrono::NaiveDateTime,
+}
+
 /// 文件上传会话
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct FileSession {
@@ -54,4 +65,9 @@ pub struct BbsRequest {
     pub file_ref: Option<String>,
     pub action: Option<String>,
     pub url: Option<String>,
+    // ── 用户认证 V2（Email 注册用户） ──
+    pub password: Option<String>,    // Email 用户密码
+    pub email: Option<String>,       // 邮箱
+    pub verify_code: Option<String>, // 邮箱验证码
+    pub verify_token: Option<String>,// 邮箱验证 token
 }

@@ -173,5 +173,33 @@
     "agent_notes": "",
     "created_at": "2026-05-28 07:53",
     "updated_at": "2026-05-28 07:53"
+  },
+  {
+    "id": 13,
+    "title": "[Dream] auto × dream_理论家",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-28 13:53",
+    "updated_at": "2026-05-28 13:53"
+  },
+  {
+    "id": 14,
+    "title": "[Dream] multi-agent × dream_实践者",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-05-28 13:53",
+    "updated_at": "2026-05-28 13:53"
   }
 ]

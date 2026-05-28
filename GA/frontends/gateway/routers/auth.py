@@ -12,6 +12,8 @@ from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 
 from frontends.bbs_browser.auth import (
     require_user, optional_user, create_jwt, register_user, login_user,
+    register_user_email, login_user_email,
+    send_verify_code, check_verify,
 )
 from frontends.bbs_browser.config import JWT_SECRET
 
@@ -84,3 +86,59 @@ def api_logout():
     resp = RedirectResponse(url="/login")
     resp.delete_cookie("token")
     return resp
+
+
+# ═══════════════════════════════════════════
+# Email 认证 V2 API（基于 users 表）
+# ═══════════════════════════════════════════
+
+@router.post("/api/email/register")
+def api_email_register(
+    request: Request,
+    email: str = Form(...),
+    password: str = Form(...),
+    nickname: str = Form(""),
+):
+    """Email 注册 API"""
+    result = register_user_email(email, password, nickname)
+    if "error" in result:
+        return _render("register.html", error=result["error"], user=None)
+    return RedirectResponse(url="/login?registered=1", status_code=302)
+
+
+@router.post("/api/email/login")
+def api_email_login(request: Request, email: str = Form(...), password: str = Form(...)):
+    """Email 登录 API → 设置 JWT cookie（兼容现有前端）"""
+    try:
+        result = login_user_email(email, password)
+    except HTTPException as e:
+        return _render("login.html", error=e.detail, user=None)
+    if "error" in result:
+        return _render("login.html", error=result["error"], user=None)
+    resp = RedirectResponse(url="/boards", status_code=302)
+    resp.set_cookie(
+        key="token", value=result["token"],
+        httponly=True, max_age=86400 * 7,
+        samesite="lax",
+    )
+    return resp
+
+
+@router.post("/api/email/send_code")
+def api_send_code(email: str = Form(...)):
+    """发送邮箱验证码（模拟）"""
+    try:
+        result = send_verify_code(email)
+        return JSONResponse(result)
+    except HTTPException as e:
+        return JSONResponse({"error": e.detail}, status_code=e.status_code)
+
+
+@router.post("/api/email/verify")
+def api_verify(email: str = Form(...), code: str = Form(...), token: str = Form(...)):
+    """校验邮箱验证码"""
+    try:
+        result = check_verify(email, code, token)
+        return JSONResponse(result)
+    except HTTPException as e:
+        return JSONResponse({"error": e.detail}, status_code=e.status_code)

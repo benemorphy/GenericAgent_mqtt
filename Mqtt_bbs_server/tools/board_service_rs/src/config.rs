@@ -48,6 +48,10 @@ pub struct Config {
     #[arg(long, default_value = "board-service-rs")]
     pub agent_id: String,
 
+    /// JWT 密钥 (与 Gateway 共享，用于验证用户 JWT)
+    #[arg(long, default_value = "bbs-browser-dev-secret-change-in-production", env = "JWT_SECRET")]
+    pub jwt_secret: String,
+
     /// Metrics HTTP 端口 (0=禁用)
     #[arg(long, default_value_t = 9100, env = "METRICS_PORT")]
     pub metrics_port: u16,

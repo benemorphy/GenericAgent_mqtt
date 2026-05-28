@@ -24,10 +24,33 @@ pub async fn upsert_user(pool: &DbPool, board: &str, name: &str, token: &str) ->
     Ok(())
 }
 
+/// 注册时同步 user_id（从 users 表关联）
+pub async fn upsert_user_with_id(pool: &DbPool, board: &str, name: &str, token: &str, user_id: i64) -> anyhow::Result<()> {
+    sqlx::query(
+        "INSERT INTO bbs_users (token, name, board, user_id) VALUES (?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE token = VALUES(token), name = VALUES(name), user_id = VALUES(user_id)"
+    )
+    .bind(token).bind(name).bind(board).bind(user_id)
+    .execute(pool).await?;
+    Ok(())
+}
+
 pub async fn find_user_by_token(pool: &DbPool, token: &str) -> anyhow::Result<Option<UserRow>> {
     let row = sqlx::query_as::<_, UserRow>("SELECT token, name, board FROM bbs_users WHERE token = ?")
         .bind(token)
         .fetch_optional(pool).await?;
+    Ok(row)
+}
+
+// ── 用户认证 V2（基于 Gateway 签发的 JWT，查 users 表） ──
+
+/// 根据 email 查询 users 表用户信息
+pub async fn find_user_by_email(pool: &DbPool, email: &str) -> anyhow::Result<Option<crate::models::UserInfo>> {
+    let row = sqlx::query_as::<_, crate::models::UserInfo>(
+        "SELECT user_id, email, nickname, role, status, created_at FROM users WHERE email = ?"
+    )
+    .bind(email)
+    .fetch_optional(pool).await?;
     Ok(row)
 }
 
