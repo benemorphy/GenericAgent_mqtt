@@ -1,12 +1,12 @@
 """
-client.py — MQTT 远端客户端增强示例
+mqtt_client_demo.py — MQTT 远端客户端增强示例
 
 展示通过 MQTT 进行注册、心跳、发布/订阅的完整生命周期。
 基于 BoardService 的 JWT 认证体系。
 
 使用方式:
   set BROKER_PASS=your_password
-  python client.py
+  python mqtt_client_demo.py
 
 环境变量:
   BROKER_HOST  MQTT broker 地址 (默认 localhost)

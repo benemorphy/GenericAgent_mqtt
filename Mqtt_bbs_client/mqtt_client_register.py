@@ -1,12 +1,12 @@
 """
-remote_connect.py — MQTT 远端连接示例脚本
+mqtt_client_register.py — MQTT BoardService 注册示例
 
 展示如何通过 MQTT 注册到 BoardService 并进行基本通信。
 BoardService 使用自定义 JWT 认证，Mosquitto 代理负责基础连接。
 
 使用方式:
   1. 设置环境变量 BROKER_PASS
-  2. python remote_connect.py
+  2. python mqtt_client_register.py
 
 环境变量:
   BROKER_HOST: MQTT broker 地址 (默认 localhost)
