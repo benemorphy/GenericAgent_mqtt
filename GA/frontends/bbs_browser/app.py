@@ -16,7 +16,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from .config import HOST, PORT, JWT_SECRET
 from .database import init_db, seed_boards, get_boards, get_board, query_posts, query_all_posts
-from .auth import require_user, optional_user, register_user, login_user
+from .auth import require_user, optional_user, register_user, login_user, login_user_email, send_verify_code, check_verify
 
 # ── 初始化 ──
 app = FastAPI(title="BBS Board Browser")
@@ -87,12 +87,47 @@ def api_login(
     return response
 
 
+@app.post("/api/email/login")
+def api_email_login(
+    request: Request,
+    email: str = Form(...),
+    password: str = Form(...),
+):
+    """Email 登录 API（users 表，bcrypt 密码）"""
+    result = login_user_email(email, password)
+    response = RedirectResponse(url="/", status_code=302)
+    response.set_cookie(key="token", value=result["token"], httponly=True, max_age=86400 * 7)
+    return response
+
+
 @app.get("/api/logout")
 def api_logout():
     """退出登录"""
     response = RedirectResponse(url="/login", status_code=302)
     response.delete_cookie("token")
     return response
+
+
+@app.post("/api/verify/send")
+def api_verify_send(email: str = Form(...)):
+    """发送邮箱验证码"""
+    result = send_verify_code(email)
+    if "error" in result:
+        return JSONResponse({"error": result["error"]}, status_code=400)
+    # 开发模式透传 debug 字段（生产环境去掉）
+    resp = {"message": result.get("message", "验证码已发送")}
+    if "debug_code" in result and "debug_token" in result:
+        resp["debug_code"] = result["debug_code"]
+        resp["debug_token"] = result["debug_token"]
+    return JSONResponse(resp)
+
+@app.post("/api/verify/check")
+def api_verify_check(email: str = Form(...), code: str = Form(...), token: str = Form(...)):
+    """验证邮箱验证码"""
+    result = check_verify(email, code, token)
+    if "error" in result:
+        return JSONResponse({"error": result["error"]}, status_code=400)
+    return JSONResponse({"message": result.get("message", "验证通过")})
 
 
 # ══════════════════════════════════════

@@ -3,6 +3,32 @@ use rumqttc::{AsyncClient, Event, Incoming, Packet, QoS};
 use crate::AppState;
 use crate::handlers;
 
+/// 根据主题类型判断是否需要 retain 标记
+/// 设计文档要求：状态/信息类/灵感板/数据流状态需 retain
+fn should_retain(topic: &str, resp_type: &str) -> bool {
+    // 状态类: online_status, capability, status
+    if resp_type == "online_status" || resp_type == "capability" || resp_type == "status" {
+        return true;
+    }
+    // 灵感板: inspiration
+    if resp_type == "inspiration" || resp_type == "inspiration_list" {
+        return true;
+    }
+    // 板块信息: board_info, board_list
+    if resp_type == "board_info" || resp_type == "board_list" {
+        return true;
+    }
+    // 注册/去注册: register / unregister
+    if resp_type == "register" || resp_type == "unregister" {
+        return true;
+    }
+    // 系统配置类
+    if topic.contains("webhook/config") {
+        return true;
+    }
+    false
+}
+
 /// 心跳发布循环
 pub async fn heartbeat_loop(state: Arc<AppState>) {
     let mut interval = tokio::time::interval(std::time::Duration::from_secs(30));
@@ -109,9 +135,10 @@ pub async fn publish_response(
     };
     
     let bytes = serde_json::to_vec(payload).unwrap();
-    tracing::info!("准备发布响应: topic={}, payload={:?}", topic, payload);
-    match client.publish(&topic, QoS::AtLeastOnce, false, bytes).await {
-        Ok(()) => tracing::info!("响应发布成功: {}", topic),
+    let retain = should_retain(&topic, resp_type);
+    tracing::info!("准备发布响应: topic={}, payload={:?}, retain={}", topic, payload, retain);
+    match client.publish(&topic, QoS::AtLeastOnce, retain, bytes).await {
+        Ok(()) => tracing::info!("响应发布成功: {} (retain={})", topic, retain),
         Err(e) => tracing::error!("MQTT 发布失败 [{}]: {}", topic, e),
     }
     tokio::time::sleep(std::time::Duration::from_millis(50)).await;

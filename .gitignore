@@ -107,3 +107,9 @@ mqtt_bbs/
 
 # Config templates
 .env.template
+# Test artifacts
+cookies.txt
+cookies2.txt
+email_cookies.txt
+boards_response.html
+*.pyc

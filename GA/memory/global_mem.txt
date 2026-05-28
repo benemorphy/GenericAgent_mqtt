@@ -33,7 +33,8 @@ rmqtt.version = 0.20.0
 # 实际运行的MQTT Broker（非RMQTT）
 mosquitto.home = D:\tools\mosquitto
 mosquitto.exe = D:\tools\mosquitto\mosquitto.exe
-mosquitto.conf = D:\tools\mosquitto\mosquitto.conf (listener 1883, allow_anonymous false)
+mosquitto.conf = D:\tools\mosquitto\mosquitto.conf (listener 1883, include_dir conf.d)
+mosquitto.conf_d = D:\tools\mosquitto\conf.d\retain.conf (allow_anonymous true, retain_available true)
 mosquitto.passwd = D:\tools\mosquitto\mosquitto_passwd
 mosquitto.passwd_tool = D:\tools\mosquitto\mosquitto_passwd.exe
 # 预置用户: feishu_bbs_bridge, test_user, board, dashboard, agent_gpt 等（密码见 keychain）

@@ -109,9 +109,12 @@ if (-not (Test-Path $bs_exe)) {
 }
 if (Test-Path $bs_exe) {
     $pw = [Environment]::GetEnvironmentVariable('DB_PASSWORD','Process')
+    $jwt = [Environment]::GetEnvironmentVariable('JWT_SECRET','Process')
+    if (-not $jwt) { $jwt = 'bbs-browser-dev-secret-change-in-production' }
     $env:MQTT_USERNAME = 'board-service-rs'
     $env:MQTT_PASSWORD = 'board-service-rs'
-    Start-Process $bs_exe -ArgumentList "--db-url ""mysql://root:$pw@127.0.0.1/mqtt_bbs""" -WindowStyle Hidden
+    Write-Host "[OK] BoardService JWT_SECRET 已就绪 (长度: $($jwt.Length))" -Fore Green
+    Start-Process $bs_exe -ArgumentList "--db-url ""mysql://root:$pw@127.0.0.1/mqtt_bbs"" --jwt-secret ""$jwt""" -WindowStyle Hidden
     Start-Sleep 3
     try { $null = Get-NetTCPConnection -LocalPort 9100 -ErrorAction SilentlyContinue; Write-Host '[OK] BoardService RS 已启动' -Fore Green }
     catch { Write-Host '[!] BoardService RS 启动可能失败' -Fore Yellow }

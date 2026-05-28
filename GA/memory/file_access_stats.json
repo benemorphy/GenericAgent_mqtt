@@ -32,16 +32,16 @@
     "last": "2026-05-25"
   },
   "memory_management_sop.md": {
-    "count": 14,
-    "last": "2026-05-27"
+    "count": 15,
+    "last": "2026-05-28"
   },
   "global_mem_insight.txt": {
     "count": 66,
     "last": "2026-05-27"
   },
   "global_mem.txt": {
-    "count": 69,
-    "last": "2026-05-27"
+    "count": 71,
+    "last": "2026-05-28"
   },
   "skills_learning_sop.md": {
     "count": 25,
@@ -196,7 +196,7 @@
     "last": "2026-05-26"
   },
   "git_push_sop.md": {
-    "count": 27,
+    "count": 28,
     "last": "2026-05-28"
   },
   "active.json": {
@@ -300,12 +300,12 @@
     "last": "2026-05-23"
   },
   "MQTT_SERVICE_CHAIN.md": {
-    "count": 1,
-    "last": "2026-05-26"
+    "count": 2,
+    "last": "2026-05-28"
   },
   "mqtt_service_config.md": {
-    "count": 1,
-    "last": "2026-05-26"
+    "count": 3,
+    "last": "2026-05-28"
   },
   "meridian_ontology.md": {
     "count": 6,
@@ -336,7 +336,11 @@
     "last": "2026-05-27"
   },
   "rust_env_config.md": {
+    "count": 2,
+    "last": "2026-05-28"
+  },
+  "RUST_ENV.md": {
     "count": 1,
-    "last": "2026-05-27"
+    "last": "2026-05-28"
   }
 }

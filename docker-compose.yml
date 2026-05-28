@@ -5,6 +5,7 @@ services:
       - "${MQTT_PORT:-1883}:1883"
     volumes:
       - ./docker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./docker/mosquitto_retain.conf:/mosquitto/config/conf.d/retain.conf:ro
       - mosquitto_data:/mosquitto/data
     healthcheck:
       test: ["CMD", "mosquitto_sub", "-t", "$$SYS/broker/version", "-C", "1"]

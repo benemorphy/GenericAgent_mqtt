@@ -47,6 +47,26 @@ def init_db():
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     """)
     
+    # ── users (Email认证V2) ──
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            user_id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+            email         VARCHAR(255) NOT NULL UNIQUE,
+            password_hash VARCHAR(255) NOT NULL,
+            nickname      VARCHAR(64) DEFAULT '',
+            role          VARCHAR(32) DEFAULT 'user',
+            status        TINYINT DEFAULT 1,
+            verify_code   VARCHAR(6) DEFAULT '',
+            verify_token  VARCHAR(64) DEFAULT '',
+            verify_expire BIGINT DEFAULT 0,
+            last_login    DATETIME,
+            created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_email (email),
+            INDEX idx_status (status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    """)
+
     db.commit()
     db.close()
 
