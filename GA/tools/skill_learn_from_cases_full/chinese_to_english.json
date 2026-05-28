@@ -76,8 +76,9 @@
   "推理": "reasoning",
   "语义": "semantic",
   "知识图谱": "knowledge_graph",
-  "图数据库": "graph_database",
   "查询": "query",
   "Cypher": "cypher",
-  "Neo4j": "neo4j"
+  "Neo4j": "neo4j",
+  "刘慈欣": "liu_cixin",
+  "小说写作": "fiction_writing"
 }

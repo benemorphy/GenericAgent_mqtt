@@ -17,7 +17,7 @@ L3: memory_cleanup_sop(memory cleanup) | skill_search | skills_learning_sop(案�
 | skill_template_sop(知识工作技能通用模板:元数据/工作流/错误处理/输出格式)
 | verify_sop(验证SOP) | vue3_component_sop(Vue3组件) | web_testing_sop(Web测试)
 L4: L4_raw_sessions/ historical sessions
-跨学科知识: meridian_ontology(经脉论与本体论:本体论→经脉论对应映射+推理规则) | meridians_perspective_on_ontology(经脉论→本体论:反向审视+七大挑战) | ai_creation_emergence_brainstorm(AI超纲输出场景:创造者悖论/认知鸿沟/涌现主题) | ai_creation_scenarios(7场景叙事实现:创造者悖论/认知边界/他者之思/解释学困境/层级跃迁/反馈螺旋/身份重构) | ai_creation_scenarios_deep(创作准备:正文片段/角色关系/世界观/矛盾演化/真伪悬疑) | ai_creation_brainstorm_per_scene(7场景独立多Agent脑暴:35视角向各自元问题深挖) | ai_creation_resonance_map(暗中共振图谱:6层共振+1个最大共振)
+跨学科知识: meridian_ontology(经脉论与本体论:本体论→经脉论对应映射+推理规则) | meridians_perspective_on_ontology(经脉论→本体论:反向审视+七大挑战) | ontology_model_evolution(技术+哲学+经脉论三合一:本体论进化的四维光谱) | ai_creation_emergence_brainstorm(AI超纲输出场景:创造者悖论/认知鸿沟/涌现主题) | ai_creation_scenarios(7场景叙事实现:创造者悖论/认知边界/他者之思/解释学困境/层级跃迁/反馈螺旋/身份重构) | ai_creation_scenarios_deep(创作准备:正文片段/角色关系/世界观/矛盾演化/真伪悬疑) | ai_creation_brainstorm_per_scene(7场景独立多Agent脑暴:35视角向各自元问题深挖) | ai_creation_resonance_map(暗中共振图谱:6层共振+1个最大共振)
 
 Browser special ops: tmwebdriver_sop(file upload/image search/PDF blob/physical coords/HttpOnly Cookie/autofill bypass/cross-origin iframe/CDP/cross-tab)
 Keyboard & Mouse: ljqCtrl_sop(no pyautogui/activate first) Screenshot/Vision: ocr/vision_sop | No fullscreen capture, prefer window

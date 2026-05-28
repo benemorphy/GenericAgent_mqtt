@@ -692,10 +692,27 @@ def _make_task_hook(card, done_event, on_final):
     return hook
 
 
+_dedup_msg_ids = {}  # message_id -> timestamp, 5秒去重
+
+def _is_duplicate_msg(message_id: str) -> bool:
+    now = time.time()
+    # 清理过期记录
+    stale = [k for k, v in _dedup_msg_ids.items() if now - v > 5]
+    for k in stale:
+        del _dedup_msg_ids[k]
+    if message_id in _dedup_msg_ids:
+        return True
+    _dedup_msg_ids[message_id] = now
+    return False
+
 def handle_message(data):
     event, message, sender = data.event, data.event.message, data.event.sender
     open_id = sender.sender_id.open_id
     chat_id = message.chat_id
+    # 消息去重（飞书长连接重连可能重放事件）
+    if hasattr(message, 'message_id') and _is_duplicate_msg(message.message_id):
+        print(f"[去重] 忽略重复消息: {message.message_id}")
+        return
     if not PUBLIC_ACCESS and open_id not in ALLOWED_USERS:
         print(f"未授权用户: {open_id}")
         return
@@ -819,19 +836,28 @@ def handle_command(open_id, cmd, chat_id=None):
             _send_cmd_response(REMIND_HELP)
     elif op == "/inspired":
         _board = _get_inspiration_board()
-        _ideas = _board.load_all()
-        if not _ideas:
-            _send_cmd_response("📋 灵感板为空")
+        # 支持子命令
+        if len(parts) >= 3 and parts[1] == "add":
+            _title = " ".join(parts[2:])
+            _idea_id = _board.add_idea(_title.strip())
+            if _idea_id:
+                _send_cmd_response(f"✨ 已添加灵感 #{_idea_id}: {_title.strip()}")
+            else:
+                _send_cmd_response("❌ 添加灵感失败")
         else:
-            _lines = [f"💡 灵感板 ({len(_ideas)}/20 条活跃)"]
-            for _idea in _ideas:
-                _icon = {"new": "\U0001f7d7", "thinking": "\U0001f914", "in_progress": "\U0001f528", "implemented": "\u2705"}.get(_idea["status"], "\U0001f4a1")
-                _src = "\U0001f464" if _idea.get("source") == "user" else "\U0001f916"
-                _tag = f" [{', '.join(_idea.get('tags', []))}]" if _idea.get("tags") else ""
-                _lines.append(f"{_icon} #{_idea['id']} {_src} {_idea['title']}{_tag}")
-                if _idea.get("detail"):
-                    _lines.append(f"   {_idea['detail'][:80]}")
-            _send_cmd_response("\n".join(_lines)[:1500])
+            _ideas = _board.load_all()
+            if not _ideas:
+                _send_cmd_response("📋 灵感板为空")
+            else:
+                _lines = [f"💡 灵感板 ({len(_ideas)}/20 条活跃)"]
+                for _idea in _ideas:
+                    _icon = {"new": "\U0001f7d7", "thinking": "\U0001f914", "in_progress": "\U0001f528", "implemented": "\u2705"}.get(_idea["status"], "\U0001f4a1")
+                    _src = "\U0001f464" if _idea.get("source") == "user" else "\U0001f916"
+                    _tag = f" [{', '.join(_idea.get('tags', []))}]" if _idea.get("tags") else ""
+                    _lines.append(f"{_icon} #{_idea['id']} {_src} {_idea['title']}{_tag}")
+                    if _idea.get("detail"):
+                        _lines.append(f"   {_idea['detail'][:80]}")
+                _send_cmd_response("\n".join(_lines)[:1500])
     elif op == "/task":
         board = _get_board()
         if not board:
