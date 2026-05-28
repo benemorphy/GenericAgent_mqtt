@@ -163,7 +163,7 @@ Write-Host '  --------   ----    ------' -Fore Cyan
   Write-Host ('  {0,-14} {1,5}  [{2}]' -f $_.n, ('port ' + $_.p), $s) -Fore $c;
 };
 Write-Host ''
-Write-Host '  fsapp.py: python frontends\fsapp.py' -Fore Gray
+
 Write-Host '========================================' -Fore Cyan
 
 Write-Host ''

@@ -32,20 +32,20 @@
     "last": "2026-05-25"
   },
   "memory_management_sop.md": {
-    "count": 14,
-    "last": "2026-05-27"
+    "count": 15,
+    "last": "2026-05-28"
   },
   "global_mem_insight.txt": {
-    "count": 66,
-    "last": "2026-05-27"
+    "count": 68,
+    "last": "2026-05-28"
   },
   "global_mem.txt": {
-    "count": 69,
-    "last": "2026-05-27"
+    "count": 71,
+    "last": "2026-05-28"
   },
   "skills_learning_sop.md": {
-    "count": 25,
-    "last": "2026-05-26"
+    "count": 27,
+    "last": "2026-05-27"
   },
   "skills_learning_sop": {
     "count": 2,
@@ -56,8 +56,8 @@
     "last": "2026-05-13"
   },
   "autonomous_operation_sop.md": {
-    "count": 31,
-    "last": "2026-05-25"
+    "count": 32,
+    "last": "2026-05-28"
   },
   "task_planning.md": {
     "count": 7,
@@ -72,8 +72,8 @@
     "last": "2026-05-20"
   },
   "search_skills_sop.md": {
-    "count": 1,
-    "last": "2026-05-14"
+    "count": 2,
+    "last": "2026-05-27"
   },
   "plan_sop": {
     "count": 1,
@@ -176,8 +176,8 @@
     "last": "2026-05-18"
   },
   "tmwebdriver_sop.md": {
-    "count": 3,
-    "last": "2026-05-25"
+    "count": 4,
+    "last": "2026-05-27"
   },
   "qq_deploy_sop.md": {
     "count": 3,
@@ -192,11 +192,11 @@
     "last": "2026-05-21"
   },
   "feishu_connect_sop.md": {
-    "count": 13,
-    "last": "2026-05-26"
+    "count": 14,
+    "last": "2026-05-27"
   },
   "git_push_sop.md": {
-    "count": 26,
+    "count": 28,
     "last": "2026-05-27"
   },
   "active.json": {
@@ -204,8 +204,8 @@
     "last": "2026-05-21"
   },
   "agent_dreaming_sop.md": {
-    "count": 15,
-    "last": "2026-05-22"
+    "count": 16,
+    "last": "2026-05-28"
   },
   "inspiration_board.py": {
     "count": 1,
@@ -216,8 +216,8 @@
     "last": "2026-05-20"
   },
   "dream_command_rule.md": {
-    "count": 3,
-    "last": "2026-05-20"
+    "count": 4,
+    "last": "2026-05-27"
   },
   "dream_engine.md": {
     "count": 1,
@@ -304,16 +304,16 @@
     "last": "2026-05-26"
   },
   "mqtt_service_config.md": {
-    "count": 1,
-    "last": "2026-05-26"
+    "count": 2,
+    "last": "2026-05-27"
   },
   "meridian_ontology.md": {
-    "count": 6,
-    "last": "2026-05-26"
+    "count": 8,
+    "last": "2026-05-28"
   },
   "meridians_perspective_on_ontology.md": {
-    "count": 1,
-    "last": "2026-05-27"
+    "count": 2,
+    "last": "2026-05-28"
   },
   "ai_creation_emergence_brainstorm.md": {
     "count": 6,
@@ -336,6 +336,10 @@
     "last": "2026-05-27"
   },
   "rust_env_config.md": {
+    "count": 1,
+    "last": "2026-05-27"
+  },
+  "brainstorming_sop.md": {
     "count": 1,
     "last": "2026-05-27"
   }
