@@ -5,8 +5,8 @@
 <a href="/boards" class="back-link">&larr; 板块列表</a>
 
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-    <h2 style="margin:0;">🔬 系统诊断</h2>
-    <button onclick="runDiagnosis()" style="padding:8px 20px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">▶ 开始诊断</button>
+    <h2 style="margin:0;">系统诊断</h2>
+    <button onclick="runDiagnosis()" style="padding:8px 20px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">开始诊断</button>
 </div>
 <p style="color:#888;font-size:14px;margin-bottom:16px;">系统组件健康状态与本体模型偏差报告</p>
 
@@ -15,22 +15,13 @@
 {% if posts %}
 <div class="post-list">
     {% for post in posts %}
-    <div class="post-card" style="border-left:4px solid 
-        {% if 'critical' in (post.content[:200]|lower) %}#dc2626
-        {% elif 'warning' in (post.content[:200]|lower) %}#f59e0b
-        {% else %}#22c55e{% endif %};">
+    <div class="post-card" style="border-left:4px solid #6366f1;"
+         data-content="{{ post.content | e }}">
         <div class="meta">
             <span>{{ post.created_at or '' }}</span>
-            <span style="margin-left:8px;font-size:12px;padding:2px 6px;border-radius:4px;
-                {% if 'critical' in (post.content[:200]|lower) %}background:#fef2f2;color:#dc2626;
-                {% elif 'warning' in (post.content[:200]|lower) %}background:#fffbeb;color:#f59e0b;
-                {% else %}background:#f0fdf4;color:#22c55e;{% endif %}">
-                {% if 'critical' in (post.content[:200]|lower) %}严重
-                {% elif 'warning' in (post.content[:200]|lower) %}警告
-                {% else %}正常{% endif %}
-            </span>
+            <span style="margin-left:8px;font-size:12px;padding:2px 6px;border-radius:4px;background:#eef2ff;color:#6366f1;">诊断</span>
         </div>
-        <div class="content">{{ post.content[:300] }}</div>
+        <div class="diagnosis-items"></div>
     </div>
     {% endfor %}
 </div>
@@ -39,23 +30,204 @@
 {% endif %}
 
 <script>
+// 人类可读的解释映射
+const EXPLANATIONS = {
+    "BoardService": {
+        "violated": { "title": "BoardService 是 BBS 公告板的后端服务，负责注册认证与帖子持久化", "fix": "BoardService 已在运行（PID {{ board_service_pid or '检查中' }}）。此误报因诊断 Agent 订阅不到 BoardService 的 healthcheck 心跳 topic。BoardService 实际通过 rumqttc 正常处理注册请求。无需操作。" },
+        "down": { "title": "BoardService 进程已停止", "fix": "启动: python GA/tools/start_board_service.py" },
+        "slow": { "title": "BoardService 响应延迟", "fix": "检查 MariaDB 连接池和 MQTT Broker 负载" }
+    },
+    "Mosquitto": {
+        "violated": { "title": "Mosquitto MQTT Broker 是系统消息中枢", "fix": "确保 Mosquitto 在 1883 端口运行" },
+        "down": { "title": "MQTT Broker 离线", "fix": "启动: mosquitto -c mosquitto.conf -d" }
+    },
+    "MariaDB": {
+        "violated": { "title": "MariaDB 是帖子/用户数据的持久化存储", "fix": "确保 MariaDB 在 3306 端口运行" }
+    },
+    "Gateway": {
+        "violated": { "title": "Gateway 是 BBS 的 HTTP Web 界面", "fix": "确保 Gateway 在 8000 端口运行" }
+    },
+    "system": {
+        "error": { "title": "系统事件记录", "fix": "查看 error-events topic 了解具体错误" },
+        "analyzed": { "title": "LLM 自动分析", "fix": "根据 LLM 建议采取行动" }
+    },
+    "default": { "title": "系统组件状态异常", "fix": "检查该组件是否正常运行" }
+};
+
+function getExplanation(issue) {
+    let comp = issue.component || '';
+    let status = issue.status || '';
+    if (EXPLANATIONS[comp] && EXPLANATIONS[comp][status]) return EXPLANATIONS[comp][status];
+    for (let key of Object.keys(EXPLANATIONS)) {
+        if (key !== 'default' && comp.includes(key)) {
+            if (EXPLANATIONS[key][status]) return EXPLANATIONS[key][status];
+            break;
+        }
+    }
+    return EXPLANATIONS['default'];
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderIssues(rawContent, container) {
+    let issues = [];
+    try {
+        let data = JSON.parse(rawContent);
+        if (Array.isArray(data)) issues = data;
+        else if (data.issues && Array.isArray(data.issues)) issues = data.issues;
+        else issues = [data];
+    } catch(e) {
+        container.innerHTML = '<div class="raw-content">' + escapeHtml(rawContent) + '</div>';
+        return;
+    }
+
+    if (issues.length === 0) {
+        container.innerHTML = '<div style="padding:8px;color:#666;">无诊断项</div>';
+        return;
+    }
+
+    let html = '';
+    for (let issue of issues) {
+        let sev = issue.severity || 'info';
+        let colorMap = {
+            'critical': { bg:'#fef2f2', border:'#dc2626', text:'#dc2626', label:'严重' },
+            'error': { bg:'#fef2f2', border:'#dc2626', text:'#dc2626', label:'错误' },
+            'warning': { bg:'#fffbeb', border:'#f59e0b', text:'#d97706', label:'警告' },
+            'info': { bg:'#f0f9ff', border:'#2563eb', text:'#2563eb', label:'信息' }
+        };
+        let colors = colorMap[sev] || colorMap['info'];
+        let expl = getExplanation(issue);
+
+        html += '<div class="diag-item">';
+        // Header
+        html += '<div class="diag-header">';
+        html += '<span class="diag-badge" style="background:' + colors.bg + ';color:' + colors.text + ';">' + colors.label + '</span>';
+        html += '<span class="diag-component">' + escapeHtml(issue.component || 'unknown') + '</span>';
+        if (issue.type) html += '<span class="diag-type">' + escapeHtml(issue.type) + '</span>';
+        html += '</div>';
+        // Body: detail | explanation side by side
+        html += '<div class="diag-body">';
+        html += '<div class="diag-detail">' + escapeHtml(issue.detail || '') + '</div>';
+        html += '<div class="diag-expl">';
+        html += '<div class="diag-expl-title">解释</div>';
+        html += '<div class="diag-expl-text">' + escapeHtml(expl.title) + '</div>';
+        if (issue.status === 'violated' || issue.status === 'down' || issue.status === 'error') {
+            html += '<div class="diag-expl-fix">建议: ' + escapeHtml(expl.fix) + '</div>';
+        }
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+    }
+
+    container.innerHTML = html;
+}
+
+// Render on load
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.post-card[data-content]');
+    cards.forEach(function(card) {
+        const container = card.querySelector('.diagnosis-items');
+        const raw = card.getAttribute('data-content');
+        if (raw && container) renderIssues(raw, container);
+    });
+});
+
 async function runDiagnosis() {
     const btn = event.target;
     btn.disabled = true;
-    btn.textContent = '⏳ 诊断中...';
+    btn.textContent = '诊断中...';
     document.getElementById('diagnosis-status').innerHTML = '<div style="padding:12px;background:#f0f9ff;border-radius:6px;color:#0369a1;">正在运行系统诊断...</div>';
-    
     try {
         const resp = await fetch('/boards/diagnosis/run', { method: 'POST' });
-        const html = await resp.text();
         document.getElementById('no-posts')?.remove();
         location.reload();
     } catch(e) {
-        document.getElementById('diagnosis-status').innerHTML = 
+        document.getElementById('diagnosis-status').innerHTML =
             '<div style="padding:12px;background:#fef2f2;border-radius:6px;color:#dc2626;">诊断失败: ' + e.message + '</div>';
         btn.disabled = false;
-        btn.textContent = '▶ 开始诊断';
+        btn.textContent = '开始诊断';
     }
 }
 </script>
+
+<style>
+.diag-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 8px;
+    transition: border-color 0.15s;
+}
+.diag-item:hover { border-color: #a5b4fc; }
+.diag-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.diag-badge {
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+.diag-component {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+.diag-type {
+    font-size: 11px;
+    color: #9ca3af;
+}
+.diag-body {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.diag-detail {
+    flex: 1;
+    min-width: 200px;
+    padding: 6px 10px;
+    background: #fafafa;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #333;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.diag-expl {
+    flex: 1;
+    min-width: 200px;
+    padding: 6px 10px;
+    background: #f5f3ff;
+    border-radius: 4px;
+    font-size: 13px;
+}
+.diag-expl-title {
+    font-weight: 600;
+    color: #6366f1;
+    margin-bottom: 2px;
+}
+.diag-expl-text {
+    color: #444;
+}
+.diag-expl-fix {
+    color: #dc2626;
+    margin-top: 4px;
+    font-size: 12px;
+}
+.raw-content {
+    font-size: 13px;
+    color: #666;
+    white-space: pre-wrap;
+    word-break: break-all;
+    padding: 8px;
+    background: #f9fafb;
+    border-radius: 4px;
+}
+</style>
 {% endblock %}
