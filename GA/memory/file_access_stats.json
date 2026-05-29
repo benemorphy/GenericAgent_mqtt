@@ -32,16 +32,16 @@
     "last": "2026-05-25"
   },
   "memory_management_sop.md": {
-    "count": 15,
+    "count": 16,
     "last": "2026-05-28"
   },
   "global_mem_insight.txt": {
-    "count": 66,
-    "last": "2026-05-27"
+    "count": 70,
+    "last": "2026-05-29"
   },
   "global_mem.txt": {
-    "count": 71,
-    "last": "2026-05-28"
+    "count": 73,
+    "last": "2026-05-29"
   },
   "skills_learning_sop.md": {
     "count": 25,
@@ -264,8 +264,8 @@
     "last": "2026-05-26"
   },
   "verify_sop.md": {
-    "count": 1,
-    "last": "2026-05-21"
+    "count": 2,
+    "last": "2026-05-29"
   },
   "code_review_principles.md": {
     "count": 2,
@@ -276,12 +276,12 @@
     "last": "2026-05-22"
   },
   "board_stress_sop.md": {
-    "count": 5,
-    "last": "2026-05-23"
+    "count": 6,
+    "last": "2026-05-28"
   },
   "emqtt_design_principles.md": {
-    "count": 5,
-    "last": "2026-05-26"
+    "count": 6,
+    "last": "2026-05-28"
   },
   "MQTT_STRESS.md": {
     "count": 1,
@@ -300,20 +300,20 @@
     "last": "2026-05-23"
   },
   "MQTT_SERVICE_CHAIN.md": {
-    "count": 2,
-    "last": "2026-05-28"
-  },
-  "mqtt_service_config.md": {
     "count": 3,
     "last": "2026-05-28"
   },
+  "mqtt_service_config.md": {
+    "count": 4,
+    "last": "2026-05-28"
+  },
   "meridian_ontology.md": {
-    "count": 6,
-    "last": "2026-05-26"
+    "count": 11,
+    "last": "2026-05-28"
   },
   "meridians_perspective_on_ontology.md": {
-    "count": 1,
-    "last": "2026-05-27"
+    "count": 2,
+    "last": "2026-05-28"
   },
   "ai_creation_emergence_brainstorm.md": {
     "count": 6,
@@ -341,6 +341,22 @@
   },
   "RUST_ENV.md": {
     "count": 1,
+    "last": "2026-05-28"
+  },
+  "brainstorming_sop.md": {
+    "count": 1,
+    "last": "2026-05-28"
+  },
+  "ontology_model_evolution.md": {
+    "count": 4,
+    "last": "2026-05-28"
+  },
+  "ga_mqtt_bbs_scenarios.md": {
+    "count": 2,
+    "last": "2026-05-28"
+  },
+  "water_env_monitoring_scenarios.md": {
+    "count": 3,
     "last": "2026-05-28"
   }
 }

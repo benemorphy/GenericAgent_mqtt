@@ -182,9 +182,48 @@ def login_user_email(email: str, password: str) -> dict:
     }}
 
 
+def send_email_smtp(to: str, code: str) -> bool:
+    """通过 SMTP 发送验证码邮件（自动重试 1 次）"""
+    import smtplib, time
+    from email.mime.text import MIMEText
+    from .config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_USE_SSL
+    for attempt in range(2):
+        try:
+            msg = MIMEText(f"您的验证码是: {code}\n有效期 10 分钟", "plain", "utf-8")
+            msg["Subject"] = f"BBS 验证码: {code}"
+            msg["From"] = SMTP_USER
+            msg["To"] = to
+            if SMTP_USE_SSL:
+                with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=10) as s:
+                    s.login(SMTP_USER, SMTP_PASSWORD)
+                    s.send_message(msg)
+            else:
+                with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as s:
+                    s.starttls()
+                    s.login(SMTP_USER, SMTP_PASSWORD)
+                    s.send_message(msg)
+            return True
+        except Exception as e:
+            print(f"[SMTP ERROR] attempt {attempt+1}/2: {e}")
+            if attempt == 0:
+                time.sleep(1)
+    return False
+
+
+_last_send_time: dict[str, int] = {}  # email -> timestamp, 频率控制
+
+
 def send_verify_code(email: str) -> dict:
-    """生成 6 位验证码，存入 users 表（模拟发送，不真发邮件）"""
-    import random, string
+    """生成 6 位验证码，存入 users 表，通过 SMTP 发送（含 60s 频率限制）"""
+    import random, string, time
+
+    # 频率限制：60 秒内不能重复发送
+    last = _last_send_time.get(email, 0)
+    cooldown = 60
+    elapsed = int(time.time()) - last
+    if elapsed < cooldown:
+        raise HTTPException(429, f"发送过于频繁，请 {cooldown - elapsed} 秒后再试")
+
     code = "".join(random.choices(string.digits, k=6))
     token = secrets.token_hex(32)
     expire = int(time.time()) + 600  # 10 分钟有效
@@ -199,9 +238,16 @@ def send_verify_code(email: str) -> dict:
     db.close()
     if not affected:
         raise HTTPException(404, "该邮箱未注册")
-    # 模拟发送（生产环境接入 SMTP）
-    print(f"[SIMULATED EMAIL] To: {email}  Code: {code}  Token: {token[:16]}...")
-    return {"ok": True, "msg": "验证码已发送（模拟）", "debug_code": code, "debug_token": token}
+    # 通过 SMTP 真实发送验证码邮件
+    ok = send_email_smtp(email, code)
+    # 更新频率控制时间戳（成功/失败都更新，防止恶意刷接口）
+    _last_send_time[email] = int(time.time())
+    if ok:
+        return {"ok": True, "msg": "验证码已发送", "debug_code": code, "debug_token": token}
+    else:
+        # 发送失败时降级：仍然保留 debug 信息供手动排查
+        print(f"[SMTP FAILED] To: {email}  Code: {code}  Token: {token[:16]}...")
+        return {"ok": True, "msg": "验证码已发送（SMTP 发送失败，可看 debug_code 手动验证）", "debug_code": code, "debug_token": token}
 
 
 def check_verify(email: str, code: str, token: str) -> dict:
