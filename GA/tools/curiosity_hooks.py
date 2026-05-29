@@ -52,7 +52,7 @@ def check_file_read_curiosity(
         )
 
     # 2. 检测内容中是否包含可疑关键词（如密钥文件、TODO等）
-    if content:
+    if content and isinstance(content, str):
         triggers = [
             ("FIXME", "TODO", "HACK", "XXX"),  # 代码标记
             ("password", "secret", "api_key", "token"),  # 凭证风险
@@ -92,6 +92,10 @@ def check_web_scan_curiosity(
         如果检测到值得好奇的信号, 返回 CuriositySignal; 否则 None
     """
     if not result_text:
+        return None
+
+    # 确保 result_text 是字符串
+    if not isinstance(result_text, str):
         return None
 
     # 检测是否有新标签页
