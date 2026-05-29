@@ -124,6 +124,9 @@ bbs.boards_json = D:\open_claw_agent\GenericAgent_mqtt\boards.json
 # BoardClient 连接配置（在 Mqtt_bbs/config.py 中，默认 127.0.0.1:1883）
 # 插件系统: ./plugins/ 目录自动扫描加载，事件发布到 agent/bbs/{board}/events/{event}
 # 迁移 SOP: memory/sqlite_to_mariadb_sop.md
+# DiagnosisAgent启动: Mqtt_bbs_client 是本地包(在Beneh/下)，非同目录启动需 PYTHONPATH=Beneh/
+bbs.diagnosis_agent.start = PYTHONPATH=D:\\open_claw_agent\\Beneh python GA/tools/diagnosis_agent.py
+bbs.diagnosis_agent.path = GA/tools/diagnosis_agent.py
 
 ## [FEISHU]
 # 飞书 Bot 前端入口
