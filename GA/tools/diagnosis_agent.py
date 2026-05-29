@@ -1,12 +1,12 @@
 """
-Diagnosis Agent v2 — 本体驱动 + 真实数据 + LLM 分析 + 反省增强
+Diagnosis Agent v3 — 本体驱动 + 真实数据 + LLM 分析(统一接口) + 反省增强
 
 工作流:
-  1. 订阅 system/healthcheck/#, node/+/status, events/+/error
-  2. 加载 ontology_model 约束 + 推理
-  3. MQTT 消息作为数据源 → 真实约束检查
-  4. LLM 分析异常根因 + 建议
-  5. 反省: 从轨迹提取新模式 → 动态扩展本体
+  1. 订阅 BoardService 实际 topic 格式
+  2. 加载 ontology_model 约束 + 推理（导入新的 run_checks / run_inferences）
+  3. MQTT 消息作为数据源 -> 真实约束检查
+  4. LLM 分析异常根因 + 建议（复用统一 LLM Provider 工厂）
+  5. 通知周期 + 手动触发协调
   6. 发布诊断帖子到 board/diagnosis/post/
 
 启动:
@@ -18,63 +18,88 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Mqtt_bbs_client.board_client import BoardClient
 from Mqtt_bbs_client.client import BBSClient
-from tools.ontology_model import ENTITIES, RELATIONS, CONSTRAINTS, INFERENCES
+from tools.ontology_model import (
+    ENTITIES, RELATIONS,
+    run_checks as ontology_run_checks,
+    run_inferences as ontology_run_inferences,
+    diagnose_system,
+)
 
 
 class DiagnosisAgent:
-    
+
     def __init__(self):
         self.board = "agent-diagnosis"
         self.agent_id = "diagnosis_agent"
         self.bbs = BoardClient(self.agent_id, board=self.board)
-        self.client = BBSClient("diagnosis_agent_listener")  # use distinct client_id to avoid kicking BoardClient's internal connection
+        self.client = BBSClient("diagnosis_agent_listener")
         self.token = None
         self._running = False
-        
+
         # 数据采集
-        self._health_data = []      # 滑动窗口: 最近 60 个 healthcheck
-        self._node_status = {}      # node/{id}/status 最新值
-        self._error_events = []     # events/+/error 最近 50 条
+        self._health_data = []
+        self._node_status = {}
+        self._error_events = []
         self._latency_samples = collections.deque(maxlen=60)
-        
-        # LLM
+
+        # LLM — 尝试用统一 LLM Provider 工厂
+        self._llm = None
         self._llm_available = False
         self._init_llm()
 
     def _init_llm(self):
-        """初始化 LLM 连接"""
+        """初始化 LLM — 优先使用统一的 LLM Provider 工厂"""
         enabled = os.environ.get("SKILL_LLM_ENABLE", "0") == "1"
-        api_key = os.environ.get("LLM_API_KEY", "")
-        if enabled and api_key:
-            try:
-                import urllib.request
-                req = urllib.request.Request(
-                    "https://api.deepseek.com/v1/models",
-                    headers={"Authorization": f"Bearer {api_key}"}
-                )
-                with urllib.request.urlopen(req, timeout=5) as resp:
-                    if resp.status == 200:
-                        self._llm_available = True
-                        print("[LLM] 可用")
-            except:
-                print("[LLM] 不可用，使用规则降级")
-    
+        if not enabled:
+            return
+        try:
+            # 尝试从 LLM Provider 工厂加载
+            from GA.tools.llm_provider_factory import get_llm
+            api_key = os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("LLM_API_KEY", "")
+            self._llm = get_llm(provider="deepseek", api_key=api_key)
+            self._llm_available = True
+            print("[LLM] 已通过 Provider 工厂初始化")
+        except ImportError:
+            # 降级到直接 urllib
+            self._llm_available = bool(os.environ.get("LLM_API_KEY", ""))
+            print(f"[LLM] Provider 工厂不可用，降级 urllib; {'可用' if self._llm_available else '不可用'}")
+        except Exception as e:
+            print(f"[LLM] 初始化失败: {e}")
+
     def _llm_analyze(self, context: str) -> str:
-        """LLM 根因分析"""
+        """LLM 根因分析 — 使用统一接口或降级"""
         if not self._llm_available:
             return "LLM 不可用，使用规则诊断"
+
+        # 统一接口
+        if self._llm is not None and hasattr(self._llm, 'chat'):
+            try:
+                resp = self._llm.chat([
+                    {"role": "system", "content": "你是 IT 系统诊断专家，用中文回答。"},
+                    {"role": "user", "content": f"分析以下系统状态，给出根因和建议：\n{context}\n\n格式：根因: ... 建议: ..."}
+                ])
+                return str(resp)[:500]
+            except Exception as e:
+                return f"LLM 分析失败: {e}"
+
+        # 降级: urllib 直接调用
         try:
             import urllib.request
+            api_key = os.environ.get("LLM_API_KEY", "")
             prompt = f"你是一个系统诊断专家。分析以下系统状态，给出根因和建议：\n{context}\n\n格式：根因: ... 建议: ..."
-            data = json.dumps({"model": "deepseek-chat", "messages": [
-                {"role": "system", "content": "你是 IT 系统诊断专家，用中文回答。"},
-                {"role": "user", "content": prompt}
-            ], "temperature": 0.3}).encode()
+            data = json.dumps({
+                "model": "deepseek-chat",
+                "messages": [
+                    {"role": "system", "content": "你是 IT 系统诊断专家，用中文回答。"},
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.3
+            }).encode()
             req = urllib.request.Request(
                 "https://api.deepseek.com/v1/chat/completions",
                 data=data,
                 headers={
-                    "Authorization": f"Bearer {os.environ.get('LLM_API_KEY', '')}",
+                    "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json"
                 }
             )
@@ -83,35 +108,36 @@ class DiagnosisAgent:
                 return result["choices"][0]["message"]["content"][:500]
         except Exception as e:
             return f"LLM 调用失败: {e}"
-    
+
     def start(self):
         """启动诊断循环"""
         self.bbs.connect()
-        info = self.bbs.register("Diagnosis Agent v2")
+        info = self.bbs.register("Diagnosis Agent v3")
         self.token = info.get("token", "")
         self.client.connect()
-        
-        # 订阅真实数据源
+
+        # 订阅真实数据源 — 使用最新的 topic 格式
         self.client.subscribe("system/healthcheck/+/response", self._on_healthcheck)
         self.client.subscribe("node/+/status", self._on_node_status)
         self.client.subscribe("events/+/error", self._on_error_event)
-        
-        print(f"[Diagnosis v2] 注册成功, board={self.board}")
-        print(f"[Diagnosis v2] 数据源: healthcheck / node-status / error-events")
-        print(f"[Diagnosis v2] LLM: {'启用' if self._llm_available else '未启用(规则降级)'}")
-        
-        # 启动数据采集（后台线程收集 10s 数据后做一次诊断）
+        # 额外订阅 BoardService 心跳
+        self.client.subscribe("system/healthcheck/+/request", self._on_healthcheck)
+
+        print(f"[Diagnosis v3] 注册成功, board={self.board}")
+        print(f"[Diagnosis v3] 数据源: healthcheck / node-status / error-events")
+        print(f"[Diagnosis v3] LLM: {'启用' if self._llm_available else '未启用(规则降级)'}")
+
         self._running = True
-        time.sleep(2)  # 等待首批数据
+        time.sleep(2)
         while self._running:
             self._run_once()
-            time.sleep(30)  # 每 30 秒诊断一次
-    
+            time.sleep(60)  # 每 60 秒诊断一次
+
     def stop(self):
         self._running = False
         self.client.disconnect()
         self.bbs.disconnect()
-    
+
     def _on_healthcheck(self, topic, payload):
         """采集 healthcheck 响应"""
         if isinstance(payload, dict):
@@ -122,10 +148,9 @@ class DiagnosisAgent:
                 "mqtt": payload.get("mqtt"),
                 "db": payload.get("db")
             })
-            # 只保留最近 120 条
             if len(self._health_data) > 120:
                 self._health_data = self._health_data[-120:]
-    
+
     def _on_node_status(self, topic, payload):
         """采集节点状态"""
         node_id = topic.split('/')[1]
@@ -133,7 +158,7 @@ class DiagnosisAgent:
             "status": payload,
             "time": time.time()
         }
-    
+
     def _on_error_event(self, topic, payload):
         """采集错误事件"""
         self._error_events.append({
@@ -143,23 +168,45 @@ class DiagnosisAgent:
         })
         if len(self._error_events) > 50:
             self._error_events = self._error_events[-50:]
-    
+
     def _run_once(self):
-        """一次诊断周期"""
+        """一次诊断周期 — 使用 ontology_model 的 diagnose_system()"""
         print(f"\n[Diagnosis] ====== 周期 ({time.strftime('%H:%M:%S')}) ======")
-        
+
         issues = []
-        
-        # 1. 真实数据约束检查
+
+        # 1. 运行本体模型的约束检查
+        ontology_result = diagnose_system()
+        for check in ontology_result.get("checks", []):
+            issues.append({
+                "type": "constraint_violation",
+                "severity": check.get("severity", "warning"),
+                "source": "ontology",
+                "component": check.get("name", "system"),
+                "status": "violated",
+                "detail": check.get("description", ""),
+                "llm": "",
+                "count": 1
+            })
+        for inference in ontology_result.get("inferences", []):
+            issues.append({
+                "type": "inference_match",
+                "severity": "info",
+                "source": "ontology",
+                "component": "system",
+                "status": "suggested",
+                "detail": inference.get("conclusion", "") + " -> " + inference.get("action", ""),
+                "llm": "",
+                "count": 1
+            })
+
+        # 2. 真实数据约束检查
         issues += self._check_real_data()
-        
-        # 2. LLM 分析
+
+        # 3. LLM 分析
         if self._llm_available:
             issues += self._llm_analysis()
-        
-        # 3. 推理规则
-        issues += self._run_inferences()
-        
+
         # 4. 发布诊断帖子
         for issue in issues:
             content = json.dumps({
@@ -175,27 +222,28 @@ class DiagnosisAgent:
             })
             self.bbs.post(content, self.token)
             print(f"  [{issue['severity'].upper()}] {issue['detail'][:60]}")
-        
+
         # 5. 发布概览
         self._publish_summary(len(issues))
         print(f"  [SUMMARY] {len(issues)} 个诊断项")
-    
+
     def _check_real_data(self):
         """基于真实数据的约束检查"""
         issues = []
-        
-        # 1. 组件是否在线 (healthcheck)
+
+        # 健康检查
         if self._health_data:
             last = self._health_data[-1]
-            if last.get("status") != "ok" and last.get("status") != "ready":
+            if last.get("status") not in ("ok", "ready"):
                 issues.append({
                     "type": "anomaly", "severity": "critical",
                     "source": "real_data", "component": "BoardService",
-                    "status": "down", "detail": f"BoardService healthcheck: {last.get('status')}",
-                    "count": sum(1 for h in self._health_data if h.get('status') != 'ok')
+                    "status": "down",
+                    "detail": f"BoardService healthcheck: {last.get('status')}",
+                    "count": sum(1 for h in self._health_data if h.get('status') not in ('ok', 'ready'))
                 })
-            
-            # 延迟滑动窗口 (3σ 异常)
+
+            # 延迟分析 (3-sigma)
             if len(self._health_data) > 3:
                 latencies = [h.get('time', 0) for h in self._health_data[-10:]]
                 if len(latencies) > 3:
@@ -205,102 +253,78 @@ class DiagnosisAgent:
                         if h.get('time', 0) > avg + 3 * std:
                             issues.append({
                                 "type": "anomaly", "severity": "warning",
-                                "source": "3sigma", "component": "BoardService",
-                                "status": "degraded",
-                                "detail": f"延迟异常: {h['time']:.0f}ms (avg={avg:.0f}ms, 3σ={3*std:.0f}ms)",
+                                "source": "real_data", "component": h.get("component", "unknown"),
+                                "status": "slow",
+                                "detail": f"延迟异常 {h.get('time', 0):.2f}s (均值 {avg:.2f}s + 3sigma {3*std:.2f}s)",
                                 "count": 1
                             })
-        
-        # 2. 节点在线状态
-        offline_nodes = [nid for nid, info in self._node_status.items()
-                        if time.time() - info.get('time', 0) > 120]
+
+        # 节点状态
+        offline_nodes = [nid for nid, st in self._node_status.items()
+                         if isinstance(st.get("status"), dict)
+                         and st["status"].get("status") in ("offline", "disconnected", "error")]
         if offline_nodes:
             issues.append({
                 "type": "anomaly", "severity": "warning",
-                "source": "real_data", "component": "Node",
+                "source": "real_data", "component": ",".join(offline_nodes[:5]),
                 "status": "offline",
-                "detail": f"离线节点: {', '.join(offline_nodes)}",
+                "detail": f"{len(offline_nodes)} 个节点离线: {', '.join(offline_nodes[:5])}",
                 "count": len(offline_nodes)
             })
-        
-        # 3. 错误事件聚合
+
+        # 错误事件
         if self._error_events:
-            recent_errors = [e for e in self._error_events 
-                           if time.time() - e['time'] < 300]
+            recent_errors = [e for e in self._error_events if time.time() - e["time"] < 300]
             if recent_errors:
-                error_summary = {}
-                for e in recent_errors:
-                    t = e['topic']
-                    error_summary[t] = error_summary.get(t, 0) + 1
-                for topic, count in sorted(error_summary.items(), key=lambda x: -x[1])[:3]:
-                    issues.append({
-                        "type": "anomaly", "severity": "warning",
-                        "source": "real_data", "component": topic.split('/')[2] if len(topic.split('/')) > 2 else topic,
-                        "status": "degraded",
-                        "detail": f"错误事件: {topic} ({count}次/5分钟)",
-                        "count": count
-                    })
-        
+                issues.append({
+                    "type": "error_event", "severity": "error",
+                    "source": "real_data", "component": "system",
+                    "status": "error",
+                    "detail": f"最近 5 分钟有 {len(recent_errors)} 个错误事件",
+                    "count": len(recent_errors)
+                })
+
         return issues
-    
+
     def _llm_analysis(self):
-        """LLM 增强分析"""
+        """LLM 分析当前系统状态"""
         issues = []
-        
-        # 准备上下文
-        context_lines = []
+
+        # 汇总状态
+        context_lines = ["=== 系统状态摘要 ==="]
+        context_lines.append(f"运行中服务: {sum(1 for h in self._health_data if h.get('status') in ('ok', 'ready'))}/{len(self._health_data)}")
+        context_lines.append(f"在线节点: {len([n for n, s in self._node_status.items() if isinstance(s.get('status'), dict) and s['status'].get('status') != 'offline'])}")
+        context_lines.append(f"错误事件 (5分钟): {len([e for e in self._error_events if time.time() - e['time'] < 300])}")
+
         if self._health_data:
-            context_lines.append(f"Healthcheck: {self._health_data[-3:]}")
-        if self._error_events:
-            context_lines.append(f"Recent errors ({len(self._error_events)}): {self._error_events[-3:]}")
-        if self._node_status:
-            n = len(self._node_status)
-            offline = sum(1 for v in self._node_status.values() if time.time() - v['time'] > 120)
-            context_lines.append(f"Nodes: {n} total, {offline} offline")
-        
-        if context:
-            context = "\n".join(context_lines)
-            analysis = self._llm_analyze(context)
-            if analysis and ":" in analysis:
-                issues.append({
-                    "type": "analysis", "severity": "info",
-                    "source": "llm", "component": "system",
-                    "status": "analyzed", "detail": "LLM 诊断分析",
-                    "llm": analysis,
-                    "count": 1
-                })
+            context_lines.append(f"最新 healthcheck: {json.dumps(self._health_data[-1], ensure_ascii=False)}")
+
+        context = "\n".join(context_lines)
+        analysis = self._llm_analyze(context)
+
+        if analysis and "LLM 不可用" not in analysis and "失败" not in analysis:
+            issues.append({
+                "type": "llm_analysis", "severity": "info",
+                "source": "llm", "component": "system",
+                "status": "analyzed",
+                "detail": "LLM 分析完成",
+                "llm": analysis,
+                "count": 1
+            })
+
         return issues
-    
-    def _run_inferences(self):
-        """推理规则"""
-        issues = []
-        for inf in INFERENCES:
-            # 检查前提是否满足
-            if "替换" in inf.premise and "BoardService" in self._node_status:
-                issues.append({
-                    "type": "inference", "severity": "info",
-                    "source": "inference", "component": "system",
-                    "status": "inferred",
-                    "detail": f"推理: {inf.premise[:40]}... → {inf.conclusion[:40]}...",
-                    "count": inf.evidence_count
-                })
-        return issues
-    
+
     def _publish_summary(self, alert_count):
         """发布诊断概览"""
-        summary = {
-            "total_entities": len(ENTITIES),
-            "total_relations": len(RELATIONS),
-            "constraints": len(CONSTRAINTS),
-            "inferences": len(INFERENCES),
-            "open_alerts": alert_count,
-            "nodes_online": len([n for n in self._node_status.values() if time.time() - n['time'] < 120]),
-            "nodes_offline": len([n for n in self._node_status.values() if time.time() - n['time'] >= 120]),
-            "health_samples": len(self._health_data),
-            "llm_enabled": self._llm_available,
-            "events_5min": len([e for e in self._error_events if time.time() - e['time'] < 300]),
+        summary = json.dumps({
+            "alert_count": alert_count,
+            "online_services": [h.get("component") for h in self._health_data[-3:] if h.get("status") in ("ok", "ready")],
+            "offline_nodes": [nid for nid, st in self._node_status.items()
+                              if isinstance(st.get("status"), dict)
+                              and st["status"].get("status") in ("offline", "disconnected", "error")],
+            "error_count_5min": len([e for e in self._error_events if time.time() - e['time'] < 300]),
             "timestamp": time.time()
-        }
+        })
         self.client.publish("board/diagnosis/summary", summary, retain=True)
 
 
@@ -311,6 +335,7 @@ def main():
     except KeyboardInterrupt:
         agent.stop()
         print("\n[Diagnosis] 已停止")
+
 
 if __name__ == "__main__":
     main()
