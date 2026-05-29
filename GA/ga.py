@@ -88,7 +88,8 @@ class GenericAgentHandler(BaseHandler):
         # 好奇心检测: 扫描结果中的新tab/有趣页面
         if hasattr(self, '_constraint_dashboard'):
             from tools.curiosity_hooks import check_web_scan_curiosity, try_register_curiosity
-            sig = check_web_scan_curiosity(tabs_only, result)
+            result_str = result if isinstance(result, str) else json.dumps(result, ensure_ascii=False, default=json_default)
+            sig = check_web_scan_curiosity(tabs_only, result_str)
             try_register_curiosity(self, sig)
         return StepOutcome(result, next_prompt=next_prompt)
     
