@@ -12,8 +12,8 @@
     "last": "2026-05-14"
   },
   "SKILL.md": {
-    "count": 1,
-    "last": "2026-05-13"
+    "count": 2,
+    "last": "2026-05-29"
   },
   "__main__.py": {
     "count": 1,
@@ -32,20 +32,20 @@
     "last": "2026-05-25"
   },
   "memory_management_sop.md": {
-    "count": 16,
-    "last": "2026-05-28"
-  },
-  "global_mem_insight.txt": {
-    "count": 70,
+    "count": 18,
     "last": "2026-05-29"
   },
-  "global_mem.txt": {
+  "global_mem_insight.txt": {
     "count": 73,
     "last": "2026-05-29"
   },
+  "global_mem.txt": {
+    "count": 77,
+    "last": "2026-05-29"
+  },
   "skills_learning_sop.md": {
-    "count": 25,
-    "last": "2026-05-26"
+    "count": 27,
+    "last": "2026-05-29"
   },
   "skills_learning_sop": {
     "count": 2,
@@ -176,8 +176,8 @@
     "last": "2026-05-18"
   },
   "tmwebdriver_sop.md": {
-    "count": 3,
-    "last": "2026-05-25"
+    "count": 5,
+    "last": "2026-05-29"
   },
   "qq_deploy_sop.md": {
     "count": 3,
@@ -196,8 +196,8 @@
     "last": "2026-05-26"
   },
   "git_push_sop.md": {
-    "count": 28,
-    "last": "2026-05-28"
+    "count": 29,
+    "last": "2026-05-29"
   },
   "active.json": {
     "count": 3,
@@ -260,16 +260,16 @@
     "last": "2026-05-21"
   },
   "metacognition_sop.md": {
-    "count": 4,
-    "last": "2026-05-26"
+    "count": 6,
+    "last": "2026-05-29"
   },
   "verify_sop.md": {
-    "count": 2,
+    "count": 3,
     "last": "2026-05-29"
   },
   "code_review_principles.md": {
-    "count": 2,
-    "last": "2026-05-25"
+    "count": 3,
+    "last": "2026-05-29"
   },
   "mqtt_bbs_sop.md": {
     "count": 1,
@@ -280,8 +280,8 @@
     "last": "2026-05-28"
   },
   "emqtt_design_principles.md": {
-    "count": 6,
-    "last": "2026-05-28"
+    "count": 7,
+    "last": "2026-05-29"
   },
   "MQTT_STRESS.md": {
     "count": 1,
@@ -300,12 +300,12 @@
     "last": "2026-05-23"
   },
   "MQTT_SERVICE_CHAIN.md": {
-    "count": 3,
-    "last": "2026-05-28"
+    "count": 4,
+    "last": "2026-05-29"
   },
   "mqtt_service_config.md": {
-    "count": 4,
-    "last": "2026-05-28"
+    "count": 5,
+    "last": "2026-05-29"
   },
   "meridian_ontology.md": {
     "count": 11,
@@ -358,5 +358,17 @@
   "water_env_monitoring_scenarios.md": {
     "count": 3,
     "last": "2026-05-28"
+  },
+  "working_checkpoint.txt": {
+    "count": 1,
+    "last": "2026-05-29"
+  },
+  "all_histories.txt": {
+    "count": 1,
+    "last": "2026-05-29"
+  },
+  "mqtt_service_chain.md": {
+    "count": 1,
+    "last": "2026-05-29"
   }
 }

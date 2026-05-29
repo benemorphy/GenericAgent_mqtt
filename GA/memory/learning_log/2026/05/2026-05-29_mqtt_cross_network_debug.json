@@ -1,0 +1,40 @@
+{
+  "date": "2026-05-29",
+  "session_id": "R28",
+  "task": "MQTT跨网络双向通信调试——本地GA与远端GA通过Mosquitto互联",
+  "category": "system",
+  "result": "success",
+  "learning_strategy": "trial-error",
+  "strategies_used": [
+    "ask_user",
+    "code_run_test",
+    "file_read",
+    "probe-first"
+  ],
+  "what_worked": [
+    "Mosquitto verbose模式(-v)实时打印所有PUBLISH/SUBSCRIBE/SUBACK日志，能清晰追踪消息流转路径",
+    "对比本地发布和远端发布的verbose输出差异(有/无Sending PUBLISH行)，精确定位问题不是Broker拒绝而是时序错位",
+    "远端第一次连不上是防火墙/路由问题——检查Windows防火墙入站规则1883端口的远程IP是否通",
+    "远端paho版本旧不支持clean_start参数，回退到clean_session=True方案兼容",
+    "Mosquitto服务模式重启需用管理员net stop/start，taskkill无效",
+    "本地虚拟环境(.venv)启动后台进程时必须用完整python路径",
+    "本地监听器改为后台常驻+日志文件输出(listener.log)，解决code_run工具和远端消息的时序错位问题",
+    "最终同步测试: 监听器在线时远端发消息，5秒内收到"
+  ],
+  "what_didnt": [
+    "反复用短生命周期的code_run监听器(30秒)测试，远端刚好在监听器退出后才发消息，浪费了大量轮次排查'Broker不转发'的假象",
+    "初期没有用verbose日志的精确时间戳比对订阅者在线状态，靠肉眼推断浪费10+轮",
+    "没有第一时间想到将监听器改为后台常驻进程解决时序问题"
+  ],
+  "key_insight": "MQTT调试中，本地订阅者收不到远端消息最常见的原因是时序错位(订阅者已断开后才发消息)，而非Broker配置问题。用Broker verbose日志的时间戳精确比对监听器在线窗口和消息到达时间，以及让监听器后台常驻，是排查此类问题的核心手段。",
+  "time_spent_min": 60,
+  "satisfaction": 4,
+  "failure_count": 3,
+  "tools_used": [
+    "code_run",
+    "file_read",
+    "file_write",
+    "update_working_checkpoint",
+    "ask_user"
+  ]
+}

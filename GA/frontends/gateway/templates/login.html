@@ -3,12 +3,150 @@
 {% block content %}
 <div class="auth-form">
     <h2>登录</h2>
-    {% if error %}<div class="error">{{ error }}</div>{% endif %}
-    <form action="/api/login" method="post">
+    {% if error and not need_verify %}<div class="error">{{ error }}</div>{% endif %}
+    {% if error and need_verify %}<div class="error" id="verify-prompt">{{ error }}</div>{% endif %}
+    <div class="auth-tabs">
+        <button class="tab-btn active" onclick="switchTab('user')">用户名</button>
+        <button class="tab-btn" onclick="switchTab('email')">邮箱</button>
+    </div>
+    <form id="user-login-form" action="/api/login" method="post">
         <div class="field"><label>用户名</label><input name="username" required autofocus></div>
         <div class="field"><label>密码</label><input name="password" type="password" required></div>
         <button type="submit">登录</button>
     </form>
+    <form id="email-login-form" style="display:none" onsubmit="return emailLogin(event)">
+        <div class="field"><label>邮箱</label><input id="el-email" name="email" type="email" required></div>
+        <div class="field"><label>密码</label><input id="el-password" name="password" type="password" required></div>
+        <button type="submit">邮箱登录</button>
+    </form>
+    <div id="verify-section" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #eee">
+        <div class="field"><label>邮箱</label><input id="v-email" readonly style="background:#f5f5f5"></div>
+        <div class="field"><label>验证码</label><input id="v-code" placeholder="请输入邮箱中收到的6位验证码" maxlength="6" autocomplete="off"></div>
+        <button onclick="doVerify()">验证</button>
+        <p style="text-align:center;margin-top:10px;font-size:12px;color:#888">没收到？<a href="#" onclick="resendCode()">重新发送</a></p>
+    </div>
     <div class="link">还没有账号？<a href="/register">注册</a></div>
 </div>
+<script>
+var _verifyEmail = '{{ email }}';
+var _verifyToken = '';
+
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.textContent.includes(tab === 'user' ? '用户' : '邮箱')));
+    document.getElementById('user-login-form').style.display = tab === 'user' ? '' : 'none';
+    document.getElementById('email-login-form').style.display = tab === 'email' ? '' : 'none';
+    document.getElementById('verify-section').style.display = 'none';
+}
+
+function emailLogin(e) {
+    e.preventDefault();
+    var email = document.getElementById('el-email').value.trim();
+    var password = document.getElementById('el-password').value;
+    if (!email || !password) { alert('请填写邮箱和密码'); return false; }
+    var form = new FormData();
+    form.append('email', email);
+    form.append('password', password);
+    fetch('/api/email/login', { method: 'POST', body: form })
+    .then(function(r) {
+        // 检查 content-type
+        var ct = r.headers.get('content-type') || '';
+        if (ct.indexOf('json') !== -1) {
+            return r.json().then(function(data) {
+                if (data.need_verify) {
+                    // 显示验证码输入区
+                    _verifyEmail = email;
+                    _verifyToken = data.verify_token || '';
+                    document.getElementById('v-email').value = email;
+                    document.getElementById('verify-section').style.display = 'block';
+                    document.getElementById('verify-prompt').style.display = 'block';
+                } else {
+                    alert(data.error || '登录失败');
+                }
+            });
+        } else {
+            // 重定向（登录成功）
+            if (r.redirected) { window.location.href = r.url; }
+            else { r.text().then(function() { window.location.href = '/boards'; }); }
+        }
+    });
+    return false;
+}
+
+function doVerify() {
+    var code = document.getElementById('v-code').value.trim();
+    if (!code || code.length !== 6) { alert('请输入6位验证码'); return; }
+    var pw = document.getElementById('el-password').value;
+    if (!pw) { alert('请先在邮箱登录框中输入密码，再进行验证'); return; }
+    var form = new FormData();
+    form.append('email', _verifyEmail);
+    form.append('code', code);
+    form.append('token', _verifyToken);
+    fetch('/api/email/verify', { method: 'POST', body: form })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.ok) {
+            // 验证通过，自动提交登录（密码已在前端检查非空）
+            var f2 = new FormData();
+            f2.append('email', _verifyEmail);
+            f2.append('password', pw);
+            fetch('/api/email/login', { method: 'POST', body: f2 })
+            .then(function(r) {
+                if (r.redirected) { window.location.href = r.url; }
+                else { r.json().then(function(d) { alert(d.error || '登录失败'); }); }
+            });
+        } else {
+            alert(data.error || '验证失败');
+        }
+    })
+    .catch(function(err) {
+        alert('验证请求失败: ' + err.message);
+    });
+}
+
+function resendCode() {
+    var form = new FormData();
+    form.append('email', _verifyEmail);
+    fetch('/api/email/send_code', { method: 'POST', body: form })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.ok) {
+            _verifyToken = data.debug_token || _verifyToken;
+            alert('验证码已重新发送，请查收邮箱');
+        }
+        else { alert(data.error || '发送失败'); }
+    });
+}
+
+// 页面加载: 如果从注册页带 need_verify 参数过来，自动显示验证码区
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    var needVerify = params.get('need_verify');
+    var email = params.get('email');
+    var vt = params.get('verify_token');
+    if (needVerify && email) {
+        _verifyEmail = email;
+        // 直接从 URL 参数读取 token（注册时通过 send_verify_code 产生并传递）
+        if (vt) { _verifyToken = vt; }
+        // 切换到邮箱标签
+        switchTab('email');
+        document.getElementById('el-email').value = email;
+        document.getElementById('v-email').value = email;
+        // 直接展开验证码区（跳过 switchTab 的隐藏）
+        document.getElementById('verify-section').style.display = 'block';
+        document.getElementById('verify-prompt').style.display = 'block';
+        // 兜底：发送验证码获取 token（当 URL 中没有 verify_token 时）
+        if (!vt) {
+            var form = new FormData();
+            form.append('email', email);
+            fetch('/api/email/send_code', { method: 'POST', body: form })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.ok && data.debug_token) {
+                    _verifyToken = data.debug_token;
+                }
+            });
+        }
+    }
+})();
+</script>
 {% endblock %}

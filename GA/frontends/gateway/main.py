@@ -60,4 +60,4 @@ if __name__ == "__main__":
     print(f"  Boards:  http://localhost:{PORT}/boards")
     print(f"  Agents:  http://localhost:{PORT}/agents")
     print(f"  Docs:    http://localhost:{PORT}/docs/")
-    uvicorn.run("frontends.gateway.main:app", host=HOST, port=PORT, reload=True)
+    uvicorn.run("frontends.gateway.main:app", host=HOST, port=PORT, reload=False)

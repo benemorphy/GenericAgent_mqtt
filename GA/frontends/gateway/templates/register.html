@@ -4,12 +4,29 @@
 <div class="auth-form">
     <h2>注册新账号</h2>
     {% if error %}<div class="error">{{ error }}</div>{% endif %}
-    <form action="/api/register" method="post">
+    <div class="auth-tabs">
+        <button class="tab-btn" onclick="switchTab('user')">用户名</button>
+        <button class="tab-btn active" onclick="switchTab('email')">邮箱</button>
+    </div>
+    <form id="user-reg-form" action="/api/register" method="post" style="display:none">
         <div class="field"><label>用户名</label><input name="username" required minlength="2" autofocus></div>
         <div class="field"><label>密码</label><input name="password" type="password" required minlength="4"></div>
         <div class="field"><label>显示名称（可选）</label><input name="display_name" placeholder="留空则使用用户名"></div>
         <button type="submit">注册</button>
     </form>
+    <form id="email-reg-form" action="/api/email/register" method="post">
+        <div class="field"><label>邮箱</label><input name="email" type="email" required></div>
+        <div class="field"><label>密码</label><input name="password" type="password" required minlength="4"></div>
+        <div class="field"><label>昵称（可选）</label><input name="nickname" placeholder="留空则使用邮箱前缀"></div>
+        <button type="submit">邮箱注册</button>
+    </form>
     <div class="link">已有账号？<a href="/login">登录</a></div>
 </div>
+<script>
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.textContent.includes(tab === 'user' ? '用户' : '邮箱')));
+    document.getElementById('user-reg-form').style.display = tab === 'user' ? '' : 'none';
+    document.getElementById('email-reg-form').style.display = tab === 'email' ? '' : 'none';
+}
+</script>
 {% endblock %}

@@ -162,11 +162,11 @@ def register_user_email(email: str, password: str, nickname: str = "") -> dict:
 
 
 def login_user_email(email: str, password: str) -> dict:
-    """通过 email 登录（users 表），bcrypt 密码验证"""
+    """通过 email 登录（users 表），bcrypt 密码验证，需已验证邮箱"""
     db = get_db()
     cur = db.cursor(DictCursor)
     cur.execute(
-        "SELECT id, email, password_hash, nickname, role FROM users WHERE email=%s",
+        "SELECT id, email, password_hash, nickname, role, verified FROM users WHERE email=%s",
         (email,),
     )
     user = cur.fetchone()
@@ -175,6 +175,8 @@ def login_user_email(email: str, password: str) -> dict:
         raise HTTPException(401, "邮箱或密码错误")
     if not verify_password_bcrypt(password, user["password_hash"]):
         raise HTTPException(401, "邮箱或密码错误")
+    if not user.get("verified"):
+        raise HTTPException(403, "邮箱未验证，请先查收验证码并完成验证")
     token = create_jwt({"id": user["id"], "username": user["email"], "display_name": user["nickname"], "role": user["role"]})
     return {"ok": True, "token": token, "user": {
         "id": user["id"], "email": user["email"],
@@ -183,31 +185,55 @@ def login_user_email(email: str, password: str) -> dict:
 
 
 def send_email_smtp(to: str, code: str) -> bool:
-    """通过 SMTP 发送验证码邮件（自动重试 1 次）"""
-    import smtplib, time
+    """通过 SMTP 发送验证码邮件（自动重试 1 次，总超时 10s 防止卡死）"""
+    import smtplib, time, ssl, os, threading
     from email.mime.text import MIMEText
-    from .config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_USE_SSL
-    for attempt in range(2):
-        try:
-            msg = MIMEText(f"您的验证码是: {code}\n有效期 10 分钟", "plain", "utf-8")
-            msg["Subject"] = f"BBS 验证码: {code}"
-            msg["From"] = SMTP_USER
-            msg["To"] = to
-            if SMTP_USE_SSL:
-                with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=10) as s:
-                    s.login(SMTP_USER, SMTP_PASSWORD)
-                    s.send_message(msg)
-            else:
-                with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as s:
-                    s.starttls()
-                    s.login(SMTP_USER, SMTP_PASSWORD)
-                    s.send_message(msg)
-            return True
-        except Exception as e:
-            print(f"[SMTP ERROR] attempt {attempt+1}/2: {e}")
-            if attempt == 0:
-                time.sleep(1)
-    return False
+    from .config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_USE_SSL
+    # 直接读取环境变量，确保不被子进程丢失
+    SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
+    if not SMTP_PASSWORD:
+        # 尝试从 .env 文件手动加载
+        _env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", ".env")
+        if os.path.isfile(_env_path):
+            with open(_env_path) as _f:
+                for _line in _f:
+                    _line = _line.strip()
+                    if _line.startswith("SMTP_PASSWORD="):
+                        SMTP_PASSWORD = _line.split("=", 1)[1].strip()
+                        break
+    _result = False
+    def _do_send():
+        nonlocal _result
+        for attempt in range(2):
+            try:
+                msg = MIMEText(f"您的验证码是: {code}\n有效期 10 分钟", "plain", "utf-8")
+                msg["Subject"] = f"BBS 验证码: {code}"
+                msg["From"] = SMTP_USER
+                msg["To"] = to
+                ctx = ssl.create_default_context()
+                if SMTP_USE_SSL:
+                    with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=8, context=ctx) as s:
+                        s.login(SMTP_USER, SMTP_PASSWORD)
+                        s.send_message(msg)
+                else:
+                    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=8) as s:
+                        s.ehlo()
+                        s.starttls(context=ctx)
+                        s.ehlo()
+                        s.login(SMTP_USER, SMTP_PASSWORD)
+                        s.send_message(msg)
+                _result = True
+                return
+            except Exception as e:
+                print(f"[SMTP ERROR] attempt {attempt+1}/2: {e}")
+                import traceback
+                traceback.print_exc()
+                if attempt == 0:
+                    time.sleep(1)
+    _t = threading.Thread(target=_do_send, daemon=True)
+    _t.start()
+    _t.join(timeout=10)
+    return _result
 
 
 _last_send_time: dict[str, int] = {}  # email -> timestamp, 频率控制
@@ -251,7 +277,7 @@ def send_verify_code(email: str) -> dict:
 
 
 def check_verify(email: str, code: str, token: str) -> dict:
-    """校验验证码"""
+    """校验验证码，通过后将 verified 标记为 1"""
     db = get_db()
     cur = db.cursor(DictCursor)
     cur.execute(
@@ -259,13 +285,23 @@ def check_verify(email: str, code: str, token: str) -> dict:
         (email,),
     )
     user = cur.fetchone()
-    db.close()
     if not user:
+        db.close()
         raise HTTPException(404, "邮箱未注册")
     if user.get("status") is not None and user["status"] != 1:
+        db.close()
         raise HTTPException(403, "账号已被禁用")
     if int(time.time()) > user["verify_expire"]:
+        db.close()
         raise HTTPException(400, "验证码已过期")
     if user["verify_code"] != code or user["verify_token"] != token:
+        db.close()
         raise HTTPException(400, "验证码或 token 无效")
+    # 验证通过，标记邮箱已验证，清除验证码
+    cur.execute(
+        "UPDATE users SET verified=1, verify_code=NULL, verify_token=NULL, verify_expire=NULL WHERE email=%s",
+        (email,),
+    )
+    db.commit()
+    db.close()
     return {"ok": True, "msg": "验证通过"}

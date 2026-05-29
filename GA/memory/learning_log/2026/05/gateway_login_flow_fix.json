@@ -1,0 +1,39 @@
+{
+  "date": "2026-05-29",
+  "session_id": "gateway-fix-v2",
+  "task": "Gateway邮箱注册/验证/登录流程排查与修复",
+  "category": "code",
+  "result": "success",
+  "learning_strategy": "probe-first",
+  "strategies_used": [
+    "code_run_curl_test",
+    "file_read_source",
+    "full_flow_simulation",
+    "DB_verification"
+  ],
+  "what_worked": [
+    "用httplib模拟全流程而非浏览器，快速确认后端API正常",
+    "逐层深入：先curl测API -> 检查DB验证码 -> 再查路由参数 -> 最后看模板JS传递",
+    "前端JS直接从URL参数读取verify_token（不依赖后端模板注入），确认了真正的Bug在后端路由声明",
+    "DB查询验证码+token直连验证，绕过SMTP发送环节"
+  ],
+  "what_didnt": [
+    "过早重建用户覆盖了远端密码 -- 应先在干净环境测试再操作生产用户",
+    "多次无用重启Gateway -- 未确认Python路径一致性（uv python vs .venv python）",
+    "初期在TMWebDriver上浪费时间 -- 浏览器扩展未连接时应立刻切到curl",
+    "修复login.html JS缺少密码检查是次要优化，核心Bug是后端路由参数丢失"
+  ],
+  "key_insight": "FastAPI路由未声明的query参数会被静默丢弃，导致verify_token从前端JS可见但后端路由根本收不到。注册流程中verify_token参数经过了注册→302→login页面URL的传递链，任何一个环节的参数丢失都会导致验证失败。排查链路：API返回 → DB数据 → 路由参数 → 模板渲染 → 前端JS取值，必须端到端追踪。",
+  "time_spent_min": 25,
+  "satisfaction": 3,
+  "failure_count": 3,
+  "tools_used": [
+    "code_run",
+    "file_read",
+    "file_patch",
+    "web_scan",
+    "ask_user",
+    "update_working_checkpoint",
+    "start_long_term_update"
+  ]
+}
