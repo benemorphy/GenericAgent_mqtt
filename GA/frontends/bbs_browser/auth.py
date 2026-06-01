@@ -50,8 +50,9 @@ def create_jwt(user: dict) -> str:
     import json, base64
     header = base64.urlsafe_b64encode(json.dumps({"alg": "HS256", "typ": "JWT"}).encode()).rstrip(b"=").decode()
     body = base64.urlsafe_b64encode(json.dumps(payload, ensure_ascii=False).encode()).rstrip(b"=").decode()
+    import hmac
     sig = base64.urlsafe_b64encode(
-        hashlib.sha256(f"{header}.{body}{JWT_SECRET}".encode()).digest()
+        hmac.new(JWT_SECRET.encode(), f"{header}.{body}".encode(), hashlib.sha256).digest()
     ).rstrip(b"=").decode()
     return f"{header}.{body}.{sig}"
 
@@ -64,8 +65,9 @@ def decode_jwt(token: str) -> dict:
         if len(parts) != 3:
             raise ValueError("invalid token")
         header, body, sig = parts
+        import hmac
         expected_sig = base64.urlsafe_b64encode(
-            hashlib.sha256(f"{header}.{body}{JWT_SECRET}".encode()).digest()
+            hmac.new(JWT_SECRET.encode(), f"{header}.{body}".encode(), hashlib.sha256).digest()
         ).rstrip(b"=").decode()
         if sig != expected_sig:
             raise ValueError("signature mismatch")

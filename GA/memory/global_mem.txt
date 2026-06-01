@@ -85,19 +85,19 @@ gateway.smtp.timeout = 8  # SMTP内部timeout
 # JWT密码来源: tools/rmqtt_webui_rs/start_worker.py L5
 ## [QQ_BOT]
 # NapCat QQ 协议端（无头模式，手机QQ扫码）
-napcat.home = D:\open_claw_agent\GenericAgent_mqtt\temp\NapCat.Shell
+napcat.home = D:\open_claw_agent\Beneh\GA\temp\NapCat.Shell
 napcat.start = launcher-user.bat
 napcat.webui = http://127.0.0.1:6099
-napcat.config = D:\open_claw_agent\GenericAgent_mqtt\temp\NapCat.Shell\config\onebot11_631598082.json
+napcat.config = D:\open_claw_agent\Beneh\GA\temp\NapCat.Shell\config\onebot11_631598082.json
 # onebot_qq 网关
-onebot_qq.home = D:\open_claw_agent\GenericAgent_mqtt\temp\onebot_qq
+onebot_qq.home = D:\open_claw_agent\Beneh\GA\temp\onebot_qq
 onebot_qq.start = python src/main.py
-onebot_qq.env = D:\open_claw_agent\GenericAgent_mqtt\temp\onebot_qq\.env
+onebot_qq.env = D:\open_claw_agent\Beneh\GA\temp\onebot_qq\.env
 
 
 ## [Vision/OCR]
 # gui_vision 视觉理解工具（tools/gui_vision.py）
-gui_vision.path = D:\open_claw_agent\GenericAgent_mqtt\GA\tools\gui_vision.py
+gui_vision.path = D:\open_claw_agent\Beneh\GA\GA\tools\gui_vision.py
 
 # 默认后端：offline（rapidocr本地OCR）
 gui_vision.default_backend = offline
@@ -131,7 +131,7 @@ ocr.models = ch_PP-OCRv4_det_infer(4.5MB) + ch_PP-OCRv4_rec_infer(10.4MB) + ch_p
 bbs.service = Mqtt_bbs.board_service
 bbs.start = python -m Mqtt_bbs.board_service
 bbs.board = agent-bbs-test, agent-inspiration (boards.json 定义)
-bbs.boards_json = D:\open_claw_agent\GenericAgent_mqtt\boards.json
+bbs.boards_json = D:\open_claw_agent\Beneh\GA\boards.json
 # BoardClient 连接配置（在 Mqtt_bbs/config.py 中，默认 127.0.0.1:1883）
 # 插件系统: ./plugins/ 目录自动扫描加载，事件发布到 agent/bbs/{board}/events/{event}
 # 迁移 SOP: memory/sqlite_to_mariadb_sop.md
@@ -141,12 +141,12 @@ bbs.diagnosis_agent.path = GA/tools/diagnosis_agent.py
 
 ## [FEISHU]
 # 飞书 Bot 前端入口
-feishu.app = D:\open_claw_agent\GenericAgent_mqtt\frontends\fsapp.py
+feishu.app = D:\open_claw_agent\Beneh\GA\frontends\fsapp.py
 # SOP: memory/feishu_connect_sop.md（含配置/启动/排障）
 feishu.sop = memory/feishu_connect_sop.md
 # 启动方式（需用 .venv Python，uv Python 缺 lark_oapi）
 feishu.python = .venv\Scripts\python.exe
-feishu.workdir = D:\open_claw_agent\GenericAgent_mqtt
+feishu.workdir = D:\open_claw_agent\Beneh\GA
 # 启动命令（在 workdir 中执行）： Start-Process -FilePath .venv\Scripts\python.exe -ArgumentList "frontends\fsapp.py" -WorkingDirectory $workdir -WindowStyle Normal
 
 ## [MQTT_STRESS]

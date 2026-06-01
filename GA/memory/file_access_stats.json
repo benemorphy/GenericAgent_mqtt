@@ -36,11 +36,11 @@
     "last": "2026-06-01"
   },
   "global_mem_insight.txt": {
-    "count": 85,
+    "count": 87,
     "last": "2026-06-01"
   },
   "global_mem.txt": {
-    "count": 91,
+    "count": 94,
     "last": "2026-06-01"
   },
   "skills_learning_sop.md": {
@@ -56,8 +56,8 @@
     "last": "2026-05-13"
   },
   "autonomous_operation_sop.md": {
-    "count": 31,
-    "last": "2026-05-25"
+    "count": 32,
+    "last": "2026-06-01"
   },
   "task_planning.md": {
     "count": 7,
@@ -196,7 +196,7 @@
     "last": "2026-06-01"
   },
   "git_push_sop.md": {
-    "count": 32,
+    "count": 33,
     "last": "2026-06-01"
   },
   "active.json": {
@@ -268,8 +268,8 @@
     "last": "2026-05-29"
   },
   "code_review_principles.md": {
-    "count": 3,
-    "last": "2026-05-29"
+    "count": 4,
+    "last": "2026-06-01"
   },
   "mqtt_bbs_sop.md": {
     "count": 1,
@@ -292,7 +292,7 @@
     "last": "2026-05-22"
   },
   "goal_mode_sop.md": {
-    "count": 7,
+    "count": 10,
     "last": "2026-06-01"
   },
   "RUST_ENV": {
@@ -372,11 +372,11 @@
     "last": "2026-05-29"
   },
   "goal_hive_sop.md": {
-    "count": 5,
+    "count": 6,
     "last": "2026-06-01"
   },
   "goal_hive_master_duty.md": {
-    "count": 4,
+    "count": 5,
     "last": "2026-06-01"
   },
   "research_synthesis_sop.md": {
@@ -394,5 +394,9 @@
   "skill_template_sop.md": {
     "count": 1,
     "last": "2026-05-30"
+  },
+  "goal_pulse_sop.md": {
+    "count": 2,
+    "last": "2026-06-01"
   }
 }

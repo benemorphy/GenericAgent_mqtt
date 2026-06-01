@@ -14,10 +14,10 @@ def write_stats():
         data = json.loads(resp.read().decode())
         if not data or not isinstance(data[0], dict):
             return
-        s = da
-...[Truncated]...
-oad().decode())
+        s = data[0]
         print(f"Web UI confirmed: {len(data)} records")
+    except Exception as e:
+        print(f"[stats] Error: {e}")
 
     print(f"\n=== Done ===")
     print(f"Total rows collected: {cnt} in {(time.time()-t0)/60:.1f} minutes")
