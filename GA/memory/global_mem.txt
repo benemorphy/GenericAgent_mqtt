@@ -67,9 +67,20 @@ gateway.smtp.timeout = 8  # SMTP内部timeout
 # MQTT主题拓扑:
 #   node/#            — Agent节点状态/任务消息
 #   $SYS/broker/#     — Mosquitto Broker统计指标
-#   agent/bbs/        — BBS协议主题
+#   agent/bbs/        — BBS协议主题 (BBSClient publish自动加agent/前缀)
 #   board/            — 板块通信主题
 # 连接认证: allow_anonymous false, 使用 password_file 验证
+# BoardService RS 诊断: 进程活着+HTTP 9100响应 ≠ MQTT正常
+#   - 静默卡死现象: PID存在, TCP连接到1883 ESTABLISHED, 心跳独立task继续发
+#     但主event_loop不poll任何入站消息 -> 所有BBS操作无响应
+#   - 卡死原因: rumqttc event_loop内部panic/死锁, 主poll task不返回
+#     心跳在独立tokio::spawn中运行(不受影响)
+#   - 修复: taskkill /F /PID xxx + release版重启
+#   - 重启必须设环境变量 MQTT_USERNAME=board-service-rs MQTT_PASSWORD=board-service-rs
+#   - start_rs.vbs指向target/debug/路径但实际运行的是release版, 导致凭据不生效
+#   - topic路径: BBSClient发agent/bbs/{board}/post, BoardService订阅agent/bbs/+/post (硬编码)
+#   - MariaDB: mysql://root:mariadb@127.0.0.1/Mqtt_bbs, 密码mariadb
+#   - 诊断SOP: memory/board_service_diag_sop.md
 # 启动rmqtt_webui_rs时必须在环境变量中设置 MQTT_USERNAME=dashboard + MQTT_PASSWORD(JWT)  
 # JWT密码来源: tools/rmqtt_webui_rs/start_worker.py L5
 ## [QQ_BOT]

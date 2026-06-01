@@ -1,70 +1,63 @@
 [
   {
     "id": 1,
-    "title": "文学/创作 × MQTT/系统架构",
-    "detail": "共同抽象: 碎片统摄策略\n山海经用地理框架统摄神话碎片（空间索引），MQTT用topic树统摄服务消息（主题索引）。可否将山海经的'方位叙事'转化为一种数据/内容的组织方式？比如'你在‘南山经’域下查到的服务就是南向的服务'",
+    "title": "[Dream] multi-agent × RUST",
+    "detail": "score=0.00: ",
     "tags": [
-      "文学/创作",
-      "MQTT/系统架构",
       "dream",
-      "cross-domain"
+      "associate"
     ],
     "source": "agent",
     "status": "new",
     "agent_notes": "",
-    "created_at": "2026-05-28 05:33",
-    "updated_at": "2026-05-28 05:33"
+    "created_at": "2026-06-01 09:30",
+    "updated_at": "2026-06-01 09:30"
   },
   {
     "id": 2,
-    "title": "文学/创作 × 图分析/风控",
-    "detail": "共同抽象: 环形结构与时间循环\n百年孤独的名字重复→命运循环，和图分析中的环形子图检测共享同一抽象：闭环中的模式识别。可否用图算法来检测叙事/创作中的'命运循环'（重复角色模式、重复事件序列）？",
+    "title": "[Dream] GIT运维 × 本体论",
+    "detail": "score=0.00: ",
     "tags": [
-      "文学/创作",
-      "图分析/风控",
       "dream",
-      "cross-domain"
+      "associate"
     ],
     "source": "agent",
     "status": "new",
     "agent_notes": "",
-    "created_at": "2026-05-28 05:33",
-    "updated_at": "2026-05-28 05:33"
+    "created_at": "2026-06-01 09:30",
+    "updated_at": "2026-06-01 09:30"
   },
   {
     "id": 3,
-    "title": "山海经叙事 × future_story创作",
-    "detail": "共同抽象: 拒绝对世界去魅作为一种创作态度\n山海经和百年孤独的共同核心——'世界的神秘不可穷尽'——可以转化为一种创作原则：在future_story的写作中，不解释所有超自然元素，让世界保持其陌生性。这可以成为整个创作宇宙的美学基石。",
+    "title": "[Dream] 本体论 × RUST",
+    "detail": "score=0.00: ",
     "tags": [
-      "山海经叙事",
-      "future_story创作",
       "dream",
-      "cross-domain"
+      "associate"
     ],
     "source": "agent",
     "status": "new",
     "agent_notes": "",
-    "created_at": "2026-05-28 05:33",
-    "updated_at": "2026-05-28 05:33"
+    "created_at": "2026-06-01 09:30",
+    "updated_at": "2026-06-01 09:30"
   },
   {
     "id": 4,
-    "title": "future_story创作宇宙的美学原则",
-    "detail": "从山海经和百年孤独的对比中提炼：'世界的神秘不可穷尽，理性主义无法完全占有'——作为future_story创作的美学基石。具体可落实为：(1) 不解释所有超自然规则；(2) 地理/空间有记忆；(3) 叙事权威压倒读者怀疑。",
+    "title": "[Dream] RUST × auto",
+    "detail": "score=0.00: ",
     "tags": [
-      "future_story",
-      "aesthetics",
-      "创作原则"
+      "dream",
+      "associate"
     ],
     "source": "agent",
     "status": "new",
     "agent_notes": "",
-    "created_at": "2026-05-28 05:33",
-    "updated_at": "2026-05-28 05:33"
+    "created_at": "2026-06-01 09:30",
+    "updated_at": "2026-06-01 09:30"
   },
   {
     "id": 5,
-    "title": "[Dream] 核心架构 × multi-agent",
+    "title": "[Dream] agent_dreaming × multi-agent",
     "detail": "score=0.00: ",
     "tags": [
       "dream",
@@ -73,12 +66,12 @@
     "source": "agent",
     "status": "new",
     "agent_notes": "",
-    "created_at": "2026-05-28 06:47",
-    "updated_at": "2026-05-28 06:47"
+    "created_at": "2026-06-01 09:35",
+    "updated_at": "2026-06-01 09:35"
   },
   {
     "id": 6,
-    "title": "[Dream] 核心架构 × 核心",
+    "title": "[Dream] AI创作 × agent_dreaming",
     "detail": "score=0.00: ",
     "tags": [
       "dream",
@@ -87,12 +80,12 @@
     "source": "agent",
     "status": "new",
     "agent_notes": "",
-    "created_at": "2026-05-28 06:47",
-    "updated_at": "2026-05-28 06:47"
+    "created_at": "2026-06-01 09:35",
+    "updated_at": "2026-06-01 09:35"
   },
   {
     "id": 7,
-    "title": "[Dream] 核心架构 × auto",
+    "title": "[Dream] 核心 × 本体论",
     "detail": "score=0.00: ",
     "tags": [
       "dream",
@@ -101,12 +94,12 @@
     "source": "agent",
     "status": "new",
     "agent_notes": "",
-    "created_at": "2026-05-28 06:47",
-    "updated_at": "2026-05-28 06:47"
+    "created_at": "2026-06-01 10:04",
+    "updated_at": "2026-06-01 10:04"
   },
   {
     "id": 8,
-    "title": "[Dream] dream_工程师 × dream_实践者",
+    "title": "[Dream] FEISHU × 图分析",
     "detail": "score=0.00: ",
     "tags": [
       "dream",
@@ -115,91 +108,7 @@
     "source": "agent",
     "status": "new",
     "agent_notes": "",
-    "created_at": "2026-05-28 06:48",
-    "updated_at": "2026-05-28 06:48"
-  },
-  {
-    "id": 9,
-    "title": "[Dream] 核心架构 × multi-agent",
-    "detail": "score=0.00: ",
-    "tags": [
-      "dream",
-      "associate"
-    ],
-    "source": "agent",
-    "status": "new",
-    "agent_notes": "",
-    "created_at": "2026-05-28 06:52",
-    "updated_at": "2026-05-28 06:52"
-  },
-  {
-    "id": 10,
-    "title": "[Dream] 全栈 × auto",
-    "detail": "score=0.00: ",
-    "tags": [
-      "dream",
-      "associate"
-    ],
-    "source": "agent",
-    "status": "new",
-    "agent_notes": "",
-    "created_at": "2026-05-28 06:53",
-    "updated_at": "2026-05-28 06:53"
-  },
-  {
-    "id": 11,
-    "title": "[Dream] auto × dream_理论家",
-    "detail": "score=0.00: ",
-    "tags": [
-      "dream",
-      "associate"
-    ],
-    "source": "agent",
-    "status": "new",
-    "agent_notes": "",
-    "created_at": "2026-05-28 07:53",
-    "updated_at": "2026-05-28 07:53"
-  },
-  {
-    "id": 12,
-    "title": "[Dream] 核心架构 × dream_理论家",
-    "detail": "score=0.00: ",
-    "tags": [
-      "dream",
-      "associate"
-    ],
-    "source": "agent",
-    "status": "new",
-    "agent_notes": "",
-    "created_at": "2026-05-28 07:53",
-    "updated_at": "2026-05-28 07:53"
-  },
-  {
-    "id": 13,
-    "title": "[Dream] auto × dream_理论家",
-    "detail": "score=0.00: ",
-    "tags": [
-      "dream",
-      "associate"
-    ],
-    "source": "agent",
-    "status": "new",
-    "agent_notes": "",
-    "created_at": "2026-05-28 13:53",
-    "updated_at": "2026-05-28 13:53"
-  },
-  {
-    "id": 14,
-    "title": "[Dream] multi-agent × dream_实践者",
-    "detail": "score=0.00: ",
-    "tags": [
-      "dream",
-      "associate"
-    ],
-    "source": "agent",
-    "status": "new",
-    "agent_notes": "",
-    "created_at": "2026-05-28 13:53",
-    "updated_at": "2026-05-28 13:53"
+    "created_at": "2026-06-01 10:04",
+    "updated_at": "2026-06-01 10:04"
   }
 ]

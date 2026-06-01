@@ -32,20 +32,20 @@
     "last": "2026-05-25"
   },
   "memory_management_sop.md": {
-    "count": 20,
+    "count": 21,
     "last": "2026-05-29"
   },
   "global_mem_insight.txt": {
-    "count": 74,
-    "last": "2026-05-29"
+    "count": 83,
+    "last": "2026-06-01"
   },
   "global_mem.txt": {
-    "count": 80,
-    "last": "2026-05-29"
+    "count": 88,
+    "last": "2026-06-01"
   },
   "skills_learning_sop.md": {
-    "count": 27,
-    "last": "2026-05-29"
+    "count": 29,
+    "last": "2026-05-30"
   },
   "skills_learning_sop": {
     "count": 2,
@@ -80,8 +80,8 @@
     "last": "2026-05-14"
   },
   "plan_sop.md": {
-    "count": 10,
-    "last": "2026-05-22"
+    "count": 11,
+    "last": "2026-05-29"
   },
   "autonomous_operation_sop": {
     "count": 1,
@@ -192,20 +192,20 @@
     "last": "2026-05-21"
   },
   "feishu_connect_sop.md": {
-    "count": 13,
-    "last": "2026-05-26"
+    "count": 15,
+    "last": "2026-06-01"
   },
   "git_push_sop.md": {
-    "count": 31,
-    "last": "2026-05-29"
+    "count": 32,
+    "last": "2026-06-01"
   },
   "active.json": {
     "count": 3,
     "last": "2026-05-21"
   },
   "agent_dreaming_sop.md": {
-    "count": 15,
-    "last": "2026-05-22"
+    "count": 17,
+    "last": "2026-06-01"
   },
   "inspiration_board.py": {
     "count": 1,
@@ -216,8 +216,8 @@
     "last": "2026-05-20"
   },
   "dream_command_rule.md": {
-    "count": 3,
-    "last": "2026-05-20"
+    "count": 4,
+    "last": "2026-06-01"
   },
   "dream_engine.md": {
     "count": 1,
@@ -248,8 +248,8 @@
     "last": "2026-05-21"
   },
   "L4_raw_sessions": {
-    "count": 2,
-    "last": "2026-05-21"
+    "count": 3,
+    "last": "2026-05-29"
   },
   "archive_20260521.json": {
     "count": 2,
@@ -276,8 +276,8 @@
     "last": "2026-05-22"
   },
   "board_stress_sop.md": {
-    "count": 6,
-    "last": "2026-05-28"
+    "count": 7,
+    "last": "2026-05-29"
   },
   "emqtt_design_principles.md": {
     "count": 7,
@@ -292,7 +292,7 @@
     "last": "2026-05-22"
   },
   "goal_mode_sop.md": {
-    "count": 4,
+    "count": 5,
     "last": "2026-05-29"
   },
   "RUST_ENV": {
@@ -308,12 +308,12 @@
     "last": "2026-05-29"
   },
   "meridian_ontology.md": {
-    "count": 11,
-    "last": "2026-05-28"
+    "count": 13,
+    "last": "2026-05-31"
   },
   "meridians_perspective_on_ontology.md": {
-    "count": 2,
-    "last": "2026-05-28"
+    "count": 3,
+    "last": "2026-05-31"
   },
   "ai_creation_emergence_brainstorm.md": {
     "count": 6,
@@ -344,16 +344,16 @@
     "last": "2026-05-28"
   },
   "brainstorming_sop.md": {
-    "count": 1,
-    "last": "2026-05-28"
+    "count": 4,
+    "last": "2026-05-31"
   },
   "ontology_model_evolution.md": {
-    "count": 4,
-    "last": "2026-05-28"
+    "count": 7,
+    "last": "2026-05-31"
   },
   "ga_mqtt_bbs_scenarios.md": {
-    "count": 2,
-    "last": "2026-05-28"
+    "count": 3,
+    "last": "2026-06-01"
   },
   "water_env_monitoring_scenarios.md": {
     "count": 3,
@@ -372,19 +372,27 @@
     "last": "2026-05-29"
   },
   "goal_hive_sop.md": {
-    "count": 1,
+    "count": 3,
     "last": "2026-05-29"
   },
   "goal_hive_master_duty.md": {
-    "count": 1,
+    "count": 3,
     "last": "2026-05-29"
   },
   "research_synthesis_sop.md": {
-    "count": 1,
+    "count": 2,
     "last": "2026-05-29"
   },
   "data_explore_sop.md": {
     "count": 1,
     "last": "2026-05-29"
+  },
+  "enterprise_social_governance_ontology.md": {
+    "count": 1,
+    "last": "2026-05-29"
+  },
+  "skill_template_sop.md": {
+    "count": 1,
+    "last": "2026-05-30"
   }
 }

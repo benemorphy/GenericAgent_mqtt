@@ -7,7 +7,7 @@ L3: memory_cleanup_sop(memory cleanup) | skill_search | skills_learning_sop(案�
 | md_server_rs_mod_sop(添加代码文件类型+语法高亮)
 | git_push_sop(Git推送审计+自动PR绕过保护) | feishu_connect_sop(飞书Bot连接与运维) | push_cleanup_sop(整理推送流程)
 | RUST_ENV(Rust 1.95.0 MSVC工具链+5个项目) | MQTT_SERVICE_CHAIN(8服务启动链+主题拓扑+认证) |
-| agent_dreaming_sop(Agent Dreaming联想发散SOP) | dream_engine(梦境引擎工具) | board_stress_sop(BoardService MQTT协议压测) | spaced_repetition_sop(间隔重复技能复习:复习已知) | sqlite_to_mariadb_sop(SQLite->MariaDB迁移)
+| agent_dreaming_sop(Agent Dreaming联想发散SOP) | dream_engine(梦境引擎工具) | board_stress_sop(BoardService MQTT协议压测) | board_service_diag_sop(BoardService静默故障诊断) | spaced_repetition_sop(间隔重复技能复习:复习已知) | sqlite_to_mariadb_sop(SQLite->MariaDB迁移)
 | aesthetic_design_sop(美学设计) | clipboard_ocr_sop(剪贴板OCR) | code_review_principles(代码审查原则) | dream_command_rule(梦境指令规则) | emqtt_design_principles(EMQTT设计原则) | github_contribution_sop(GitHub贡献) | anthropic_kwp_learned(从Anthropic knowledge-work-plugins学到的知识工作技能:数据探索/研究综合/科学问题选择/任务管理/头脑风暴等9种模式+可内化改进)
 | goal_mode_sop(目标模式) | procmem_scanner_sop(进程内存扫描SOP) | qq_deploy_sop(QQ部署) | search_skills_sop(技能搜索) | shutdown_rule(关机规则) | supervisor_sop(监控SOP)
 | anthropic_kwp_learned(从Anthropic knowledge-work-plugins学到的知识工作技能:数据探索/研究综合/科学问题选择/任务管理/头脑风暴等9种模式+可内化改进)
@@ -18,7 +18,7 @@ L3: memory_cleanup_sop(memory cleanup) | skill_search | skills_learning_sop(案�
 | skill_template_sop(知识工作技能通用模板:元数据/工作流/错误处理/输出格式)
 | verify_sop(验证SOP) | vue3_component_sop(Vue3组件) | web_testing_sop(Web测试)
 L4: L4_raw_sessions/ historical sessions
-跨学科知识: meridian_ontology(经脉论与本体论:本体论→经脉论对应映射+推理规则) | meridians_perspective_on_ontology(经脉论→本体论:反向审视+七大挑战) | ontology_model_evolution(技术+哲学+经脉论三合一:本体论进化的四维光谱) | ai_creation_emergence_brainstorm(AI超纲输出场景:创造者悖论/认知鸿沟/涌现主题) | ai_creation_scenarios(7场景叙事实现:创造者悖论/认知边界/他者之思/解释学困境/层级跃迁/反馈螺旋/身份重构) | ai_creation_scenarios_deep(创作准备:正文片段/角色关系/世界观/矛盾演化/真伪悬疑) | ai_creation_brainstorm_per_scene(7场景独立多Agent脑暴:35视角向各自元问题深挖) | ai_creation_resonance_map(暗中共振图谱:6层共振+1个最大共振)
+跨学科知识: meridian_ontology(经脉论与本体论:本体论→经脉论对应映射+推理规则) | meridians_perspective_on_ontology(经脉论→本体论:反向审视+七大挑战) | ontology_model_evolution(技术+哲学+经脉论三合一:本体论进化的四维光谱) | enterprise_social_governance_ontology(企业社会治理与本体论:义务时变图/双温度场/病点子图/多Agent脑暴) | ai_creation_emergence_brainstorm(AI超纲输出场景:创造者悖论/认知鸿沟/涌现主题) | ai_creation_scenarios(7场景叙事实现:创造者悖论/认知边界/他者之思/解释学困境/层级跃迁/反馈螺旋/身份重构) | ai_creation_scenarios_deep(创作准备:正文片段/角色关系/世界观/矛盾演化/真伪悬疑) | ai_creation_brainstorm_per_scene(7场景独立多Agent脑暴:35视角向各自元问题深挖) | ai_creation_resonance_map(暗中共振图谱:6层共振+1个最大共振)
 
 Browser special ops: tmwebdriver_sop(file upload/image search/PDF blob/physical coords/HttpOnly Cookie/autofill bypass/cross-origin iframe/CDP/cross-tab)
 Keyboard & Mouse: ljqCtrl_sop(no pyautogui/activate first) Screenshot/Vision: ocr/vision_sop | No fullscreen capture, prefer window
@@ -37,3 +37,4 @@ Mobile: adb_ui.py
 9. Git: push 前必须审计（自动执行），使用 scripts/git_push.py 替代直接 git push（自动建 PR + squash-merge 绕过保护）
 10. Encoding: 代码/注释/日志中禁止使用 emoji，统一使用纯文本表达
 11. MQTT topic 调试: 发送端/接收端/中间件三者对 topic 格式假设独立, 排查时先用独立 paho 客户端直连做收发对比验证物理消息流; 当 BoardClient 注册超时时, 用 monitor 订阅所有相关 topic 捕获实际发出的 topic 路径, 检查 BBSClient.publish 自动前缀叠加
+12. BoardService静默故障: 进程活着+TCP连1883+心跳还在 ≠ MQTT正常, 可能event_loop卡死(主poll不处理消息,心跳独立task不受影响); 诊断SOP见 board_service_diag_sop

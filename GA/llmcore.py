@@ -248,10 +248,8 @@ def _msgs_claude2oai(messages):
                         "id": b.get("id") or '', "type": "function",
                         "function": {"name": b.get("name", ""), "arguments": json.dumps(b.get("input", {}), ensure_ascii=False)}
                     })
-            m = {"role": "assistant"}
+            m = {"role": "assistant", "content": text_parts or "."}
             if reasoning: m["reasoning_content"] = reasoning
-            if text_parts: m["content"] = text_parts
-            elif not tool_calls: m["content"] = "."
             if tool_calls: m["tool_calls"] = tool_calls
             result.append(m)
         elif role == "user":
@@ -273,6 +271,8 @@ def _msgs_claude2oai(messages):
                 elif b.get("type") == "image_url": text_parts.append(b)
                 elif b.get("type") == "text" and b.get("text"): text_parts.append({"type": "text", "text": b.get("text", "")})
             if text_parts: result.append({"role": "user", "content": text_parts})
+            # consecutive tool messages from same assistant are valid in OpenAI API,
+            # no need to insert separator (removed 2026-06-01, was causing HTTP 400)
         else: result.append(msg)
     return result
 
@@ -283,9 +283,15 @@ class BaseSession:
         self.api_base = cfg['apibase'].rstrip('/')
         self.model = cfg.get('model', '')
         default_context_win = 30000
+        default_cut_msg_interval = 5
+        default_trim_keep_rate = 0.6
         if 'deepseek' in self.model.lower():
-            default_context_win = 70000; self.cut_msg_interval = 25; self.trim_keep_rate = 0.3
+            default_context_win = 70000
+            default_cut_msg_interval = 25
+            default_trim_keep_rate = 0.3
         self.context_win = cfg.get('context_win', default_context_win)
+        self.cut_msg_interval = cfg.get('cut_msg_interval', default_cut_msg_interval)
+        self.trim_keep_rate = cfg.get('trim_keep_rate', default_trim_keep_rate)
         self.history = []; self.lock = threading.Lock(); self.system = ""
         self.name = cfg.get('name', self.model)
         proxy = cfg.get('proxy'); 
@@ -330,9 +336,11 @@ class BaseSession:
             try:
                 while True: chunk = next(gen); content += chunk; yield chunk
             except StopIteration as e: content_blocks = e.value or []
-            if len(content_blocks) > 1: print(f"[DEBUG BaseSession.ask] content_blocks: {content_blocks}")
-            for block in (content_blocks or []):
-                if block.get('type', '') == 'tool_use':
+            tool_uses = [block for block in (content_blocks or []) if block.get('type', '') == 'tool_use']
+            if tool_uses:
+                self.history.append({"role": "assistant", "content": content_blocks})
+            if tool_uses:
+                for block in tool_uses:
                     tu = {'name': block.get('name', ''), 'arguments': block.get('input', {})}
                     yield f'<tool_use>{json.dumps(tu, ensure_ascii=False)}</tool_use>'
             if content.strip() and not content.startswith("!!!Error:"): self.history.append({"role": "assistant", "content": [{"type": "text", "text": content}]})
