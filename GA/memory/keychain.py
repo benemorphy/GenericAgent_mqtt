@@ -1,5 +1,9 @@
 """Keychain: save key to a file, then keys.set("name", file="path"); keys.name.use() to retrieve (use but no print)."""
-import json, os, hashlib, pathlib, getpass
+import json
+import os
+import hashlib
+import pathlib
+import getpass
 
 _PATH = pathlib.Path.home() / "ga_keychain.enc"
 try: _user = os.getlogin()
@@ -31,7 +35,7 @@ class _Keys:
                 self._d = json.loads(_xor(_PATH.read_bytes()))
             except Exception as e:
                 print(f"[keychain] WARNING: failed to load {_PATH}: {e}")
-                print(f"[keychain] Starting with empty keychain. Old file kept as .bak")
+                print("[keychain] Starting with empty keychain. Old file kept as .bak")
                 _PATH.rename(_PATH.with_suffix('.enc.bak'))
     def __getattr__(self, k):
         if k.startswith('_'): raise AttributeError(k)

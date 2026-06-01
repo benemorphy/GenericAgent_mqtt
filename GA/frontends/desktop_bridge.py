@@ -106,7 +106,7 @@ class AgentManager:
 
     @property
     def mykey_path(self) -> str:
-        return str(Path(self.ga_root) / "mykey.txt")
+        return str(Path(self.ga_root) / "mykey.py")
 
     def ensure_ga_import_path(self) -> Path:
         root = Path(self.ga_root).resolve()
@@ -567,7 +567,8 @@ async def path_open_handler(request):
     if not target.exists():
         return json_ok({"ok": False, "error": f"File not found: {target}"})
     # Actually open the file with the system default editor
-    import subprocess, platform
+    import subprocess
+    import platform
     if platform.system() == "Windows":
         os.startfile(str(target))
     elif platform.system() == "Darwin":

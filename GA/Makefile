@@ -1,3 +1,33 @@
+.PHONY: test lint clean install docker
+
+# Install dependencies
+install:
+	pip install -r requirements.txt
+	pip install -e ..
+
+# Run tests
+test:
+	python -m pytest tests/ -v
+
+# Run linter
+lint:
+	ruff check .
+
+# Auto-fix lint issues
+lint-fix:
+	ruff check --fix .
+
+# Clean Python cache
+clean:
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name '*.pyc' -delete 2>/dev/null || true
+
+# Build Docker image
+docker:
+	docker build -t genericagent:latest ..
+
+# Run CI checks locally
+ci: lint test
 .PHONY: install test lint clean cache clear help
 
 help:

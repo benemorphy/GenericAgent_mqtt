@@ -1,6 +1,14 @@
-import os, sys, re, time, json, uuid, queue, asyncio, threading, builtins
+import os
+import sys
+import re
+import time
+import uuid
+import queue
+import asyncio
+import threading
+import builtins
 from dataclasses import dataclass, field
-from typing import Dict, Any, Optional, List
+from typing import Dict, Optional, List
 
 # Silence print() from subagent threads (they share stdout with conductor)
 _original_print = builtins.print
@@ -293,7 +301,7 @@ def monitor_conductor_queue(dq: "queue.Queue"):
     while True:
         item = dq.get()
         if "done" in item:
-            print(f"Conductor task done")
+            print("Conductor task done")
             break
 
 def conductor_loop():
@@ -410,6 +418,8 @@ async def websocket(ws: WebSocket):
         ws_clients.discard(ws)
 
 if __name__ == "__main__":
-    import uvicorn, webbrowser, threading
+    import uvicorn
+    import webbrowser
+    import threading
     threading.Timer(1.0, lambda: webbrowser.open(f"http://{HOST}:{PORT}")).start()
     uvicorn.run("conductor:app", host=HOST, port=PORT, reload=False)

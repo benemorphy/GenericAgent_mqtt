@@ -43,7 +43,16 @@ filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.setuptools.packages.find]
 where = [".", "GA"]
-include = ["ga_cli*", "Mqtt_bbs*"]
+include = [
+    "ga_cli*", "Mqtt_bbs*",
+    "GA.agents*", "GA.assets*", "GA.frontends*",
+    "GA.memory*", "GA.plugins*", "GA.profiles*",
+    "GA.reflect*", "GA.scripts*", "GA.tools*",
+]
+exclude = [
+    "GA.skills_learning*", "GA.knowledge-work-plugins*",
+    "GA.temp*", "GA.logs*",
+]
 
 [project.scripts]
 ga = "ga_cli.cli:main"

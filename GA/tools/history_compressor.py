@@ -1,7 +1,7 @@
 """历史消息压缩器 — 可插拔策略（Phase 1: 提取为类）"""
 
-import json, re
-from typing import List, Dict, Any, Optional
+import json
+import re
 
 try:
     from typing import Protocol

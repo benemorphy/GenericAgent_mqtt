@@ -488,7 +488,9 @@ def masked_input(prompt, reveal=6, tail=4):
                     return value
             _repaint()
     else:
-        import tty, termios, select
+        import tty
+        import termios
+        import select
         fd = sys.stdin.fileno()
         old = termios.tcgetattr(fd)
         try:
@@ -720,7 +722,7 @@ def configure_llm(provider):
 
     # API Key（密文输入）
     cfg['apikey'] = ask_input(
-        f"API Key",
+        "API Key",
         hint=provider.get('key_hint', ''),
         secret=True,
     )
@@ -796,7 +798,7 @@ def _fallback_model(provider, manual_choice=None):
 def configure_llms():
     """配置 LLM 模型"""
     print(f"\n{C['bold']}{C['magenta']}╔══════════════════════════════════════╗")
-    print(f"║     第一步: 配置 LLM 模型           ║")
+    print("║     第一步: 配置 LLM 模型           ║")
     print(f"╚══════════════════════════════════════╝{C['reset']}")
     print(f"\n{C['dim']}  你可以配置最多 2 个模型组成故障转移 (Mixin) 列表。{C['reset']}")
 
@@ -827,7 +829,7 @@ def configure_llms():
 def configure_platforms():
     """配置消息平台，返回 (platform_configs, pip_hints)"""
     print(f"\n{C['bold']}{C['magenta']}╔══════════════════════════════════════╗")
-    print(f"║     第二步: 配置消息平台             ║")
+    print("║     第二步: 配置消息平台             ║")
     print(f"╚══════════════════════════════════════╝{C['reset']}")
     print(f"\n{C['dim']}  消息平台用于从聊天软件与 Agent 交互。{C['reset']}")
     print(f"{C['dim']}  你也可以跳过此步，直接用终端 REPL。{C['reset']}")
@@ -883,7 +885,8 @@ def _feishu_scan(platform):
     from io import StringIO
     try:
         import lark_oapi as lark
-        import qrcode, threading
+        import qrcode
+        import threading
     except ImportError:
         print(f"\n  {C['yellow']}⚠ lark-oapi 未安装，降级为手动配置{C['reset']}")
         return {}
@@ -1178,7 +1181,7 @@ def main():
                         platform_configs.append({'platform': p, 'config': config_dict})
             elif scope == 'platform' and model_names:
                 print(f"\n  {C['yellow']}⚠ 只修改平台时若未提供 LLM 配置将无法使用。{C['reset']}")
-                cprint(f"    建议两项都重新配置。", 'dim')
+                cprint("    建议两项都重新配置。", 'dim')
 
     if not is_modify:
         if is_new:
@@ -1231,7 +1234,7 @@ def main():
 
     # ── 完成提示 ──
     print(f"\n{C['bold']}{C['green']}╔══════════════════════════════════════╗")
-    print(f"║      配置完成!                      ║")
+    print("║      配置完成!                      ║")
     print(f"╚══════════════════════════════════════╝{C['reset']}")
     print()
     if llm_cfgs:

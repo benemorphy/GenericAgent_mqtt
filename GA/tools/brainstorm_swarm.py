@@ -12,7 +12,8 @@
     result = brainstorm("你的问题", n_agents=4, rounds=2)
 """
 
-import sys, threading, json, random
+import sys
+import random
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -67,43 +68,43 @@ def _agent_think(aid, role, topic, prev_outputs=(), knowledge_key=""):
 
     # 基于角色产出的实质性内容
     if "理论" in role:
-        lines.append(f"  基于CDALN理论, 好奇心信号 = |预测置信度 - 实际置信度|")
+        lines.append("  基于CDALN理论, 好奇心信号 = |预测置信度 - 实际置信度|")
         if kws:
             lines.append(f"  {random.choice(kws)}")
             lines.append(f"  {random.choice(kws)}")
         if prev_outputs:
-            lines.append(f"  补充: 上一位的工程方案可以用CLS理论的离线回放机制增强,"
-                         f"在Agent空闲时对dream_memories做随机重激活")
+            lines.append("  补充: 上一位的工程方案可以用CLS理论的离线回放机制增强,"
+                         "在Agent空闲时对dream_memories做随机重激活")
 
     elif "工程" in role:
-        lines.append(f"  当前dream_engine.py已有Digest→Replay→Associate链路")
+        lines.append("  当前dream_engine.py已有Digest→Replay→Associate链路")
         if kws:
             for kw in kws[:2]:
                 lines.append(f"  {kw}")
         if prev_outputs:
-            lines.append(f"  回应: 理论提到的CLS离线回放可以工程化为——"
-                         f"每10分钟从dream_memories随机取3条记忆做重激活关联")
+            lines.append("  回应: 理论提到的CLS离线回放可以工程化为——"
+                         "每10分钟从dream_memories随机取3条记忆做重激活关联")
 
     elif "质疑" in role:
-        lines.append(f"  我先质疑一下基本假设")
+        lines.append("  我先质疑一下基本假设")
         if kws:
             for kw in kws:
                 lines.append(f"  [Devil's Advocate] {kw}")
         if prev_outputs:
-            lines.append(f"  所以你们的方案需要补充: 1) 置信度阈值的动态调整 "
-                         f"2) 学习完成后的ACK确认 3) 同域去重锁")
+            lines.append("  所以你们的方案需要补充: 1) 置信度阈值的动态调整 "
+                         "2) 学习完成后的ACK确认 3) 同域去重锁")
 
     elif "集成" in role:
-        lines.append(f"  从系统架构看, 三元架构+MAS+MQTT BBS已覆盖全部基础设施")
+        lines.append("  从系统架构看, 三元架构+MAS+MQTT BBS已覆盖全部基础设施")
         if kws:
             for kw in kws:
                 lines.append(f"  {kw}")
         if prev_outputs:
-            lines.append(f"  综合各方, 把质疑者提到的ACK机制设计为: "
-                         f"skill_learn完成→publish到ontology/dream/learned/→replay更新confidence")
+            lines.append("  综合各方, 把质疑者提到的ACK机制设计为: "
+                         "skill_learn完成→publish到ontology/dream/learned/→replay更新confidence")
 
     elif "实践" in role:
-        lines.append(f"  从用户角度看, 以上所有方案最终用户只看结果")
+        lines.append("  从用户角度看, 以上所有方案最终用户只看结果")
         if kws:
             for kw in kws:
                 lines.append(f"  {kw}")
@@ -121,10 +122,10 @@ def brainstorm(topic, n_agents=4, rounds=2, verbose=True):
     all_outputs = [{"role": agents[i], "outputs": []} for i in range(n_agents)]
 
     if verbose:
-        print(f"\n=== Brainstorm Swarm 2.0 ===")
+        print("\n=== Brainstorm Swarm 2.0 ===")
         print(f"Topic: {topic}")
         print(f"Agents: {n_agents} | Rounds: {rounds}")
-        print(f"Method: Round Robin + Delphi + Devil's Advocate")
+        print("Method: Round Robin + Delphi + Devil's Advocate")
         print()
 
     for rnd in range(1, rounds + 1):
@@ -148,7 +149,7 @@ def brainstorm(topic, n_agents=4, rounds=2, verbose=True):
                     print(f"  {l}")
 
     # 合成
-    parts = [f"=== Brainstorm Synthesis ===", f"Topic: {topic}", f""]
+    parts = ["=== Brainstorm Synthesis ===", f"Topic: {topic}", ""]
     parts.append(f"Participants ({n_agents}):")
     for i in range(n_agents):
         parts.append(f"  Agent{i+1}: {agents[i]}")
@@ -160,7 +161,7 @@ def brainstorm(topic, n_agents=4, rounds=2, verbose=True):
             for line in all_outputs[i]["outputs"][-1].split("\n"):
                 parts.append(f"  {line}")
 
-    parts.append(f"\n=== Consensus ===")
+    parts.append("\n=== Consensus ===")
     parts.append(f"After {rounds} rounds of discussion:")
     parts.append(f"  All {n_agents} agents contributed")
 

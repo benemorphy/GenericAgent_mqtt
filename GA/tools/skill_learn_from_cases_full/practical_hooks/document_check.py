@@ -6,7 +6,10 @@ document_check.py — 文档/图像鉴权实操测试
 使用本机 PaddleOCR-VL-1.5 (llama-server on :8090) 做真实OCR验证
 降级: 检测本地OCR库可用性
 """
-import json, sys, os, urllib.request, base64, io, contextlib
+import json
+import urllib.request
+import io
+import contextlib
 
 PADDLE_API = "http://localhost:8090/v1/chat/completions"
 _TEST_TEXT = "OCR Test 123"

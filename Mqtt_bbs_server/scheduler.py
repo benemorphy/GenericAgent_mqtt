@@ -101,7 +101,7 @@ class BBScheduler:
         self._board = AgentBoard(self.agent_id)
         self._board._client.connect()
         self._board._client.wait_connected(5)
-        log.info(f"[{self.agent_id}] 🚀 BBScheduler 启动 (poll={self.poll_interval}s)")
+        log.info(f"[{self.agent_id}] [START] BBScheduler 启动 (poll={self.poll_interval}s)")
 
         self._running = True
         os.makedirs(DONE, exist_ok=True)
@@ -209,11 +209,11 @@ class BBScheduler:
                     task_input={"prompt": prompt, "source": "scheduler"},
                     target_capability=target_cap,
                 )
-                log.info(f'  ✅ BBS 任务已发布: {task_id}')
+                log.info(f'  [OK] BBS 任务已发布: {task_id}')
             else:
-                log.warning(f'  ⚠️ BBS 不可用，跳过 {tid}')
+                log.warning(f'  [WARN] BBS 不可用，跳过 {tid}')
         except Exception as e:
-            log.error(f'  ❌ BBS 发布失败: {e}')
+            log.error(f'  [FAIL] BBS 发布失败: {e}')
 
     def _check_l4_archive(self, now: datetime):
         """每12小时 L4 归档"""

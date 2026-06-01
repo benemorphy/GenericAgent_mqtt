@@ -4,7 +4,9 @@ ga_cli - GenericAgent CLI 命令包
 作为包导入时，自动从根 ga.py 加载核心类（GenericAgentHandler 等）
 以 python -m ga_cli 运行时，进入 CLI 命令模式
 """
-import importlib.util, sys, os
+import importlib.util
+import sys
+import os
 
 # ── 确保项目根在 sys.path（ga.py 依赖 agent_loop 等）──
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -9,7 +9,12 @@ Session Compactor — 后台自动压缩 L4 原始历史
     start_auto_compact()  # 启动后台线程
 """
 
-import os, sys, time, threading, logging, subprocess as _sp
+import os
+import sys
+import time
+import threading
+import logging
+import subprocess as _sp
 
 log = logging.getLogger("session_compactor")
 subprocess = _sp

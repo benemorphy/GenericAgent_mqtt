@@ -2,7 +2,11 @@
 # u2 (uiautomator2) 不受idle限制，适合动画密集app（美团等）
 # 弹窗检测: ui(clickable_only=True, raw=True) 找全屏FrameLayout+底部小ImageView(关闭X)
 # 已知包名: 美团外卖=com.sankuai.meituan.takeoutnew 淘宝=com.taobao.taobao
-import subprocess, xml.etree.ElementTree as ET, os, re, shutil
+import subprocess
+import xml.etree.ElementTree as ET
+import os
+import re
+import shutil
 
 ADB = shutil.which("adb") or "adb"
 LOCAL_XML = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui_mt.xml")

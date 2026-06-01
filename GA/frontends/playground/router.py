@@ -1,5 +1,5 @@
 """Playground 路由 - 游戏化沙盒界面"""
-import os, sys
+import sys
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent

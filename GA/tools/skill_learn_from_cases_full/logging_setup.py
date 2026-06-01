@@ -12,7 +12,9 @@ logging_setup.py — 结构化日志配置
   logger.debug("Search query: %s", query)
   logger.error("LLM call failed: %s", e)
 """
-import logging, sys, os
+import logging
+import sys
+import os
 
 _LOG_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
 _LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "temp")

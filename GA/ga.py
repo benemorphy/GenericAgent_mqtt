@@ -1,5 +1,8 @@
-import sys, os, re, json, time
-from tools.ga_utils import format_error, log_memory_access, expand_file_refs, smart_format, consume_file, scan_files, fold_earlier, extract_robust_content
+import sys
+import os
+import re
+import json
+from tools.ga_utils import log_memory_access, expand_file_refs, smart_format, consume_file, extract_robust_content
 from tools.prompt_utils import get_anchor_prompt
 from tools.tool_definitions import code_run, ask_user, web_scan, web_execute_js, file_patch, file_read
 if sys.stdout is None: sys.stdout = open(os.devnull, "w")
@@ -69,7 +72,7 @@ class GenericAgentHandler(BaseHandler):
         question = args.get("question", "请提供输入：")
         candidates = args.get("candidates", [])
         result = ask_user(question, candidates)
-        yield f"Waiting for your answer ...\n"
+        yield "Waiting for your answer ...\n"
         return StepOutcome(result, next_prompt="", should_exit=True)
     
     def do_web_scan(self, args, response):
@@ -145,7 +148,7 @@ class GenericAgentHandler(BaseHandler):
 
         content = args.get('content') or extract_robust_content(response.content)
         if not content:
-            yield f"[Status] ❌ 失败: 未在回复中找到<file_content>代码块内容\n"
+            yield "[Status] ❌ 失败: 未在回复中找到<file_content>代码块内容\n"
             return StepOutcome({"status": "error", "msg": "No content found. Blank is not supported. Put content inside <file_content>...</file_content> tags in your reply body before call file_write."}, next_prompt="\n")
         try:
             new_content = expand_file_refs(content, base_dir=self.cwd)
@@ -198,7 +201,7 @@ class GenericAgentHandler(BaseHandler):
         if "key_info" in args: self.working['key_info'] = key_info
         if "related_sop" in args: self.working['related_sop'] = related_sop
         self.working['passed_sessions'] = 0
-        yield f"[Info] Updated key_info and related_sop.\n"
+        yield "[Info] Updated key_info and related_sop.\n"
         next_prompt = get_anchor_prompt(self, skip=args.get('_index', 0) > 0)
         #next_prompt += '\n[SYSTEM TIPS] 此函数一般在任务开始或中间时调用，如果任务已成功完成应该是start_long_term_update用于结算长期记忆。\n'
         return StepOutcome({"result": "working key_info updated"}, next_prompt=next_prompt)
@@ -325,7 +328,7 @@ def get_global_memory():
         with open(os.path.join(script_dir, 'memory/global_mem_insight.txt'), 'r', encoding='utf-8', errors='replace') as f: insight = f.read()
         with open(os.path.join(script_dir, f'assets/insight_fixed_structure{suffix}.txt'), 'r', encoding='utf-8') as f: structure = f.read()
         prompt += f'cwd = {os.path.join(script_dir, "temp")} (./)\n'
-        prompt += f"\n[Memory] (../memory)\n"
+        prompt += "\n[Memory] (../memory)\n"
         prompt += structure + '\n../memory/global_mem_insight.txt:\n'
         prompt += insight + "\n"
     except FileNotFoundError: pass

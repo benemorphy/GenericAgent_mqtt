@@ -3,16 +3,16 @@ LLM Session 层 — 会话管理与多模型回退
 提取自 llmcore.py Phase 1：保持对 llmcore 的单向依赖，后续逐步解耦。
 """
 
-import json, time, copy, threading
+import time
+import copy
 from tools.retry_utils import retry_stream
 from tools.logger import log
 
 # ── 临时依赖：从 llmcore 导入工具函数（后续独立到 utils.py） ──
 from llmcore import (
-    trim_messages_history, auto_make_url, _record_usage, _raw_api_post,
+    auto_make_url, _record_usage, _raw_api_post,
     _openai_stream, _msgs_claude2oai, _parse_claude_sse, _parse_claude_json,
-    _fix_messages, _drop_unsigned_thinking, _ensure_thinking_blocks,
-    _keep_claude_block, BaseSession,
+    _fix_messages, _drop_unsigned_thinking, BaseSession,
 )
 
 

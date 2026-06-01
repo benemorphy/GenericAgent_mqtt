@@ -8,9 +8,10 @@ Project Ontology — 基于反省的要素-关系-约束-推理模型
   推理 — 我从失败中总结的规律
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional, Callable
 import os
+import shutil
 
 
 # ══════════════════════════════════════════════════════════════
@@ -43,7 +44,7 @@ ENTITIES = [
     Component("BoardService (Rust)", "service", "rust", "running PID 7836",
               _resolve_tool_path("board_service_rs/"), 47),
     Component("Mosquitto", "service", "binary", "running PID 6544",
-              os.environ.get("MOSQUITTO_HOME", r"D:\\tools\\mosquitto") + "/" + os.environ.get("MOSQUITTO_EXE", "mosquitto.exe"), 8),
+              shutil.which("mosquitto") or os.environ.get("MOSQUITTO_HOME", r"D:\\tools\\mosquitto") + "/" + os.environ.get("MOSQUITTO_EXE", "mosquitto.exe"), 8),
     Component("MariaDB", "service", "binary", "running",
               "127.0.0.1:3306", 6),
     Component("HTTP Gateway", "service", "python", "running",

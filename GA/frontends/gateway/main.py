@@ -5,7 +5,7 @@ FastAPI 统一网关 — 入口
 共享 JWT 认证，路由区分，单端口 8000 部署。
 """
 
-import os, sys
+import sys
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent

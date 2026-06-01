@@ -15,7 +15,11 @@ Mqtt_bbs Dashboard — MQTT 实时监控面板 (Streamlit)
     - 自动刷新：可调间隔
 """
 
-import json, logging, os, sys, threading, time
+import json
+import os
+import sys
+import threading
+import time
 from datetime import datetime
 
 # ── 路径设置（确保 from Mqtt_bbs_server import ... 可找到包）──
@@ -372,7 +376,7 @@ if __name__ == "__main__":
                             st.code("\n".join(stderr[-20:]) if stderr else "无")
 
                 with col2:
-                    if st.button(f"🛑 取消", key=f"cancel_{task_id}", use_container_width=True):
+                    if st.button("🛑 取消", key=f"cancel_{task_id}", use_container_width=True):
                         ds.cancel_task(task_id)
                         st.toast(f"已发送取消信号: {task_id}")
 

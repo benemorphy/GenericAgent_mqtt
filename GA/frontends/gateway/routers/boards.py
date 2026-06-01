@@ -1,6 +1,7 @@
 """板块浏览路由 — 复用 bbs_browser/database.py"""
 
-import os, sys
+import os
+import sys
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent

@@ -6,7 +6,8 @@ Observability — 结构化日志 + Prometheus Metrics
     metrics.inc("mqtt_messages", {"type": "register"})
 """
 
-import os, threading, time
+import os
+import threading
 
 _ENABLED = os.environ.get("OBSERVABILITY_ENABLED", "true").lower() == "true"
 _METRICS_PORT = int(os.environ.get("METRICS_PORT", "9090"))

@@ -1,4 +1,13 @@
-import ast, asyncio, glob, json, os, queue as Q, re, socket, sys, time
+import ast
+import asyncio
+import glob
+import json
+import os
+import queue as Q
+import re
+import socket
+import sys
+import time
 
 # 确保能导入上级目录的模块（如 agentmain）
 _parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -332,7 +341,7 @@ class AgentChatMixin:
                     if len(board_parts) >= 2:
                         board = board_parts[0]
                         content = board_parts[1]
-                with _BC(f"bot_bbs", board=board) as _bbs:
+                with _BC("bot_bbs", board=board) as _bbs:
                     _reg = _bbs.register("Bot桥接", timeout=5)
                     if _reg and _reg.get("token"):
                         _result = _bbs.post(content, _reg["token"], timeout=5)
@@ -373,9 +382,9 @@ class AgentChatMixin:
 
 
 from agentmain import GeneraticAgent as _GA
-from continue_cmd import handle_frontend_command as _handle_continue_frontend, install as _install_continue, reset_conversation as _reset_conversation
+from frontends.continue_cmd import handle_frontend_command as _handle_continue_frontend, install as _install_continue, reset_conversation as _reset_conversation
 _install_continue(_GA)
-from btw_cmd import handle_frontend_command as _handle_btw_frontend, install as _install_btw; _install_btw(_GA)
+from frontends.btw_cmd import handle_frontend_command as _handle_btw_frontend, install as _install_btw; _install_btw(_GA)
 
 
 def create_agent(verbose=False, inc_out=True):

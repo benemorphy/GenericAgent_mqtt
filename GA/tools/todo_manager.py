@@ -9,7 +9,9 @@ TodoManager — 飞书群聊待办提取与持久化
     tm.done(todo_id)
 """
 
-import json, time, os, threading
+import json
+import time
+import threading
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "temp"

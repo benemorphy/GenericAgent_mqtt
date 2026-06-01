@@ -1,7 +1,20 @@
-import os, sys, re, threading, queue, time, socket, json, struct, base64, uuid, webbrowser, hashlib, math
+import os
+import sys
+import re
+import threading
+import queue
+import time
+import socket
+import json
+import struct
+import base64
+import uuid
+import webbrowser
+import hashlib
 from pathlib import Path
 from urllib.parse import quote
-import requests, qrcode
+import requests
+import qrcode
 from Crypto.Cipher import AES
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _TEMP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'temp')

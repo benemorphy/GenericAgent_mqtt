@@ -16,7 +16,9 @@ reflect module: BBS接单 (MQTT版)
     }
 """
 
-import json, os, time, threading
+import json
+import os
+import time
 from queue import Queue
 
 INTERVAL = 5

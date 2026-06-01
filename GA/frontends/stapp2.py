@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 import html
 if sys.stdout is None: sys.stdout = open(os.devnull, "w")
 if sys.stderr is None: sys.stderr = open(os.devnull, "w")
@@ -14,7 +15,11 @@ try:
     _embed_html = lambda html, **kw: _st_iframe(html, **{k: max(v, 1) if isinstance(v, int) else v for k, v in kw.items()})
 except (ImportError, AttributeError):
     from streamlit.components.v1 import html as _embed_html  # ≤1.55
-import time, json, re, threading, queue
+import time
+import json
+import re
+import threading
+import queue
 from datetime import datetime
 from agentmain import GeneraticAgent
 

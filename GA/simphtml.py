@@ -3,7 +3,8 @@ simphtml — 浏览器页面简化 + JS 执行
 HTML 优化由 Rust 实现 (simphtml_rs)，浏览器交互由 Python 处理。
 """
 
-import time, re, json
+import time
+import re
 
 # ── 嵌入 JS ──────────────────────────────────────────────────
 js_optHTML = r'''function optHTML(text_only=false) {

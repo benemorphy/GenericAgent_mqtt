@@ -1,7 +1,8 @@
 """文档阅读路由 — 反向代理到 md_server_rs:8899
    自动重写 HTML 链接，使其在 /docs/ 命名空间下工作。"""
 
-import os, sys, re
+import sys
+import re
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
@@ -86,6 +87,6 @@ h1, h2, h3 {{ margin-top: 24px; }}
             return HTMLResponse(
                 "<h2>文档服务器未启动</h2>"
                 "<p>请启动 md_server_rs (port 8899)</p>"
-                f"<p><code>cd tools/md_server_rs && cargo run</code></p>",
+                "<p><code>cd tools/md_server_rs && cargo run</code></p>",
                 status_code=503,
             )

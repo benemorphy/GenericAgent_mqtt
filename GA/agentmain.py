@@ -1,4 +1,12 @@
-import os, sys, threading, queue, time, json, re, random, locale
+import os
+import sys
+import threading
+import queue
+import time
+import json
+import re
+import random
+import locale
 os.environ.setdefault('GA_LANG', 'zh' if any(k in (locale.getlocale()[0] or '').lower() for k in ('zh', 'chinese')) else 'en')
 if sys.stdout is None: sys.stdout = open(os.devnull, "w")
 elif hasattr(sys.stdout, 'reconfigure'): sys.stdout.reconfigure(errors='replace')
@@ -6,7 +14,7 @@ if sys.stderr is None: sys.stderr = open(os.devnull, "w")
 elif hasattr(sys.stderr, 'reconfigure'): sys.stderr.reconfigure(errors='replace')
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from llmcore import reload_mykeys, LLMSession, ToolClient, ClaudeSession, MixinSession, NativeToolClient, NativeClaudeSession, NativeOAISession, resolve_client
+from llmcore import reload_mykeys, ToolClient, MixinSession, NativeToolClient, NativeClaudeSession, NativeOAISession, resolve_client
 from agent_loop import agent_runner_loop
 from ga import GenericAgentHandler, get_global_memory
 from tools.ga_utils import smart_format, format_error, consume_file
@@ -45,7 +53,7 @@ class GenericAgent:
         os.makedirs(os.path.join(script_dir, 'temp'), exist_ok=True)
         self.lock = threading.Lock()
         self.task_dir = None
-        self.history = []; self.handler = None; 
+        self.history = []; self.handler = None 
         self.task_queue = queue.Queue() 
         self.is_running = False; self.stop_sig = False
         self.llm_no = 0;  self.inc_out = False; self.verbose = True
@@ -140,7 +148,7 @@ class GenericAgent:
             self.history.append(f"[USER]: {rquery}")
             
             sys_prompt = get_system_prompt() + getattr(self.llmclient.backend, 'extra_sys_prompt', '')
-            if self.peer_hint: sys_prompt += f"\n[Peer] 用户提及其他会话/后台任务状态时: temp/model_responses/ (只找近期修改的文件尾部)\n"
+            if self.peer_hint: sys_prompt += "\n[Peer] 用户提及其他会话/后台任务状态时: temp/model_responses/ (只找近期修改的文件尾部)\n"
             handler = GenericAgentHandler(self, self.history, os.path.join(script_dir, 'temp'))
             if self.handler and 'key_info' in self.handler.working: 
                 ki = re.sub(r'\n\[SYSTEM\] 此为.*?工作记忆[。\n]*', '', self.handler.working['key_info'])  # 去旧
@@ -199,85 +207,87 @@ if __name__ == '__main__':
 
     # ── Subagent 模式 ──
     if args.task:
-        agent = GeneraticAgent()
-        agent.next_llm(args.llm_no)
-        agent.verbose = args.verbose
-        task_dir = os.path.join(script_dir, 'temp', args.task)
-        os.makedirs(task_dir, exist_ok=True)
-        # 自动清理旧 output + 写 input
-        output_path = os.path.join(task_dir, 'output.txt')
-        if os.path.exists(output_path):
-            os.remove(output_path)
-        if args.input:
+        try:
+            agent = GeneraticAgent()
+            agent.next_llm(args.llm_no)
+            agent.verbose = args.verbose
+            task_dir = os.path.join(script_dir, 'temp', args.task)
+            os.makedirs(task_dir, exist_ok=True)
+            output_path = os.path.join(task_dir, 'output.txt')
+            if os.path.exists(output_path):
+                os.remove(output_path)
+            if args.input:
+                input_path = os.path.join(task_dir, 'input.txt')
+                with open(input_path, 'w', encoding='utf-8') as f:
+                    f.write(args.input)
             input_path = os.path.join(task_dir, 'input.txt')
-            with open(input_path, 'w', encoding='utf-8') as f:
-                f.write(args.input)
-        # 读 input
-        input_path = os.path.join(task_dir, 'input.txt')
-        if not os.path.exists(input_path):
-            print(f"[Subagent] 找不到 input.txt: {input_path}")
-            sys.exit(1)
-        query = open(input_path, encoding='utf-8').read()
-        # 单次执行：put_task + 等待 done
-        dq = agent.put_task(query, source='subagent')
-        threading.Thread(target=agent.run, daemon=True).start()
-        full_resp = ""
-        while True:
-            item = dq.get(timeout=300)
-            if 'done' in item:
-                full_resp = item['done']
-                break
-            if 'next' in item:
-                full_resp += item.get('next', '')
-        # 写 output
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(full_resp)
-        print(f"[Subagent] 完成: {args.task} -> {output_path}")
+            if not os.path.exists(input_path):
+                print(f"[Subagent] 找不到 input.txt: {input_path}")
+                sys.exit(1)
+            query = open(input_path, encoding='utf-8').read()
+            dq = agent.put_task(query, source='subagent')
+            threading.Thread(target=agent.run, daemon=True).start()
+            full_resp = ""
+            while True:
+                item = dq.get(timeout=300)
+                if 'done' in item:
+                    full_resp = item['done']
+                    break
+                if 'next' in item:
+                    full_resp += item.get('next', '')
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(full_resp)
+            print(f"[Subagent] 完成: {args.task} -> {output_path}")
+        except Exception as e:
+            print(f"[Subagent] 执行失败: {e}", file=sys.stderr)
         sys.exit(0)
 
     # ── 反射模式 (--reflect) ──
     if args.reflect:
-        agent = GeneraticAgent()
-        agent.next_llm(args.llm_no)
-        agent.verbose = args.verbose
-        agent.peer_hint = False
-        agent.force_non_stream = True
-        threading.Thread(target=agent.run, daemon=True).start()
-        import importlib.util
-        spec = importlib.util.spec_from_file_location('reflect_script', args.reflect)
-        mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
-        if hasattr(mod, 'init'): mod.init(_reflect_args)
-        _mt = os.path.getmtime(args.reflect)
-        print(f'[Reflect] loaded {args.reflect}' + (f' args={_reflect_args}' if _reflect_args else ''))
-        while True:
-            if os.path.getmtime(args.reflect) != _mt:
+        try:
+            agent = GeneraticAgent()
+            agent.next_llm(args.llm_no)
+            agent.verbose = args.verbose
+            agent.peer_hint = False
+            agent.force_non_stream = True
+            threading.Thread(target=agent.run, daemon=True).start()
+            import importlib.util
+            spec = importlib.util.spec_from_file_location('reflect_script', args.reflect)
+            mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+            if hasattr(mod, 'init'): mod.init(_reflect_args)
+            _mt = os.path.getmtime(args.reflect)
+            print(f'[Reflect] loaded {args.reflect}' + (f' args={_reflect_args}' if _reflect_args else ''))
+            while True:
+                if os.path.getmtime(args.reflect) != _mt:
+                    try:
+                        spec.loader.exec_module(mod); _mt = os.path.getmtime(args.reflect)
+                        if hasattr(mod, 'init'): mod.init(_reflect_args)
+                        print('[Reflect] reloaded')
+                    except Exception as e: print(f'[Reflect] reload error: {e}')
+                time.sleep(getattr(mod, 'INTERVAL', 5))
+                try: task = mod.check()
+                except Exception as e:
+                    print(f'[Reflect] check() error: {e}'); continue
+                if task and task == '/exit': break
+                if task is None: continue
+                print(f'[Reflect] triggered: {task[:80]}')
+                dq = agent.put_task(task, source='reflect')
                 try:
-                    spec.loader.exec_module(mod); _mt = os.path.getmtime(args.reflect)
-                    if hasattr(mod, 'init'): mod.init(_reflect_args)
-                    print('[Reflect] reloaded')
-                except Exception as e: print(f'[Reflect] reload error: {e}')
-            time.sleep(getattr(mod, 'INTERVAL', 5))
-            try: task = mod.check()
-            except Exception as e:
-                print(f'[Reflect] check() error: {e}'); continue
-            if task and task == '/exit': break
-            if task is None: continue
-            print(f'[Reflect] triggered: {task[:80]}')
-            dq = agent.put_task(task, source='reflect')
-            try:
-                while 'done' not in (item := dq.get(timeout=1200)): pass
-                result = item['done']
-                print(result)
-            except Exception as e:
-                if getattr(mod, 'ONCE', False): raise
-                print(f'[Reflect] drain error: {e}'); result = f'[ERROR] {e}'
-            log_dir = os.path.join(script_dir, 'temp/reflect_logs'); os.makedirs(log_dir, exist_ok=True)
-            script_name = os.path.splitext(os.path.basename(args.reflect))[0]
-            open(os.path.join(log_dir, f'{script_name}_{datetime.now():%Y-%m-%d}.log'), 'a', encoding='utf-8').write(f'[{datetime.now():%m-%d %H:%M}]\n{result}\n\n')
-            if (on_done := getattr(mod, 'on_done', None)):
-                try: on_done(result)
-                except Exception as e: print(f'[Reflect] on_done error: {e}')
-            if getattr(mod, 'ONCE', False): print('[Reflect] ONCE=True, exiting.'); break
+                    while 'done' not in (item := dq.get(timeout=1200)): pass
+                    result = item['done']
+                    print(result)
+                except Exception as e:
+                    if getattr(mod, 'ONCE', False): raise
+                    print(f'[Reflect] drain error: {e}'); result = f'[ERROR] {e}'
+                log_dir = os.path.join(script_dir, 'temp/reflect_logs'); os.makedirs(log_dir, exist_ok=True)
+                script_name = os.path.splitext(os.path.basename(args.reflect))[0]
+                open(os.path.join(log_dir, f'{script_name}_{datetime.now():%Y-%m-%d}.log'), 'a', encoding='utf-8').write(f'[{datetime.now():%m-%d %H:%M}]\n{result}\n\n')
+                if (on_done := getattr(mod, 'on_done', None)):
+                    try: on_done(result)
+                    except Exception as e: print(f'[Reflect] on_done error: {e}')
+                if getattr(mod, 'ONCE', False): print('[Reflect] ONCE=True, exiting.'); break
+        except Exception as e:
+            print(f"[FATAL] 反射模式异常退出: {e}", file=sys.stderr)
         sys.exit(0)
 
     # ── 正常交互 / MQTT 模式 ──
@@ -293,4 +303,7 @@ if __name__ == '__main__':
         start_mqtt_agent(args)
     except ImportError as e:
         print(f"[MQTT] 初始化失败: {e} (需要 pip install paho-mqtt)")
+        sys.exit(1)
+    except Exception as e:
+        print(f"[FATAL] AgentMain 异常退出: {e}", file=sys.stderr)
         sys.exit(1)

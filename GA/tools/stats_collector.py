@@ -1,11 +1,14 @@
 """独立 broker stats 采集器 - 每10秒写入 MariaDB"""
-import sys, os, time, json, urllib.request
+import sys
+import os
+import time
+import json
+import urllib.request
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault("MQTT_HOST", "127.0.0.1")
 
-BROKER_API = f"http://127.0.0.1:6060"
+BROKER_API = "http://127.0.0.1:6060"
 
-import pymysql
 
 def write_stats():
     try:
@@ -19,5 +22,5 @@ def write_stats():
     except Exception as e:
         print(f"[stats] Error: {e}")
 
-    print(f"\n=== Done ===")
+    print("\n=== Done ===")
     print(f"Total rows collected: {cnt} in {(time.time()-t0)/60:.1f} minutes")

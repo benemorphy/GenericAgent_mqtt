@@ -4,7 +4,12 @@
 被 assess_template.py 的 run_practical_test() 调用，
 输出 JSON: {"score": int(0-100), "passed": bool, "note": str}
 """
-import json, subprocess, tempfile, os, sys, platform
+import json
+import subprocess
+import tempfile
+import os
+import sys
+import platform
 import shutil
 
 
@@ -218,7 +223,8 @@ def run(env: dict = None) -> dict:
     """统一入口: run(env) 接收 env_detector 的输出，返回测试结果"""
     if env is None:
         try:
-            import contextlib, io
+            import contextlib
+            import io
             with contextlib.redirect_stdout(io.StringIO()):
                 from env_detector import detect_all
                 env = detect_all()

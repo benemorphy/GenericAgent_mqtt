@@ -6,7 +6,15 @@
 """
 from __future__ import annotations
 
-import math, os, sys, json, glob, re, base64, time, threading
+import math
+import os
+import sys
+import json
+import glob
+import re
+import base64
+import time
+import threading
 import queue as _queue
 from datetime import datetime
 from typing import Optional
@@ -20,7 +28,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import (
     Qt, QTimer, QPoint, QPointF, QByteArray, QSize,
-    Signal, QMetaObject, Q_ARG, QObject, QDateTime, QEvent,
+    QDateTime, QEvent,
 )
 from PySide6.QtGui import (
     QPainter, QColor, QLinearGradient, QRadialGradient,
@@ -29,7 +37,7 @@ from PySide6.QtGui import (
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from agentmain import GeneraticAgent
-from chatapp_common import FILE_HINT, HELP_TEXT, clean_reply, build_done_text, format_restore
+from chatapp_common import FILE_HINT, HELP_TEXT, format_restore
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -823,7 +831,6 @@ class _MsgRow(QWidget):
 
     def _export_as_md(self):
         from PySide6.QtWidgets import QFileDialog
-        import os
         from datetime import datetime
         default_name = f"msg_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
         file_path, _ = QFileDialog.getSaveFileName(
@@ -833,7 +840,7 @@ class _MsgRow(QWidget):
             try:
                 with open(file_path, "w", encoding="utf-8") as f:
                     f.write(self._text)
-            except Exception as e:
+            except Exception:
                 import traceback
                 traceback.print_exc()
 
@@ -1518,11 +1525,11 @@ class ChatPanel(QWidget):
         new_btn.setIcon(_svg_icon("plus", _SVG_PLUS, "#a78bfa"))
         new_btn.setIconSize(QSize(12, 12))
         new_btn.setFixedHeight(27)
-        new_btn.setStyleSheet(f"""
-            QPushButton {{ background: rgba(124,58,237,0.18); color: #a78bfa;
+        new_btn.setStyleSheet("""
+            QPushButton { background: rgba(124,58,237,0.18); color: #a78bfa;
                 border: 1px solid rgba(124,58,237,0.3); border-radius: 7px;
-                padding: 0 10px; font-size: 12px; font-weight: 700; }}
-            QPushButton:hover {{ background: rgba(124,58,237,0.35); color: white; }}
+                padding: 0 10px; font-size: 12px; font-weight: 700; }
+            QPushButton:hover { background: rgba(124,58,237,0.35); color: white; }
         """)
         new_btn.clicked.connect(self._new_session)
         ly.addWidget(new_btn)
@@ -2537,11 +2544,11 @@ def main():
     panel.show()
 
     scr = QApplication.primaryScreen().availableGeometry()
-    print(f"[GenericAgent] 启动成功")
+    print("[GenericAgent] 启动成功")
     print(f"  屏幕分辨率: {scr.width()}x{scr.height()}")
     print(f"  悬浮按钮: ({button.x()}, {button.y()})")
     print(f"  聊天面板: ({panel.x()}, {panel.y()})")
-    print(f"  关闭面板后可点击右下角发光按钮重新打开")
+    print("  关闭面板后可点击右下角发光按钮重新打开")
 
     # ── Idle monitor (autonomous mode) ────────────────────
     _last_trigger = 0.0

@@ -11,7 +11,9 @@ CuriosityTrigger — Agent 好奇心自动检测触发器
         ctx.publish("board/curiosity/post", t)
 """
 
-import time, os, json, hashlib
+import time
+import os
+import hashlib
 
 _CURIOSITY_ENABLED = os.environ.get("CURIOSITY_ENABLED", "true").lower() == "true"
 _RANDOM_RATE = 0.05
@@ -55,6 +57,6 @@ def check_curiosity_triggers(tool_results: list[dict], agent_id: str) -> list[di
     h = int(hashlib.md5((agent_id + str(int(time.time() / 3600))).encode()).hexdigest(), 16)
     if h % 100 < _RANDOM_RATE * 100:
         triggers.append(_make_trigger("discovery",
-            f"随机好奇: 当前工具链或流程是否有优化空间？", agent_id))
+            "随机好奇: 当前工具链或流程是否有优化空间？", agent_id))
     
     return triggers

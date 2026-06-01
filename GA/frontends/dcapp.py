@@ -3,12 +3,19 @@
 #   Bot → Privileged Gateway Intents → MESSAGE CONTENT INTENT → 打开
 # pip install discord.py
 
-import asyncio, json, os, queue as Q, re, sys, threading, time
+import asyncio
+import json
+import os
+import queue as Q
+import re
+import sys
+import threading
+import time
 from collections import OrderedDict
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from chatapp_common import (
-    AgentChatMixin, build_done_text, ensure_single_instance, extract_files,
+    AgentChatMixin, ensure_single_instance, extract_files,
     public_access, redirect_log, require_runtime, split_text, strip_files, clean_reply,
     HELP_TEXT, FILE_HINT, format_restore, create_agent,
     _handle_continue_frontend, _reset_conversation,
