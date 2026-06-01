@@ -367,11 +367,16 @@ class BoardService:
                 return
             cur = self._mariadb.cursor()
             cur.execute("""CREATE TABLE IF NOT EXISTS bbs_users (
-                token VARCHAR(32) PRIMARY KEY,
+                token VARCHAR(512) PRIMARY KEY,
                 name VARCHAR(128) NOT NULL UNIQUE,
                 board VARCHAR(128) NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )""")
+            # 迁移: 旧版 VARCHAR(32) 不足以容纳 JWT token, 扩容到 512
+            try:
+                cur.execute("ALTER TABLE bbs_users MODIFY token VARCHAR(512)")
+            except Exception:
+                pass
             cur.execute("""CREATE TABLE IF NOT EXISTS bbs_posts (
                 id BIGINT AUTO_INCREMENT PRIMARY KEY,
                 board VARCHAR(128) NOT NULL,
