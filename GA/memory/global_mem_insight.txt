@@ -23,6 +23,7 @@ Browser special ops: tmwebdriver_sop(file upload/image search/PDF blob/physical 
 Keyboard & Mouse: ljqCtrl_sop(no pyautogui/activate first) Screenshot/Vision: ocr/vision_sop | No fullscreen capture, prefer window
 Scheduling: scheduled_task_sop | Autonomous: autonomous_operation_sop | watchdog/reflect: agentmain --reflect
 Mobile: adb_ui.py
+| CODE_REVIEW(GA审查2026-06: 270+发现,15项修复:语法/JWT/CI/基础设施/git commit 3cdf1ff)
 
 [RULES]
 1. Search first: use Python pathlib.rglob/glob for filename search (no PS recursion/no dir traversal), or use Everything SDK via tools/file_search.py; always prefer Google for web search (no duckduckgo etc), check cwd first, no guessing paths

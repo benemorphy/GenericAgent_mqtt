@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+</head>
+<body>
 {% extends "layout.html" %}
 {% block title %}{{ board.name }} - BBS 公开板块{% endblock %}
 {% block content %}
@@ -83,3 +89,6 @@
 <div class="empty">暂无内容{% if q %}，试试其他关键词{% endif %}</div>
 {% endif %}
 {% endblock %}
+
+</body>
+</html>
