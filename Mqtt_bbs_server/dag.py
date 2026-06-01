@@ -168,7 +168,7 @@ class DAGWorkflow:
                 else:
                     tid = board.post_task(task.name, task.input)
                 tid_map[name] = tid
-                log.info(f"[DAG] ▶️ 启动任务 '{name}' → {tid}")
+                log.info(f"[DAG] [START] 启动任务 '{name}' → {tid}")
 
             # 轮询完成的任务
             for name, tid in list(tid_map.items()):
@@ -179,20 +179,20 @@ class DAGWorkflow:
                     if output and output.get("status") == "completed":
                         self._results[name] = output
                         self._statuses[name] = TaskStatus.SUCCESS
-                        log.info(f"[DAG] ✅ 任务 '{name}' 完成")
+                        log.info(f"[DAG] [OK] 任务 '{name}' 完成")
                     else:
                         # 重试逻辑
                         task = self._tasks[name]
                         if task.retry > 0:
                             task.retry -= 1
                             self._statuses[name] = TaskStatus.PENDING
-                            log.info(f"[DAG] 🔄 重试 '{name}' (剩余{task.retry})")
+                            log.info(f"[DAG] [SYNC] 重试 '{name}' (剩余{task.retry})")
                         else:
                             self._results[name] = output or {}
                             self._statuses[name] = TaskStatus.FAILED
-                            log.warning(f"[DAG] ❌ 任务 '{name}' 失败")
+                            log.warning(f"[DAG] [FAIL] 任务 '{name}' 失败")
                 except Exception as e:
-                    log.warning(f"[DAG] ⚠️ 等待任务 '{name}' 异常: {e}")
+                    log.warning(f"[DAG] [WARN] 等待任务 '{name}' 异常: {e}")
 
             time.sleep(0.5)
 

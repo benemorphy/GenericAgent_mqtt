@@ -4,10 +4,8 @@ restore_funcs.py — 从原 engine.py 恢复缺失的核心函数
 这些函数在 engine.py 的文件损坏修复过程中丢失，独立成模块避免再次损坏。
 """
 
-import sys
 import os
 import json
-import subprocess
 import importlib
 from pathlib import Path
 
@@ -54,7 +52,8 @@ def _import_web_search():
 
 def _web_search_wikipedia(keyword: str, size: int = 5) -> list[dict]:
     """Wikipedia API 搜索 fallback"""
-    import urllib.request as _ur, urllib.parse as _up
+    import urllib.request as _ur
+    import urllib.parse as _up
     try:
         params = {
             "action": "query",
@@ -85,7 +84,8 @@ def _web_search_wikipedia(keyword: str, size: int = 5) -> list[dict]:
 
 def _search_sophub(skill_name: str) -> list[dict]:
     """搜索 Sophub SOP 平台"""
-    import json as _json, urllib.request as _ur
+    import json as _json
+    import urllib.request as _ur
     try:
         _req = _ur.Request("https://fudankw.cn/sophub/api/sops")
         with _ur.urlopen(_req, timeout=10) as _resp:

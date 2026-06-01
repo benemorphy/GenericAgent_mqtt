@@ -3,7 +3,8 @@ dir_manager.py — Skill version directory management (simplified, English-only)
 
 Responsibilities: detect existing versions, create revN directories, inherit previous patterns.
 """
-import os, json, shutil, re
+import json
+import re
 from pathlib import Path
 
 GA_ROOT = Path(__file__).resolve().parents[2]

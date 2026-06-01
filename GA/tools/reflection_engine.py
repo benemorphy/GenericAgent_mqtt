@@ -13,7 +13,10 @@
   python -m tools.reflection_engine --watch   # 持续监控 (每 15 分钟)
 """
 
-import sys, os, time, json, glob, re, ast
+import sys
+import os
+import time
+import glob
 
 # ── 路径修补（搬迁后 GA/ 与 root 双路径） ──
 _script_dir = os.path.dirname(os.path.abspath(__file__))       # GA/tools/

@@ -1,7 +1,8 @@
 """L4 Session Log Processor — compress & extract history.
 Format A (JSON): kept as-is.  Format B (Raw): strip sys prompt & assistant echo.
 """
-import re, os, json, ast
+import re
+import os
 from datetime import datetime
 
 L4_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -141,7 +142,10 @@ def format_history_block(session_name, history_lines):
     sep = '=' * 60
     return f"{sep}\nSESSION: {session_name}\n{sep}\n" + '\n'.join(history_lines) + '\n'
 
-import tempfile, shutil, zipfile, glob
+import tempfile
+import shutil
+import zipfile
+import glob
 from collections import defaultdict
 
 def _existing_sessions(l4_dir):

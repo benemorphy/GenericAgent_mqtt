@@ -1,5 +1,7 @@
 """单元测试: tools/security_audit.py"""
-import os, sys, json, tempfile
+import os
+import sys
+import tempfile
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from tools.security_audit import audit_files, _parse_git_status, SENSITIVE_PATTERNS

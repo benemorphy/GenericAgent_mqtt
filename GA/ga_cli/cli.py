@@ -3,7 +3,11 @@ ga_cli/cli.py - GenericAgent 命令行分发系统
 
 通过 python -m ga_cli <命令> 或 ga <命令> 调用
 """
-import os, sys, subprocess, argparse, textwrap
+import os
+import sys
+import subprocess
+import argparse
+import textwrap
 
 # Windows GBK 终端兼容
 if sys.platform == "win32" and sys.stdout.encoding and sys.stdout.encoding.lower() in ("gbk", "gb2312"):
@@ -193,7 +197,7 @@ def main():
 
     if cmd not in COMMANDS:
         print(f"❌ 未知命令: {cmd}")
-        print(f"   使用 'ga list' 查看可用命令")
+        print("   使用 'ga list' 查看可用命令")
         sys.exit(1)
 
     info = COMMANDS[cmd]

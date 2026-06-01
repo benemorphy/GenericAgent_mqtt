@@ -25,13 +25,12 @@ jobs:
       - name: Install ruff
         run: pip install ruff
       - name: Run ruff
-        continue-on-error: true
         run: ruff check --output-format=github .
 
   test:
     name: Test (Python ${{ matrix.python-version }})
     needs: lint
-    if: true  # 已启用 - 修复语法错误后恢复测试
+    if: success()
     runs-on: ubuntu-latest
     strategy:
       matrix:

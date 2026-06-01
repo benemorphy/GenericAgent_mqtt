@@ -1,4 +1,6 @@
-import os, sys, subprocess
+import os
+import sys
+import subprocess
 from urllib.request import urlopen
 from urllib.parse import quote
 if sys.stdout is None: sys.stdout = open(os.devnull, "w")
@@ -12,9 +14,12 @@ sys.path.insert(0, os.path.abspath(os.path.join(script_dir, '..')))
 sys.path.append(os.path.abspath(script_dir))
 
 import streamlit as st
-import time, json, re, threading, queue
+import time
+import json
+import re
+import threading
+import queue
 from agentmain import GeneraticAgent
-import chatapp_common  # activate /continue command (monkey patches GeneraticAgent)
 from continue_cmd import handle_frontend_command, reset_conversation, list_sessions, extract_ui_messages
 from btw_cmd import handle_frontend_command as btw_handle_frontend
 from export_cmd import last_assistant_text, export_to_temp, wrap_for_clipboard
@@ -70,7 +75,7 @@ def render_sidebar():
             hist_path = os.path.join(script_dir, '..', 'assets', 'tool_usable_history.json')
             with open(hist_path, 'r', encoding='utf-8') as f: tool_hist = json.load(f)
             agent.llmclient.backend.history.extend(tool_hist)
-            st.toast(f"Tools injected")
+            st.toast("Tools injected")
         except Exception as e: st.toast(f"Injected tools failed: {e}")
     if st.button(T('desktop_pet')):
         kwargs = {'creationflags': 0x08} if sys.platform == 'win32' else {}
@@ -309,7 +314,7 @@ if prompt := st.chat_input("any task?"):
         elif sub_lower == "all":
             log = agent.log_path
             result = (f"📂 完整对话日志:\n\n`{log}`" if os.path.isfile(log)
-                      else f"❌ 当前会话尚无日志文件")
+                      else "❌ 当前会话尚无日志文件")
         else:
             text = last_assistant_text(agent)
             if not text:

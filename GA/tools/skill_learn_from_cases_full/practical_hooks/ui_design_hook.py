@@ -5,7 +5,10 @@ ui_design_hook.py — UI/UX 设计实操测试
 检测本机设计工具(浏览器DevTools/设计资源/Figma等)。
 统一接口: run(env) -> dict
 """
-import json, sys, os, subprocess, shutil
+import json
+import os
+import subprocess
+import shutil
 
 def run(env: dict = None) -> dict:
     score = 0

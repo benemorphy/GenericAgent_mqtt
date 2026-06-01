@@ -24,7 +24,7 @@ class MyHandler(BaseHandler):
   python tools/step_detector.py --test    # 自检/演示
 """
 
-import re, json
+import json
 from typing import Optional
 
 
@@ -142,7 +142,7 @@ class StepDetector:
     def _check_empty(self, tool_name, args, ret, text) -> Optional[str]:
         """空结果检测"""
         if not text or text.strip() in ('', '{}', '[]', 'null', 'None', '""', "''"):
-            return f'返回结果为空'
+            return '返回结果为空'
         return None
     
     def _check_error_msg(self, tool_name, args, ret, text) -> Optional[str]:
@@ -310,5 +310,5 @@ if __name__ == '__main__':
         _demo()
     else:
         print("StepDetector: MASC实时步骤检测器")
-        print(f"  可检测模式: empty_result, error_message, permission_denied, timeout, truncated_output, file_not_found, empty_scan, parse_error, consecutive_failures")
-        print(f"  用法: python tools/step_detector.py --test  # 自检演示")
+        print("  可检测模式: empty_result, error_message, permission_denied, timeout, truncated_output, file_not_found, empty_scan, parse_error, consecutive_failures")
+        print("  用法: python tools/step_detector.py --test  # 自检演示")

@@ -9,13 +9,24 @@ GPU: NVIDIA (Driver 555.99, CUDA 12.5)
     from tools.ffmpeg_utils import screen_capture, probe_media, convert_format
 """
 
-import subprocess, json, os, logging
-from pathlib import Path
+import subprocess
+import json
+import logging
+import shutil
+import os
 
 log = logging.getLogger("ffmpeg_utils")
 
-FFMPEG = r"D:\Program Files\ffmpeg-2026-04-01-git-eedf8f0165-full_build\bin\ffmpeg.EXE"
-FFPROBE = r"D:\Program Files\ffmpeg-2026-04-01-git-eedf8f0165-full_build\bin\ffprobe.EXE"
+FFMPEG = (
+    os.environ.get("FFMPEG_PATH")
+    or shutil.which("ffmpeg")
+    or r"D:\Program Files\ffmpeg-2026-04-01-git-eedf8f0165-full_build\bin\ffmpeg.EXE"
+)
+FFPROBE = (
+    os.environ.get("FFPROBE_PATH")
+    or shutil.which("ffprobe")
+    or r"D:\Program Files\ffmpeg-2026-04-01-git-eedf8f0165-full_build\bin\ffprobe.EXE"
+)
 
 
 def _run(cmd, timeout=60):
@@ -49,7 +60,7 @@ def screen_capture(output="screenshot.png", region=None, display=None):
         cmd += ["-offset_x", str(region[0]), "-offset_y", str(region[1]),
                 "-video_size", f"{region[2]}x{region[3]}"]
     if display:
-        cmd += ["-i", f"desktop"]
+        cmd += ["-i", "desktop"]
     else:
         cmd += ["-i", "desktop"]
     cmd += ["-vframes", "1", "-y", output]

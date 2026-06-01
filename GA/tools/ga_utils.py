@@ -1,6 +1,10 @@
 """GenericAgent 通用工具函数集 — 从 ga.py 提取的独立工具函数"""
 
-import os, sys, json, re, traceback, itertools, collections, difflib
+import os
+import sys
+import json
+import re
+import traceback
 from datetime import datetime
 
 _GA_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

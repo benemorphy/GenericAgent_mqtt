@@ -7,7 +7,8 @@
     ok, report = audit_files(files=['path/to/file.py'])
 """
 
-import os, subprocess
+import os
+import subprocess
 
 SENSITIVE_PATTERNS = [
     "sk-", "ghp_", "gho_", "ghu_", "ghs_", "ghr_",

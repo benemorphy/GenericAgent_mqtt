@@ -11,11 +11,9 @@ For custom policies, import from tools.turn_policy:
     from tools.turn_policy import register_turn_policies, policy_danger_ask_user
 """
 
-import os
 from tools.ga_utils import consume_file
 from tools.turn_policy import (
     register_turn_policies,
-    DEFAULT_TURN_POLICIES,
 )
 
 

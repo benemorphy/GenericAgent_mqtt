@@ -15,7 +15,9 @@
     python tools/lint_filenames.py --fix        # 自动修复前导/尾随空格
 """
 
-import os, sys, re, shutil
+import os
+import sys
+import shutil
 
 ISSUES = []
 
@@ -71,7 +73,7 @@ def main():
     check_dir(root, fix=args.fix)
 
     if not ISSUES:
-        print(f"\n[PASS] 文件名检查通过，无问题")
+        print("\n[PASS] 文件名检查通过，无问题")
         return
 
     print(f"\n[FAIL] 发现 {len(ISSUES)} 个文件名问题:")

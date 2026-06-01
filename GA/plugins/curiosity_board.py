@@ -26,7 +26,9 @@ Topics:
     }
 """
 
-import json, uuid, time
+import json
+import uuid
+import time
 from Mqtt_bbs_client.plugin import Plugin, plugin_hook
 
 POST_BASE = "board/curiosity"

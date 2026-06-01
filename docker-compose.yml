@@ -23,10 +23,25 @@ services:
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
-      test:
-...[Truncated]...
-orts:
-      - "${METRICS_PORT:-9090}:9090"
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  ga:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      broker:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "${GATEWAY_PORT:-8000}:8000"
+    restart: unless-stopped
 
 volumes:
   mosquitto_data:

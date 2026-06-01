@@ -11,7 +11,6 @@ Curiosity Hooks — 感知工具的好奇心信号检测器
 """
 
 import os
-import time
 from typing import Optional
 from tools.constraint_dashboard import CuriositySignal
 

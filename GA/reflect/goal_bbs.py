@@ -5,7 +5,12 @@
 # 用法 (在 goal_mode.py 中):
 #   from goal_bbs import bbs_init, bbs_pulse, bbs_chronicle, bbs_close
 
-import os, sys, time, json, socket, logging
+import os
+import sys
+import time
+import json
+import socket
+import logging
 
 _dir = os.path.dirname(os.path.abspath(__file__))
 log = logging.getLogger('goal_bbs')

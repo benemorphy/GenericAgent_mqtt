@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """Debug: Worker#1 收不到消息根因"""
-import sys, os, time, json, subprocess, uuid, threading
+import sys
+import os
+import time
+import json
+import subprocess
+import uuid
+import threading
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, _ROOT)

@@ -8,7 +8,10 @@ Subagent 集群监控 Dashboard
     streamlit run frontends/subagent_dashboard.py
 """
 
-import os, sys, glob, time, subprocess, json, re, argparse
+import sys
+import time
+import subprocess
+import re
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -29,7 +32,7 @@ if '--file' not in sys.argv:  # 默认MQTT模式，--file回退文件模式
                 host=next((sys.argv[i+1] for i,a in enumerate(sys.argv) if a=='--broker-host'), '127.0.0.1')
             )
         _MQTT_SOURCE = _get_mqtt_source()
-        print(f"[Dashboard] MQTT模式: 连接 rmqtt (127.0.0.1:1883)")
+        print("[Dashboard] MQTT模式: 连接 rmqtt (127.0.0.1:1883)")
     except Exception as e:
         print(f"[Dashboard] MQTT模式初始化失败: {e}")
         _MQTT_SOURCE = None
@@ -241,7 +244,7 @@ def get_subagent_status(task_dir: Path, pid_map: dict):
                 continue
         # 最后手段：replace
         text = raw.decode('utf-8', errors='replace')
-        return text[-tail_bytes:], f"utf-8(replace)"
+        return text[-tail_bytes:], "utf-8(replace)"
 
 
 
@@ -375,7 +378,7 @@ def render_agent_card(task_dir: Path, status_info: tuple):
             cols[4].empty()
         with cols[5]:
             if status in ("running", "waiting"):
-                if st.button(f"🛑 停止", key=f"stop_{agent_name}"):
+                if st.button("🛑 停止", key=f"stop_{agent_name}"):
                     (task_dir / "_stop").write_text("", encoding='utf-8')
                     st.rerun()
 
@@ -421,7 +424,7 @@ def render_agent_card(task_dir: Path, status_info: tuple):
                     st.markdown("**stderr.log** (尾部)")
                     st.code(stderr_log[-2000:] if stderr_log else "(空)", language="text", line_numbers=True)
                 # 刷新日志按钮
-                if st.button(f"🔄 刷新日志", key=f"refresh_log_{agent_name}"):
+                if st.button("🔄 刷新日志", key=f"refresh_log_{agent_name}"):
                     st.rerun()
 
             with output_tab:
@@ -448,7 +451,7 @@ def render_agent_card(task_dir: Path, status_info: tuple):
                 )
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    if st.button(f"📨 发送干预", key=f"send_intervene_{agent_name}"):
+                    if st.button("📨 发送干预", key=f"send_intervene_{agent_name}"):
                         if intervene_text.strip():
                             (task_dir / "_intervene").write_text(intervene_text.strip(), encoding='utf-8')
                             st.success("✅ 干预指令已发送，下轮生效")
@@ -462,7 +465,7 @@ def render_agent_card(task_dir: Path, status_info: tuple):
                         key=f"keyinfo_{agent_name}",
                         label_visibility="collapsed",
                     )
-                    if st.button(f"🧠 注入记忆", key=f"send_keyinfo_{agent_name}"):
+                    if st.button("🧠 注入记忆", key=f"send_keyinfo_{agent_name}"):
                         if keyinfo_text.strip():
                             (task_dir / "_keyinfo").write_text(keyinfo_text.strip(), encoding='utf-8')
                             st.success("✅ 已注入工作记忆")
@@ -476,7 +479,7 @@ def render_agent_card(task_dir: Path, status_info: tuple):
                             key=f"reply_{agent_name}",
                             label_visibility="collapsed",
                         )
-                        if st.button(f"💬 发送回复", key=f"send_reply_{agent_name}"):
+                        if st.button("💬 发送回复", key=f"send_reply_{agent_name}"):
                             if reply_text.strip():
                                 (task_dir / "reply.txt").write_text(reply_text.strip(), encoding='utf-8')
                                 st.success("✅ 回复已发送，subagent 将继续执行")

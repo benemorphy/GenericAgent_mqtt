@@ -1,4 +1,9 @@
-import glob, json, os, queue as Q, re, sys, threading, time
+import json
+import os
+import re
+import sys
+import threading
+import time
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 GA_ROOT = os.path.join(PROJECT_ROOT, "GA")
@@ -13,9 +18,8 @@ from frontends.continue_cmd import handle_frontend_command as handle_continue_fr
 
 agent, mykeys = create_agent(verbose=False)
 from tools.feishu_reminder import ReminderManager, start_reminder_checker, format_reminder_list, REMIND_HELP
-from tools.todo_manager import TodoManager, _TODO_HELP as TODO_HELP
-from tools.hitl_approval import submit_decision, approve, reject, get_pending_list, _HITL_HELP
-from tools.inspiration_board import Board as InspirationBoard, list_all as list_inspirations
+from tools.todo_manager import TodoManager
+from tools.hitl_approval import approve, reject, get_pending_list
 from Mqtt_bbs_server import AgentBoardWithPersistence
 
 import traceback
@@ -968,7 +972,7 @@ def handle_command(open_id, cmd, chat_id=None):
         if not _ins and not _assocs:
             _lines.append("  暂无洞察（继续积累对话记忆）")
         if _new_ideas:
-            _lines.append(f"─" * 30)
+            _lines.append("─" * 30)
             _lines.append(f"📌 已写入灵感板 {_new_ideas} 条（/inspired 查看）")
         _send_cmd_response("\n".join(_lines))
 

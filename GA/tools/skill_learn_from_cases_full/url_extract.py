@@ -5,7 +5,9 @@ url_extract.py — 双引擎URL文本提取模块
 策略：先 requests 抓取静态HTML → 内容不足时自动降级到 TMWebDriver 浏览器引擎（JS渲染）
 """
 
-import re, time, sys
+import re
+import time
+import sys
 
 def extract_url_text(url: str, max_chars: int = 15000) -> str:
     """双引擎提取：先requests，内容不足时TMWebDriver降级"""
@@ -81,7 +83,7 @@ def _tmwebdriver_extract(url: str, max_chars: int, wait_sec: int = 5) -> str:
         # Check if browser is connected
         sessions = driver.get_all_sessions()
         if not sessions:
-            print(f"  [URL] ⚠ TMWebDriver: 无浏览器连接")
+            print("  [URL] ⚠ TMWebDriver: 无浏览器连接")
             return ""
         
         # Navigate to URL using the first available session

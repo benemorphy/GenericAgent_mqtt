@@ -58,7 +58,7 @@ class BrowserService:
                     return
                 if len(sess) == 1:
                     time.sleep(3)  # 等待单个标签页稳定
-            except Exception as e:
+            except Exception:
                 self._init_error = f"浏览器初始化失败: {traceback.format_exc()}"
                 self._driver = None
 

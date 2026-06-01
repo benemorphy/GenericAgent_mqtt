@@ -1,7 +1,12 @@
 """`/continue` command: list & restore past model_responses sessions.
 Pure functions + one `install(cls)` monkey-patch entry. No side effects at import.
 """
-import ast, glob, json, os, re, time
+import ast
+import glob
+import json
+import os
+import re
+import time
 _LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                         'temp', 'model_responses')
 _LOG_GLOB = os.path.join(_LOG_DIR, 'model_responses_*.txt')

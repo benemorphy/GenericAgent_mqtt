@@ -20,7 +20,6 @@ import json
 import os
 import urllib.request
 import urllib.error
-import sys
 import hashlib
 import time
 from pathlib import Path

@@ -1,6 +1,8 @@
 """CLI 入口: python -m skill_search"""
 from __future__ import annotations
-import argparse, json, sys
+import argparse
+import json
+import sys
 from .engine import SearchResult, SkillSearchError, detect_environment, search, get_stats
 
 
@@ -87,11 +89,11 @@ def main():
     if args.stats:
         try:
             stats = get_stats(env)
-            print(f"📊 索引统计:")
+            print("📊 索引统计:")
             print(f"  总计: {stats.get('total', '?')} 个 skills")
             print(f"  自动安全: {stats.get('safe_count', '?')} 个")
             if 'categories' in stats:
-                print(f"  类别分布:")
+                print("  类别分布:")
                 for cat, cnt in sorted(stats['categories'].items(), key=lambda x: -x[1]):
                     print(f"    {cat:15s} {cnt:4d}")
         except SkillSearchError as e:

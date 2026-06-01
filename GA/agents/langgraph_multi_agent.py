@@ -15,9 +15,10 @@ LangGraph 多智能体编排模块 — 三层组合架构中的编排引擎层
 3. 可被 Node UI 导入并可视化
 """
 
-from typing import TypedDict, Literal, List, Dict, Any, Optional
+from typing import TypedDict, Literal, List, Dict
 from langgraph.graph import StateGraph, END
-import json, os, sys
+import os
+import sys
 
 # ===== 状态定义 =====
 
@@ -48,7 +49,7 @@ def search_agent(state: AgentState) -> dict:
         from tools.metaso_search import metaso_search_text
         results = metaso_search_text(task, size=3)
         search_results = results if results else f"搜索 '{task}' 未找到结果"
-    except Exception as e:
+    except Exception:
         search_results = f"[搜索模拟] 针对'{task}'的检索结果:\n" + \
                          "1. 相关文档 A...\n2. 相关文档 B...\n3. 相关文档 C..."
     
@@ -81,7 +82,7 @@ def summary_agent(state: AgentState) -> dict:
     """Agent C: 总结智能体 - 生成最终总结"""
     task = state["task"]
     analysis = state["analysis"]
-    print(f"[SummaryAgent] 生成总结...")
+    print("[SummaryAgent] 生成总结...")
     
     summary = f"# {task}\n\n"
     summary += "## 摘要\n基于多智能体协作分析结果...\n\n"

@@ -8,9 +8,6 @@ Playground 房间系统 — 每个 MQTT 主题空间映射为一个"房间"
   - commands: 房间内可用命令
 """
 
-import re
-from dataclasses import dataclass, field
-from typing import Optional
 
 ROOMS = [
     {

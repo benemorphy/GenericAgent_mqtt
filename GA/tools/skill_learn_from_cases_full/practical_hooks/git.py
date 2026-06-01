@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Git 实操测试 — 临时仓库验证 git 操作能力"""
-import json, sys, tempfile, subprocess
+import json
+import sys
+import tempfile
+import subprocess
 
 
 def _exec(cmd, cwd=None):
@@ -67,14 +70,16 @@ def run(env: dict = None) -> dict:
     if env is None:
         try:
             from env_detector import detect_all
-            import contextlib, io
+            import contextlib
+            import io
             with contextlib.redirect_stdout(io.StringIO()):
                 env = detect_all()
         except ImportError:
             import sys
             sys.path.insert(0, r"""D:\\open_claw_agent\\GenericAgent\\tools\\skill_learn_from_cases""")
             from env_detector import detect_all
-            import contextlib, io
+            import contextlib
+            import io
             with contextlib.redirect_stdout(io.StringIO()):
                 env = detect_all()
     return main()

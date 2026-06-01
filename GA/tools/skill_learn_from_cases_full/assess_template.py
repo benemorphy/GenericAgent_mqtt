@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """skill_learn rev__VERSION__ -- __SKILL__ 验证工具模板
 自动生成 | 知识测试 + 模式覆盖率 + 实操测试"""
-import json, sys, os, random
+import json
+import sys
+import os
+import random
 
 PATTERNS = __PATTERNS_JSON__
 CASE_COUNT = __CASE_COUNT__
@@ -181,7 +184,7 @@ def run_knowledge_test():
                     print(f"  [!] Q{qi+1}: {q['q'][:60]}")
                     print(f"     -> LLM未通过 (正确答案 {cl})")
         else:
-            print(f"  [FALLBACK] LLM批量返回异常，用规则评估")
+            print("  [FALLBACK] LLM批量返回异常，用规则评估")
             for qi, q in enumerate(eval_qs):
                 p = PATTERNS[qi] if qi < len(PATTERNS) else {}
                 lv = p.get("level","") if isinstance(p,dict) else ""
@@ -344,7 +347,7 @@ def _llm_practical_test(llm):
     """LLM 评估实操应用能力"""
     border = "-" * 50
     print(f"\n{border}")
-    print(f"  实操测试 (LLM 场景验证)")
+    print("  实操测试 (LLM 场景验证)")
     print(f"{border}")
 
     # 选取 top-5 模式
@@ -401,7 +404,7 @@ def _rule_practical_test():
     """规则实操测试（改进版：基于模式质量评估，非随机模拟）"""
     border = "-" * 50
     print(f"\n{border}")
-    print(f"  实操测试 (模式质量验证)")
+    print("  实操测试 (模式质量验证)")
     print(f"{border}")
     if not PATTERNS:
         return 0, "无模式可验证"
@@ -469,7 +472,7 @@ def _rule_practical_test():
 def main():
     border = "=" * 55
     print(f"\n{border}")
-    print(f"  rev__VERSION__ 验证 -- __SKILL__")
+    print("  rev__VERSION__ 验证 -- __SKILL__")
     print(f"{border}")
 
     k_score = run_knowledge_test()
@@ -503,14 +506,14 @@ def main():
 
     border = "=" * 55
     print(f"\n{border}")
-    print(f"  评分结果")
+    print("  评分结果")
     print(f"  {border}")
     print(f"  知识测试   : {k_score}/100")
     print(f"  模式覆盖率 : {cov_pct:.1f}% ({covered}/{total})")
     print(f"  实操测试   : {p_score}/100 ({p_note})")
     if case_penalty:
         print(f"  案例惩罚   : -{case_penalty}")
-    print(f"  ─────────────────────")
+    print("  ─────────────────────")
     print(f"  最终评分   : {final}/100")
     grade = "A" if final >= 90 else ("B" if final >= 70 else ("C" if final >= 50 else "D"))
     print(f"  等级       : {grade} {'★' * (ord('E') - ord(grade))}")
@@ -518,9 +521,9 @@ def main():
         print(f"  ⚠ 评分偏低 ({final}<60)，建议补充更多案例后重新学习")
     print(f"{border}")
     if not _get_llm():
-        print(f"  (LLM 未启用，使用规则评估)")
+        print("  (LLM 未启用，使用规则评估)")
     else:
-        print(f"  (LLM 评估模式)")
+        print("  (LLM 评估模式)")
     print(f"{'='*55}")
 
     report_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),

@@ -9,7 +9,13 @@ BBS 分布式压测 — 吞吐量 / 并发 Worker / 断连风暴 / 长时间运�
 协议参考: memory/board_stress_sop.md
 """
 
-import os, sys, json, time, uuid, threading, argparse, logging
+import os
+import json
+import time
+import uuid
+import threading
+import argparse
+import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s %(message)s")
 log = logging.getLogger("stress")
@@ -133,7 +139,7 @@ class StressClient:
 def scenario_throughput(count: int = 500):
     """吞吐量测试: 注册 → 连续发帖"""
     log.info(f"── 吞吐量测试: {count} 条帖子 ──")
-    c = StressClient(f"stress_throughput")
+    c = StressClient("stress_throughput")
     if not c.connect():
         log.error("Broker 连接失败"); return
     ok, info = c.register()
@@ -175,7 +181,7 @@ def scenario_concurrent(clients: int = 50, posts_per_client: int = 10):
 
     t0 = time.perf_counter()
     for i in range(clients):
-        t = threading.Thread(target=worker, args=(i,))
+        t = threading.Thread(target=worker, args=(i,), daemon=True)
         t.start(); threads.append(t)
     for t in threads:
         t.join()
@@ -203,7 +209,7 @@ def scenario_disconnect_storm(clients: int = 50):
     t0 = time.perf_counter()
     threads = []
     for c in clients_list:
-        t = threading.Thread(target=c.disconnect)
+        t = threading.Thread(target=c.disconnect, daemon=True)
         t.start(); threads.append(t)
     for t in threads:
         t.join()

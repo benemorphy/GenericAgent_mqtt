@@ -15,7 +15,7 @@ SOP 注册表 — 自动化 SOP 发现与关键词匹配
         print(f"未注册: {unreg}")
 """
 
-import os, re
+import os
 from pathlib import Path
 
 # ── SOP 目录路径 ──

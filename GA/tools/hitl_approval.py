@@ -9,7 +9,10 @@ HITL Approval — 人在回路审批管理器
   4. 结果回写 MariaDB hitl_audit_log
 """
 
-import sys, json, time, threading, uuid, os
+import sys
+import json
+import uuid
+import os
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -24,14 +27,27 @@ except ImportError:
 DECISION_TOPIC = "ontology/human/decision"
 RESPONSE_TOPIC = "ontology/human/response"
 
+# ── 数据库连接（从环境变量读取，避免硬编码凭据）──
+
+def _get_connection():
+    """从环境变量读取数据库配置并返回连接"""
+    return pymysql.connect(
+        host=os.environ.get("DB_HOST", "127.0.0.1"),
+        port=int(os.environ.get("DB_PORT", "3306")),
+        user=os.environ.get("DB_USER", "root"),
+        password=os.environ.get("DB_PASSWORD", ""),
+        database=os.environ.get("DB_NAME", "mqtt_bbs"),
+        autocommit=True,
+        connect_timeout=int(os.environ.get("DB_TIMEOUT", "3"))
+    )
+
 # ── 审核日志 ──
 
 def _ensure_table():
     if not _HAS_DB:
         return False
     try:
-        conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='mariadb',
-                                database='mqtt_bbs', autocommit=True, connect_timeout=3)
+        conn = _get_connection()
         cur = conn.cursor()
         cur.execute("""
             CREATE TABLE IF NOT EXISTS hitl_audit_log (
@@ -59,8 +75,7 @@ def submit_decision(order_id, agent_id, task_type, confidence, reason, evidence=
     if not _ensure_table():
         return audit_id
     try:
-        conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='mariadb',
-                                database='mqtt_bbs', autocommit=True, connect_timeout=3)
+        conn = _get_connection()
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO hitl_audit_log (id, order_id, agent_id, task_type, confidence, reason, evidence)
@@ -74,8 +89,7 @@ def submit_decision(order_id, agent_id, task_type, confidence, reason, evidence=
 def approve(audit_id, decided_by="feishu_bot"):
     """审批通过"""
     try:
-        conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='mariadb',
-                                database='mqtt_bbs', autocommit=True, connect_timeout=3)
+        conn = _get_connection()
         cur = conn.cursor()
         cur.execute("UPDATE hitl_audit_log SET status='approved', decided_by=%s, decided_at=NOW(3) WHERE id=%s",
                     (decided_by, audit_id))
@@ -87,8 +101,7 @@ def approve(audit_id, decided_by="feishu_bot"):
 def reject(audit_id, decided_by="feishu_bot"):
     """审批拒绝"""
     try:
-        conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='mariadb',
-                                database='mqtt_bbs', autocommit=True, connect_timeout=3)
+        conn = _get_connection()
         cur = conn.cursor()
         cur.execute("UPDATE hitl_audit_log SET status='rejected', decided_by=%s, decided_at=NOW(3) WHERE id=%s",
                     (decided_by, audit_id))
@@ -102,8 +115,7 @@ def get_pending_list(limit=10):
     if not _ensure_table():
         return []
     try:
-        conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='mariadb',
-                                database='mqtt_bbs', autocommit=True, connect_timeout=3)
+        conn = _get_connection()
         cur = conn.cursor(pymysql.cursors.DictCursor)
         cur.execute("SELECT * FROM hitl_audit_log WHERE status='pending' ORDER BY created_at DESC LIMIT %s", (limit,))
         rows = cur.fetchall()

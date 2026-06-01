@@ -10,7 +10,7 @@ Metaso 搜索引擎封装
         print(r["title"], r["url"])
 """
 import requests
-from typing import List, Dict, Optional
+from typing import List, Dict
 
 BASE_URL = "https://metaso.cn/api/v1"
 

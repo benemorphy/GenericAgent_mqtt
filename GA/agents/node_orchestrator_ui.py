@@ -8,9 +8,12 @@ v2 修复:
   3. Agent配置: 双击节点弹出配置面板(任务/模型/参数)
 """
 
-import os, sys, json, importlib, asyncio
+import os
+import sys
+import importlib
+import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import uvicorn
 
@@ -546,9 +549,9 @@ async def execute_graph(data: dict):
 
 def start_server(port: int = 8765, host: str = "127.0.0.1"):
     """启动 Node UI 服务"""
-    print(f"[NodeUI] Multi-Agent Orchestrator v2")
+    print("[NodeUI] Multi-Agent Orchestrator v2")
     print(f"   启动: http://{host}:{port}")
-    print(f"   拖拽节点编排 -> 点击执行 -> 查看结果")
+    print("   拖拽节点编排 -> 点击执行 -> 查看结果")
     uvicorn.run(app, host=host, port=port, log_level="error")
 
 if __name__ == "__main__":

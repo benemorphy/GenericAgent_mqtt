@@ -12,7 +12,8 @@ Usage in ga.py __init__:
 This registers both do_no_tool validators and the turn policy hook.
 """
 
-import os, re
+import os
+import re
 from agent_loop import StepOutcome
 
 
@@ -29,7 +30,7 @@ def _check_plan_completion(handler):
     try:
         with open(plan_path, 'r', encoding='utf-8', errors='replace') as f:
             return len(re.findall(r'\[ \]', f.read()))
-    except:
+    except (OSError, re.error):
         return None
 
 
