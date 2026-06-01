@@ -55,16 +55,13 @@ GenericAgent_mqtt/
 
 | 组件 | 说明 | 部署方式 |
 |------|------|----------|
-| `Mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m Mqtt_bbs.board_service` |
-| `tools/board_service_rs/` | Rust 高性能 BoardService | 独立二进制 |
-| `tools/mqtt_bbs_rs/` | Rust MQTT BBS 组件 | 独立二进制 |
-| `tools/rmqtt_webui.py` | MQTT Broker Web 仪表盘 | `python tools/rmqtt_webui.py` |
-| `tools/rmqtt_webui_rs/` | Rust Web 仪表盘 | 独立二进制 |
-| `tools/rmqtt_auth_rs/` | Rust MQTT 认证扩展 | 独立二进制 |
-| `tools/gen_jwt.py` | JWT Token 生成 | 工具脚本 |
-| `tools/secrets.py` | 机密管理 | 工具脚本 |
+| `Mqtt_bbs_server/` | BoardService + Persistence + Scheduler + DAG | `python -m Mqtt_bbs_server.board_service` |
+| `Mqtt_bbs_client/` | BBSClient + Plugin + Registry + Types | `pip install -e ./Mqtt_bbs_client` |
+| `Mqtt_bbs_server/tools/board_service_rs/` | Rust 高性能 BoardService | 独立二进制 |
+| `Mqtt_bbs_server/tools/mqtt_bbs_rs/` | Rust MQTT BBS 组件 | 独立二进制 |
+| `Mqtt_bbs_server/tools/rmqtt_webui_rs/` | Rust MQTT Broker Web 仪表盘 | 独立二进制 |
+| `Mqtt_bbs_server/tools/rmqtt_auth_rs/` | Rust MQTT 认证扩展 | 独立二进制 |
 | `docker/` / `Dockerfile.*` | Docker 部署 | `docker-compose up` |
-| `k8s/` | Kubernetes 部署 | `kubectl apply -f k8s/` |
 
 ### MQTT BBS 主题协议
 
@@ -82,10 +79,10 @@ GenericAgent_mqtt/
 rmqtt start
 
 # 2. 启动 BoardService（Python）
-python -m Mqtt_bbs.board_service
+python -m Mqtt_bbs_server.board_service
 
 # 3. 或使用 Rust 版（高性能）
-cd GA_tools && ./md_server_rs/target/release/board_service_rs
+cd Mqtt_bbs_server/tools/board_service_rs && cargo run --release
 ```
 
 ---
@@ -133,7 +130,7 @@ ga agent    # 交互式 Agent
 启用 MQTT 模式：
 
 ```bash
-rmqtt start && python -m Mqtt_bbs.board_service
+rmqtt start && python -m Mqtt_bbs_server.board_service
 python agentmain.py --broker-host 127.0.0.1
 ```
 

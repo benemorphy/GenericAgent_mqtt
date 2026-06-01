@@ -55,16 +55,13 @@ Standalone communication layer services, designed for VPS deployment.
 
 | Component | Description | Deployment |
 |-----------|-------------|------------|
-| `Mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m Mqtt_bbs.board_service` |
-| `tools/board_service_rs/` | Rust high-performance BoardService | Standalone binary |
-| `tools/mqtt_bbs_rs/` | Rust MQTT BBS components | Standalone binary |
-| `tools/rmqtt_webui.py` | MQTT Broker Web dashboard | `python tools/rmqtt_webui.py` |
-| `tools/rmqtt_webui_rs/` | Rust Web dashboard | Standalone binary |
-| `tools/rmqtt_auth_rs/` | Rust MQTT auth extension | Standalone binary |
-| `tools/gen_jwt.py` | JWT token generation | Utility script |
-| `tools/secrets.py` | Secrets management | Utility script |
+| `Mqtt_bbs_server/` | BoardService + Persistence + Scheduler + DAG | `python -m Mqtt_bbs_server.board_service` |
+| `Mqtt_bbs_client/` | BBSClient + Plugin + Registry + Types | `pip install -e ./Mqtt_bbs_client` |
+| `Mqtt_bbs_server/tools/board_service_rs/` | Rust high-performance BoardService | Standalone binary |
+| `Mqtt_bbs_server/tools/mqtt_bbs_rs/` | Rust MQTT BBS components | Standalone binary |
+| `Mqtt_bbs_server/tools/rmqtt_webui_rs/` | Rust MQTT Broker Web dashboard | Standalone binary |
+| `Mqtt_bbs_server/tools/rmqtt_auth_rs/` | Rust MQTT auth extension | Standalone binary |
 | `docker/` / `Dockerfile.*` | Docker deployment | `docker-compose up` |
-| `k8s/` | Kubernetes deployment | `kubectl apply -f k8s/` |
 
 ### MQTT BBS Topic Protocol
 
@@ -82,10 +79,10 @@ Standalone communication layer services, designed for VPS deployment.
 rmqtt start
 
 # 2. Start BoardService (Python)
-python -m Mqtt_bbs.board_service
+python -m Mqtt_bbs_server.board_service
 
 # 3. Or use Rust version (high performance)
-cd GA_tools && ./md_server_rs/target/release/board_service_rs
+cd Mqtt_bbs_server/tools/board_service_rs && cargo run --release
 ```
 
 ---
@@ -133,7 +130,7 @@ ga agent    # Interactive Agent
 With MQTT:
 
 ```bash
-rmqtt start && python -m Mqtt_bbs.board_service
+rmqtt start && python -m Mqtt_bbs_server.board_service
 python agentmain.py --broker-host 127.0.0.1
 ```
 
