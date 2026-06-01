@@ -8,7 +8,7 @@ L3: memory_cleanup_sop | skill_search | skills_learning_sop(案例驱动) | meta
 | git_push_sop(Git审计推送) | feishu_connect_sop(飞书Bot) | push_cleanup_sop
 | agent_dreaming_sop | dream_engine(梦境引擎) | board_stress_sop(BBS压测) | board_service_diag_sop(BBS静默故障) | spaced_repetition_sop(间隔复习) | sqlite_to_mariadb_sop(DB迁移)
 | aesthetic_design_sop | clipboard_ocr_sop | code_review_principles | dream_command_rule | emqtt_design_principles(EMQTT原则) | github_contribution_sop | anthropic_kwp_learned(Anthropic技能)
-| goal_mode_sop(目标模式) | procmem_scanner_sop(内存扫描) | qq_deploy_sop(QQ部署) | search_skills_sop | shutdown_rule | supervisor_sop(监控)
+| goal_mode_sop(目标模式) | goal_hive_sop(Hive多Worker) | goal_hive_master_duty(Master调度) | procmem_scanner_sop(内存扫描) | qq_deploy_sop(QQ部署) | search_skills_sop | shutdown_rule | supervisor_sop(监控)
 | ai_coding_collaboration_sop | document_reading_sop | mqtt_persistence_analysis | mqtt_service_config | prompt_engineering_sop | rust_env_config | skill_learn_after_review_sop(技能复习) | sop_registry
 | data_explore_sop | research_synthesis_sop
 | problem_selection_sop | task_management_sop

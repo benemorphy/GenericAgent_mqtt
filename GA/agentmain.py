@@ -185,6 +185,7 @@ except Exception:
     pass
 if __name__ == '__main__':
     import argparse
+    from datetime import datetime
     parser = argparse.ArgumentParser()
     parser.add_argument('--broker-host', default=None, help='MQTT Broker 地址')
     parser.add_argument('--broker-port', type=int, default=None, help='MQTT Broker 端口')
@@ -192,7 +193,9 @@ if __name__ == '__main__':
     parser.add_argument('--verbose', action='store_true')
     parser.add_argument('--task', default=None, help='Subagent 任务名: 创建 temp/{name}/ 以文件模式运行')
     parser.add_argument('--input', default=None, help='Subagent 短输入文本 (长文本请手动写 input.txt)')
-    args = parser.parse_args()
+    parser.add_argument('--reflect', metavar='SCRIPT', help='反射模式：加载监控脚本，check()触发时发任务')
+    args, _unknown = parser.parse_known_args()
+    _reflect_args = dict(zip([k.lstrip('-') for k in _unknown[::2]], _unknown[1::2])) if _unknown else {}
 
     # ── Subagent 模式 ──
     if args.task:
@@ -230,6 +233,51 @@ if __name__ == '__main__':
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(full_resp)
         print(f"[Subagent] 完成: {args.task} -> {output_path}")
+        sys.exit(0)
+
+    # ── 反射模式 (--reflect) ──
+    if args.reflect:
+        agent = GeneraticAgent()
+        agent.next_llm(args.llm_no)
+        agent.verbose = args.verbose
+        agent.peer_hint = False
+        agent.force_non_stream = True
+        threading.Thread(target=agent.run, daemon=True).start()
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('reflect_script', args.reflect)
+        mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+        if hasattr(mod, 'init'): mod.init(_reflect_args)
+        _mt = os.path.getmtime(args.reflect)
+        print(f'[Reflect] loaded {args.reflect}' + (f' args={_reflect_args}' if _reflect_args else ''))
+        while True:
+            if os.path.getmtime(args.reflect) != _mt:
+                try:
+                    spec.loader.exec_module(mod); _mt = os.path.getmtime(args.reflect)
+                    if hasattr(mod, 'init'): mod.init(_reflect_args)
+                    print('[Reflect] reloaded')
+                except Exception as e: print(f'[Reflect] reload error: {e}')
+            time.sleep(getattr(mod, 'INTERVAL', 5))
+            try: task = mod.check()
+            except Exception as e:
+                print(f'[Reflect] check() error: {e}'); continue
+            if task and task == '/exit': break
+            if task is None: continue
+            print(f'[Reflect] triggered: {task[:80]}')
+            dq = agent.put_task(task, source='reflect')
+            try:
+                while 'done' not in (item := dq.get(timeout=1200)): pass
+                result = item['done']
+                print(result)
+            except Exception as e:
+                if getattr(mod, 'ONCE', False): raise
+                print(f'[Reflect] drain error: {e}'); result = f'[ERROR] {e}'
+            log_dir = os.path.join(script_dir, 'temp/reflect_logs'); os.makedirs(log_dir, exist_ok=True)
+            script_name = os.path.splitext(os.path.basename(args.reflect))[0]
+            open(os.path.join(log_dir, f'{script_name}_{datetime.now():%Y-%m-%d}.log'), 'a', encoding='utf-8').write(f'[{datetime.now():%m-%d %H:%M}]\n{result}\n\n')
+            if (on_done := getattr(mod, 'on_done', None)):
+                try: on_done(result)
+                except Exception as e: print(f'[Reflect] on_done error: {e}')
+            if getattr(mod, 'ONCE', False): print('[Reflect] ONCE=True, exiting.'); break
         sys.exit(0)
 
     # ── 正常交互 / MQTT 模式 ──

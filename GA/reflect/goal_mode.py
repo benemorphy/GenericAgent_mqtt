@@ -48,9 +48,10 @@ BUDGET_LIMIT_PROMPT = """[Goal Mode — 预算耗尽，收口]
 ⏱ 预算已耗尽（{budget_min:.0f} 分钟）。这是最后一轮。
 
 请执行收口：
-1. 总结本次 goal 的所有进展（列表）。
-2. 列出未完成的事项和建议的 next step。
-3. 确保工作文件夹中记录了关键成果，以便下次继续。
+1. 总结本次 goal 的所有进展（列表）
+2. 列出未完成的事项和建议的 next step
+3. 确保工作文件夹中记录了关键成果
+{done_prompt}
 """
 
 # --- 主逻辑 ---
@@ -74,7 +75,8 @@ def check():
         _save(state)
         return BUDGET_LIMIT_PROMPT.format(
             objective=state['objective'],
-            budget_min=budget_sec / 60
+            budget_min=budget_sec / 60,
+            done_prompt=state.get('done_prompt', '')
         )
     
     # 正常continuation
