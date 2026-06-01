@@ -162,9 +162,11 @@ feishu.workdir = D:\open_claw_agent\GenericAgent_mqtt
 #   50并发连接0.17s, BoardService CRUD(30注册/150发帖3947posts/s)
 
 ## [FILE_SEARCH]
-# 搜索能力: 使用 tools/file_search.py（Python pathlib.rglob/glob）
-# 替代 es.exe（未安装）。提供 search_files/search_name/search_content
+# 搜索能力: 优先使用 es.exe（Everything 命令行工具，已在 PATH 中）
+# 降级方案: tools/file_search.py（Python pathlib.rglob/glob）
+# es.exe 需要 Everything 服务运行（C:\Program Files\Everything\）
 file_search.tool = tools/file_search.py
+file_search.es = GA/tools/es.exe
 
 ## [LLM_PROVIDER_FACTORY]
 # Provider工厂模块（2026-05-21 重构，llmcore.py → tools/llm_providers/）
