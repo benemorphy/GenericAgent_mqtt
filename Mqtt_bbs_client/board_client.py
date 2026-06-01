@@ -59,8 +59,10 @@ class BoardClient:
         self._cached_token = None  # 注册 token 缓存，避免重复 MQTT 往返
 
         # P0.1: 响应槽预订阅 —— 每个 Agent 预订阅自己的响应槽，消除动态 subscribe/unsubscribe
-        # 格式: v2/agent/{id}/rpc/res/{corr_id}
-        self._reply_to = f"v2/agent/{agent_id}/rpc/res/"
+        # 格式: bbs/{board}/response/{corr_id}
+        self._reply_to = f"bbs/{board}/response/"
+        # 向后兼容: 也订阅 v2/ 路径 (如果 BoardService 支持)
+        self._v2_reply_to = f"v2/agent/{agent_id}/rpc/res/"
 
     # ── P0.3: Payload schema 统一 ──
     @staticmethod
