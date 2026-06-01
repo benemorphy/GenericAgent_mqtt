@@ -32,15 +32,15 @@
     "last": "2026-05-25"
   },
   "memory_management_sop.md": {
-    "count": 22,
+    "count": 23,
     "last": "2026-06-01"
   },
   "global_mem_insight.txt": {
-    "count": 87,
+    "count": 90,
     "last": "2026-06-01"
   },
   "global_mem.txt": {
-    "count": 94,
+    "count": 95,
     "last": "2026-06-01"
   },
   "skills_learning_sop.md": {
@@ -401,6 +401,14 @@
   },
   "board_service_diag_sop.md": {
     "count": 2,
+    "last": "2026-06-01"
+  },
+  "morphling_sop.md": {
+    "count": 1,
+    "last": "2026-06-01"
+  },
+  "sop_registry.py": {
+    "count": 6,
     "last": "2026-06-01"
   }
 }
