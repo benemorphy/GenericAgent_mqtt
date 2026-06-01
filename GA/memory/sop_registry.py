@@ -219,6 +219,11 @@ SOP_REGISTRY: dict[str, dict] = {
         "path": "dream_command_rule.md",
         "category": "agent",
     },
+    "morphling": {
+        "keywords": ["吞噬", "吸收", "外部项目", "morphling", "能力迁移", "对标", "复刻"],
+        "path": "morphling_sop.md",
+        "category": "methodology",
+    },
 }
 
 
