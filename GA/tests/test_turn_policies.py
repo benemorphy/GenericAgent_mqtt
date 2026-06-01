@@ -52,12 +52,20 @@ def test_plan_limit():
     return ok
 
 def test_chain():
+    # policy_constraint_dashboard takes (handler, turn, _plan, next_prompt)
+    from tools.constraint_dashboard import policy_constraint_dashboard
+    class FakeHandler:
+        constraint_dashboard = None
+    policies = [
+        p for p in DEFAULT_TURN_POLICIES
+        if p is not policy_constraint_dashboard
+    ]
     n = ""
-    for p in DEFAULT_TURN_POLICIES:
+    for p in policies:
         n += p(65, None, n) or ""
     ok = assert_policy("非plan链", "DANGER" in n, "")
     n2 = ""
-    for p in DEFAULT_TURN_POLICIES:
+    for p in policies:
         n2 += p(65, "p.md", n2) or ""
     ok &= assert_policy("plan链跳过DANGER", "DANGER" not in n2, "")
     if ok: print("  [OK] 集成链")
