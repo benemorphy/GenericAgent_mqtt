@@ -303,6 +303,11 @@ def _init_bbs_push():
             _bbs_push_client.connect()
             _bbs_push_client.subscribe("bbs/+/post", _on_bbs_new_post)
             print("[BBS桥接] ✅ BBS->飞书 推送已启动")
+            
+            # Nexus: 额外订阅 goal_nexus 主题（人机协作决策）
+            _bbs_push_client.subscribe("bbs/goal_nexus/review", _on_nexus_request)
+            _bbs_push_client.subscribe("bbs/goal_nexus/tasks", _on_nexus_request)
+            print("[Nexus桥接] ✅ goal_nexus 人机协作推送已启动")
             break
         except Exception as e:
             print(f"[BBS桥接] 初始化失败(第{_retry+1}次): {e}")
@@ -337,6 +342,113 @@ def _on_bbs_new_post(topic, payload):
             send_message(chat_id, msg, receive_id_type="chat_id")
         except Exception as e:
             print(f"[BBS桥接] ⚠️ 推送失败到 {chat_id}: {e}")
+
+# ── Nexus: 人机协作决策处理 ──
+_NEXUS_PUSH_CHATS = set()
+def _on_nexus_request(topic, payload):
+    """Nexus 人机协作请求 → 推送到飞书卡片"""
+    if not isinstance(payload, dict):
+        return
+    content = payload.get("content", payload)
+    if isinstance(content, dict):
+        decision_text = content.get("decision", str(content)[:500])
+        options = content.get("options", [])
+        rec = content.get("recommendation", "")
+        corr_id = content.get("corr_id", "")
+    else:
+        decision_text = str(content)[:500]
+        options, rec, corr_id = [], "", ""
+    for chat_id in list(_NEXUS_PUSH_CHATS):
+        try:
+            card = {
+                "config": {"wide_screen_mode": True},
+                "header": {"title": {"tag": "plain_text", "content": "Goal Agent 需要决策"}, "template": "blue"},
+                "elements": [
+                    {"tag": "markdown", "content": f"**{decision_text}**"},
+                    {"tag": "hr"},
+                ]
+            }
+            if options and corr_id:
+                buttons = []
+                for opt in options[:5]:  # 最多5个按钮
+                    btn = {
+                        "tag": "button",
+                        "text": {"tag": "plain_text", "content": str(opt)[:30]},
+                        "value": {"corr_id": str(corr_id), "choice": str(opt)},
+                        "type": "primary" if opt == rec else "default",
+                    }
+                    buttons.append(btn)
+                card["elements"].append({"tag": "action", "actions": buttons})
+            elif options:
+                card["elements"].append({"tag": "markdown", "content": "**选项**:\n" + chr(10).join([f"- {o}" for o in options])})
+            if rec and not corr_id:
+                card["elements"].append({"tag": "markdown", "content": f"**推荐**: {rec}"})
+            if corr_id:
+                card["elements"].append({"tag": "note", "elements": [{"tag": "plain_text", "content": f"corr_id: {corr_id}"}]})
+            send_message(chat_id, json.dumps(card), msg_type="interactive", use_card=True, receive_id_type="chat_id")
+        except Exception as e:
+            print(f"[Nexus] 推送失败: {e}")
+
+
+# ── Nexus: 卡片交互回调（用户点击按钮） ──
+def _on_nexus_card_action(data):
+    """处理飞书卡片按钮点击 → 发布到 bbs/goal_nexus/response
+    
+    Args:
+        data: P2CardActionTrigger 事件对象
+    Returns:
+        P2CardActionTriggerResponse 或 None
+    """
+    global _bbs_push_client
+    try:
+        action = getattr(data.event, 'action', None) if hasattr(data, 'event') else None
+        if not action:
+            action = data.get('action') if isinstance(data, dict) else None
+        if not action:
+            print("[NexusCard] 无法获取 action 数据")
+            return None
+        
+        # action.value 应包含 corr_id 和 choice
+        value = getattr(action, 'value', None) or (action.get('value') if isinstance(action, dict) else None)
+        if not value:
+            print("[NexusCard] action 中无 value 字段")
+            return None
+        
+        corr_id = value.get('corr_id', '')
+        choice = value.get('choice', '')
+        if not corr_id or not choice:
+            print(f"[NexusCard] value 缺少 corr_id/choice: {value}")
+            return None
+        
+        # 通过 BBS 发布响应
+        payload = {
+            "v": 1,
+            "action": "response",
+            "corr_id": corr_id,
+            "choice": choice,
+        }
+        if _bbs_push_client:
+            _bbs_push_client.publish(
+                "bbs/goal_nexus/response",
+                json.dumps(payload, ensure_ascii=False),
+                qos=1
+            )
+            print(f"[NexusCard] 已发送 corr_id={corr_id}, choice={choice}")
+        else:
+            print(f"[NexusCard] BBS 客户端未就绪，无法发送响应")
+        
+        # 返回响应（Toast 提示）
+        resp = lark.CardActionTriggerResponse()
+        resp.toast = lark.CallBackToast()
+        resp.toast.type = "success"
+        resp.toast.content = f"已收到你的选择: {choice}"
+        return resp
+    except Exception as e:
+        print(f"[NexusCard] 处理异常: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
 
 def _query_db_output(task_id):
     """从MariaDB查任务output（绕过wait_task时序）"""
@@ -1038,7 +1150,10 @@ def main():
         print("错误: 请在 mykey.py 或 mykey.json 中配置 fs_app_id 和 fs_app_secret")
         sys.exit(1)
     client = create_client()
-    handler = lark.EventDispatcherHandler.builder("", "").register_p2_im_message_receive_v1(handle_message).build()
+    handler = lark.EventDispatcherHandler.builder("", "") \
+        .register_p2_im_message_receive_v1(handle_message) \
+        .register_p2_card_action_trigger(_on_nexus_card_action) \
+        .build()
     # 启动定时提醒检查（每30秒检查一次）
     start_reminder_checker(_reminder, _reminder_send, interval=30)
     # 启动 BBS 桥接推送
