@@ -6,6 +6,11 @@ Multi-agent infrastructure with MQTT-based communication, BBS board service, Fei
 
 ```bash
 pip install -r requirements.txt
+
+# Configure environment (copy and fill in values)
+cp .env.example .env
+
+# Run the agent
 python agentmain.py --task "your task description"
 ```
 
@@ -13,48 +18,42 @@ python agentmain.py --task "your task description"
 
 - **agentmain.py**: Main entry point (CLI + agent loop)
 - **ga.py**: GenericAgentHandler — core agent logic
-- **llmcore.py**: LLM provider abstraction (Claude, OpenAI)
+- **llmcore.py**: LLM provider abstraction (Claude, OpenAI, DeepSeek)
 - **tools/**: Tool definitions, utilities, security, logging
 - **agents/**: Multi-agent orchestration (langgraph)
 - **frontends/**: User interfaces (Streamlit, TUI, Tauri desktop, Telegram, QQ, WeChat)
-- **broker/**: MQTT broker integration (BoardService, gateway)
+- **Mqtt_bbs_server/**: MQTT BBS board service (distributed agent coordination)
+- **memory/**: SOP documentation and knowledge base
 
-## Key Features
+## Configuration
 
-- Multi-provider LLM support (Claude, OpenAI, custom)
-- MQTT-based inter-agent communication
-- MQTT BBS (Bulletin Board System) for agent coordination
-- File operations, web browsing, code execution
-- Autonomous operation with reflection
-- Goal mode with hierarchical task management
-- Feishu/Telegram/QQ bot integrations
-- Curiosity-driven exploration engine
-- Ontology-based knowledge management
+Copy `.env.example` to `.env` and configure:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `ANTHROPIC_API_KEY` | Claude API key | Yes (or LLM_API_KEY) |
+| `MQTT_HOST` | MQTT broker address | Yes (default: 127.0.0.1) |
+| `JWT_SECRET` | 64-char random secret for auth | Yes (in production) |
+| `GITHUB_TOKEN` | GitHub personal access token | For git operations |
 
 ## Project Structure
 
-```
-GA/
-  agentmain.py        Entry point
-  ga.py               Core agent
-  llmcore.py          LLM abstraction
-  hub.pyw             System tray hub
-  tools/              Tool implementations
-  agents/             Multi-agent orchestration
-  frontends/          User interfaces
-  memory/             SOP documentation & knowledge base
-  assets/             Static assets & Chrome extension
-  scripts/            Utility scripts
-  tests/              Test suite (pytest)
-  skills_learning/    AI skill curriculum (112 lessons)
+```...existing content...
 ```
 
-## Documentation
+## Running with Docker
 
-See `docs/` for design docs and `memory/` for SOPs.
+```bash
+docker build -t genericagent:latest .
+docker run --env-file .env genericagent:latest
+```
 
 ## Tests
 
 ```bash
 pytest tests/ -v
 ```
+
+## Documentation
+
+See `docs/` for design docs and `memory/` for SOPs and operational guides.

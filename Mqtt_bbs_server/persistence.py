@@ -55,9 +55,9 @@ class MariaDBConn:
         try:
             conn = pymysql.connect(**self._cfg, cursorclass=DictCursor, autocommit=True)
             self._local.conn = conn
-            log.info("✅ MariaDB 连接成功")
+            log.info("[OK] MariaDB 连接成功")
         except pymysql.Error as e:
-            log.warning(f"⚠️ MariaDB 连接失败: {e}")
+            log.warning(f"[WARN] MariaDB 连接失败: {e}")
             self._local.conn = None
 
     def _ensure(self):
@@ -141,7 +141,7 @@ class BBSClientWithPersistence(BBSClient):
                     session = self._get_session(target)
                     if session and session.get("status") == "offline":
                         self._enqueue_session(target, topic, payload, qos or 1, is_retained=retain)
-                        log.info(f"📥 {target} 离线，消息入队 session_queue")
+                        log.info(f"[OUTBOX] {target} 离线，消息入队 session_queue")
             except Exception as e:
                 log.error(f"[PERSIST] session队列失败 topic={topic}: {e}")
 
@@ -227,7 +227,7 @@ class BBSClientWithPersistence(BBSClient):
                     payload = json.loads(row["payload"])
                 except (json.JSONDecodeError, TypeError):
                     payload = row["payload"]
-                log.info(f"🔄 恢复 retained: {row['topic']}")
+                log.info(f"[SYNC] 恢复 retained: {row['topic']}")
                 callback(row["topic"], payload)
 
     def _recover_all_retained(self):
@@ -268,7 +268,7 @@ class BBSClientWithPersistence(BBSClient):
         )
         if not rows:
             return
-        log.info(f"📨 重放 {len(rows)} 条离线消息")
+        log.info(f"[MSG] 重放 {len(rows)} 条离线消息")
         for row in rows:
             try:
                 payload = json.loads(row["payload"])
@@ -395,7 +395,7 @@ class AgentBoardWithPersistence:
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.PENDING.value, retain=True)
         self._client.publish(f"board/open", task_id, retain=False)
 
-        log.info(f"[{self.agent_id}] 📤 [PERSIST] 发布任务: {task_id} ({task_type})")
+        log.info(f"[{self.agent_id}] [OUT] [PERSIST] 发布任务: {task_id} ({task_type})")
         return task_id
 
     def wait_task(self, task_id: str, timeout=None,
@@ -431,7 +431,7 @@ class AgentBoardWithPersistence:
                         if isinstance(data, dict):
                             result_holder["output"] = TaskOutput.from_dict(data)
                             self._results[task_id] = result_holder["output"]
-                            log.info(f"[{self.agent_id}] ✅ 从DB恢复结果: {task_id}")
+                            log.info(f"[{self.agent_id}] [OK] 从DB恢复结果: {task_id}")
                             return result_holder["output"]
                     except (_json.JSONDecodeError, TypeError):
                         pass
@@ -445,7 +445,7 @@ class AgentBoardWithPersistence:
             if result_holder["output"] is not None:
                 output = result_holder["output"]
                 self._results[task_id] = output
-                log.debug(f"[{self.agent_id}] ✅ 收到结果: {task_id}")
+                log.debug(f"[{self.agent_id}] [OK] 收到结果: {task_id}")
                 return output
             time.sleep(poll_interval)
 
@@ -455,7 +455,7 @@ class AgentBoardWithPersistence:
         from Mqtt_bbs_client.types import TaskStatus
         self._client.publish(f"board/task/{task_id}/signal", "[CANCEL]", retain=True, qos=2)
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.CANCELLED.value, retain=True)
-        log.info(f"[{self.agent_id}] 🛑 [PERSIST] 取消任务: {task_id}")
+        log.info(f"[{self.agent_id}] [STOP] [PERSIST] 取消任务: {task_id}")
 
 
 # ──────────────────────────────────────────────
@@ -516,7 +516,7 @@ class WorkerAgentWithPersistence:
 
         self._client.subscribe("board/task/+/input", on_new_task)
 
-        log.info(f"[{self.agent_id}] 🤖 [PERSIST] 启动 (能力: {self.capabilities})")
+        log.info(f"[{self.agent_id}] [AGENT] [PERSIST] 启动 (能力: {self.capabilities})")
 
         if block:
             try:
@@ -528,7 +528,7 @@ class WorkerAgentWithPersistence:
     def stop(self):
         self._running = False
         self._client.disconnect()
-        log.info(f"[{self.agent_id}] 🛑 [PERSIST] 停止")
+        log.info(f"[{self.agent_id}] [STOP] [PERSIST] 停止")
 
     def claim_task(self, msg: TaskMessage):
         from Mqtt_bbs_client.types import TaskStatus
@@ -542,7 +542,7 @@ class WorkerAgentWithPersistence:
         self._client.publish(f"board/task/{msg.task_id}/status", TaskStatus.RUNNING.value, retain=True)
         self._client.publish(f"node/{self.agent_id}/task/current", msg.task_id, retain=True)
 
-        log.info(f"[{self.agent_id}] 🔧 认领任务: {msg.task_id} ({msg.type})")
+        log.info(f"[{self.agent_id}] [TOOL] 认领任务: {msg.task_id} ({msg.type})")
 
         try:
             if self._task_handler:
@@ -551,20 +551,20 @@ class WorkerAgentWithPersistence:
                 result = {"status": "no_handler"}
             self.complete(msg.task_id, result=result)
         except Exception as e:
-            log.error(f"[{self.agent_id}] ❌ 执行异常: {e}")
+            log.error(f"[{self.agent_id}] [FAIL] 执行异常: {e}")
             self.complete(msg.task_id, status="failed", error={"type": "exception", "msg": str(e)})
 
     def stream_out(self, task_id: str, text: str):
         self._seq += 1
         self._client.publish(f"board/task/{task_id}/stdout",
                              {"seq": self._seq, "data": text}, retain=False)
-        log.info(f"[{self.agent_id}] 📢 [stdout] {text[:80]}")
+        log.info(f"[{self.agent_id}] [ANNOUNCE] [stdout] {text[:80]}")
 
     def stream_err(self, task_id: str, text: str):
         self._seq += 1
         self._client.publish(f"board/task/{task_id}/stderr",
                              {"seq": self._seq, "data": text}, retain=False)
-        log.info(f"[{self.agent_id}] ⚠️ [stderr] {text[:80]}")
+        log.info(f"[{self.agent_id}] [WARN] [stderr] {text[:80]}")
 
     def complete(self, task_id: str, status: str = "completed",
                  result: Any = None, error: Optional[dict] = None):
@@ -585,4 +585,4 @@ class WorkerAgentWithPersistence:
         self._client.publish(f"node/{self.agent_id}/task/current", "", retain=True)
 
         self._current_task_id = None
-        log.info(f"[{self.agent_id}] ✅ [PERSIST] 完成: {task_id} ({status})")
+        log.info(f"[{self.agent_id}] [OK] [PERSIST] 完成: {task_id} ({status})")

@@ -1,4 +1,11 @@
-import os, json, re, time, requests, sys, threading, urllib3, base64, importlib, uuid, functools
+import os
+import json
+import re
+import time
+import requests
+import threading
+import urllib3
+import uuid
 from datetime import datetime
 from tools.retry_utils import retry_stream
 from tools.config_service import ConfigService
@@ -26,7 +33,7 @@ def reload_mykeys():
     if changed:
         globals().update(mykeys=cfg)
         if cfg.get('langfuse_config'):
-            try: from plugins import langfuse_tracing
+            try: pass
             except Exception: pass
     return cfg, changed
 
@@ -294,7 +301,7 @@ class BaseSession:
         self.trim_keep_rate = cfg.get('trim_keep_rate', default_trim_keep_rate)
         self.history = []; self.lock = threading.Lock(); self.system = ""
         self.name = cfg.get('name', self.model)
-        proxy = cfg.get('proxy'); 
+        proxy = cfg.get('proxy') 
         self.proxies = {"http": proxy, "https": proxy} if proxy else None
         self.max_retries = max(0, int(cfg.get('max_retries', 4)))
         self.verify = cfg.get('verify', True)
@@ -545,7 +552,7 @@ class ToolClient:
         tools_json = json.dumps(tools, ensure_ascii=False, separators=(',', ':'))
         _en = os.environ.get('GA_LANG') == 'en'
         if _en:
-            tool_instruction = f"""
+            tool_instruction = """
 ### Interaction Protocol (must follow strictly, always in effect)
 Follow these steps to think and act:
 1. **Think**: Analyze the current situation and strategy inside `<thinking>` tags.
@@ -553,7 +560,7 @@ Follow these steps to think and act:
 3. **Act**: If you need to call tools, output one or more **<tool_use> blocks** after your reply, then stop.
 """
         else:
-            tool_instruction = f"""
+            tool_instruction = """
 ### 交互协议 (必须严格遵守，持续有效)
 请按照以下步骤思考并行动：
 1. **思考**: 在 `<thinking>` 标签中先进行思考，分析现状和策略。

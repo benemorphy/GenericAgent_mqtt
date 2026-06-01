@@ -26,7 +26,7 @@ def _bbs_notify(event: str, task_id: str, detail: dict):
     try:
         from Mqtt_bbs_client.board_client import BoardClient
         with BoardClient(f"bbs_notifier_{task_id[:4]}", board="agent-bbs-test") as bbs:
-            reg = bbs.register("bbs_notifier", timeout=2)
+            reg = bbs.register("bbs_notifier", timeout=0.5)
             token = reg.get("token", "")
             if token:
                 content = f"[多Agent·{event}] #{task_id} {json.dumps(detail, ensure_ascii=False)[:200]}"
@@ -189,7 +189,7 @@ class AgentBoard:
                                                   action="task_open", task_id=task_id),
                          self._client, retain=True)
 
-        log.info(f"[{self.agent_id}] 📤 发布任务: {task_id} ({task_type})")
+        log.info(f"[{self.agent_id}] [OUT] 发布任务: {task_id} ({task_type})")
 
         # BBS 公告板通知（默认必选）
         _bbs_notify("TASK_CREATED", task_id, {
@@ -238,7 +238,7 @@ class AgentBoard:
 
         self._client.unsubscribe(resp_topic)
         agents = result_holder["agents"] or []
-        log.info(f"[{self.agent_id}] 🔍 能力查询: filter={capability} → {len(agents)} agents")
+        log.info(f"[{self.agent_id}] [QUERY] 能力查询: filter={capability} → {len(agents)} agents")
         return agents
 
     # ── 路由发布任务 ──
@@ -284,7 +284,7 @@ class AgentBoard:
                     {"task_id": tid, "type": task_type, "input": task_input},
                     retain=False
                 )
-            log.info(f"[{self.agent_id}] 📬 能力路由: {tid} → {len(online)} agents ({target_capability})")
+            log.info(f"[{self.agent_id}] [IN] 能力路由: {tid} → {len(online)} agents ({target_capability})")
 
         return tid
 
@@ -334,7 +334,7 @@ class AgentBoard:
                 self._client.unsubscribe(f"board/task/{task_id}/signal")
                 self._client.unsubscribe(f"{V2_TASK_TOPIC}/{task_id}/output")
                 self._client.unsubscribe(f"{V2_TASK_TOPIC}/{task_id}/signal")
-                log.info(f"[{self.agent_id}] ✅ 任务完成: {task_id}")
+                log.info(f"[{self.agent_id}] [OK] 任务完成: {task_id}")
                 return result_holder["output"]
             time.sleep(poll_interval)
 
@@ -353,7 +353,7 @@ class AgentBoard:
         """发送取消信号"""
         self._client.publish(f"board/task/{task_id}/signal", "[CANCEL]", retain=True, qos=2)
         self._client.publish(f"board/task/{task_id}/status", TaskStatus.CANCELLED.value, retain=True)
-        log.info(f"[{self.agent_id}] 🛑 取消任务: {task_id}")
+        log.info(f"[{self.agent_id}] [STOP] 取消任务: {task_id}")
 
     # ── 公开发布（Point 5: Broadcast） ──
 
@@ -509,7 +509,7 @@ class WorkerAgent:
         # 订阅全局广播信号（Point 5: Broadcast/Multicast）
         self._client.subscribe("board/global/signal", self._on_global_signal)
 
-        log.info(f"[{self.agent_id}] 🚀 启动 (capabilities={self.capabilities})")
+        log.info(f"[{self.agent_id}] [START] 启动 (capabilities={self.capabilities})")
 
         if block:
             try:
@@ -523,7 +523,7 @@ class WorkerAgent:
         self._running = False
         self._client.publish(f"node/{self.agent_id}/status", "offline", retain=True)
         self._client.disconnect()
-        log.info(f"[{self.agent_id}] 🛑 停止")
+        log.info(f"[{self.agent_id}] [STOP] 停止")
 
     # ── 认领任务 ──
 
@@ -558,7 +558,7 @@ class WorkerAgent:
         self._client.subscribe(f"{V2_TASK_TOPIC}/{task_id}/intervene", self._on_intervene)
         self._subscribed_dynamic.add(f"{V2_TASK_TOPIC}/{task_id}/intervene")
 
-        log.info(f"[{self.agent_id}] 🤝 认领任务: {task_id}")
+        log.info(f"[{self.agent_id}] [HAND] 认领任务: {task_id}")
 
         # BBS 公告板通知（默认必选）
         _bbs_notify("TASK_CLAIMED", task_id, {
@@ -685,7 +685,7 @@ class WorkerAgent:
             _save_brainstorm(task_id, topic, self.agent_id, persp, idea, detail)
         self._current_task_msg = None  # 清理
 
-        log.info(f"[{self.agent_id}] ✅ 任务完成: {task_id} (status={status})")
+        log.info(f"[{self.agent_id}] [OK] 任务完成: {task_id} (status={status})")
 
         # BBS 公告板通知（默认必选）
         _bbs_notify("TASK_COMPLETED", task_id, {
@@ -726,7 +726,7 @@ class WorkerAgent:
         if isinstance(payload, bytes):
             payload = payload.decode("utf-8")
         if payload == "[CANCEL]" and self._current_task_id:
-            log.warning(f"[{self.agent_id}] 🛑 收到取消信号 (board/task信号)")
+            log.warning(f"[{self.agent_id}] [STOP] 收到取消信号 (board/task信号)")
             self.complete(status="failed", error={"type": "cancelled", "msg": "被主智能体取消"})
 
     # ── 运行时注入处理（Point 6: Intervene） ──
@@ -742,7 +742,7 @@ class WorkerAgent:
             payload = {"action": str(payload)}
         payload["_received_at"] = time.time()
         self._interventions.append(payload)
-        log.info(f"[{self.agent_id}] 📨 收到干预命令: {payload.get('action', 'unknown')}")
+        log.info(f"[{self.agent_id}] [MSG] 收到干预命令: {payload.get('action', 'unknown')}")
 
     # ── 全局广播信号处理（Point 5: Broadcast） ──
 
@@ -757,7 +757,7 @@ class WorkerAgent:
             self._suspended = False
             log.info(f"[{self.agent_id}] ▶ 全局恢复")
         elif payload == "[SHUTDOWN]":
-            log.warning(f"[{self.agent_id}] 🛑 全局关机")
+            log.warning(f"[{self.agent_id}] [STOP] 全局关机")
             self.stop()
 
     # ── 内部消息处理 ──
@@ -789,7 +789,7 @@ class WorkerAgent:
             result = self._task_handler(msg)
             self.complete(result=result)
         except Exception as e:
-            log.error(f"[{self.agent_id}] ❌ 定向任务异常: {e}")
+            log.error(f"[{self.agent_id}] [FAIL] 定向任务异常: {e}")
             self.complete(status="failed", error={"type": "exception", "msg": str(e)})
 
     def _on_task_input(self, topic: str, payload):
@@ -803,7 +803,7 @@ class WorkerAgent:
         # 零信任验签：HMAC 签名验证
         payload_copy = dict(payload)  # 不修改原数据
         if not _verify_task(payload_copy):
-            log.warning(f"[{self.agent_id}] 🔒 签名无效，拒绝任务: topic={topic}")
+            log.warning(f"[{self.agent_id}] [LOCK] 签名无效，拒绝任务: topic={topic}")
             return
 
         # 提取 task_id 从 topic "board/task/{task_id}/input"
@@ -831,7 +831,7 @@ class WorkerAgent:
             result = self._task_handler(msg)
             self.complete(result=result)
         except Exception as e:
-            log.error(f"[{self.agent_id}] ❌ 任务异常: {e}")
+            log.error(f"[{self.agent_id}] [FAIL] 任务异常: {e}")
             self.stream_err(f"异常: {str(e)}")
             self.complete(status="failed", error={"type": "exception", "msg": str(e)})
 
@@ -840,5 +840,5 @@ class WorkerAgent:
         if isinstance(payload, bytes):
             payload = payload.decode("utf-8")
         if payload == "[CANCEL]" and self._current_task_id:
-            log.warning(f"[{self.agent_id}] 🛑 收到取消信号")
+            log.warning(f"[{self.agent_id}] [STOP] 收到取消信号")
             self.complete(status="failed", error={"type": "cancelled", "msg": "被主智能体取消"})

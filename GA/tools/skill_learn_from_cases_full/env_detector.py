@@ -156,7 +156,8 @@ def detect_paddle_ocr() -> dict:
     if not _port_open("127.0.0.1", 8090):
         return {"available": False}
     try:
-        import urllib.request, json
+        import urllib.request
+        import json
         req = urllib.request.Request("http://localhost:8090/v1/models")
         with urllib.request.urlopen(req, timeout=3) as resp:
             models = json.loads(resp.read())

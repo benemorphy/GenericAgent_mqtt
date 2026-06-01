@@ -4,8 +4,17 @@ Pure functions that perform specific operations (code execution, browser, file o
 These are called by do_* methods on GenericAgentHandler and by the agent loop.
 """
 
-import os, sys, re, json, time, threading, importlib
-import tempfile, traceback, subprocess, itertools, collections, difflib
+import os
+import sys
+import re
+import time
+import threading
+import importlib
+import tempfile
+import subprocess
+import itertools
+import collections
+import difflib
 from pathlib import Path
 
 _GA_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -51,8 +60,8 @@ def code_run(code, code_type="python", timeout=60, cwd=None, code_cwd=None, stop
                 except UnicodeDecodeError: line = line_bytes.decode('gbk', errors='ignore')
                 logs.append(line)
                 try: print(line, end="") 
-                except: pass
-        except: pass
+                except OSError: pass
+        except OSError: pass
 
     try:
         process = subprocess.Popen(

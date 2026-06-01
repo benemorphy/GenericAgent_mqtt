@@ -14,7 +14,8 @@
   /history --raw  - 原始格式(含详细信息)
 """
 
-import os, json, re
+import os
+import json
 
 TRACKER_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                             "memory", "learning_log", ".tracker.json")

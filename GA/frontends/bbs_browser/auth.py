@@ -1,8 +1,9 @@
 """BBS Board Browser — 用户认证模块"""
 
-import time, hashlib, secrets
+import time
+import hashlib
+import secrets
 from fastapi import Request, HTTPException
-from fastapi.responses import RedirectResponse
 
 from pymysql.cursors import DictCursor
 from .config import JWT_SECRET, JWT_EXPIRY_SECONDS
@@ -47,7 +48,8 @@ def create_jwt(user: dict) -> str:
         "iat": int(time.time()),
     }
     # 简易 JWT 编码（无依赖，适合小型项目）
-    import json, base64
+    import json
+    import base64
     header = base64.urlsafe_b64encode(json.dumps({"alg": "HS256", "typ": "JWT"}).encode()).rstrip(b"=").decode()
     body = base64.urlsafe_b64encode(json.dumps(payload, ensure_ascii=False).encode()).rstrip(b"=").decode()
     import hmac
@@ -59,7 +61,8 @@ def create_jwt(user: dict) -> str:
 
 def decode_jwt(token: str) -> dict:
     """解码验证 JWT"""
-    import json, base64
+    import json
+    import base64
     try:
         parts = token.split(".")
         if len(parts) != 3:
@@ -188,7 +191,11 @@ def login_user_email(email: str, password: str) -> dict:
 
 def send_email_smtp(to: str, code: str) -> bool:
     """通过 SMTP 发送验证码邮件（自动重试 1 次，总超时 10s 防止卡死）"""
-    import smtplib, time, ssl, os, threading
+    import smtplib
+    import time
+    import ssl
+    import os
+    import threading
     from email.mime.text import MIMEText
     from .config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_USE_SSL
     # 直接读取环境变量，确保不被子进程丢失
@@ -243,7 +250,9 @@ _last_send_time: dict[str, int] = {}  # email -> timestamp, 频率控制
 
 def send_verify_code(email: str) -> dict:
     """生成 6 位验证码，存入 users 表，通过 SMTP 发送（含 60s 频率限制）"""
-    import random, string, time
+    import random
+    import string
+    import time
 
     # 频率限制：60 秒内不能重复发送
     last = _last_send_time.get(email, 0)

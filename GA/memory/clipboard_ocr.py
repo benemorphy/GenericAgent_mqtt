@@ -13,7 +13,8 @@ clipboard_ocr — 剪贴板图片OCR + 视觉理解模块
     desc = clipboard_understand(prompt="描述这个界面的功能")
 """
 
-import io, os
+import io
+import os
 from pathlib import Path
 from typing import Optional
 

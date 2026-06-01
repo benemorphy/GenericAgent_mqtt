@@ -15,7 +15,11 @@ skill_review — 间隔重复复习工具
   python tools/skill_review.py --register skill rev  # 注册单个技能
   python tools/skill_review.py --stats            # 统计概览
 """
-import json, os, sys, subprocess, datetime
+import json
+import os
+import sys
+import subprocess
+import datetime
 from pathlib import Path
 
 GA_ROOT = Path(__file__).resolve().parent.parent
@@ -361,18 +365,18 @@ def cmd_stats(tracker):
         if next_rev and datetime.date.fromisoformat(next_rev) <= today:
             due_count += 1
 
-    print(f"=== Spaced Repetition Stats ===")
+    print("=== Spaced Repetition Stats ===")
     print(f"Total skills: {total}")
     print(f"Due today:    {due_count}")
     print(f"Mastered(L6): {mastered}")
     print(f"Struggling:   {struggling}")
-    print(f"\nLevel distribution:")
+    print("\nLevel distribution:")
     for lv in range(MAX_LEVEL + 1):
         label = f"L{lv} ({INTERVALS[lv]}d)"
         count = by_level.get(lv, 0)
         bar = "#" * count
         print(f"  {label:12s}: {count:3d}  {bar}")
-    print(f"\nNext 7 days review load:")
+    print("\nNext 7 days review load:")
     for i in range(7):
         d = (today + datetime.timedelta(days=i)).isoformat()
         load = sum(1 for e in skills.values() if e.get("next_review") == d)

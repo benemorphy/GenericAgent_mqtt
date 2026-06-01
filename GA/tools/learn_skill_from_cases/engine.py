@@ -9,7 +9,11 @@ engine.py — Simplified skill learning engine (English-only)
   Phase 4: Assessment tool generation
   Phase 5: Validation & report
 """
-import sys, os, json, re, subprocess, importlib, random
+import sys
+import os
+import json
+import subprocess
+import random
 from pathlib import Path
 
 GA_ROOT = Path(__file__).resolve().parents[2]
@@ -78,11 +82,11 @@ def _phase1_define(ctx: dict):
                 if s.description:
                     print(f"  Description: {s.description[:100]}...")
             else:
-                print(f"  No results from skill_search")
+                print("  No results from skill_search")
         except Exception as e:
             print(f"  skill_search: [FAIL] {e}")
     else:
-        print(f"  skill_search not available")
+        print("  skill_search not available")
 
     # Write definition
     def_file = ctx["rev_dir"] / "reports" / "skill_definition.json"
@@ -438,7 +442,7 @@ def _phase5_validate(ctx: dict):
     for p in ctx.get("patterns", []):
         report += f"- [{p.get('level', 'basic')}] {p.get('principle', '?')} (confidence: {p.get('confidence', 0)})\n"
 
-    report += f"""
+    report += """
 ## Next Steps
 1. Review extracted patterns and adjust confidence levels if needed
 2. Add more targeted web searches for uncovered topics
@@ -449,7 +453,7 @@ def _phase5_validate(ctx: dict):
     report_file = ctx["rev_dir"] / "reports" / "learning_report.md"
     with open(report_file, "w", encoding="utf-8") as f:
         f.write(report)
-    print(f"  Report saved: reports/learning_report.md")
+    print("  Report saved: reports/learning_report.md")
     print(f"  [OK] rev{ctx['version']} complete!")
 
 
@@ -488,8 +492,8 @@ def run(skill_name: str, dry_run: bool = False, force: bool = False) -> dict:
         version = dir_manager.next_version(skill_name)
         rev_dir = dir_manager.get_skill_dir(skill_name) / f"rev{version}"
         print(f"  Would create: {rev_dir}")
-        print(f"  Would run: Phase 1-5 pipeline")
-        print(f"  [OK] Dry run complete (no changes made)")
+        print("  Would run: Phase 1-5 pipeline")
+        print("  [OK] Dry run complete (no changes made)")
         return ctx
 
     _ensure_env(ctx)

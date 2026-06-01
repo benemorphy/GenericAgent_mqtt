@@ -18,7 +18,10 @@ failure_tracker — 失败驱动学习工具
   python tools/failure_tracker.py --stats                  # 失败统计
 """
 
-import os, sys, json, hashlib, argparse
+import os
+import json
+import hashlib
+import argparse
 from datetime import datetime, timedelta
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -111,7 +114,7 @@ def cmd_log(args):
         same_sig_failures[0]["pattern_ids"].append(pattern_id)
 
         print(f"[!] Pattern {pattern_id} detected (2 occurrences): {args.type}")
-        print(f"    Status: PENDING — one more occurrence will trigger auto-learning")
+        print("    Status: PENDING — one more occurrence will trigger auto-learning")
 
     elif len(same_sig_failures) >= 2:
         # 第3+次同类失败 → 确认模式 + 自动触发学习建议
@@ -125,12 +128,12 @@ def cmd_log(args):
                 pat["resolved"] = None
 
                 print(f"[!!] Pattern {pid} CONFIRMED ({pat['occurrences']} occurrences): {args.type}")
-                print(f"    Action required: run auto-learning pipeline")
+                print("    Action required: run auto-learning pipeline")
                 print(f"    Suggested: python tools/skill_learn_from_cases_full \"{args.type}\"")
 
                 # 如果是critical, 建议写入全局记忆
                 if args.severity == "critical":
-                    print(f"    [CRITICAL] Consider adding to global_mem_insight.txt RULES")
+                    print("    [CRITICAL] Consider adding to global_mem_insight.txt RULES")
                 break
         else:
             # 已经有confirmed pattern, 继续计数
@@ -192,7 +195,7 @@ def cmd_pattern_detail(args):
 
     # 列出关联的失败记录
     fid_map = {f["failure_id"]: f for f in data["failures"]}
-    print(f"\n  Related failures:")
+    print("\n  Related failures:")
     for fid in pat.get("failure_ids", []):
         f = fid_map.get(fid, {})
         print(f"    {fid}: {f.get('date','?')} | {f.get('error_sig','')[:80]}")
@@ -264,7 +267,7 @@ def cmd_stats(args):
     stats = _compute_stats(data)
 
     print("=" * 60)
-    print(f"  Failure Stats")
+    print("  Failure Stats")
     print("=" * 60)
     print(f"  Total failures:     {stats['total']}")
     print(f"  Last 7 days:        {stats['recent_7d']}")
@@ -273,7 +276,7 @@ def cmd_stats(args):
     print(f"  Resolved patterns:  {stats['patterns_resolved']}")
 
     if stats['by_type']:
-        print(f"\n  By type:")
+        print("\n  By type:")
         for ftype, cnt in stats['by_type'].most_common(10):
             bar = "#" * min(cnt, 30)
             print(f"    {ftype:25s}: {cnt:3d}  {bar}")
@@ -281,7 +284,7 @@ def cmd_stats(args):
     # 最近5次失败
     failures = data.get("failures", [])
     if failures:
-        print(f"\n  Last 5 failures:")
+        print("\n  Last 5 failures:")
         for f in failures[-5:]:
             print(f"    {f['failure_id']} | {f['date']} | {f['failure_type']} | {f.get('error_sig','')[:60]}")
     print("=" * 60)

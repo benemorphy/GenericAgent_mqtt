@@ -20,7 +20,14 @@
      仓库权限: Contents: write, Pull requests: write）
 """
 
-import argparse, os, sys, time, subprocess, json, urllib.request, logging
+import argparse
+import os
+import sys
+import time
+import subprocess
+import json
+import urllib.request
+import logging
 from pathlib import Path
 
 logger = logging.getLogger("git_push")
@@ -151,7 +158,7 @@ def main():
         error_body = e.read().decode()
         logger.error(f"创建 PR 失败: {e.code}")
         print(f"  {error_body}")
-        run(f"git checkout main", check=False)
+        run("git checkout main", check=False)
         run(f"git branch -D {branch_name}", check=False)
         sys.exit(1)
 
@@ -173,7 +180,7 @@ def main():
         error_body = e.read().decode()
         logger.error(f"合并 PR 失败: {e.code}")
         print(f"  {error_body}")
-        print(f"  请手动合并: https://github.com/benemorphy/GenericAgent_mqtt/pulls")
+        print("  请手动合并: https://github.com/benemorphy/GenericAgent_mqtt/pulls")
 
     # 删除远程分支
     logger.info("=" * 50)
@@ -189,9 +196,9 @@ def main():
         print(f"  [WARN] 删除远程分支失败: {e.code}")
 
     # 切回 main 并更新
-    run(f"git checkout main", check=False)
+    run("git checkout main", check=False)
     run(f"git branch -D {branch_name}", check=False)
-    run(f"git pull", check=False)
+    run("git pull", check=False)
     
     logger.info("=" * 50)
     logger.info("=" * 50)

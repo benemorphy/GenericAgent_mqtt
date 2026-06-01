@@ -1,5 +1,6 @@
 """Standalone agent runner: python agent_runner.py name cap1,cap2"""
-import sys, os, time
+import sys
+import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ["MQTT_HOST"] = "127.0.0.1"
 os.environ["MQTT_PORT"] = "1883"

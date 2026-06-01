@@ -5,7 +5,10 @@
 # v2 — Pulse + Chronicle: 通过 MQTT BBS 广播实时状态 + 持久化编年史
 # BBS 不可用时静默降级为文件模式（原行为）
 
-import os, json, time, sys
+import os
+import json
+import time
+import sys
 
 INTERVAL = 3   # check间隔短，agent跑完立刻再检查
 ONCE = False
@@ -121,6 +124,11 @@ CONTINUATION_PROMPT = """[Goal Mode — 持续推进]
 3. 如果当前方向做完了，主动找下一个改进点：测试/边界case/性能/安全/文档/代码质量。
 4. 找不到改进点？扩大视野：关联模块、上下游依赖、用户体验、错误提示、日志可观测性、上网搜索、找其他路径、翻记忆里面有无相关。
 5. 要为了目标持续推进，在工作文件夹中记录进度，不要更新全局记忆。
+
+【自动终止规则】
+当所有目标已达成、且没有合理可继续的方向时，在回复末尾单独一行写:
+__GOAL_COMPLETE__
+系统检测到该标记后将自动终止任务，无需等待预算耗尽。
 """
 
 BUDGET_LIMIT_PROMPT = """[Goal Mode — 预算耗尽，收口]
@@ -213,6 +221,19 @@ def on_done(result):
     
     # 取前200字符作为摘要
     summary = result_text[:200].replace('\n', ' ').strip()
+    
+    # ── done_prompt 自动终止检测 ──
+    done_marker = state.get('done_prompt', '')
+    if done_marker and done_marker in result_text:
+        elapsed = time.time() - state['start_time']
+        _send_pulse(msg_type='goal_complete', turn=turn, focus=summary[:80], progress="100%", remaining_min=0)
+        _store_chronicle(entry=f"Goal done: {summary[:150]}", turn=turn, phase='complete')
+        state['status'] = 'done'
+        state['end_time'] = time.time()
+        _save(state)
+        print(f"[Goal] done_prompt matched ({done_marker[:30]}), auto-terminating after {turn} turns")
+        _close_bbs()
+        return
     
     # 计算进度
     if state.get('status') == 'wrapping_up':

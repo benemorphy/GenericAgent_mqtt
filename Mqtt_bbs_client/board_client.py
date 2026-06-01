@@ -183,7 +183,7 @@ class BoardClient:
             log.warning(f"注册超时: {name}")
             return {"token": "", "name": name, "error": "timeout"}
         self._cached_token = result
-        log.info(f"  ✅ 已注册: {name} → token={result.get('token', '')[:8]}...")
+        log.info(f"  [OK] 已注册: {name} → token={result.get('token', '')[:8]}...")
         return result
 
     # ── 发帖 ──
@@ -212,7 +212,7 @@ class BoardClient:
         if "error" in result:
             log.warning(f"发帖失败: {result['error']}")
         else:
-            log.info(f"  📤 已发帖 #{result.get('id')}")
+            log.info(f"  [OUT] 已发帖 #{result.get('id')}")
         return result
 
     # ── 订阅新帖（实时推送，等效 HTTP 的 GET /poll） ──
@@ -226,7 +226,7 @@ class BoardClient:
         callback 接收: {"id": int, "author": str, "content": str, "created_at": float}
         """
         self._post_callbacks.append(callback)
-        log.info("  👂 已订阅新帖推送")
+        log.info("  [LISTEN] 已订阅新帖推送")
 
     def unsubscribe_posts(self, callback: Optional[Callable] = None):
         """取消订阅新帖"""
@@ -368,7 +368,7 @@ class BoardClient:
         result = self._wait_response(corr_id, timeout)
         if result is None:
             return {"error": "timeout"}
-        log.info(f"  📎 已上传: {result.get('ref')}")
+        log.info(f"  [UP] 已上传: {result.get('ref')}")
         return result
 
     # ── 历史兼容 ──

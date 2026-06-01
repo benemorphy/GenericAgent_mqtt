@@ -71,7 +71,8 @@ def ocr_window(hwnd, lang=_LANG, enhance=False, engine=None):
     :param hwnd: 窗口句柄(int)
     :return: dict {'text': 全文, 'lines': [行文本], 'details': [bbox+conf](仅rapid)}
     """
-    import win32gui, win32ui
+    import win32gui
+    import win32ui
     from ctypes import windll
     l, t, r, b = win32gui.GetWindowRect(hwnd)
     w, h = r - l, b - t

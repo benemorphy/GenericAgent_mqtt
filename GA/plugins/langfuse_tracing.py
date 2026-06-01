@@ -5,7 +5,8 @@ Hooks only via monkey-patch so core files stay untouched:
 - llmcore._write_llm_log              -> generation span (Prompt=start, Response=end)
 - BaseHandler.tool_before/after       -> tool span
 """
-import threading, sys
+import threading
+import sys
 
 try:
     from tools.config_service import ConfigService
@@ -16,7 +17,8 @@ except Exception:
     _lf = None
 
 if _lf:
-    import llmcore, agent_loop
+    import llmcore
+    import agent_loop
     _tls = threading.local()
 
     _orig_log = llmcore._write_llm_log

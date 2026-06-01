@@ -6,7 +6,9 @@ react_hook.py — React/Frontend 实操测试
 统一接口: run(env) -> dict
 降级: 检测前端构建工具链
 """
-import json, sys, os, subprocess
+import json
+import os
+import subprocess
 
 
 def run(env: dict = None) -> dict:

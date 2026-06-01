@@ -33,7 +33,7 @@ def main():
             log.warning(f"DB写入失败: {topic} -> {e}")
     
     worker.subscribe("#", _on_any)
-    log.info("📡 持久化 Worker: 已订阅全量主题 #，开始记录所有 MQTT 消息到 session_queue")
+    log.info("[SIGNAL] 持久化 Worker: 已订阅全量主题 #，开始记录所有 MQTT 消息到 session_queue")
     
     try:
         while True:

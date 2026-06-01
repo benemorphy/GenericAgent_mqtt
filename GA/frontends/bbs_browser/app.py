@@ -1,6 +1,6 @@
 """BBS Board Browser — FastAPI 主应用"""
 
-import os, sys
+import sys
 from pathlib import Path
 
 # ── 确保能找到 Mqtt_bbs 包 ──
@@ -12,9 +12,8 @@ from fastapi import FastAPI, Request, Form, Query, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
-from .config import HOST, PORT, JWT_SECRET
+from .config import HOST, PORT
 from .database import init_db, seed_boards, get_boards, get_board, query_posts, query_all_posts
 from .auth import require_user, optional_user, register_user, login_user, login_user_email, send_verify_code, check_verify
 

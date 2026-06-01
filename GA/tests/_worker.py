@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys, time, json, os
+import sys
+import time
+import json
+import os
 _ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, _ROOT)
 from Mqtt_bbs_client.client import BBSClient

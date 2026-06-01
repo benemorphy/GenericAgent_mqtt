@@ -8,7 +8,9 @@ neo4j_hook.py — Neo4j/Cypher 实操测试
 
 独立运行: python neo4j_hook.py (会自动探测环境)
 """
-import json, sys, os, re
+import json
+import sys
+import os
 
 
 def run(env: dict = None) -> dict:

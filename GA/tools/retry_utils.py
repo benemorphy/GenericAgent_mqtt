@@ -1,6 +1,8 @@
 """生成器安全的流式重试装饰器 + 工具函数"""
 
-import functools, time, requests
+import functools
+import time
+import requests
 
 _RETRYABLE = {408, 409, 425, 429, 500, 502, 503, 504, 529}
 

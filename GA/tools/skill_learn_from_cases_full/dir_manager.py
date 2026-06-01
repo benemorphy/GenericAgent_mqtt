@@ -4,9 +4,7 @@ dir_manager.py — 技能版本目录管理
 职责：检测已有版本、创建 revN 目录、继承上一版模式
 """
 
-import os
 import json
-import shutil
 from pathlib import Path
 import re as _re
 
@@ -61,7 +59,7 @@ def ensure_root_exists():
     """确保 skills_learning 根目录存在，不存在则自动创建"""
     if not SKILL_LEARN_ROOT.exists():
         SKILL_LEARN_ROOT.mkdir(parents=True, exist_ok=True)
-        print(f"  [OK] skills_learning/ 根目录已自动创建")
+        print("  [OK] skills_learning/ 根目录已自动创建")
 
 
 def get_skill_dir(skill_name: str) -> Path:

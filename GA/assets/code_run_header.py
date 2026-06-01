@@ -1,4 +1,6 @@
-import sys, os, json, re, time, subprocess
+import sys
+import os
+import subprocess
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'memory'))
 _r = subprocess.run
 def _d(b):
@@ -24,4 +26,4 @@ def _pinit(self, *a, **k):
     if os.name == 'nt': k['creationflags'] = (k.get('creationflags') or 0) | 0x08000000
     _Pi(self, *a, **k)
 subprocess.Popen.__init__ = _pinit
-sys.excepthook = lambda t, v, tb: (sys.__excepthook__(t, v, tb), print(f"\n[Agent Hint]: NO GUESSING! You MUST probe first. If missing common package, pip.")) if issubclass(t, (ImportError, AttributeError)) else sys.__excepthook__(t, v, tb)
+sys.excepthook = lambda t, v, tb: (sys.__excepthook__(t, v, tb), print("\n[Agent Hint]: NO GUESSING! You MUST probe first. If missing common package, pip.")) if issubclass(t, (ImportError, AttributeError)) else sys.__excepthook__(t, v, tb)

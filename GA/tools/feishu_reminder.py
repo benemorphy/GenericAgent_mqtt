@@ -17,8 +17,12 @@
     reminder.remove(rid, open_id="user_xxx")
 """
 
-import json, os, threading, time, re, logging
-from datetime import datetime, timedelta
+import json
+import os
+import threading
+import re
+import logging
+from datetime import datetime
 from typing import Optional, Callable
 
 logger = logging.getLogger("feishu_reminder")

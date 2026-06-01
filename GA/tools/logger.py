@@ -12,7 +12,18 @@ GenericAgent 日志模块 — 替代 print 的分级日志
     默认显示 >= INFO，设 env LOG_LEVEL=DEBUG 可见调试日志
 """
 
-import os, sys, logging, threading
+import os
+import sys
+import logging
+
+# Enable ANSI color support on Windows
+if os.name == 'nt':
+    try:
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+    except Exception:
+        pass
 
 _LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 _LEVEL_MAP = {
@@ -59,12 +70,15 @@ def _setup():
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    # 可选文件日志
+    # 可选文件日志（自动轮转，每10MB保留5个备份）
     log_dir = os.environ.get("LOG_DIR", "")
     if log_dir:
         os.makedirs(log_dir, exist_ok=True)
-        fh = logging.FileHandler(
+        from logging.handlers import RotatingFileHandler
+        fh = RotatingFileHandler(
             os.path.join(log_dir, "ga.log"),
+            maxBytes=10*1024*1024,  # 10MB
+            backupCount=5,
             encoding="utf-8"
         )
         fh.setLevel(level)

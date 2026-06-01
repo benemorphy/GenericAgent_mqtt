@@ -14,8 +14,9 @@ GUI视觉理解工具 - 双层架构(默认使用本地OCR)
 后端: offline(rapidocr OCR) → local(本地VLM, 需启动)
 默认: offline (rapidocr)
 """
-import sys, os, time, json, traceback, ctypes, base64
-from io import BytesIO
+import time
+import traceback
+import ctypes
 from pathlib import Path
 
 # ===================== 可选依赖 =====================
@@ -562,7 +563,7 @@ def understand_window(title: str, backend: str = "offline", fallback: bool = Tru
         # local失败，fallback到offline
         if not fallback:
             return {**base_result, "status": "error",
-                    "error": f"local VLM不可用",
+                    "error": "local VLM不可用",
                     "degration_events": degration_events,
                     "elapsed": time.time() - start}
 

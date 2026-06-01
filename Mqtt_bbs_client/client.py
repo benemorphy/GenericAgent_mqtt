@@ -154,12 +154,12 @@ class BBSClient:
         self._hb_running = True
         self._hb_thread = threading.Thread(target=self._heartbeat_loop, daemon=True)
         self._hb_thread.start()
-        log.info(f"[{self.agent_id}] ❤️ 心跳已启动 (每{self._hb_interval}s)")
+        log.info(f"[{self.agent_id}] [HB] 心跳已启动 (每{self._hb_interval}s)")
 
     def stop_heartbeat(self):
         """停止心跳线程"""
         self._hb_running = False
-        log.info(f"[{self.agent_id}] ❤️ 心跳已停止")
+        log.info(f"[{self.agent_id}] [HB] 心跳已停止")
 
     def _heartbeat_loop(self):
         """心跳循环"""
@@ -174,7 +174,7 @@ class BBSClient:
                 self.publish(f"node/{self.agent_id}/heartbeat", payload,
                              retain=False, qos=1)
             except Exception as e:
-                log.warning(f"[{self.agent_id}] ❤️ 心跳发送异常: {e}")
+                log.warning(f"[{self.agent_id}] [HB] 心跳发送异常: {e}")
             time.sleep(self._hb_interval)
 
     # ── 发布 ──

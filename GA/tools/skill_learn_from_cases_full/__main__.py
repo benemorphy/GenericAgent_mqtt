@@ -7,7 +7,10 @@ __main__.py   skill_learn_from_cases CLI 入口
     python -m tools.skill_learn_from_cases "docker_compose_production" --dry-run
 """
 
-import sys, argparse, json, os
+import sys
+import argparse
+import json
+import os
 from pathlib import Path
 
 # 确保 GA 根目录在 sys.path
@@ -216,7 +219,7 @@ Design Specification   CLI 接口设计文档
     if args.dry_run:
         print(f"[DRY RUN] 将学习技能: {skill_name}")
         print(f"          目录名: {en_name}")
-        print(f"          流程: Phase 0 1 2 3 4 5")
+        print("          流程: Phase 0 1 2 3 4 5")
         print(f"          将创建: skills_learning/{en_name}/revN/")
         # 环境探测
         try:

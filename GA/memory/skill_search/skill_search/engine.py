@@ -1,6 +1,12 @@
 """Skill 检索引擎 — API 客户端（含数据模型与环境检测）"""
 from __future__ import annotations
-import json, os, platform, shutil, subprocess, urllib.request, urllib.error
+import json
+import os
+import platform
+import shutil
+import subprocess
+import urllib.request
+import urllib.error
 from dataclasses import dataclass, field
 
 # ── 数据模型 ─────────────────────────────────────────────

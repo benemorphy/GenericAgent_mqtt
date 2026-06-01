@@ -1,6 +1,6 @@
 """Agent 列表路由 — 从 MariaDB agent_sessions 读取"""
 
-import os, sys
+import sys
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent

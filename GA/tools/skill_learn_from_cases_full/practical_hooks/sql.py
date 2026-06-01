@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """SQL 实操测试 — SQLite 查询验证"""
-import json, sqlite3, os, sys
+import json
+import sqlite3
+import sys
 
 
 def run_sql_tests():
@@ -46,7 +48,7 @@ def run_sql_tests():
     """)
     rows = cur.fetchall()
     assert len(rows) == 3, f"JOIN测试: 期望3行, 实际{len(rows)}"
-    assert rows[0][0] == 'Charlie', f"JOIN测试: Charlie应排第一"
+    assert rows[0][0] == 'Charlie', "JOIN测试: Charlie应排第一"
     
     # 测试2: 子查询
     cur.execute("""
@@ -68,7 +70,7 @@ def run_sql_tests():
     """)
     rows = cur.fetchall()
     assert len(rows) == 3, f"聚合测试: 期望3行(每人总额均>200), 实际{len(rows)}"
-    assert rows[0][0] == 'Charlie', f"聚合测试: Charlie应排第一"
+    assert rows[0][0] == 'Charlie', "聚合测试: Charlie应排第一"
     
     conn.close()
     return True
@@ -100,14 +102,16 @@ def run(env: dict = None) -> dict:
     if env is None:
         try:
             from env_detector import detect_all
-            import contextlib, io
+            import contextlib
+            import io
             with contextlib.redirect_stdout(io.StringIO()):
                 env = detect_all()
         except ImportError:
             import sys
             sys.path.insert(0, r"""D:\open_claw_agent\GenericAgent\tools\skill_learn_from_cases""")
             from env_detector import detect_all
-            import contextlib, io
+            import contextlib
+            import io
             with contextlib.redirect_stdout(io.StringIO()):
                 env = detect_all()
     return main()

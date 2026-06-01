@@ -13,15 +13,17 @@ Diagnosis Agent v3 — 本体驱动 + 真实数据 + LLM 分析(统一接口) + 
   SKILL_LLM_ENABLE=1 LLM_API_KEY=... python -m tools.diagnosis_agent
 """
 
-import sys, os, time, json, threading, statistics, collections
+import sys
+import os
+import time
+import json
+import statistics
+import collections
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Mqtt_bbs_client.board_client import BoardClient
 from Mqtt_bbs_client.client import BBSClient
 from tools.ontology_model import (
-    ENTITIES, RELATIONS,
-    run_checks as ontology_run_checks,
-    run_inferences as ontology_run_inferences,
     diagnose_system,
 )
 
@@ -124,7 +126,7 @@ class DiagnosisAgent:
         self.client.subscribe("system/healthcheck/+/request", self._on_healthcheck)
 
         print(f"[Diagnosis v3] 注册成功, board={self.board}")
-        print(f"[Diagnosis v3] 数据源: healthcheck / node-status / error-events")
+        print("[Diagnosis v3] 数据源: healthcheck / node-status / error-events")
         print(f"[Diagnosis v3] LLM: {'启用' if self._llm_available else '未启用(规则降级)'}")
 
         self._running = True

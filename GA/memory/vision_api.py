@@ -1,4 +1,7 @@
-import base64, requests, sys, os
+import base64
+import requests
+import sys
+import os
 from io import BytesIO
 from pathlib import Path
 

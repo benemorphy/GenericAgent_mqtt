@@ -37,7 +37,7 @@ if not os.environ.get("SKILL_LLM_ENABLE"):
 
 from tools.skill_learn_from_cases_full import dir_manager
 from tools.skill_learn_from_cases_full.restore_funcs import _import_skill_search, _import_web_search, _web_search_wikipedia
-from tools.skill_learn_from_cases_full.llm_helper import call_llm, call_llm_json, llm_available
+from tools.skill_learn_from_cases_full.llm_helper import call_llm_json, llm_available
 
 
 def _detect_docker():
@@ -69,7 +69,7 @@ def _phase0_bootstrap(skill_name: str) -> dict:
     if versions:
         print(f"  已有版本: rev{', rev'.join(map(str, versions))}")
     else:
-        print(f"  新技能，无历史版本")
+        print("  新技能，无历史版本")
 
     # 创建新目录
     ver = dir_manager.next_version(skill_name)
@@ -84,14 +84,14 @@ def _phase0_bootstrap(skill_name: str) -> dict:
             json.dump(inherited_patterns, f, indent=2, ensure_ascii=False)
         print(f"  继承: {len(inherited_patterns)} 个知识模式")
     else:
-        print(f"  无继承模式")
+        print("  无继承模式")
 
     # 探测 Docker
     docker_ver = _detect_docker()
     if docker_ver:
         print(f"  Docker: [OK] {docker_ver}")
     else:
-        print(f"  Docker: [FAIL] 不可用（compose 语法校验将跳过）")
+        print("  Docker: [FAIL] 不可用（compose 语法校验将跳过）")
 
     return {
         "skill_name": skill_name,
@@ -250,7 +250,7 @@ def _phase1_define(ctx: dict):
     def_file = ctx["rev_dir"] / "reports" / "skill_definition.json"
     with open(def_file, "w", encoding="utf-8") as f:
         json.dump(ctx["skill_definition"], f, indent=2, ensure_ascii=False)
-    print(f"  [OK] 定义已保存")
+    print("  [OK] 定义已保存")
 
 
 # ===============================================================
@@ -275,7 +275,7 @@ def _llm_generate_search_queries(skill_name: str) -> list[str] | None:
 请为搜索该技能的学习案例，生成 4~6 个多样化的搜索查询词。
 要求：
 1. 覆盖不同角度：最佳实践、技术方案、实战经验、常见陷阱
-2. 中英文混合策略：{f'同时生成中文和英文查询' if has_cjk else '全英文查询'}
+2. 中英文混合策略：{'同时生成中文和英文查询' if has_cjk else '全英文查询'}
 3. 如果技能有特定产品/框架名，优先使用原名
 4. 每个查询应能搜到不同的内容类型
 
@@ -458,7 +458,7 @@ def _phase2_search(ctx: dict):
         except Exception as e:
             print(f"  Web: [FAIL] {e}")
     else:
-        print(f"  Web: [FAIL] 搜索引擎不可用")
+        print("  Web: [FAIL] 搜索引擎不可用")
 
     # ── 渠道 C: Sophub ──
     try:
@@ -472,7 +472,7 @@ def _phase2_search(ctx: dict):
 
     # 继承上一版案例（--force 时跳过）
     if os.environ.get("SKILL_FORCE_REFRESH") == "1":
-        print(f"  --force: 跳过继承旧案例")
+        print("  --force: 跳过继承旧案例")
     else:
         inherited_cases = dir_manager.get_latest_cases(ctx["skill_name"])
         if inherited_cases:
@@ -494,7 +494,7 @@ def _phase2_search(ctx: dict):
         json.dump(all_cases, f, indent=2, ensure_ascii=False)
     ctx["cases"] = ctx.get("cases", []) + all_cases
     print(f"  合计: {len(all_cases)} 条案例")
-    print(f"  [OK] 已保存")
+    print("  [OK] 已保存")
 
 
 # ===============================================================
@@ -801,7 +801,7 @@ def _extract_patterns_from_cases(cases: list[dict], skill_name: str) -> list[dic
                                          "图数据", "图查询", "图算法"]):
         if "P_db_" in relevant_prefixes:
             relevant_prefixes.discard("P_db_")
-            print(f"  检测到图数据库技能，排除 SQL database 领域模式")
+            print("  检测到图数据库技能，排除 SQL database 领域模式")
 
     for p in patterns:
         pid = p["id"]
@@ -1065,7 +1065,7 @@ def _phase3_analyze(ctx: dict):
         print(f"    [{p.get('confidence',0)}%] {p['principle'][:50]}")
     if len(merged) > 5:
         print(f"    ... 还有 {len(merged)-5} 个")
-    print(f"  [OK] 已保存")
+    print("  [OK] 已保存")
 
 # ===============================================================
 # Phase 4: 构建验证工具
@@ -1104,7 +1104,7 @@ def _phase4_build_tool(ctx: dict):
     # 语法检查
     try:
         compile(tool_code, str(tool_file), "exec")
-        print(f"  [OK] 工具已创建: tools/assess.py (语法检查通过)")
+        print("  [OK] 工具已创建: tools/assess.py (语法检查通过)")
     except SyntaxError as e:
         print(f"  [!]  工具已创建，但语法检查失败: {e}")
 
@@ -1257,7 +1257,7 @@ def _extract_url_text(url: str) -> list[dict]:
         from tools.skill_learn_from_cases_full.weread_extract import extract_url_cases
         return extract_url_cases(url)
     """从URL提取文本内容，分块返回案例列表"""
-    import requests, html.parser
+    import requests
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
     try:
         resp = requests.get(url, headers=headers, timeout=20)
@@ -1424,9 +1424,9 @@ def _generate_markdown_report(ctx: dict):
 
     lines = []
     lines.append(f"# 技能学习报告: {skill}")
-    lines.append(f"")
-    lines.append(f"| 属性 | 值 |")
-    lines.append(f"|------|-----|")
+    lines.append("")
+    lines.append("| 属性 | 值 |")
+    lines.append("|------|-----|")
     lines.append(f"| 版本 | rev{version} |")
     lines.append(f"| 评分 | {score}/100 {'PASS' if passed else 'FAIL'} |")
     lines.append(f"| 案例数 | {len(cases)} 条 |")
@@ -1434,29 +1434,29 @@ def _generate_markdown_report(ctx: dict):
     if prev_version:
         lines.append(f"| 继承自 rev{prev_version} | {inherited_cnt} 个 |")
         lines.append(f"| 新增 | {new_cnt} 个 |")
-    lines.append(f"")
-    lines.append(f"## 知识模式")
-    lines.append(f"")
+    lines.append("")
+    lines.append("## 知识模式")
+    lines.append("")
     if domains:
         lines.append(f"### 领域专有 ({len(domains)}个)")
         for p in sorted(domains, key=lambda x: -x.get("confidence", 0)):
             lines.append(f"- [{p['confidence']}%] {p['principle']}")
-        lines.append(f"")
+        lines.append("")
     if advanced:
         lines.append(f"### 高级模式 ({len(advanced)}个)")
         for p in sorted(advanced, key=lambda x: -x.get("confidence", 0)):
             lines.append(f"- [{p['confidence']}%] {p['principle']}")
-        lines.append(f"")
+        lines.append("")
     if basics:
         lines.append(f"### 基础模式 ({len(basics)}个)")
         for p in sorted(basics, key=lambda x: -x.get("confidence", 0)):
             lines.append(f"- [{p['confidence']}%] {p['principle']}")
-        lines.append(f"")
+        lines.append("")
 
     # 案例摘要
     if cases:
         lines.append(f"## 参考案例 ({len(cases)}条)")
-        lines.append(f"")
+        lines.append("")
         for c in cases[:10]:
             title = c.get("title", c.get("key", "?"))
             url = c.get("url", "")
@@ -1468,4 +1468,4 @@ def _generate_markdown_report(ctx: dict):
     report_path = rev_dir / "reports" / "learning_report.md"
     with open(report_path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
-    print(f"  [OK] 学习报告: reports/learning_report.md")
+    print("  [OK] 学习报告: reports/learning_report.md")

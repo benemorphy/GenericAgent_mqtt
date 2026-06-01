@@ -12,7 +12,8 @@ CuriosityBoard Client — 好奇心讨论板客户端
     client.disconnect()
 """
 
-import json, uuid, threading, time
+import uuid
+import threading
 from typing import Optional
 from Mqtt_bbs_client.client import BBSClient
 from Mqtt_bbs_server import config as cfg
@@ -35,11 +36,11 @@ class CuriosityBoardClient:
         self._client.connect()
         self._client.wait_connected(3)
         # 订阅响应主题
-        self._client.subscribe(f"curiosity/post/response/+", self._on_response)
-        self._client.subscribe(f"curiosity/discuss/response/+", self._on_response)
-        self._client.subscribe(f"curiosity/status/response/+", self._on_response)
-        self._client.subscribe(f"curiosity/query/response/+", self._on_response)
-        self._client.subscribe(f"curiosity/hot/response/+", self._on_response)
+        self._client.subscribe("curiosity/post/response/+", self._on_response)
+        self._client.subscribe("curiosity/discuss/response/+", self._on_response)
+        self._client.subscribe("curiosity/status/response/+", self._on_response)
+        self._client.subscribe("curiosity/query/response/+", self._on_response)
+        self._client.subscribe("curiosity/hot/response/+", self._on_response)
         self._connected = True
         return self
 

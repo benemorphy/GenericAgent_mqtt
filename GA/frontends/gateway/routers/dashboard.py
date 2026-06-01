@@ -1,6 +1,8 @@
 """Dashboard 仪表盘路由 — 实时 MQTT 监控（重写自 dashboard_mqtt.py Streamlit 版）"""
 
-import os, sys, json, time, threading
+import sys
+import json
+import threading
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
@@ -12,7 +14,6 @@ from fastapi.responses import HTMLResponse
 
 from frontends.bbs_browser.auth import require_user
 from frontends.bbs_browser.database import get_db
-from frontends.gateway.config import MQTT_HOST, MQTT_PORT
 
 from jinja2 import Environment, FileSystemLoader
 

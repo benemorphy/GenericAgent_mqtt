@@ -8,7 +8,7 @@ Dream Engine — Agent Dreaming记忆消化与回放引擎
 3. Associate: 跨域联想→灵感板
 """
 
-import json, time, threading, hashlib, sys
+import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]

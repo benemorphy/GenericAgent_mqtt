@@ -3,7 +3,11 @@ weread_extract.py — 微信读书章节提取
 用目录(TOC)逐章点击，提取每章内容
 """
 
-import re, time, json, os, sys
+import re
+import time
+import json
+import os
+import sys
 
 def _get_driver():
     root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))

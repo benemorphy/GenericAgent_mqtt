@@ -23,7 +23,6 @@
 """
 import os
 import json
-import time
 import datetime
 import logging
 from pathlib import Path
@@ -468,7 +467,7 @@ class Board:
             logger.warning(f"[Board] MQTT 直发失败: {e}")
 
         if not bbs_ok:
-            logger.warning(f"[Board] ⚠️ BBS 未送达（MQTT 直发已作为降级）")
+            logger.warning("[Board] ⚠️ BBS 未送达（MQTT 直发已作为降级）")
 
     def _publish_open_list(self, client, topic: str):
         """发布活跃灵感汇总到 open 主题"""

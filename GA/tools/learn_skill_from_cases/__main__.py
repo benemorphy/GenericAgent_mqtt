@@ -9,7 +9,10 @@ Usage:
     python -m tools.learn_skill_from_cases --version
     python -m tools.learn_skill_from_cases --show docker_compose_production
 """
-import sys, argparse, re, json
+import sys
+import argparse
+import re
+import json
 from pathlib import Path
 
 GA_ROOT = Path(__file__).resolve().parents[2]
@@ -110,7 +113,7 @@ def main():
     elif ctx.get("score", 0) > 0:
         print(f"\n  Learning score: {ctx['score']:.1f}/100 — Consider adding more cases.")
     else:
-        print(f"\n  Score not available. Review the output above.")
+        print("\n  Score not available. Review the output above.")
 
 
 if __name__ == "__main__":

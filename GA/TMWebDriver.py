@@ -278,7 +278,14 @@ class TMWebDriver:
         print(f"成功设置默认会话: {self.default_session_id}: {info['url']}")  
         return self.default_session_id  
     
-    def jump(self, url, timeout=10): self.execute_js(f"window.location.href='{url}'", timeout=timeout)
+    def jump(self, url: str, timeout: int = 10):
+        """使用 CDP Page.navigate 导航到 URL（避免 XSS 注入）"""
+        import json
+        if not url.startswith(('http://', 'https://', 'about:', 'file://', 'data:')):
+            raise ValueError(f"不允许的 URL scheme: {url[:50]}")
+        # 使用 JSON 序列化代替 f-string 拼接，彻底消除注入风险
+        safe_url = json.dumps(url)
+        self.execute_js(f"window.location.href={safe_url}", timeout=timeout)
     
 if __name__ == "__main__":
     driver = TMWebDriver(host='127.0.0.1', port=18765)

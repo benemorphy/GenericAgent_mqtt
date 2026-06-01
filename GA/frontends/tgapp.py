@@ -1,7 +1,14 @@
-import os, sys, re, threading, asyncio, queue as Q, time, random, uuid
+import os
+import sys
+import re
+import threading
+import asyncio
+import queue as Q
+import time
+import random
+import uuid
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _TEMP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'temp')
-from agentmain import GeneraticAgent
 try:
     from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
     from telegram.constants import ChatType, MessageLimit, ParseMode
@@ -28,16 +35,6 @@ from continue_cmd import handle_frontend_command, reset_conversation
 from btw_cmd import handle_frontend_command as handle_btw_frontend_command
 from chatapp_common import (
     create_agent,
-    FILE_HINT,
-    HELP_TEXT,
-    TELEGRAM_MENU_COMMANDS,
-    clean_reply,
-    ensure_single_instance,
-    extract_files,
-    format_restore,
-    redirect_log,
-    require_runtime,
-    split_text,
 )
 
 agent, mykeys = create_agent(verbose=False)
