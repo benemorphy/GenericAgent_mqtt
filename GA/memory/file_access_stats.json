@@ -8,12 +8,12 @@
     "last": "2026-05-11"
   },
   "skill_search": {
-    "count": 3,
-    "last": "2026-05-14"
+    "count": 4,
+    "last": "2026-06-01"
   },
   "SKILL.md": {
-    "count": 2,
-    "last": "2026-05-29"
+    "count": 3,
+    "last": "2026-06-01"
   },
   "__main__.py": {
     "count": 1,
@@ -28,24 +28,24 @@
     "last": "2026-05-15"
   },
   "keychain.py": {
-    "count": 3,
-    "last": "2026-05-25"
+    "count": 4,
+    "last": "2026-06-02"
   },
   "memory_management_sop.md": {
-    "count": 23,
+    "count": 25,
     "last": "2026-06-01"
   },
   "global_mem_insight.txt": {
-    "count": 90,
-    "last": "2026-06-01"
+    "count": 95,
+    "last": "2026-06-02"
   },
   "global_mem.txt": {
-    "count": 95,
-    "last": "2026-06-01"
+    "count": 98,
+    "last": "2026-06-02"
   },
   "skills_learning_sop.md": {
-    "count": 29,
-    "last": "2026-05-30"
+    "count": 30,
+    "last": "2026-06-02"
   },
   "skills_learning_sop": {
     "count": 2,
@@ -56,40 +56,40 @@
     "last": "2026-05-13"
   },
   "autonomous_operation_sop.md": {
-    "count": 32,
+    "count": 34,
     "last": "2026-06-01"
   },
   "task_planning.md": {
-    "count": 7,
-    "last": "2026-05-21"
+    "count": 8,
+    "last": "2026-06-01"
   },
   "subagent.md": {
-    "count": 14,
-    "last": "2026-05-25"
+    "count": 17,
+    "last": "2026-06-02"
   },
   "memory_cleanup_sop.md": {
     "count": 2,
     "last": "2026-05-20"
   },
   "search_skills_sop.md": {
-    "count": 1,
-    "last": "2026-05-14"
+    "count": 3,
+    "last": "2026-06-01"
   },
   "plan_sop": {
     "count": 1,
     "last": "2026-05-14"
   },
   "plan_sop.md": {
-    "count": 11,
-    "last": "2026-05-29"
+    "count": 16,
+    "last": "2026-06-02"
   },
   "autonomous_operation_sop": {
     "count": 1,
     "last": "2026-05-14"
   },
   "scheduled_task_sop.md": {
-    "count": 9,
-    "last": "2026-05-21"
+    "count": 13,
+    "last": "2026-06-01"
   },
   "vision_sop.md": {
     "count": 9,
@@ -112,20 +112,20 @@
     "last": "2026-05-15"
   },
   "procmem_scanner.py": {
-    "count": 1,
-    "last": "2026-05-15"
+    "count": 2,
+    "last": "2026-06-01"
   },
   "procmem_scanner_sop.md": {
-    "count": 1,
-    "last": "2026-05-15"
+    "count": 4,
+    "last": "2026-06-01"
   },
   "clipboard_ocr.py": {
     "count": 9,
     "last": "2026-05-15"
   },
   "subagent": {
-    "count": 3,
-    "last": "2026-05-20"
+    "count": 4,
+    "last": "2026-06-02"
   },
   "adb_ui.py": {
     "count": 1,
@@ -196,15 +196,15 @@
     "last": "2026-06-01"
   },
   "git_push_sop.md": {
-    "count": 35,
-    "last": "2026-06-01"
+    "count": 37,
+    "last": "2026-06-02"
   },
   "active.json": {
-    "count": 3,
-    "last": "2026-05-21"
+    "count": 4,
+    "last": "2026-06-01"
   },
   "agent_dreaming_sop.md": {
-    "count": 17,
+    "count": 20,
     "last": "2026-06-01"
   },
   "inspiration_board.py": {
@@ -220,8 +220,8 @@
     "last": "2026-06-01"
   },
   "dream_engine.md": {
-    "count": 1,
-    "last": "2026-05-20"
+    "count": 5,
+    "last": "2026-06-01"
   },
   "inspiration_board.md": {
     "count": 3,
@@ -268,16 +268,16 @@
     "last": "2026-05-29"
   },
   "code_review_principles.md": {
-    "count": 4,
-    "last": "2026-06-01"
+    "count": 6,
+    "last": "2026-06-02"
   },
   "mqtt_bbs_sop.md": {
     "count": 1,
     "last": "2026-05-22"
   },
   "board_stress_sop.md": {
-    "count": 7,
-    "last": "2026-05-29"
+    "count": 8,
+    "last": "2026-06-01"
   },
   "emqtt_design_principles.md": {
     "count": 7,
@@ -292,8 +292,8 @@
     "last": "2026-05-22"
   },
   "goal_mode_sop.md": {
-    "count": 12,
-    "last": "2026-06-01"
+    "count": 15,
+    "last": "2026-06-02"
   },
   "RUST_ENV": {
     "count": 1,
@@ -344,16 +344,16 @@
     "last": "2026-05-28"
   },
   "brainstorming_sop.md": {
-    "count": 4,
-    "last": "2026-05-31"
+    "count": 5,
+    "last": "2026-06-01"
   },
   "ontology_model_evolution.md": {
     "count": 7,
     "last": "2026-05-31"
   },
   "ga_mqtt_bbs_scenarios.md": {
-    "count": 3,
-    "last": "2026-06-01"
+    "count": 4,
+    "last": "2026-06-02"
   },
   "water_env_monitoring_scenarios.md": {
     "count": 3,
@@ -372,16 +372,16 @@
     "last": "2026-05-29"
   },
   "goal_hive_sop.md": {
-    "count": 6,
-    "last": "2026-06-01"
+    "count": 12,
+    "last": "2026-06-02"
   },
   "goal_hive_master_duty.md": {
-    "count": 5,
-    "last": "2026-06-01"
+    "count": 8,
+    "last": "2026-06-02"
   },
   "research_synthesis_sop.md": {
-    "count": 2,
-    "last": "2026-05-29"
+    "count": 4,
+    "last": "2026-06-01"
   },
   "data_explore_sop.md": {
     "count": 1,
@@ -400,8 +400,8 @@
     "last": "2026-06-01"
   },
   "board_service_diag_sop.md": {
-    "count": 2,
-    "last": "2026-06-01"
+    "count": 6,
+    "last": "2026-06-02"
   },
   "morphling_sop.md": {
     "count": 1,
@@ -409,6 +409,34 @@
   },
   "sop_registry.py": {
     "count": 6,
+    "last": "2026-06-01"
+  },
+  "review_sop.md": {
+    "count": 1,
+    "last": "2026-06-01"
+  },
+  "review_inline_prompt.txt": {
+    "count": 2,
+    "last": "2026-06-01"
+  },
+  "task_management_sop.md": {
+    "count": 2,
+    "last": "2026-06-01"
+  },
+  "supervisor_sop.md": {
+    "count": 3,
+    "last": "2026-06-01"
+  },
+  "MQTT_BBS.md": {
+    "count": 1,
+    "last": "2026-06-01"
+  },
+  "FILE_SEARCH.md": {
+    "count": 1,
+    "last": "2026-06-01"
+  },
+  "supervisor_monitor_sop.md": {
+    "count": 1,
     "last": "2026-06-01"
   }
 }

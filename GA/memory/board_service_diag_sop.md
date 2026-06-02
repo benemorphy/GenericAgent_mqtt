@@ -73,6 +73,13 @@ Event loop 卡死可能原因：
 - rumqttc 的 poll() 内部死锁或无限等待（罕见）
 - DB 查询永久阻塞导致 handle_post 不返回
 
+## 关键坑点
+- BoardService RS 主题格式为 `agent/bbs/{board}/{operation}`，**不是** `bbs/{board}/`。测试时/client用错前缀会静默超时。
+  - 注册: `agent/bbs/{board}/register` → 响应: `agent/bbs/{board}/register/response/{corr_id}`
+  - 发帖: `agent/bbs/{board}/post` → 响应: `agent/bbs/{board}/post/response/{corr_id}`
+  - 查询: `agent/bbs/{board}/query` → 响应: `agent/bbs/{board}/query/response/{corr_id}`
+- Python BoardService 依赖 `Mqtt_bbs_client` 包（不在 GA 代码库内，在 `Beneh/` 下）
+
 ## 防范建议
 1. BoardService 启动脚本统一用 release 版路径，避免 debug/release 混淆
 2. 启动时总是指定日志输出文件，不要依赖隐藏窗口的 stdout

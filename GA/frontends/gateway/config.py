@@ -11,6 +11,9 @@ MQTT_PASSWORD = os.environ.get("MQTT_PASSWORD", "")
 # md_server_rs 地址
 MD_SERVER_URL = os.environ.get("MD_SERVER_URL", "http://127.0.0.1:8899")
 
+# MindFlow 课件引擎地址
+MF_SERVER_URL = os.environ.get("MF_SERVER_URL", "http://127.0.0.1:9900")
+
 # ── Email 认证配置 ──
 SMTP_HOST = os.environ.get("SMTP_HOST", "")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))

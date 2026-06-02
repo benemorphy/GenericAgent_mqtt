@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s %(message)s")
 
-from Mqtt_bbs.persistence import BBSClientWithPersistence
+from Mqtt_bbs_server.persistence import BBSClientWithPersistence
 
 def main():
     worker = BBSClientWithPersistence("persist_writer")

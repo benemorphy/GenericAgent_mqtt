@@ -2,7 +2,7 @@
 DAG 工作流引擎 — 基于 BBS 的任务编排
 
 用法:
-    from Mqtt_bbs.dag import DAGWorkflow, DAGTask
+    from Mqtt_bbs_server.dag import DAGWorkflow, DAGTask
 
     wf = DAGWorkflow("data_pipeline")
     wf.add_task(DAGTask("fetch", capability="scraper",

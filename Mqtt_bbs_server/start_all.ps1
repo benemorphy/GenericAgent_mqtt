@@ -120,6 +120,24 @@ if (Test-Path $bs_exe) {
     catch { Write-Host '[!] BoardService RS 启动可能失败' -Fore Yellow }
 } else { Write-Host '[!] BoardService RS 未编译，跳过' -Fore Yellow }
 
+
+
+# 8. Scheduler (定时任务)
+$sched = Get-Process -Name "python" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*reflect/scheduler*' }
+if (-not $sched) {
+    $schedPy = Join-Path $projectRoot 'GA\agentmain.py'
+    Start-Process $py -ArgumentList @($schedPy, '--reflect', 'reflect/scheduler.py') -WorkingDirectory (Join-Path $projectRoot 'GA') -WindowStyle Hidden
+    Write-Host '[OK] Scheduler 已启动' -Fore Green
+} else { Write-Host '[OK] Scheduler 已在运行' -Fore Green }
+
+# 9. Supervisor Monitor (系统健康监控)
+$sv = Get-Process -Name "python" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*reflect/supervisor_monitor*' }
+if (-not $sv) {
+    $svPy = Join-Path $projectRoot 'GA\agentmain.py'
+    Start-Process $py -ArgumentList @($svPy, '--reflect', 'reflect/supervisor_monitor.py') -WorkingDirectory (Join-Path $projectRoot 'GA') -WindowStyle Hidden
+    Write-Host '[OK] Supervisor Monitor 已启动' -Fore Green
+} else { Write-Host '[OK] Supervisor Monitor 已在运行' -Fore Green }
+
 # 7. Gateway (8000) - 强制重启以使用正确的 MQTT 凭据
 if (-not $NoGateway) {
     $p = Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue

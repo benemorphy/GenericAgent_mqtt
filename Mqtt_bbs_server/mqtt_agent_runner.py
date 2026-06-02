@@ -7,7 +7,7 @@
     # 或通过 agentmain.py __main__ 自动调用 (向后兼容)
     
     # 编程方式:
-    from Mqtt_bbs.mqtt_agent_runner import start_mqtt_agent
+    from Mqtt_bbs_server.mqtt_agent_runner import start_mqtt_agent
     start_mqtt_agent(args_as_namespace)
 """
 
@@ -33,7 +33,7 @@ def start_mqtt_agent(args):
         ImportError: paho-mqtt 未安装时抛出
     """
     from agentmain import GeneraticAgent
-    from Mqtt_bbs import WorkerAgentWithPersistence as WorkerAgent
+    from Mqtt_bbs_server import WorkerAgentWithPersistence as WorkerAgent
     import logging as _l; _l.basicConfig(level=_l.WARNING)
 
     agent = GeneraticAgent()

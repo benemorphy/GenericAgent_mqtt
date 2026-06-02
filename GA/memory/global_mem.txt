@@ -128,6 +128,14 @@ ocr.models = ch_PP-OCRv4_det_infer(4.5MB) + ch_PP-OCRv4_rec_infer(10.4MB) + ch_p
 # 数据库: MariaDB (已弃用 SQLite) 127.0.0.1:3306/mqtt_bbs
 # 表: bbs_users(token/name/board/created_at), bbs_posts(id/board/author/content/created_at)
 # 若不启动，BoardClient 超时、BBS 协议不可用
+# Rust RS 版（实际运行版）:
+bbs.rs.dir = D:\open_claw_agent\Beneh\Mqtt_bbs_server\tools\board_service_rs
+bbs.rs.exe = D:\open_claw_agent\Beneh\Mqtt_bbs_server\tools\board_service_rs\target\release\board_service_rs.exe
+bbs.rs.start = board_service_rs.exe --db-url mysql://root:mariadb@127.0.0.1/mqtt_bbs --jwt-secret bbs-browser-dev-secret-change-in-production
+bbs.rs.env = MQTT_USERNAME=board-service-rs; MQTT_PASSWORD=board-service-rs
+# BoardService RS 主题格式: agent/bbs/{board}/{operation} (非 bbs/{board}/)
+# 响应主题: agent/bbs/{board}/{operation}/response/{corr_id}
+# Python 版（已重构，Mqtt_bbs 模块在 Mqtt_bbs_server/ 下）:
 bbs.service = Mqtt_bbs.board_service
 bbs.start = python -m Mqtt_bbs.board_service
 bbs.board = agent-bbs-test, agent-inspiration (boards.json 定义)
@@ -138,6 +146,12 @@ bbs.boards_json = D:\open_claw_agent\Beneh\GA\boards.json
 # DiagnosisAgent启动: Mqtt_bbs_client 是本地包(在Beneh/下)，非同目录启动需 PYTHONPATH=Beneh/
 bbs.diagnosis_agent.start = PYTHONPATH=D:\\open_claw_agent\\Beneh python GA/tools/diagnosis_agent.py
 bbs.diagnosis_agent.path = GA/tools/diagnosis_agent.py
+# Supervisor监控: reflect/supervisor_monitor.py (agentmain --reflect, interval=300s, 端口45763防重复)
+# 监控服务: MariaDB(3306) / Mosquitto(1883) / BoardService RS(9100) / Gateway(8000)
+bbs.supervisor = reflect/supervisor_monitor.py
+# 定时任务: sche_tasks/ 目录, 通过 reflect/scheduler.py 调度
+bbs.scheduler = reflect/scheduler.py
+bbs.sche_tasks = sche_tasks/ (4个任务: health_check / board_maintenance / weekly_review / board_selfcheck)
 
 ## [FEISHU]
 # 飞书 Bot 前端入口
@@ -162,11 +176,13 @@ feishu.workdir = D:\open_claw_agent\Beneh\GA
 #   50并发连接0.17s, BoardService CRUD(30注册/150发帖3947posts/s)
 
 ## [FILE_SEARCH]
-# 搜索能力: 优先使用 es.exe（Everything 命令行工具，已在 PATH 中）
-# 降级方案: tools/file_search.py（Python pathlib.rglob/glob）
-# es.exe 需要 Everything 服务运行（C:\Program Files\Everything\）
+# 搜索能力: tools/file_search.py 封装了 es.exe (Everything SDK) + Python fallback
+# es.exe 路径: GA/tools/es.exe (151KB, 非PATH, 通过file_search.py自动定位)
+# es_search('*.md') 全盘搜索约54ms; es.exe 需要 Everything 服务运行
+# Python fallback: search_files(glob) / search_name(keyword) / search_content(text)
 file_search.tool = tools/file_search.py
 file_search.es = GA/tools/es.exe
+file_search.api = es_search(), search_files(), search_name(), search_content()
 
 ## [LLM_PROVIDER_FACTORY]
 # Provider工厂模块（2026-05-21 重构，llmcore.py → tools/llm_providers/）

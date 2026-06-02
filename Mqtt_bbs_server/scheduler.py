@@ -15,7 +15,7 @@ Worker 按能力认领执行。
     }
 
 用法:
-    from Mqtt_bbs.scheduler import BBScheduler
+    from Mqtt_bbs_server.scheduler import BBScheduler
     sched = BBScheduler()
     sched.start()       # 前台阻塞运行
 """

@@ -7,6 +7,7 @@
 | 工具 | 方式 | 适用场景 |
 |------|------|---------|
 | **Metaso API** | `metaso_search(keyword, size=5)` | 技术文档/知识搜索，中文优先 |
+| **Local (es.exe)** | `from tools.file_search import es_search; es_search(pattern, max_results=10)` | 本地文件全盘搜索，~54ms，依赖 Everything 服务 |
 | **Bing 浏览器** | `web_execute_js` 打开 bing.com 搜索 | 备用搜索，无API密钥时 |
 | **skills.sh** | `requests.get(skills.sh)` | 查找可安装的 agent skill |
 | **Firecrawl** | `firecrawl-search` | Web 内容深度抓取和搜索 |
