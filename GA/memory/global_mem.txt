@@ -239,3 +239,13 @@ HB#2 @ 2026-06-04 17:02
 # heartbeat | hb3
 HB#3 @ 2026-06-04 17:02
 事件: ['file_patch']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-04 17:22
+事件: ['cr', 'fr', 'fp', 'P3测试']
+
+## [HEARTBEAT]
+# heartbeat | hb2
+HB#2 @ 2026-06-04 17:22
+事件: ['cr', 'cr', '重复操作']

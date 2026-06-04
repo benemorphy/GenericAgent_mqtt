@@ -87,6 +87,18 @@ class LineageTracer:
             ).fetchall()
         return [dict(zip(["turn_id","action","agent","status","duration_ms","created_at"], r)) for r in rows]
     
+    def audit(self, turn_id: str, action_type: str, target: str, 
+              detail: str = "", created_at: float = None) -> str:
+        """记录一条审计日志 (P4)"""
+        aid = uuid.uuid4().hex[:12]
+        with self._conn() as conn:
+            conn.execute(
+                "INSERT INTO audit_log (id,turn_id,action_type,target,detail,created_at) "
+                "VALUES (?,?,?,?,?,?)",
+                (aid, turn_id, action_type, target, detail, created_at or time.time())
+            )
+        return aid
+    
     def stats(self) -> dict:
         with self._conn() as conn:
             total = conn.execute("SELECT COUNT(*) FROM lineage").fetchone()[0]
