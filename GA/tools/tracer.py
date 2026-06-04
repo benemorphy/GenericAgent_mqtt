@@ -44,6 +44,10 @@ class TurnTracer:
         self._lock = threading.Lock()
         self._ensure_db()
     
+    def init_db(self):
+        """手动初始化/重建数据库 (公开接口)"""
+        self._ensure_db()
+    
     def _ensure_db(self):
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         with self._lock:
@@ -152,6 +156,37 @@ class TurnTracer:
         err_count = conn.execute("SELECT COUNT(*) FROM traces WHERE error IS NOT NULL").fetchone()[0]
         conn.close()
         return {"total": total, "avg_reward": round(avg_reward, 3), "error_rate": round(err_count/total, 3) if total else 0}
+
+    def codegraph_audit_tool(self, tool_name: str, tool_args: dict = None, metadata: dict = None) -> dict:
+        """对工具调用执行 CodeGraph 审计 (P2: 仅修改代码类工具触发)"""
+        _MODIFY_TOOLS = {"code_run", "file_patch", "file_write"}
+        if tool_name not in _MODIFY_TOOLS:
+            return {}
+        
+        try:
+            from tools.codegraph_db import db_available, analyze_complexity, find_dead_imports
+        except ImportError:
+            return {}
+        
+        if not db_available():
+            return {}
+        
+        result = {}
+        if tool_name == "code_run":
+            try:
+                complex = analyze_complexity(5)
+                result["complexity_hot"] = [{"file": c["file_path"], "func": c["name"], "lines": c["line_count"]} for c in complex]
+            except Exception:
+                pass
+        if tool_name in ("file_patch", "file_write"):
+            try:
+                dead = find_dead_imports(5)
+                result["dead_imports"] = len(dead)
+            except Exception:
+                pass
+        if result:
+            print(f"  [CodeGraph] 审计完成: {list(result.keys())}")
+        return result
 
 
 # 全局单例

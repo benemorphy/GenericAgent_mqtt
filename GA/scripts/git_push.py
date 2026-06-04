@@ -88,6 +88,49 @@ def audit():
     return print_report(ok, details, summary)
 
 
+# ═══════════════════════════════════════════════════════════════
+# CodeGraph 代码质量审计 (P1)
+# ═══════════════════════════════════════════════════════════════
+
+_COMPLEXITY_THRESHOLD = 150  # 函数行数超过此值打印警告
+
+def codegraph_audit():
+    """推送前 CodeGraph 代码质量审计（仅警告，不阻塞推送）"""
+    try:
+        from tools.codegraph_db import db_available, find_dead_imports, analyze_complexity
+    except ImportError:
+        return
+    if not db_available():
+        return
+
+    print("\n--- CodeGraph 代码质量审计 ---")
+
+    # 死代码检测
+    try:
+        dead = find_dead_imports(10)
+        if dead:
+            print(f"  [注意] {len(dead)} 个可能未使用的 import:")
+            for d in dead[:5]:
+                print(f"    {d['file_path']} → {d['name']}")
+            if len(dead) > 5:
+                print(f"    ... 还有 {len(dead)-5} 个")
+    except Exception:
+        pass
+
+    # 复杂度热点
+    try:
+        hot = analyze_complexity(10)
+        hot = [h for h in hot if h['line_count'] >= _COMPLEXITY_THRESHOLD]
+        if hot:
+            print(f"  [建议] 以下函数行数 > {_COMPLEXITY_THRESHOLD}，建议考虑拆分:")
+            for h in hot[:5]:
+                print(f"    {h['file_path']}:{h['name']} ({h['line_count']}行)")
+    except Exception:
+        pass
+
+    print("")
+
+
 def main():
     parser = argparse.ArgumentParser(description="一键推送（自动 PR + merge）")
     parser.add_argument("message", nargs="?", help="commit 信息")
@@ -100,8 +143,11 @@ def main():
         if not audit():
             print("\n推送已取消。确认安全请加 --skip-audit")
             sys.exit(1)
+        # P1: CodeGraph 代码质量审计 (仅警告)
+        codegraph_audit()
     else:
         print("  已跳过安全审计")
+        codegraph_audit()
 
     token = get_token()
     commit_msg = args.message or get_current_commit_message()

@@ -207,6 +207,83 @@ def get_node_by_id(node_id: str) -> Optional[dict]:
         conn.close()
 
 
+# ---- P0补充: 死代码/复杂度/入口点 ----
+
+_SQL_DEAD_IMPORTS = """
+SELECT n.id, n.name, n.file_path, n.language
+FROM nodes n
+WHERE n.kind = 'import'
+  AND NOT EXISTS (
+    SELECT 1 FROM edges e WHERE e.source = n.id
+  )
+  AND n.file_path NOT LIKE '%__init__.py'
+ORDER BY n.file_path, n.name
+LIMIT ?
+"""
+
+_SQL_COMPLEXITY = """
+SELECT n.file_path, n.name, n.kind,
+       (n.end_line - n.start_line + 1) AS line_count,
+       n.start_line, n.end_line
+FROM nodes n
+WHERE n.kind IN ('function', 'method')
+  AND (n.end_line - n.start_line) > 0
+ORDER BY line_count DESC
+LIMIT ?
+"""
+
+_SQL_ENTRY_POINTS = """
+SELECT n.id, n.name, n.file_path, n.kind, n.language,
+       n.start_line, n.end_line
+FROM nodes n
+WHERE n.kind IN ('function', 'class', 'method')
+  AND n.name NOT LIKE '\\_%' ESCAPE '\\'
+  AND n.name != '__init__'
+  AND NOT EXISTS (
+    SELECT 1 FROM edges e
+    WHERE e.target = n.id AND e.kind = 'calls'
+  )
+ORDER BY n.file_path, n.name
+LIMIT ?
+"""
+
+
+def find_dead_imports(limit: int = 100) -> list:
+    """找出未使用的导入 (死代码检测)"""
+    conn = _connect()
+    if not conn:
+        return []
+    try:
+        cur = conn.execute(_SQL_DEAD_IMPORTS, (limit,))
+        return _rows_to_list(cur.fetchall())
+    finally:
+        conn.close()
+
+
+def analyze_complexity(limit: int = 30) -> list:
+    """按函数/方法行数排序 (复杂度热点)"""
+    conn = _connect()
+    if not conn:
+        return []
+    try:
+        cur = conn.execute(_SQL_COMPLEXITY, (limit,))
+        return _rows_to_list(cur.fetchall())
+    finally:
+        conn.close()
+
+
+def find_entry_points(limit: int = 50) -> list:
+    """找出无调用者的函数/类 (入口点探测)"""
+    conn = _connect()
+    if not conn:
+        return []
+    try:
+        cur = conn.execute(_SQL_ENTRY_POINTS, (limit,))
+        return _rows_to_list(cur.fetchall())
+    finally:
+        conn.close()
+
+
 def search_by_pattern(pattern: str, limit: int = 20) -> list:
     """FTS全文搜索 (nodes_fts)"""
     conn = _connect()
@@ -252,14 +329,14 @@ _TOOL_DISPATCH = {
     "codegraph_analyze_impact":      lambda a: get_impact(a.get("symbol", "")),
     "codegraph_get_detailed_symbol": lambda a: get_node_by_id(a.get("symbol", "")),
     "codegraph_search_by_pattern":   lambda a: search_by_pattern(a.get("query", "")),
-    "codegraph_find_entry_points":   lambda a: search_by_pattern(a.get("query", "")),
+    "codegraph_find_entry_points":   lambda a: find_entry_points(a.get("limit", 50)),
     "codegraph_search_by_error":     lambda a: search_by_pattern(a.get("query", "")),
     "codegraph_find_implementors":   lambda a: get_symbol_info(a.get("symbol", "")),
     "codegraph_find_hot_paths":      lambda a: get_callers(a.get("symbol", "")),
     "codegraph_traverse_graph":      lambda a: get_impact(a.get("symbol", "")),
-    "codegraph_analyze_complexity":  lambda a: get_callers(a.get("symbol", "")),
+    "codegraph_analyze_complexity":  lambda a: analyze_complexity(a.get("limit", 30)),
     "codegraph_get_dependency_graph":lambda a: get_module_summary(),
-    "codegraph_find_dead_imports":   lambda a: [],
+    "codegraph_find_dead_imports":   lambda a: find_dead_imports(a.get("limit", 100)),
 }
 
 
