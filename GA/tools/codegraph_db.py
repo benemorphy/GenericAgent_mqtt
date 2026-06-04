@@ -260,6 +260,41 @@ def find_dead_imports(limit: int = 100) -> list:
         conn.close()
 
 
+_SQL_FILES = "SELECT path, language, node_count, size, modified_at FROM files ORDER BY node_count DESC LIMIT ?"
+
+def get_files(limit: int = 100) -> list:
+    """列出所有文件及其符号计数 (codegraph_files)"""
+    conn = _connect()
+    if not conn:
+        return []
+    try:
+        cur = conn.execute(_SQL_FILES, (limit,))
+        return _rows_to_list(cur.fetchall())
+    finally:
+        conn.close()
+
+
+_SQL_STATUS = """
+SELECT 
+    (SELECT COUNT(*) FROM nodes) AS total_nodes,
+    (SELECT COUNT(DISTINCT file_path) FROM nodes) AS total_files,
+    (SELECT COUNT(DISTINCT kind) FROM nodes) AS total_kinds,
+    (SELECT COUNT(*) FROM edges) AS total_edges
+"""
+
+def get_status() -> dict:
+    """CodeGraph 索引状态概览 (codegraph_status)"""
+    conn = _connect()
+    if not conn:
+        return {"total_nodes": 0, "total_files": 0, "total_kinds": 0, "total_edges": 0}
+    try:
+        cur = conn.execute(_SQL_STATUS)
+        row = cur.fetchone()
+        return dict(row) if row else {"total_nodes": 0, "total_files": 0, "total_kinds": 0, "total_edges": 0}
+    finally:
+        conn.close()
+
+
 def analyze_complexity(limit: int = 30) -> list:
     """按函数/方法行数排序 (复杂度热点)"""
     conn = _connect()
@@ -337,6 +372,8 @@ _TOOL_DISPATCH = {
     "codegraph_analyze_complexity":  lambda a: analyze_complexity(a.get("limit", 30)),
     "codegraph_get_dependency_graph":lambda a: get_module_summary(),
     "codegraph_find_dead_imports":   lambda a: find_dead_imports(a.get("limit", 100)),
+    "codegraph_files":               lambda a: get_files(a.get("limit", 100)),
+    "codegraph_status":              lambda a: get_status(),
 }
 
 
