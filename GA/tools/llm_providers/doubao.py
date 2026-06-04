@@ -319,7 +319,8 @@ class DoubaoCDPProvider(ProviderProtocol):
     @classmethod
     def match(cls, cfg_name: str) -> bool:
         low = cfg_name.lower().replace("-", "_").replace(" ", "")
-        return low == "doubao" or low.startswith("doubao")
+        # 精确匹配 doubao（不匹配 doubao_backend）
+        return low == "doubao" or low == "doubao_cdp" or low == "doubao_session" 
 
     @classmethod
     def create_session(cls, cfg: dict) -> Any:

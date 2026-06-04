@@ -6,7 +6,6 @@
 
 复用 backend.raw_ask + make_messages，不新建 LLM 实例。
 """
-from __future__ import annotations
 import copy
 import os
 import threading

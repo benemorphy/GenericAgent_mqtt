@@ -24,8 +24,6 @@ WS API:
   GET /ws -> events only, e.g.
   {"type":"session-state","sessionId":"sess-...","state":"running","seq":3,"updatedAt":...}
 """
-from __future__ import annotations
-
 import asyncio
 import contextlib
 import importlib

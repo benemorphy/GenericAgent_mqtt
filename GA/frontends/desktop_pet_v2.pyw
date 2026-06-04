@@ -302,10 +302,8 @@ if sys.platform == 'darwin':
         NSBackingStoreBuffered, NSWindowStyleMaskBorderless,
         NSApplicationActivationPolicyAccessory
     )
-    from Foundation import NSMakeRect, NSMakePoint, NSMakeSize
+    from Foundation import NSMakeRect, NSMakePoint
     from PyObjCTools import AppHelper
-    import objc
-
     class MacPet(PetBase):
         def __init__(self, skin_name=None):
             self.app = NSApplication.sharedApplication()
@@ -820,8 +818,8 @@ else:
                 self.current_state = 'idle'
                 self.frame_idx = 0
     else:
-        from PySide6.QtCore import Qt, QTimer, QPoint
-        from PySide6.QtGui import QAction, QCursor, QImage, QPixmap
+        from PySide6.QtCore import Qt, QTimer
+        from PySide6.QtGui import QAction, QImage, QPixmap
         from PySide6.QtWidgets import QApplication, QLabel, QMenu, QWidget
 
         class _LinuxPetLabel(QLabel):

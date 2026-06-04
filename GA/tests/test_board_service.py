@@ -8,7 +8,7 @@ for p in [str(_proj), str(_beneh)]:
         sys.path.insert(0, p)
 
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 class TestCapabilityRegistry(unittest.TestCase):
     def setUp(self):

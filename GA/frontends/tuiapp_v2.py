@@ -10,8 +10,6 @@ functionality migrated from frontends/tuiapp.py plus new commands:
 - /export    — export last reply (clip / file / all)
 - /restore   — restore last model_responses log
 """
-from __future__ import annotations
-
 import argparse
 import os
 import queue

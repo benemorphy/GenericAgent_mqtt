@@ -1,12 +1,12 @@
 """goal_bbs unit tests."""
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 _proj = Path(__file__).resolve().parent.parent.parent.parent
 if str(_proj) not in sys.path:
     sys.path.insert(0, str(_proj))
 
-import pytest
+
 
 class TestGoalBbsInit:
     @patch("reflect.goal_bbs.bbs_init")
