@@ -60,9 +60,15 @@ async def _cdp_listen(ws, timeout: float = 30.0) -> AsyncGenerator[dict, None]:
 
 
 async def _get_page_target() -> str | None:
-    """获取豆包页面的 targetId (page类型)。"""
+    """获取豆包页面的 targetId — 优先选chat页面，跳过launcher"""
     r = httpx.get(f"{CDP_URL}/json", timeout=5)
-    for t in r.json():
+    pages = r.json()
+    # 优先选 doubao-chat/chat 页面
+    for t in pages:
+        if t.get("type") == "page" and "doubao-chat" in t.get("url", ""):
+            return t["id"]
+    # 其次是任何page类型
+    for t in pages:
         if t.get("type") == "page":
             return t["id"]
     return None
@@ -256,8 +262,9 @@ class DoubaoCDPSession:
         time.sleep(2)
 
         # 创建临时用户数据目录
-        self._user_data_dir = os.path.join(
-            tempfile.gettempdir(), f"doubao_cdp_{int(time.time())}"
+        # 使用真实豆包用户数据目录（保持登录态）
+        self._user_data_dir = os.path.expanduser(
+            r"~\AppData\Local\Doubao\User Data"
         )
         os.makedirs(self._user_data_dir, exist_ok=True)
 
@@ -301,13 +308,7 @@ class DoubaoCDPSession:
         if self._proc:
             self._proc.kill()
             self._proc = None
-        # 清理临时目录
-        if self._user_data_dir and os.path.exists(self._user_data_dir):
-            import shutil
-            try:
-                shutil.rmtree(self._user_data_dir, ignore_errors=True)
-            except Exception:
-                pass
+        # 持久化用户数据目录保留不删除（保持登录态）
 
 
 # ── Provider 注册 ──
@@ -319,8 +320,7 @@ class DoubaoCDPProvider(ProviderProtocol):
     @classmethod
     def match(cls, cfg_name: str) -> bool:
         low = cfg_name.lower().replace("-", "_").replace(" ", "")
-        # 精确匹配 doubao（不匹配 doubao_backend）
-        return low == "doubao" or low == "doubao_cdp" or low == "doubao_session" 
+        return low == "doubao" or low.startswith("doubao")
 
     @classmethod
     def create_session(cls, cfg: dict) -> Any:

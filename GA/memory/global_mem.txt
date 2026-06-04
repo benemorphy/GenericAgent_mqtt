@@ -194,3 +194,23 @@ llm.factory.claude = tools/llm_providers/claude.py       # ClaudeProvider + SSE�
 # 坑：SSE解析器提取时需传递 record_usage 参数（原 llmcore 使用全局变量 _record_usage）
 # 坑：惰性导入避免循环依赖（tools.llm_providers ←llmcore→ tools.llm_providers）
 # 已验证：旧resolve_session()硬编码if/else → ProviderRegistry.create()，行为一致
+# 新增Provider见下方 doubao / doubao_backend
+
+## [DOUBAO_CDP]
+# Doubao CDP Provider — 通过Chrome DevTools Protocol控制本机豆包APP
+doubao.cdp.provider = tools/llm_providers/doubao.py      # DoubaoCDPSession (CDP直控)
+doubao.cdp.backend = tools/llm_providers/doubao_backend.py # DoubaoBackend (BaseSession兼容包装)
+doubao.cdp.exe = C:\Users\user\AppData\Local\Doubao\Application\app\Doubao.exe
+doubao.cdp.port = 9222
+doubao.cdp.url = https://www.doubao.com/chat
+# 使用方式: resolve_client('doubao') -> DoubaoBackend -> 自动管理CDP生命周期
+# 触发词: 用户说"使用豆包，找xxx" -> 调doubao搜索 -> 返回结果
+# 生命周期: lazy_init -> launch_doubao -> connect_cdp -> navigate -> chat -> close
+# 自动重试: 失败自动重建CDP连接(最多2次)
+# 输入技巧: Semi Design UI, 用nativeSetter+dispatchEvent触发React状态更新
+# 已验证：2026-06-04 成功通过CDP控制豆包搜索"上海高二下英语知识点"并获取完整回复
+# 使用真实用户数据目录保持登录态（%LocalAppData%/Doubao/User Data）
+# 修复：_get_page_target优先选chat页面跳过launcher
+#
+# 目前已知问题：_chat_with_doubao中web版Enter触发不稳定
+# 备选方案：通过手动CDP脚本（见doubao_cdp_usage.md）可稳定获取结果
