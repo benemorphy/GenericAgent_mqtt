@@ -17,6 +17,7 @@ L3: memory_cleanup_sop | skill_search | skills_learning_sop(案例驱动) | meta
 | skill_template_sop(技能模板)
 | verify_sop | vue3_component_sop(Vue3组件) | web_testing_sop
 | courseware_diagram_sop(图示预渲染SOP) | courseware_pipeline_sop(P0-P4课件交付流水线)
+| first_pass_prd_sop(Uber PRD计划技能)
 
 # MindFlow 课件技能: scripts/generate_courseware.py | cell_diagram.py (手绘细胞SVG) | mermaid_prerender.py
 L4: L4_raw_sessions/ historical sessions
