@@ -240,12 +240,27 @@ def _run_reflection_if_needed():
         pass
 
 # P3: Heartbeat 后台线程 (每60s自动记忆提纯)
+_last_hb_trace_count = [0]
+
 def _heartbeat_loop():
+    """每60秒: 从 Tracer 拉取最近记录 → 生成心跳摘要 → 写入 L2 记忆"""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     while True:
         try:
-            loop.run_until_complete(hb.heartbeat())
+            # 从 Tracer 获取自上次心跳以来的新记录
+            from tools.tracer import tracer as _tr
+            recent = _tr.recent(20)
+            if recent and len(recent) > _last_hb_trace_count[0]:
+                new_records = recent[:min(10, len(recent) - _last_hb_trace_count[0])]
+                _last_hb_trace_count[0] = len(recent)
+                # 构造 session_state
+                state = {
+                    "tool_calls": [getattr(r, "tool_calls", []) for r in new_records],
+                    "results": [getattr(r, "results", []) for r in new_records],
+                    "prompt": getattr(new_records[0], "prompt", "")[:200] if new_records else "",
+                }
+                loop.run_until_complete(hb.heartbeat(state))
         except Exception:
             pass
         time.sleep(60)

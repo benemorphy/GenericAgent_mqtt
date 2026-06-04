@@ -3,6 +3,13 @@ import re
 import os
 from dataclasses import dataclass
 from typing import Any, Optional
+
+# P4: Lineage 审计导入 (try/except 确保不阻塞)
+try:
+    from tools.lineage_tracer import lt as _lt
+    _LINEAGE_AVAIL = True
+except Exception:
+    _LINEAGE_AVAIL = False
 @dataclass
 class StepOutcome:
     data: Any
@@ -29,6 +36,13 @@ class BaseHandler:
                 if hasattr(ret, '__next__') or hasattr(ret, '__iter__'):
                     ret = yield from ret
                 _ = yield from try_call_generator(self.tool_after_callback, tool_name, args, response, ret)
+                # P4: Lineage 审计
+                if _LINEAGE_AVAIL:
+                    try:
+                        _lt.trace(turn_id=str(time.time()), action=f"tool_{tool_name}",
+                                  agent="reg", context={}, result=str(ret)[:100], duration_ms=0)
+                    except Exception:
+                        pass
                 return ret
         except ImportError:
             pass
@@ -39,6 +53,14 @@ class BaseHandler:
             prer = yield from try_call_generator(self.tool_before_callback, tool_name, args, response)
             ret = yield from try_call_generator(getattr(self, method_name), args, response)
             _ = yield from try_call_generator(self.tool_after_callback, tool_name, args, response, ret)
+            # P4: Lineage 审计
+            if _LINEAGE_AVAIL:
+                try:
+                    _lt.trace(turn_id=str(time.time()), action=f"tool_{tool_name}",
+                              agent="handler", context={"method": method_name},
+                              result=str(ret)[:100], duration_ms=0)
+                except Exception:
+                    pass
             return ret
         elif tool_name == 'bad_json': return StepOutcome(None, next_prompt=args.get('msg', 'bad_json'), should_exit=False)
         else:
