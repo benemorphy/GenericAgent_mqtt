@@ -165,3 +165,5 @@ llm.factory.claude = tools/llm_providers/claude.py       # ClaudeProvider + SSE�
 # 坑：SSE解析器提取时需传递 record_usage 参数（原 llmcore 使用全局变量 _record_usage）
 # 坑：惰性导入避免循环依赖（tools.llm_providers ←llmcore→ tools.llm_providers）
 # 已验证：旧resolve_session()硬编码if/else → ProviderRegistry.create()，行为一致
+# MindFlow 课件生成改进报告: docs/courseware_pipeline_lessons.md
+# 7条改进建议：脚本质量/门禁/双表注册/导入链/.env/预览路径/可观测性

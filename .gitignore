@@ -113,3 +113,5 @@ cookies2.txt
 email_cookies.txt
 boards_response.html
 *.pyc
+
+.doubao_user_data/

@@ -214,3 +214,8 @@ doubao.cdp.url = https://www.doubao.com/chat
 #
 # 目前已知问题：_chat_with_doubao中web版Enter触发不稳定
 # 备选方案：通过手动CDP脚本（见doubao_cdp_usage.md）可稳定获取结果
+#
+# MindFlow 课件注册：需同时操作 coursewares(内容) 和 courseware_registry(列表索引) 两张表
+# 首页树状列表从 courseware_registry 读取，而非 coursewares
+# LIKE 子句中的 % 需要用 %% 转义：WHERE topic LIKE %%(keyword)%
+# metaso_search 正确函数名: from tools.metaso_search import metaso_search

@@ -32,8 +32,11 @@ client.chat("搜索xxx")
 | 豆包路径 | `C:\Users\user\AppData\Local\Doubao\Application\app\Doubao.exe` |
 | 自动重试 | 2次（失败自动重建CDP连接） |
 
-## 已知坑
-- 首次调用需等待豆包启动（~5-10s）
-- CDP端口9222不与其他CDP调试端口冲突
-- Semi Design UI的textarea需要特殊注入方式（普通赋值无法触发React状态更新）
-- 无流式支持：CDP方式只能等完整回复后一次性返回
+## 已知坑（已验证）
+- 登录：`--user-data-dir=临时目录`（原版）会丢失登录态，必须用真实目录 `%LocalAppData%/Doubao/User Data`
+- 页面选择：`_get_page_target()` 会从3个页面中选，必须跳过 `doubao-launcher`，优先选 `doubao-chat/chat`，否则body文本为空
+- SPA渲染：导航到web版后仅等待textarea出现不够，需要额外等15秒让SPA完全渲染
+- 发送消息：synthetic `KeyboardEvent('Enter')` 在web版无效（`event.isTrusted`检测），必须使用CDP原生命令 `Input.dispatchKeyEvent`
+- 发送按钮：web版send按钮通常以SVG图标形式存在，无"发送"文字，需通过 `querySelectorAll('button')` 全量扫描
+- 回复提取：`document.body.innerText` 在web版可获取AI回复，需设置 `bl > 300` 进入检测，连续5秒稳定才确认完成
+- 流式限制：CDP方式不能流式读取回复，只能等完整回复后一次性提取

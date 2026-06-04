@@ -32,16 +32,16 @@
     "last": "2026-06-02"
   },
   "memory_management_sop.md": {
-    "count": 25,
-    "last": "2026-06-01"
+    "count": 26,
+    "last": "2026-06-04"
   },
   "global_mem_insight.txt": {
-    "count": 97,
-    "last": "2026-06-03"
+    "count": 99,
+    "last": "2026-06-04"
   },
   "global_mem.txt": {
-    "count": 100,
-    "last": "2026-06-03"
+    "count": 104,
+    "last": "2026-06-04"
   },
   "skills_learning_sop.md": {
     "count": 30,
@@ -168,8 +168,8 @@
     "last": "2026-05-18"
   },
   "metaso_search": {
-    "count": 1,
-    "last": "2026-05-18"
+    "count": 2,
+    "last": "2026-06-04"
   },
   "tmwebdriver_sop": {
     "count": 1,
@@ -438,5 +438,21 @@
   "supervisor_monitor_sop.md": {
     "count": 1,
     "last": "2026-06-01"
+  },
+  "doubao_cdp_usage.md": {
+    "count": 2,
+    "last": "2026-06-04"
+  },
+  "courseware_pipeline_sop.md": {
+    "count": 1,
+    "last": "2026-06-04"
+  },
+  "courseware_diagram_sop.md": {
+    "count": 1,
+    "last": "2026-06-04"
+  },
+  "codegraph_first_sop.md": {
+    "count": 1,
+    "last": "2026-06-04"
   }
 }
