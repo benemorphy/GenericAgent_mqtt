@@ -219,3 +219,23 @@ doubao.cdp.url = https://www.doubao.com/chat
 # 首页树状列表从 courseware_registry 读取，而非 coursewares
 # LIKE 子句中的 % 需要用 %% 转义：WHERE topic LIKE %%(keyword)%
 # metaso_search 正确函数名: from tools.metaso_search import metaso_search
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-04 17:01
+事件: ['code_run', 'file_read', '分析代码']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-04 17:02
+事件: ['code_run', 'timeout']
+
+## [HEARTBEAT]
+# heartbeat | hb2
+HB#2 @ 2026-06-04 17:02
+事件: ['file_read', 'web_scan', 'timeout', '404']
+
+## [HEARTBEAT]
+# heartbeat | hb3
+HB#3 @ 2026-06-04 17:02
+事件: ['file_patch']

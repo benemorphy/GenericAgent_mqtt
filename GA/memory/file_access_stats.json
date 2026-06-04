@@ -96,8 +96,8 @@
     "last": "2026-05-22"
   },
   "vision_api.py": {
-    "count": 21,
-    "last": "2026-05-21"
+    "count": 22,
+    "last": "2026-06-04"
   },
   "clipboard_ocr_sop.md": {
     "count": 6,
@@ -196,7 +196,7 @@
     "last": "2026-06-01"
   },
   "git_push_sop.md": {
-    "count": 40,
+    "count": 41,
     "last": "2026-06-04"
   },
   "active.json": {
@@ -444,11 +444,11 @@
     "last": "2026-06-04"
   },
   "courseware_pipeline_sop.md": {
-    "count": 1,
+    "count": 2,
     "last": "2026-06-04"
   },
   "courseware_diagram_sop.md": {
-    "count": 1,
+    "count": 2,
     "last": "2026-06-04"
   },
   "codegraph_first_sop.md": {

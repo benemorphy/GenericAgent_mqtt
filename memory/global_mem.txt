@@ -167,3 +167,5 @@ llm.factory.claude = tools/llm_providers/claude.py       # ClaudeProvider + SSE�
 # 已验证：旧resolve_session()硬编码if/else → ProviderRegistry.create()，行为一致
 # MindFlow 课件生成改进报告: docs/courseware_pipeline_lessons.md
 # 7条改进建议：脚本质量/门禁/双表注册/导入链/.env/预览路径/可观测性
+
+# brainstorm_courseware.py: P0多Agent脑暴+P1竞争式模块生成 (已验证)

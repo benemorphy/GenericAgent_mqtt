@@ -6,6 +6,8 @@ from tools.ga_utils import log_memory_access, expand_file_refs, smart_format, co
 from tools.prompt_utils import get_anchor_prompt
 from tools.tool_definitions import code_run, ask_user, web_scan, web_execute_js, file_patch, file_read
 from tools.codegraph_mcp import codegraph_call, available_tools
+from tools.registry import TOOL
+from tools.lineage_tracer import lt
 if sys.stdout is None: sys.stdout = open(os.devnull, "w")
 if sys.stderr is None: sys.stderr = open(os.devnull, "w")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -37,6 +39,7 @@ class GenericAgentHandler(BaseHandler):
         matches = re.findall(rf"```(?:{code_type})\n(.*?)\n```", response.content, re.DOTALL)
         return matches[-1].strip() if matches else None
 
+    @TOOL.register()
     def do_code_run(self, args, response):
         '''执行代码片段，有长度限制，不允许代码中放大量数据，如有需要应当通过文件读取进行。'''
         code_type = args.get("type", "python")
@@ -69,6 +72,7 @@ class GenericAgentHandler(BaseHandler):
             try_register_curiosity(self, sig)
         return StepOutcome(result, next_prompt=next_prompt)
     
+    @TOOL.register()
     def do_ask_user(self, args, response):
         question = args.get("question", "请提供输入：")
         candidates = args.get("candidates", [])
@@ -76,6 +80,7 @@ class GenericAgentHandler(BaseHandler):
         yield "Waiting for your answer ...\n"
         return StepOutcome(result, next_prompt="", should_exit=True)
     
+    @TOOL.register()
     def do_web_scan(self, args, response):
         '''获取当前页面内容和标签页列表。也可用于切换标签页。
         注意：HTML经过简化，边栏/浮动元素等可能被过滤。如需查看被过滤的内容请用execute_js。
@@ -97,6 +102,7 @@ class GenericAgentHandler(BaseHandler):
             try_register_curiosity(self, sig)
         return StepOutcome(result, next_prompt=next_prompt)
     
+    @TOOL.register()
     def do_web_execute_js(self, args, response):
         '''web情况下的优先使用工具，执行任何js达成对浏览器的*完全*控制。支持将结果保存到文件供后续读取分析。'''
         script = args.get("script", "") or self._extract_code_block(response, "javascript")
@@ -125,6 +131,7 @@ class GenericAgentHandler(BaseHandler):
         maxlen = 8000 // args.get('_tool_num', 1)
         return StepOutcome(smart_format(result, max_str_len=maxlen), next_prompt=next_prompt)
     
+    @TOOL.register()
     def do_file_patch(self, args, response):
         path = self._get_abs_path(args.get("path", ""))
         yield f"[Action] Patching file: {path}\n"
@@ -139,6 +146,7 @@ class GenericAgentHandler(BaseHandler):
         next_prompt = get_anchor_prompt(self, skip=args.get('_index', 0) > 0)
         return StepOutcome(result, next_prompt=next_prompt)
     
+    @TOOL.register()
     def do_file_write(self, args, response):
         '''用于对整个文件的大量处理，精细修改要用file_patch。
         需要将要写入的内容放在<file_content>标签内，或者放在代码块中'''
@@ -165,6 +173,7 @@ class GenericAgentHandler(BaseHandler):
             yield f"[Status] ❌ 写入异常: {str(e)}\n"
             return StepOutcome({"status": "error", "msg": str(e)}, next_prompt="\n")
         
+    @TOOL.register()
     def do_file_read(self, args, response):
         '''读取文件内容。从第start行开始读取。如有keyword则返回第一个keyword(忽略大小写)周边内容'''
         path = self._get_abs_path(args.get("path", ""))
@@ -195,6 +204,7 @@ class GenericAgentHandler(BaseHandler):
         self.working['in_plan_mode'] = plan_path; self.max_turns = 100
         print(f"[Info] Entered plan mode with plan file: {plan_path}"); return plan_path
     
+    @TOOL.register()
     def do_update_working_checkpoint(self, args, response):
         '''为整个任务设定后续需要临时记忆的重点。'''
         key_info = args.get("key_info", "")
@@ -212,6 +222,7 @@ class GenericAgentHandler(BaseHandler):
         if self._empty_ct >= 3: return StepOutcome({}, should_exit=True)
         return StepOutcome({}, next_prompt=prompt)
 
+    @TOOL.register()
     def do_no_tool(self, args, response):
         '''这是一个特殊工具，由引擎自主调用，不要包含在TOOLS_SCHEMA里。
         当模型在一轮中未显式调用任何工具时，由引擎自动触发。
@@ -260,6 +271,7 @@ class GenericAgentHandler(BaseHandler):
         yield "[Info] Final response to user.\n"
         return StepOutcome(response, next_prompt=None)
     
+    @TOOL.register()
     def do_start_long_term_update(self, args, response):
         '''Agent觉得当前任务完成后有重要信息需要记忆时调用此工具。'''
         prompt = '''### [总结提炼经验] 既然你觉得当前任务有重要信息需要记忆，请提取最近一次任务中【事实验证成功且长期有效】的环境事实、用户偏好、重要步骤，更新记忆。
@@ -277,6 +289,7 @@ class GenericAgentHandler(BaseHandler):
         else: result = "Memory Management SOP not found. Do not update memory."
         return StepOutcome(result, next_prompt=prompt)
 
+    @TOOL.register()
     def do_codegraph(self, args, response):
         '''调用 CodeGraph MCP 代码分析工具 (42工具/38语言)'''
         tool_name = args.get('tool_name', '')
