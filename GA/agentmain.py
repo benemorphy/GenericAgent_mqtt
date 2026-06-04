@@ -18,6 +18,9 @@ from llmcore import reload_mykeys, ToolClient, MixinSession, NativeToolClient, N
 from agent_loop import agent_runner_loop
 from ga import GenericAgentHandler, get_global_memory
 from tools.ga_utils import smart_format, format_error, consume_file
+from tools.tracer import tracer
+from tools.reflection_optimizer import optimizer
+from tools.heartbeat_memory import hb
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 def load_tool_schema(suffix=''):
@@ -170,6 +173,8 @@ class GenericAgent:
             gen = agent_runner_loop(self.llmclient, sys_prompt, raw_query, 
                                 handler, TOOLS_SCHEMA, max_turns=70, verbose=self.verbose)
             try:
+                _turn_id = f"{int(time.time())}"
+                _t0 = time.time()
                 full_resp = ""; last_pos = 0
                 for chunk in gen:
                     if consume_file(self.task_dir, '_stop'): self.abort() 
@@ -178,14 +183,32 @@ class GenericAgent:
                     if len(full_resp) - last_pos > 50 or 'LLM Running' in chunk:
                         display_queue.put({'next': full_resp[last_pos:] if self.inc_out else full_resp, 'source': source})
                         last_pos = len(full_resp)
+                _duration_ms = (time.time() - _t0) * 1000
                 if self.inc_out and last_pos < len(full_resp): display_queue.put({'next': full_resp[last_pos:], 'source': source})
                 if '</summary>' in full_resp: full_resp = full_resp.replace('</summary>', '</summary>\n\n')
                 if '</file_content>' in full_resp: full_resp = re.sub(r'<file_content>\s*(.*?)\s*</file_content>', r'\n````\n<file_content>\n\1\n</file_content>\n````', full_resp, flags=re.DOTALL)                
                 display_queue.put({'done': full_resp, 'source': source})
                 self.history = handler.history_info
+                # P2: 记录成功轨迹
+                try:
+                    _tool_calls = getattr(handler, 'tool_results', []) if hasattr(handler, 'tool_results') else []
+                    tracer.record(_turn_id, prompt=raw_query, tool_calls=_tool_calls,
+                                  results=["success"], reward=1.0, duration_ms=_duration_ms,
+                                  model=getattr(self.llmclient, 'current_model', ''))
+                    _run_reflection_if_needed()
+                except Exception:
+                    pass
             except Exception as e:
+                _duration_ms = (time.time() - _t0) * 1000
                 print(f"Backend Error: {format_error(e)}")
                 display_queue.put({'done': full_resp + f'\n```\n{format_error(e)}\n```', 'source': source})
+                # P2: 记录失败轨迹
+                try:
+                    tracer.record(_turn_id, prompt=raw_query,
+                                  tool_calls=[], results=[str(e)], reward=0.0, error=str(e),
+                                  duration_ms=_duration_ms, model=getattr(self.llmclient, 'current_model', ''))
+                except Exception:
+                    pass
             finally:
                 if self.stop_sig: print('User aborted the task.')
                 self.is_running = self.stop_sig = False
@@ -195,6 +218,40 @@ class GenericAgent:
 GeneraticAgent = GenericAgent    
 
 # P2: 启动后台自动压缩（daemon 线程，不阻塞）
+# P2: 日志记录完成后的反思触发器
+_REFLECTION_INTERVAL = 300  # 每5分钟检查一次
+_last_reflection_time = [0.0]
+
+def _run_reflection_if_needed():
+    """检查是否需要运行反思分析 (每300s/每次new session)"""
+    now = time.time()
+    if now - _last_reflection_time[0] < _REFLECTION_INTERVAL:
+        return
+    _last_reflection_time[0] = now
+    try:
+        recent = tracer.recent(20)
+        if len(recent) >= 5:
+            patterns = optimizer.extract_patterns(recent)
+            for p in patterns[:3]:
+                sug = optimizer.generate_improvement(p)
+                if sug and sug.priority >= 3:
+                    pass  # 记录建议，暂不自动应用
+    except Exception:
+        pass
+
+# P3: Heartbeat 后台线程 (每60s自动记忆提纯)
+def _heartbeat_loop():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    while True:
+        try:
+            loop.run_until_complete(hb.heartbeat())
+        except Exception:
+            pass
+        time.sleep(60)
+_hb_thread = threading.Thread(target=_heartbeat_loop, daemon=True)
+_hb_thread.start()
+
 try:
     from tools.session_compactor import start_auto_compact
     start_auto_compact()

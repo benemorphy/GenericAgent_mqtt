@@ -18,6 +18,21 @@ class BaseHandler:
     def tool_after_callback(self, tool_name, args, response, ret): pass
     def turn_end_callback(self, response, tool_calls, tool_results, turn, next_prompt, exit_reason): return next_prompt
     def dispatch(self, tool_name, args, response, index=0, tool_num=1):
+        # P1: Registry 优先查找
+        try:
+            from tools.registry import TOOL as _TOOL
+            _reg_fn = _TOOL.get_function(tool_name)
+            if _reg_fn:
+                args['_index'] = index; args['_tool_num'] = tool_num
+                prer = yield from try_call_generator(self.tool_before_callback, tool_name, args, response)
+                ret = _reg_fn(args, response)
+                if hasattr(ret, '__next__') or hasattr(ret, '__iter__'):
+                    ret = yield from ret
+                _ = yield from try_call_generator(self.tool_after_callback, tool_name, args, response, ret)
+                return ret
+        except ImportError:
+            pass
+        
         method_name = f"do_{tool_name}"
         if hasattr(self, method_name):
             args['_index'] = index; args['_tool_num'] = tool_num

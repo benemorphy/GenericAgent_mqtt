@@ -121,7 +121,7 @@ def _run_cli(subcommand: str, args_list: list, workspace: str, timeout: int) -> 
 def codegraph_call(tool_name: str, tool_args: dict = None,
                    workspace: str = None, max_files: int = 5000,
                    graph_only: bool = True, timeout: int = 60) -> dict:
-    """调用 CodeGraph 代码分析工具
+    """调用 CodeGraph 代码分析工具 (P0: SQLite优先, 失败回退CLI)
 
     Args:
         tool_name: 工具名
@@ -134,6 +134,20 @@ def codegraph_call(tool_name: str, tool_args: dict = None,
     Returns:
         {"status": "success"|"error", "data": ..., "stderr": ...}
     """
+    # P0: SQLite 原生优先 (500x加速)
+    try:
+        from tools.codegraph_db import codegraph_call as _sqlite_call
+        sqlite_result = _sqlite_call(tool_name, tool_args, workspace, max_files, graph_only, timeout)
+        if sqlite_result.get("status") == "success" and sqlite_result.get("source") == "sqlite":
+            sqlite_result.pop("source", None)
+            sqlite_result.pop("query_ms", None)
+            return sqlite_result
+    except ImportError:
+        pass
+    except Exception:
+        pass
+    
+    # 回退: CLI 调用
     workspace = workspace or _GA_ROOT
     tool_args = tool_args or {}
 
