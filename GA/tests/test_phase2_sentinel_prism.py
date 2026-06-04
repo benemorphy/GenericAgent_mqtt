@@ -6,7 +6,7 @@
   3. 集成: Sentinel + Prism 协同工作流
 """
 
-import sys, os, json, time, threading, subprocess, unittest
+import sys, os, json, time, subprocess, unittest
 
 GA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, GA_DIR)
@@ -232,7 +232,7 @@ class TestPrismCore(unittest.TestCase):
     
     def test_board_config_generation(self):
         """验证 Prism 为每个 Board 在 boards.json 中配置"""
-        import json as j
+
         boards_config = {}
         for p in self.config['perspectives']:
             boards_config[p['board']] = {

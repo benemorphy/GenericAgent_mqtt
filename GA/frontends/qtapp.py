@@ -4,8 +4,6 @@
 可选: pip install markdown  (Markdown 渲染)
 用法: python frontends/qtapp.py 
 """
-from __future__ import annotations
-
 import math
 import os
 import sys

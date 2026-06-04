@@ -1,7 +1,7 @@
 """BoardService Core unit tests."""
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 _proj = Path(__file__).resolve().parent.parent.parent.parent
 _beneh = _proj.parent
 for p in [str(_proj), str(_beneh)]:

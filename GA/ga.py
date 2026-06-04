@@ -5,6 +5,7 @@ import json
 from tools.ga_utils import log_memory_access, expand_file_refs, smart_format, consume_file, extract_robust_content
 from tools.prompt_utils import get_anchor_prompt
 from tools.tool_definitions import code_run, ask_user, web_scan, web_execute_js, file_patch, file_read
+from tools.codegraph_mcp import codegraph_call, available_tools
 if sys.stdout is None: sys.stdout = open(os.devnull, "w")
 if sys.stderr is None: sys.stderr = open(os.devnull, "w")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -275,6 +276,36 @@ class GenericAgentHandler(BaseHandler):
         if os.path.exists(path): result = 'This is L0:\n' + file_read(path, show_linenos=False)
         else: result = "Memory Management SOP not found. Do not update memory."
         return StepOutcome(result, next_prompt=prompt)
+
+    def do_codegraph(self, args, response):
+        '''调用 CodeGraph MCP 代码分析工具 (42工具/38语言)'''
+        tool_name = args.get('tool_name', '')
+        tool_args = args.get('tool_args', {})
+        workspace = args.get('workspace')
+        max_files = args.get('max_files', 5000)
+
+        avail = available_tools()
+        if tool_name not in avail:
+            yield f"[CodeGraph] 未知工具: {tool_name}\n可用工具: {', '.join(avail[:10])}...\n"
+            return StepOutcome(None, next_prompt=f"未知 CodeGraph 工具 {tool_name}，从可用列表中选择")
+
+        result = codegraph_call(tool_name, tool_args, workspace=workspace, max_files=max_files)
+
+        if result.get('status') == 'success':
+            data = result.get('data', '')
+            if isinstance(data, dict):
+                data_str = json.dumps(data, indent=2, ensure_ascii=False)[:8000]
+            else:
+                data_str = str(data)[:8000]
+            if len(str(result.get('data', ''))) > 8000:
+                data_str += '\n\n...(truncated long output)'
+            yield f"[CodeGraph] {tool_name} 执行成功:\n"
+            yield data_str + '\n'
+            return StepOutcome(data)
+        else:
+            err = result.get('msg', result.get('stderr', '未知错误'))
+            yield f"[CodeGraph] {tool_name} 执行失败: {err}\n"
+            return StepOutcome(None, next_prompt=f"CodeGraph {tool_name} 出错: {err}")
 
     def turn_end_callback(self, response, tool_calls, tool_results, turn, next_prompt, exit_reason):
         _c = re.sub(r'```.*?```|<thinking>.*?</thinking>', '', response.content, flags=re.DOTALL)

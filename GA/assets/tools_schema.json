@@ -70,5 +70,15 @@
     "name": "start_long_term_update",
     "description": "Start distilling long-term memory. Call when discovering info worth remembering (env facts/user prefs/lessons learned). Skip if memory already updated or in autonomous flow. Must call when a task that took 15+ turns is completed",
     "parameters": {"type": "object", "properties": {}}}
+  },
+  {"type": "function", "function": {
+    "name": "codegraph",
+    "description": "CodeGraph MCP — 跨语言代码智能分析 (42工具/38语言)。查询依赖图/调用图/符号信息/复杂度/影响分析/搜索等。工具列表见 codegraph_available_tools()",
+    "parameters": {"type": "object", "properties": {
+      "tool_name": {"type": "string", "description": "CodeGraph 工具名，如 codegraph_get_symbol_info, codegraph_get_dependency_graph, codegraph_analyze_impact, codegraph_get_call_graph, codegraph_symbol_search, codegraph_get_module_summary 等"},
+      "tool_args": {"type": "object", "description": "工具参数字典，根据具体工具而定"},
+      "workspace": {"type": "string", "description": "[可选] 项目路径，默认 GA 根目录"},
+      "max_files": {"type": "integer", "description": "[可选] 最大索引文件数", "default": 5000}},
+      "required": ["tool_name"]}}
   }
 ]
