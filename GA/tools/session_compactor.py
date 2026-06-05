@@ -45,15 +45,9 @@ def _get_l4_path() -> str:
 
 def _get_dir_size_kb(path: str) -> float:
     """递归计算目录大小(KB)"""
-    total = 0
-    for dirpath, _, filenames in os.walk(path):
-        for f in filenames:
-            fp = os.path.join(dirpath, f)
-            try:
-                total += os.path.getsize(fp)
-            except OSError:
-                pass
-    return total / 1024
+    from tools.file_search import search_files
+    total = sum(f.stat().st_size for f in search_files("*", root=path))
+    return total / 1024.0
 
 
 def _get_compact_script() -> str:
@@ -147,10 +141,10 @@ def rotate_l4_sessions(retain_days: int = _RETENTION_DAYS) -> int:
     l4_path = _get_l4_path()
     cutoff = time.time() - retain_days * 86400
     deleted = 0
-    for fname in os.listdir(l4_path):
-        fpath = os.path.join(l4_path, fname)
-        if os.path.isfile(fpath) and os.path.getmtime(fpath) < cutoff:
-            os.remove(fpath)
+    from tools.file_search import search_files
+    for fpath in search_files("*", root=l4_path):
+        if fpath.is_file() and fpath.stat().st_mtime < cutoff:
+            os.remove(str(fpath))
             deleted += 1
     if deleted > 0:
         log.info(f"L4 轮换: 删除了 {deleted} 个超过 {retain_days} 天的会话文件")

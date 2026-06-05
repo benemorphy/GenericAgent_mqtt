@@ -1,0 +1,87 @@
+# Dead functions extracted from source files
+# Archive created: can be restored by inserting lines back
+
+
+# ===== check (from GA/reflect/goal_prism.py:57-138) =====
+def check():
+    global _prism
+    if _prism is None:
+        return '/exit'
+    
+    elapsed = time.time() - _prism['_start_time']
+    budget = _prism.get('budget_per_worker', 600)
+    
+    # Step 1: 启动尚未启动的 worker
+    for p in _prism.get('perspectives', []):
+        name = p['name']
+        if name in _prism['_workers']:
+            continue
+        
+        # 生成每个 worker 的 goal_state
+        worker_state = {
+            "objective": f"[{p['name']}] {_prism['objective']}\n聚焦: {p.get('focus', '所有方面')}",
+            "budget_seconds": budget,
+            "start_time": time.time(),
+            "turns_used": 0,
+            "max_turns": 10,
+            "status": "running",
+            "done_prompt": "__GOAL_COMPLETE__",
+            "_prism_worker": name,
+            "_prism_board": f"prism_{p['board']}"
+        }
+        
+        state_dir = os.path.join(_dir, '..', 'temp', 'prism_workers')
+        os.makedirs(state_dir, exist_ok=True)
+        state_path = os.path.join(state_dir, f"{name}.json")
+        with open(state_path, 'w', encoding='utf-8') as f:
+            json.dump(worker_state, f, ensure_ascii=False, indent=2)
+        
+        # 启动 worker (后台进程)
+        ga_dir = os.path.join(_dir, '..')
+        env = os.environ.copy()
+        env['GOAL_STATE'] = state_path
+        proc = subprocess.Popen(
+            [sys.executable, "agentmain.py", "--reflect", "reflect/goal_mode.py"],
+            cwd=ga_dir,
+            env=env,
+            creationflags=subprocess.CREATE_NO_WINDOW,
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        
+        _prism['_workers'][name] = {
+            'proc': proc,
+            'board': p['board'],
+            'status': 'running',
+            'findings': [],
+            'state_path': state_path
+        }
+        print(f"[Prism] 启动 worker [{name}] PID={proc.pid}")
+    
+    # Step 2: 检查 worker 完成状态
+    completed = 0
+    for name, w in _prism['_workers'].items():
+        if w['status'] == 'done':
+            completed += 1
+            continue
+        
+        # 检查进程是否还活着
+        alive = w['proc'].poll() is None
+        if not alive:
+            # 读取最终 state
+            if os.path.exists(w['state_path']):
+                with open(w['state_path'], 'r') as f:
+                    state = json.load(f)
+                w['findings'] = state.get('turns_used', 0)
+            w['status'] = 'done'
+            completed += 1
+            print(f"[Prism] Worker [{name}] 完成")
+    
+    # Step 3: 全部完成后返回收口
+    total = len(_prism.get('perspectives', []))
+    if completed >= total and total > 0:
+        print(f"[Prism] 全部 {total} 个 worker 完成，生成综合报告")
+        _generate_report()
+        return '/exit'
+    
+    # 返回 prompt 继续监控
+    return f"[Prism] 监控中: {completed}/{total} workers 完成, 已运行 {elapsed:.0f}s"

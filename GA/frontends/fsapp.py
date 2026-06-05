@@ -1158,11 +1158,15 @@ def main():
     start_reminder_checker(_reminder, _reminder_send, interval=30)
     # 启动 BBS 桥接推送
     _init_bbs_push()
-    print("=" * 50 + "\n飞书 Agent 已启动（长连接模式）\n" + f"App ID: {APP_ID}\n等待消息...\n" + "=" * 50)
-    retry_delay = 5
+    print("=" * 50 + "\n飞书 Agent 正在连接...\n" + f"App ID: {APP_ID}\n" + "=" * 50)
+    retry_delay = 1
+    first_connect = True
     while True:
         try:
             cli = lark.ws.Client(APP_ID, APP_SECRET, event_handler=handler, log_level=lark.LogLevel.INFO)
+            if first_connect:
+                print("[OK] 飞书 Bot 已就绪（WebSocket 连接建立中...）")
+                first_connect = False
             cli.start()
         except Exception as e:
             print(f"[WARN] 飞书长连接断开或启动失败: {e}")

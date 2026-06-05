@@ -9,7 +9,7 @@ import re
 import time
 _LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                         'temp', 'model_responses')
-_LOG_GLOB = os.path.join(_LOG_DIR, 'model_responses_*.txt')
+_LOG_GLOB = os.path.join(_LOG_DIR, 'model_responses_*.log')
 _BLOCK_RE = re.compile(r'^=== (Prompt|Response) ===.*?\n(.*?)(?=^=== (?:Prompt|Response) ===|\Z)',
                        re.DOTALL | re.MULTILINE)
 _SUMMARY_RE = re.compile(r'<summary>\s*(.*?)\s*</summary>', re.DOTALL)
@@ -107,7 +107,7 @@ def list_sessions(exclude_pid=None):
     """Newest-first list of (path, mtime, first_user_text, n_rounds)."""
     files = glob.glob(_LOG_GLOB)
     if exclude_pid is not None:
-        tag = f'model_responses_{exclude_pid}.txt'
+        tag = f'model_responses_{exclude_pid}.log'
         files = [f for f in files if not f.endswith(tag)]
     out = []
     for f in files:
@@ -143,7 +143,7 @@ def _replace_backend_history(agent, history):
 
 def _current_log_path(pid=None):
     pid = os.getpid() if pid is None else pid
-    return os.path.join(_LOG_DIR, f'model_responses_{pid}.txt')
+    return os.path.join(_LOG_DIR, f'model_responses_{pid}.log')
 
 
 def _snapshot_current_log(pid=None):
@@ -161,7 +161,7 @@ def _snapshot_current_log(pid=None):
     os.makedirs(_LOG_DIR, exist_ok=True)
     pid = os.getpid() if pid is None else pid
     stamp = time.strftime('%Y%m%d_%H%M%S')
-    snapshot = os.path.join(_LOG_DIR, f'model_responses_snapshot_{pid}_{stamp}_{time.time_ns() % 1_000_000_000:09d}.txt')
+    snapshot = os.path.join(_LOG_DIR, f'model_responses_snapshot_{pid}_{stamp}_{time.time_ns() % 1_000_000_000:09d}.log')
     with open(snapshot, 'w', encoding='utf-8', errors='replace') as fh:
         fh.write(content)
     with open(path, 'w', encoding='utf-8', errors='replace'):

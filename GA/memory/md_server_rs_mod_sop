@@ -1,0 +1,24 @@
+
+
+## Debug 经验汇总 (2026-06-05)
+
+见 `D:\open_claw_agent\Beneh\GA_tools\md_server_rs\DEBUG_SOP.md` (12条)
+
+关键教训索引:
+1. format!() 模板必须用命名占位符 `{content}` 而非 `{}` — 位置占位符可能意外匹配到其他命名参数
+2. TcpListener 只能 bind 一次，不能主线程和后台线程各 bind 一次
+3. `set_nonblocking(true)` 会传染给 TcpStream，导致 read() 立即返回 WouldBlock
+4. tao/wry event loop 必须在主线程，HTTP server 放后台线程
+5. webview 启动前需 sleep(500ms) 等 HTTP server 就绪，加 no-cache 头
+6. 调试期间移除 `#![windows_subsystem = "windows"]` 否则看不到 panic
+7. 避免用 path 做变量名（Rust 内置 attribute 名）
+8. Chrome headless --print-to-pdf 输出路径设到源文件同目录
+9. 验证闭环：kill→build→Popen→socket→HTTP→regex→visual
+10. rsplit('.').next() 取扩展名，.last() 取文件名
+11. 文件链接一律用绝对路径
+12. 浏览器 `web_scan` 可能看到缓存页，必须用 socket 直连拿原始 HTTP 确认
+
+[2026-06-05 项目更名]
+md_server_rs → mdviz
+目录: D:\open_claw_agent\Beneh\GA_tools\mdviz
+exe: target/release/mdviz.exe (1770 KB)

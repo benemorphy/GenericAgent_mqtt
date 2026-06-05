@@ -17,6 +17,25 @@ from frontends.gateway.config import MF_SERVER_URL
 router = APIRouter()
 
 
+# 代理 MindFlow 静态资源（HTML 中引用 /static/coursewares/...）
+@router.get("/static/coursewares/{path:path}")
+async def proxy_mindflow_static(path: str, request: Request):
+    query = request.url.query
+    url = f"{MF_SERVER_URL}/static/coursewares/{path}"
+    if query:
+        url += f"?{query}"
+    async with httpx.AsyncClient(timeout=30) as client:
+        try:
+            resp = await client.get(url)
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type=resp.headers.get("content-type", "application/octet-stream"),
+            )
+        except httpx.ConnectError:
+            return HTMLResponse("MindFlow 未启动", status_code=503)
+
+
 @router.get("/coursewares/{path:path}")
 async def proxy_mindflow(path: str, request: Request):
     """反向代理到 MindFlow (localhost:9900)"""

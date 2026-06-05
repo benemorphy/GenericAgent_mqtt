@@ -3,6 +3,7 @@ param([switch]$NoGateway)
 
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = (Get-Item $root).Parent.FullName
+$gaToolsRoot = Join-Path (Get-Item $projectRoot).Parent.FullName 'GA_tools'
 Set-Location $root
 $ErrorActionPreference = 'SilentlyContinue'
 
@@ -85,9 +86,9 @@ if ($p) {
     $old = Get-Process -Name "md_server_rs" -ErrorAction SilentlyContinue
     if ($old) { Stop-Process -Id $old.Id -Force; Start-Sleep 2 }
 }
-$exe = Join-Path $projectRoot 'GA_tools\md_server_rs\target\release\md_server_rs.exe'
+$exe = Join-Path $gaToolsRoot 'md_server_rs\target\release\md_server_rs.exe'
 if (-not (Test-Path $exe)) {
-    $exe = Join-Path $projectRoot 'GA_tools\md_server_rs\target\debug\md_server_rs.exe'
+    $exe = Join-Path $gaToolsRoot 'md_server_rs\target\debug\md_server_rs.exe'
 }
 if (Test-Path $exe) {
     # 服务项目根目录 (Mqtt_bbs/docs/ 下文档通过相对路径访问)
@@ -166,6 +167,23 @@ if (Test-Path $workerScript) {
     Write-Host '[!] examples\worker_agent.py 未找到，跳过 WorkerAgent' -Fore Yellow
 }
 
+# 10. Everything 全盘搜索服务 (es.exe)
+$evSvc = Get-Service -Name Everything -ErrorAction SilentlyContinue
+if ($evSvc -and $evSvc.Status -eq 'Running') {
+    Write-Host '[OK] Everything (全盘搜索) 已在运行' -Fore Green
+} else {
+    Write-Host '[..] Everything 未运行，尝试安装服务...' -Fore Yellow
+    # 以管理员身份运行：
+    & "C:\Program Files\Everything\Everything.exe" -install-service
+    Start-Service Everything
+    Start-Sleep 2
+    if ((Get-Service -Name Everything -ErrorAction SilentlyContinue).Status -eq 'Running') {
+        Write-Host '[OK] Everything 服务已安装并启动' -Fore Green
+    } else {
+        Write-Host '[!] Everything 安装失败，请手动以管理员运行安装' -Fore Red
+    }
+}
+
 Write-Host ''
 Write-Host '========================================' -Fore Cyan
 Write-Host '  Service    Port    Status' -Fore Cyan
@@ -177,7 +195,8 @@ Write-Host '  --------   ----    ------' -Fore Cyan
   @{n='simphtml_rs';  p=8901;  u='http://localhost:8901'},
   @{n='rmqtt Web UI'; p=8900;  u='http://localhost:8900'},
   @{n='MD Server';    p=8899;  u='http://localhost:8899'},
-  @{n='BoardService'; p='---'; u='MQTT BBS'; chk='board_service_rs'}
+  @{n='BoardService'; p='---'; u='MQTT BBS'; chk='board_service_rs'},
+  @{n='Everything';   p='---'; u='全盘搜索'; chk='Everything'}
 ) | ForEach-Object {
   $s = if ($_.chk) { try { if (Get-Process -Name $_.chk -ErrorAction Stop) { 'RUN' } else { 'OFF' } } catch { 'OFF' } } elseif ($_.p -eq '---') { '---' } else { try { $t = Get-NetTCPConnection -LocalPort $_.p -ErrorAction Stop; if ($t.State -eq 'Listen') { 'RUN' } else { '???' } } catch { 'OFF' } };
   $c = if ($s -eq 'RUN') { 'Green' } elseif ($s -eq 'OFF') { 'Red' } else { 'Yellow' };
@@ -204,6 +223,9 @@ foreach ($proc in $gwProcesses) { Stop-Process -Id $proc.Id -Force -ErrorAction 
 
 # 关 BoardService
 Stop-Process -Name "board_service_rs" -Force -ErrorAction SilentlyContinue
+
+# 关 Everything (仅停 GUI 进程，保留服务)
+Stop-Process -Name "Everything" -Force -ErrorAction SilentlyContinue
 
 # 关 MD Server
 Stop-Process -Name "md_server_rs" -Force -ErrorAction SilentlyContinue

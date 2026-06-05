@@ -7,6 +7,7 @@ import threading
 import urllib3
 import uuid
 from datetime import datetime
+import logging
 from tools.retry_utils import retry_stream
 from tools.config_service import ConfigService
 from tools.logger import log
@@ -661,12 +662,28 @@ def _ensure_text_block(blocks):
     return txt
 
 def _write_llm_log(label, content, log_path=None):
+    """使用 logging 模块记录 LLM 对话 (每进程独立文件)"""
     if not log_path:
-        log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'temp/model_responses/model_responses_{os.getpid()}.txt')
+        pid = os.getpid()
+        log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                f'temp/model_responses/model_responses_{pid}.log')
     os.makedirs(os.path.dirname(os.path.abspath(log_path)), exist_ok=True)
+    
+    # 获取或创建 per-file logger
+    logger_name = f"llm_{os.path.basename(log_path)}"
+    logger = logging.getLogger(logger_name)
+    if not logger.handlers:
+        logger.setLevel(logging.DEBUG)
+        fh = logging.FileHandler(log_path, encoding='utf-8', errors='replace')
+        fh.setLevel(logging.DEBUG)
+        fh.setFormatter(logging.Formatter(
+            "%(asctime)s [%(levelname)s] %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S"
+        ))
+        logger.addHandler(fh)
+    
     ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open(log_path, 'a', encoding='utf-8', errors='replace') as f:
-        f.write(f"=== {label} === {ts}\n{content}\n\n")
+    logger.info("=== %s === %s\n%s", label, ts, content)
 
 def tryparse(json_str):
     try: return json.loads(json_str)

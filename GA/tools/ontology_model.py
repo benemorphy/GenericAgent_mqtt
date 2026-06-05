@@ -1,17 +1,89 @@
 """
 Project Ontology — 基于反省的要素-关系-约束-推理模型
+                 + CodeGraph 桥接层 — 自动从代码图谱发现组件和关系
 
-从 100+ 轮交互中提取的经验本体：
-  实体 — 我操作过的所有组件（去重后）
-  关系 — 我验证过的连接
-  约束 — 我踩过的坑（可执行检查）
-  推理 — 我从失败中总结的规律
+架构：
+  1. `ENTITIES` / `RELATIONS` 仍是模块级列表，但改为懒加载：
+     首次访问时尝试从 CodeGraph DB 获取动态数据，失败则回退静态数据
+  2. 新增 `_cg_entities()` / `_cg_relations()` 调用桥接模块
+  3. 所有查询函数（query_entities / query_relations / diagnose_system）
+     优先使用 CodeGraph 动态数据
+  4. 约束/推理层保持不变（经验性规则不依赖代码结构）
 """
 
 from dataclasses import dataclass
 from typing import Optional, Callable
 import os
 import shutil
+import warnings
+
+
+# ── CodeGraph 桥接（懒加载） ──────────────────────────────────
+
+_USE_CODEGRAPH = True  # 全局开关，设为 False 可强制使用静态数据
+
+def _get_cg_bridge():
+    """懒加载桥接模块，避免循环依赖"""
+    try:
+        from tools.ontology_codegraph_bridge import (
+            discover_entities, discover_relations,
+            check_component_status, invalidate_cache as cg_invalidate,
+            db_available
+        )
+        return discover_entities, discover_relations, check_component_status, cg_invalidate, db_available
+    except Exception:
+        return None, None, None, None, lambda: False
+
+
+def _cg_entities() -> list:
+    """从 CodeGraph 获取实体，返回 Component 列表（或 None）"""
+    if not _USE_CODEGRAPH:
+        return None
+    de, _, _, _, db_ok = _get_cg_bridge()
+    if not db_ok():
+        return None
+    try:
+        raw = de()
+        if not raw:
+            return None
+        result = []
+        for r in raw:
+            result.append(Component(
+                name=r["name"],
+                component_type=r["component_type"],
+                language=r.get("language", "python"),
+                status="unknown",
+                location=r.get("path", ""),
+                verified_interactions=r.get("total_calls", 0) + r.get("total_imports", 0),
+            ))
+        return result
+    except Exception:
+        return None
+
+
+def _cg_relations() -> list:
+    """从 CodeGraph 获取关系，返回 Relation 列表（或 None）"""
+    if not _USE_CODEGRAPH:
+        return None
+    _, dr, _, _, db_ok = _get_cg_bridge()
+    if not db_ok():
+        return None
+    try:
+        raw = dr()
+        if not raw:
+            return None
+        result = []
+        for r in raw:
+            result.append(Relation(
+                source=r["source"],
+                relation_type=r["relation_type"],
+                target=r["target"],
+                context=r.get("metadata", ""),
+                verified=True,
+            ))
+        return result
+    except Exception:
+        return None
 
 
 # ══════════════════════════════════════════════════════════════
@@ -480,27 +552,46 @@ def check_constraints(state: dict) -> list[str]:
     return []
 
 
-def query_relations(entity: str, relation_type: str = None) -> list[Relation]:
-    """查询指定实体的所有关系"""
-    if relation_type:
-        return [r for r in RELATIONS if (r.source == entity or r.target == entity) and r.relation_type == relation_type]
-    return [r for r in RELATIONS if r.source == entity or r.target == entity]
-
-
-def query_entities(component_type: str = None) -> list[Component]:
-    """查询实体列表，可按类型过滤"""
-    if component_type:
-        return [e for e in ENTITIES if e.component_type == component_type]
+def _get_entities() -> list[Component]:
+    """获取实体列表：优先 CodeGraph，回退静态数据"""
+    cg = _cg_entities()
+    if cg is not None and len(cg) > 0:
+        return cg
     return list(ENTITIES)
 
 
+def _get_relations() -> list[Relation]:
+    """获取关系列表：优先 CodeGraph，回退静态数据"""
+    cg = _cg_relations()
+    if cg is not None and len(cg) > 0:
+        return cg
+    return list(RELATIONS)
+
+
+def query_relations(entity: str, relation_type: str = None) -> list[Relation]:
+    """查询指定实体的所有关系（优先 CodeGraph 动态数据）"""
+    relations = _get_relations()
+    if relation_type:
+        return [r for r in relations if (r.source == entity or r.target == entity) and r.relation_type == relation_type]
+    return [r for r in relations if r.source == entity or r.target == entity]
+
+
+def query_entities(component_type: str = None) -> list[Component]:
+    """查询实体列表，可按类型过滤（优先 CodeGraph 动态数据）"""
+    entities = _get_entities()
+    if component_type:
+        return [e for e in entities if e.component_type == component_type]
+    return list(entities)
+
+
 def diagnose_system() -> dict:
-    """运行完整检查+推理，返回诊断结果"""
+    """运行完整检查+推理，返回诊断结果（实体部分使用 CodeGraph 动态数据）"""
     checks = run_checks({})
+    entities = _get_entities()
     context = {
         "checks": checks,
-        "service_count": len([e for e in ENTITIES if e.component_type == "service"]),
-        "running_count": len([e for e in ENTITIES if e.status.startswith("running")]),
+        "service_count": len([e for e in entities if e.component_type == "service"]),
+        "running_count": len([e for e in entities if e.status.startswith("running")]),
         "board_service_running": any(c["name"] == "BoardService (Rust) 必须运行" and c.get("severity") == "error" for c in checks) is False,
     }
 
@@ -513,13 +604,16 @@ def diagnose_system() -> dict:
         "checks": checks,
         "inferences": inferences,
         "summary": f"{len(checks)} 个检查不通过 / {len(inferences)} 条推理匹配",
-        "entities": [(e.name, e.component_type, e.status) for e in ENTITIES],
+        "entities": [(e.name, e.component_type, e.status) for e in entities],
+        "service_count": sum(1 for e in entities if e.component_type == "service"),
+        "running_count": sum(1 for e in entities if e.status.startswith("running")),
+        "source": "codegraph" if _cg_entities() is not None else "static",
     }
 
 
 def find_entity(name: str) -> Optional[Component]:
-    """按名称查找实体"""
-    for e in ENTITIES:
+    """按名称查找实体（优先 CodeGraph）"""
+    for e in _get_entities():
         if e.name.lower() == name.lower():
             return e
     return None

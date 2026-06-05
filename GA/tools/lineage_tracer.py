@@ -29,7 +29,7 @@ class LineageTracer:
         schema = os.path.join(os.path.dirname(self.db_path), "lineage_schema.sql")
         conn = sqlite3.connect(self.db_path)
         if os.path.exists(schema):
-            conn.executescript(open(schema, "r").read())
+            conn.executescript(open(schema, "r", encoding="utf-8").read())
         else:
             conn.executescript("""
                 CREATE TABLE IF NOT EXISTS lineage (

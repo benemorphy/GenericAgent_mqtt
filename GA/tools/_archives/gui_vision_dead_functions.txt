@@ -1,0 +1,226 @@
+# Dead functions extracted from source files
+# Archive created: can be restored by inserting lines back
+
+
+# ===== understand_window (from GA/tools/gui_vision.py:483-606) =====
+def understand_window(title: str, backend: str = "offline", fallback: bool = True):
+    """
+    理解窗口界面 - 双层架构 (默认使用rapidocr本地OCR)
+
+    参数:
+        title: 窗口标题关键词
+        backend: "offline"(默认) | "auto" | "local"
+        fallback: auto模式下local失败是否回退到offline
+
+    返回:
+        dict: {status, backend_used, ui_elements, window_meta, ocr_texts, summary, error, ...}
+    """
+    start = time.time()
+    degration_events = []
+
+    # 截图
+    try:
+        img, hwnd, meta = _capture_window(title)
+    except Exception as e:
+        err_msg = f"截图失败: {type(e).__name__}: {e}"
+        return {"status": "error", "error": err_msg}
+
+    base_result = {
+        "backend_used": backend,
+        "window_meta": meta,
+        "ocr_texts": [],
+        "raw_vlm": None,
+        "elapsed": 0,
+        "degration_events": [],
+        "img_size": [meta.get('original_width', 0), meta.get('original_height', 0)],
+        "client_origin": meta.get('client_origin'),
+    }
+
+    # --- 本地VLM ---
+    if backend in ('auto', 'local'):
+        # VLM缓存检查
+        cache_key = _get_cache_key(meta)
+        cached = _check_cache(cache_key)
+        if cached is not None:
+            cached['cached'] = True
+            cached['cached_at'] = cached.get('elapsed', 0)
+            cached['elapsed'] = time.time() - start
+            return cached
+
+        # 确定当前阶段的超时时间
+        current_timeout = BACKEND_TIMEOUTS.get('auto' if backend == 'auto' else 'local', 5)
+
+        vlm_result = None
+        try:
+            # 使用线程池实现超时控制
+            from concurrent.futures import ThreadPoolExecutor, TimeoutError
+            with ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(
+                    _analyze_vlm, img, 'local', UI_PROMPT,
+                    timeout=current_timeout, window_meta=meta
+                )
+                vlm_result = future.result(timeout=current_timeout + 2)  # +2s buffer
+
+            if vlm_result and vlm_result.get('status') == 'ok':
+                base_result.update(vlm_result)
+                base_result['backend_used'] = 'local'
+                base_result['elapsed'] = time.time() - start
+                base_result['degration_events'] = degration_events
+                _set_cache(cache_key, dict(base_result))
+                return base_result
+            else:
+                err = vlm_result.get('error', '未知错误') if vlm_result else '无返回'
+                _log_degration_event('vlm_fail', f"local VLM返回失败: {err}", meta)
+                degration_events.append({'event': 'vlm_fail', 'reason': err})
+                print(f"[gui_vision] local 失败: {err}")
+        except TimeoutError:
+            _log_degration_event('vlm_timeout', f"local VLM超时({current_timeout}s)", meta)
+            degration_events.append({'event': 'vlm_timeout', 'reason': f'超时{current_timeout}s'})
+            print(f"[gui_vision] local 超时({current_timeout}s)")
+        except Exception as e:
+            _log_degration_event('vlm_exception', f"local VLM异常: {type(e).__name__}: {e}", meta)
+            degration_events.append({'event': 'vlm_exception', 'reason': str(e)})
+            print(f"[gui_vision] local 异常: {e}")
+            traceback.print_exc()
+
+        # local失败，fallback到offline
+        if not fallback:
+            return {**base_result, "status": "error",
+                    "error": "local VLM不可用",
+                    "degration_events": degration_events,
+                    "elapsed": time.time() - start}
+
+        # 记录降级事件
+        if vlm_result is None or vlm_result.get('status') != 'ok':
+            _log_degration_event('fallback_to_offline', f"从{backend}降级到offline", meta)
+            degration_events.append({'event': 'fallback_to_offline', 'reason': f'{backend}→offline'})
+
+    # --- offline (带超时) ---
+    offline_start = time.time()
+    try:
+        from concurrent.futures import ThreadPoolExecutor, TimeoutError
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(_analyze_offline, img, hwnd, window_meta=meta)
+            offline_result = future.result(timeout=BACKEND_TIMEOUTS['offline'])
+    except TimeoutError:
+        _log_degration_event('offline_timeout', f"offline OCR超时({BACKEND_TIMEOUTS['offline']}s)", meta)
+        degration_events.append({'event': 'offline_timeout', 'reason': f'超时{BACKEND_TIMEOUTS["offline"]}s'})
+        offline_result = {
+            "status": "error",
+            "ui_elements": [],
+            "ocr_texts": [],
+            "error": f"OCR超时(>{BACKEND_TIMEOUTS['offline']}s)",
+            "summary": f"窗口'{meta.get('title', '')}' - OCR超时",
+        }
+    except Exception as e:
+        print(f"[gui_vision] offline 异常: {e}")
+        offline_result = {
+            "status": "error",
+            "ui_elements": [],
+            "ocr_texts": [],
+            "error": str(e),
+            "summary": f"窗口'{meta.get('title', '')}' - OCR异常",
+        }
+
+    base_result.update(offline_result)
+    base_result['backend_used'] = 'offline'
+    base_result['degration_events'] = degration_events
+    base_result['elapsed'] = time.time() - start
+    return base_result
+
+# ===== _analyze_vlm (from GA/tools/gui_vision.py:272-366) =====
+def _analyze_vlm(img, backend: str, prompt: str, timeout: int,
+                 window_meta: dict = None) -> dict:
+    """调用VLM分析截图，返回带bbox坐标的UI元素"""
+    if not _HAS_VISION:
+        return {"status": "error", "error": "vision_api不可用"}
+
+    # 获取缩放比例(若截图被resize，OCR/VLM坐标需还原到原始尺寸)
+    meta = window_meta or {}
+    orig_w = meta.get('original_width', img.width)
+    orig_h = meta.get('original_height', img.height)
+    scale_x = orig_w / img.width if img.width > 0 else 1.0
+    scale_y = orig_h / img.height if img.height > 0 else 1.0
+
+    # VLM专用缩放到最长边阈值（OCR不受影响）
+    if backend in ('local', 'auto') and max(img.size) > VLM_MAX_SIDE:
+        ratio = VLM_MAX_SIDE / max(img.size)
+        new_w = int(img.width * ratio)
+        new_h = int(img.height * ratio)
+        img = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+        print(f"  📐 VLM缩放: {orig_w}×{orig_h} → {new_w}×{new_h} (阈值{VLM_MAX_SIDE}px)")
+        scale_x = orig_w / img.width if img.width > 0 else 1.0
+        scale_y = orig_h / img.height if img.height > 0 else 1.0
+
+    # ask_vision 签名: ask_vision(image_input, prompt, timeout, ...)
+    raw = ask_vision(img, prompt, backend=backend, timeout=timeout)
+    if not raw or raw.startswith("Error"):
+        return {"status": "error", "error": raw}
+
+    # 解析VLM输出为结构化UI元素(含百分比坐标)
+    elements = []
+    lines = raw.split('\n')
+    for line in lines:
+        line = line.strip()
+        # 匹配 "- [type|pct_x%,pct_y%,pct_w%,pct_h%] text" 格式
+        if line.startswith('- ['):
+            try:
+                end_bracket = line.index(']')
+                # 解析type|coords
+                bracket_content = line[3:end_bracket].strip()
+                text = line[end_bracket+1:].strip()
+                if '|' in bracket_content:
+                    el_type, coord_str = bracket_content.split('|', 1)
+                    el_type = el_type.strip().lower()
+                else:
+                    # 兼容无|格式: "type, x, y, w, h" 或 "x, y, w, h" 
+                    parts_comma = [p.strip() for p in bracket_content.split(',')]
+                    if len(parts_comma) == 5:
+                        # [type, x, y, w, h] 格式
+                        el_type = parts_comma[0].strip().lower()
+                        coord_str = ','.join(parts_comma[1:])
+                    elif len(parts_comma) == 4:
+                        # [x, y, w, h] 格式（纯坐标无type）
+                        el_type = 'element'
+                        coord_str = ','.join(parts_comma)
+                    else:
+                        el_type = bracket_content.strip().lower()
+                        coord_str = ''
+                
+                if coord_str:
+                    # 解析 "x%,y%,w%,h%" （兼容无%）
+                    parts = [p.strip().rstrip('%') for p in coord_str.split(',')]
+                    if len(parts) == 4:
+                        try:
+                            pct_x, pct_y, pct_w, pct_h = map(float, parts)
+                            # 百分比 → resize后图像像素 → 原始图像像素
+                            x = int(pct_x / 100.0 * img.width * scale_x)
+                            y = int(pct_y / 100.0 * img.height * scale_y)
+                            w = int(pct_w / 100.0 * img.width * scale_x)
+                            h_val = int(pct_h / 100.0 * img.height * scale_y)
+                            element = {
+                                'type': el_type,
+                                'text': text,
+                                'bbox': [x, y, w, h_val],
+                            }
+                            elements.append(element)
+                            continue
+                        except (ValueError, ZeroDivisionError):
+                            pass
+                # fallback: 无坐标格式，按原方式解析
+                el_type = bracket_content.strip().lower()
+                if text:
+                    elements.append({'type': el_type, 'text': text})
+            except ValueError:
+                continue
+
+    # 提取summary（非元素行）
+    summary_lines = [l for l in lines if l.strip() and not l.strip().startswith('- [')]
+    summary = ' '.join(summary_lines)[:200]
+
+    return {
+        "status": "ok",
+        "raw_vlm": raw,
+        "ui_elements": elements,
+        "summary": summary,
+    }

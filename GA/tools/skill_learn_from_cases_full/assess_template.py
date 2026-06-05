@@ -294,9 +294,11 @@ def run_practical_test():
     practice_dir = os.path.join(os.path.dirname(__file__), "..", "practice")
     hook_files = []
     if os.path.isdir(practice_dir):
-        for f in sorted(os.listdir(practice_dir)):
-            if f.endswith(".py") and f != "__init__.py":
-                hook_files.append(os.path.join(practice_dir, f))
+        from tools.file_search import search_files
+        hook_files = sorted(
+            str(f) for f in search_files("*.py", root=practice_dir)
+            if f.name != "__init__.py"
+        )
 
     if hook_files:
         border = "-" * 50

@@ -259,3 +259,65 @@ HB#1 @ 2026-06-04 22:14
 # heartbeat | hb1
 HB#1 @ 2026-06-04 22:19
 事件: ["[{'name': 'code_run'}, {'name': 'file_read'}]", "[{'name': 'code_run'}]", "[{'name': 'code_run'}]", "['ok', 'ok']", "['ok']"]
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-05 11:13
+事件: ['[]', "[{'name': 'code_run'}]", "[{'name': 'code_run'}, {'name': 'file_read'}]", "[{'name': 'code_run'}]", "[{'name': 'code_run'}]"]
+
+## [HEARTBEAT]
+# heartbeat | hb2
+HB#2 @ 2026-06-05 11:23
+事件: ['[]', "['success']", 'D:\\open_claw_agent\\Beneh\\GA_tools\\mdviz，输入路径栏，点击跳转之后，出现404,也无法回退，只能关闭应用']
+
+## [HEARTBEAT]
+# heartbeat | hb3
+HB#3 @ 2026-06-05 11:24
+事件: ['[]', "['success']", '修复之后，测试了再交付']
+
+## [HEARTBEAT]
+# heartbeat | hb4
+HB#4 @ 2026-06-05 11:28
+事件: ['[]', "['success']", '补充，在地址栏输入地址之后，接受enter键输入，等同跳转']
+
+## [HEARTBEAT]
+# heartbeat | hb5
+HB#5 @ 2026-06-05 11:29
+事件: ['[]', "['success']", '最好不要出现黑窗：\nmd_server_rs running on http://127.0.0.1:20000/']
+
+## [HEARTBEAT]
+# heartbeat | hb6
+HB#6 @ 2026-06-05 11:39
+事件: ['[]', "['success']", '导出时，没有使用用户选择的主题样式导出']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-05 13:06
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-05 13:07
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-05 13:07
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-05 13:18
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-05 13:18
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+
+## [ONTOLOGY_CODEGRAPH_BRIDGE]
+# ontology_model.py 已接入 CodeGraph 桥接层 (query_entities/query_relations/diagnose_system 优先动态数据)
+# 桥接模块: tools/ontology_codegraph_bridge.py (自动发现189+实体/514+关系, 5min缓存, 静默回退静态)
+# 关闭: ontology_model.py 中 _USE_CODEGRAPH = False
+# DB: D:\open_claw_agent\Beneh\.codegraph\codegraph.db (5746节点/11366边/276文件)
