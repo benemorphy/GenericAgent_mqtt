@@ -51,8 +51,8 @@ FILE_HINT = "If you need to show files to user, use [FILE:filepath] in your resp
 TAG_PATS = [r"<" + t + r">.*?</" + t + r">" for t in ("thinking", "summary", "tool_use", "file_content")]
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESTORE_GLOBS = (
-    os.path.join(PROJECT_ROOT, "temp", "model_responses", "model_responses_*.txt"),
-    os.path.join(PROJECT_ROOT, "temp", "model_responses_*.txt"),
+    os.path.join(PROJECT_ROOT, "temp", "model_responses", "model_responses_*.log"),
+    os.path.join(PROJECT_ROOT, "temp", "model_responses_*.log"),
 )
 RESTORE_BLOCK_RE = re.compile(
     r"^=== (Prompt|Response) ===.*?\n(.*?)(?=^=== (?:Prompt|Response) ===|\Z)",
@@ -89,8 +89,9 @@ def split_text(text, limit):
 
 def _restore_log_files():
     files = []
+    from tools.file_search import search_files
     for pattern in RESTORE_GLOBS:
-        files.extend(glob.glob(pattern))
+        files.extend(str(f) for f in search_files(pattern))
     return sorted(set(files))
 
 

@@ -1,0 +1,99 @@
+# Dead functions extracted from source files
+# Archive created: can be restored by inserting lines back
+
+
+# ===== cmd_log (from GA/tools/failure_tracker.py:63-156) =====
+def cmd_log(args):
+    """记录一次失败"""
+    data = _load()
+
+    fid = f"F_{data['next_failure_id']:04d}"
+    data["next_failure_id"] += 1
+
+    sig = _compute_signature(args.error[:200] if args.error else "", args.type)
+
+    entry = {
+        "failure_id": fid,
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "time": datetime.now().strftime("%H:%M"),
+        "task": args.task or "",
+        "operation": args.operation or "",
+        "failure_type": args.type,
+        "severity": args.severity or "moderate",
+        "error_sig": args.error[:200] if args.error else "",
+        "signature_hash": sig,
+        "context": args.context or "",
+        "root_cause": args.root_cause or "",
+        "resolution": args.resolution or "",
+        "pattern_ids": [],
+        "session_id": args.session or ""
+    }
+
+    data["failures"].append(entry)
+
+    # 检查是否已有相同签名的失败
+    same_sig_failures = [f for f in data["failures"] if f["signature_hash"] == sig and f["failure_id"] != fid]
+
+    if len(same_sig_failures) == 1:
+        # 第2次同类失败 → 标记疑似模式
+        pattern_id = f"P_{data['next_pattern_id']:04d}"
+        data["next_pattern_id"] += 1
+        data["patterns"][pattern_id] = {
+            "pattern_id": pattern_id,
+            "name": f"重复失败: {args.type}",
+            "failure_type": args.type,
+            "signature_hash": sig,
+            "symptoms": [args.error[:100]] if args.error else [],
+            "suspected_root_cause": "",
+            "workaround": "",
+            "fix": "",
+            "occurrences": 2,
+            "status": "pending",
+            "failure_ids": [same_sig_failures[0]["failure_id"], fid],
+            "created": datetime.now().strftime("%Y-%m-%d"),
+            "resolved": None
+        }
+        entry["pattern_ids"].append(pattern_id)
+        same_sig_failures[0]["pattern_ids"].append(pattern_id)
+
+        print(f"[!] Pattern {pattern_id} detected (2 occurrences): {args.type}")
+        print("    Status: PENDING — one more occurrence will trigger auto-learning")
+
+    elif len(same_sig_failures) >= 2:
+        # 第3+次同类失败 → 确认模式 + 自动触发学习建议
+        # 找对应的pattern
+        for pid, pat in data["patterns"].items():
+            if pat["signature_hash"] == sig and pat["status"] == "pending":
+                pat["occurrences"] += 1
+                pat["failure_ids"].append(fid)
+                pat["status"] = "confirmed"
+                entry["pattern_ids"].append(pid)
+                pat["resolved"] = None
+
+                print(f"[!!] Pattern {pid} CONFIRMED ({pat['occurrences']} occurrences): {args.type}")
+                print("    Action required: run auto-learning pipeline")
+                print(f"    Suggested: python tools/skill_learn_from_cases_full \"{args.type}\"")
+
+                # 如果是critical, 建议写入全局记忆
+                if args.severity == "critical":
+                    print("    [CRITICAL] Consider adding to global_mem_insight.txt RULES")
+                break
+        else:
+            # 已经有confirmed pattern, 继续计数
+            for pid, pat in data["patterns"].items():
+                if pat["signature_hash"] == sig:
+                    pat["occurrences"] += 1
+                    pat["failure_ids"].append(fid)
+                    entry["pattern_ids"].append(pid)
+                    break
+    else:
+        print(f"[i] Failure {fid} recorded (first of this type)")
+
+    _save(data)
+
+    # 输出仪表盘信息
+    stats = _compute_stats(data)
+    print(f"\n    Failure stats: {stats['total']} total, {stats['patterns_pending']} pending patterns, "
+          f"{stats['patterns_confirmed']} confirmed")
+
+    return entry

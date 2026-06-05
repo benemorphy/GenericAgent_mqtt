@@ -60,12 +60,13 @@ class ReflectionEngine:
         py_dir = os.path.join(self.root, "Mqtt_bbs_server")
         if not os.path.isdir(py_dir):
             return found
-        for f in sorted(glob.glob(os.path.join(py_dir, "*.py"))):
+        from tools.file_search import search_files
+        for f in sorted(search_files("*.py", root=py_dir)):
             name = os.path.splitext(os.path.basename(f))[0]
             if name.startswith("_"):
                 continue
             found[name] = {
-                "path": f,
+                "path": str(f),
                 "size": os.path.getsize(f),
                 "modified": os.path.getmtime(f)
             }
@@ -78,14 +79,15 @@ class ReflectionEngine:
             os.path.join(self.root, "Mqtt_bbs", "tools", "Mqtt_bbs_rs"),
             os.path.join(self.root, "Mqtt_bbs", "tools", "board_service_rs"),
         ]
+        from tools.file_search import search_files
         for rs_dir in rs_dirs:
             src = os.path.join(rs_dir, "src")
             if not os.path.isdir(src):
                 continue
-            for f in sorted(glob.glob(os.path.join(src, "**", "*.rs"), recursive=True)):
+            for f in sorted(search_files("*.rs", root=src)):
                 name = os.path.splitext(os.path.basename(f))[0]
-                found[os.path.relpath(f, src)] = {
-                    "path": f,
+                found[os.path.relpath(str(f), src)] = {
+                    "path": str(f),
                     "size": os.path.getsize(f),
                     "modified": os.path.getmtime(f)
                 }

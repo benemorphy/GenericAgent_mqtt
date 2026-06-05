@@ -123,7 +123,7 @@ if __name__ == '__main__':
     if args.feishu:
         fsproc = subprocess.Popen([sys.executable, os.path.join(frontends_dir, "fsapp.py")], creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
         atexit.register(fsproc.kill)
-        print('[Launch] Feishu Bot started')
+        print('[Launch] Feishu Bot starting (background)...')
     else: print('[Launch] Feishu Bot not enabled (use --feishu to start)')
 
     if args.wechat:

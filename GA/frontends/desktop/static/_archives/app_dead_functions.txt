@@ -1,0 +1,134 @@
+# Dead functions extracted from source files
+# Archive created: can be restored by inserting lines back
+
+
+# ===== initSearch (from GA/frontends/desktop/static/app.js:1897-2025) =====
+(function initSearch() {
+  const searchBar = document.getElementById('search-bar');
+  const searchInput = document.getElementById('search-input');
+  const searchClose = document.getElementById('search-close');
+  const searchPrev = document.getElementById('search-prev');
+  const searchNext = document.getElementById('search-next');
+  const searchCount = document.getElementById('search-count');
+
+  let highlights = [];
+  let currentIdx = -1;
+
+  function openSearch() {
+    searchBar.classList.remove('hidden');
+    searchBar.classList.add('visible');
+    searchInput.focus();
+    searchInput.select();
+  }
+
+  function closeSearch() {
+    searchBar.classList.remove('visible');
+    searchBar.classList.add('hidden');
+    clearHighlights();
+    searchInput.value = '';
+    searchCount.textContent = '';
+  }
+
+  function clearHighlights() {
+    highlights.forEach(el => {
+      const parent = el.parentNode;
+      if (parent) {
+        parent.replaceChild(document.createTextNode(el.textContent), el);
+        parent.normalize();
+      }
+    });
+    highlights = [];
+    currentIdx = -1;
+  }
+
+  function doSearch(query) {
+    clearHighlights();
+    if (!query) { searchCount.textContent = ''; return; }
+
+    const chatArea = document.getElementById('messages');
+    const walker = document.createTreeWalker(chatArea, NodeFilter.SHOW_TEXT, null);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    const lowerQ = query.toLowerCase();
+    textNodes.forEach(node => {
+      const text = node.textContent;
+      const lower = text.toLowerCase();
+      let idx = lower.indexOf(lowerQ);
+      if (idx === -1) return;
+
+      const frag = document.createDocumentFragment();
+      let lastIdx = 0;
+      while (idx !== -1) {
+        frag.appendChild(document.createTextNode(text.slice(lastIdx, idx)));
+        const mark = document.createElement('mark');
+        mark.className = 'search-highlight';
+        mark.textContent = text.slice(idx, idx + query.length);
+        frag.appendChild(mark);
+        highlights.push(mark);
+        lastIdx = idx + query.length;
+        idx = lower.indexOf(lowerQ, lastIdx);
+      }
+      frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+      node.parentNode.replaceChild(frag, node);
+    });
+
+    searchCount.textContent = highlights.length ? `1/${highlights.length}` : '0';
+    if (highlights.length) { currentIdx = 0; scrollToHighlight(); }
+  }
+
+  function scrollToHighlight() {
+    highlights.forEach((el, i) => el.classList.toggle('active', i === currentIdx));
+    if (highlights[currentIdx]) {
+      // Expand any collapsed ancestor turns so the match is visible
+      let ancestor = highlights[currentIdx].parentElement;
+      while (ancestor && ancestor !== document.body) {
+        if (ancestor.classList.contains('turn') && ancestor.classList.contains('collapsed')) {
+          ancestor.classList.remove('collapsed');
+        }
+        ancestor = ancestor.parentElement;
+      }
+      highlights[currentIdx].scrollIntoView({ block: 'center', behavior: 'smooth' });
+      searchCount.textContent = `${currentIdx + 1}/${highlights.length}`;
+    }
+  }
+
+  function nextMatch() { if (!highlights.length) return; currentIdx = (currentIdx + 1) % highlights.length; scrollToHighlight(); }
+  function prevMatch() { if (!highlights.length) return; currentIdx = (currentIdx - 1 + highlights.length) % highlights.length; scrollToHighlight(); }
+
+  // Event listeners
+  searchClose.addEventListener('click', closeSearch);
+  searchPrev.addEventListener('click', prevMatch);
+  searchNext.addEventListener('click', nextMatch);
+
+  let searchTimeout;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => doSearch(searchInput.value), 200);
+  });
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.shiftKey ? prevMatch() : nextMatch(); e.preventDefault(); }
+    if (e.key === 'Escape') { closeSearch(); e.preventDefault(); }
+  });
+
+  // Global shortcut: Cmd+F (Mac) / Ctrl+F (Win/Linux)
+  // Note: On macOS Electron intercepts Cmd+F via menu accelerator,
+  // so we also listen for IPC 'open-search' from main process.
+  document.addEventListener('keydown', (e) => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    const mod = isMac ? e.metaKey : e.ctrlKey;
+    if (mod && e.key === 'f') {
+      e.preventDefault();
+      openSearch();
+    }
+    if (e.key === 'Escape' && searchBar.classList.contains('visible')) {
+      e.preventDefault();
+      closeSearch();
+    }
+  });
+
+  // Listen for IPC from main process (menu accelerator on macOS)
+  if (window.ga && window.ga.onOpenSearch) {
+    window.ga.onOpenSearch(() => openSearch());
+  }
+})();

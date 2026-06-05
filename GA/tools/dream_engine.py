@@ -220,8 +220,9 @@ def score_feasibility(domain_a: str, domain_b: str, detail: str = "") -> dict:
     factors = {}
 
     # 1. 已有工具可用的加分
+    from tools.file_search import search_files
     tools_dir = Path(__file__).resolve().parent
-    existing_tools = [f.stem for f in tools_dir.glob("*.py")]
+    existing_tools = [f.stem for f in search_files("*.py", root=tools_dir)]
     domain_keywords = (domain_a + " " + domain_b).lower().split()
     overlap = sum(1 for kw in domain_keywords if any(kw in t for t in existing_tools))
     factors["has_existing_tool"] = min(overlap * 0.15, 0.3)
@@ -229,7 +230,7 @@ def score_feasibility(domain_a: str, domain_b: str, detail: str = "") -> dict:
 
     # 2. 领域熟悉度 (基于内存中的SOP数量)
     memory_dir = tools_dir.parent / "memory"
-    sop_files = list(memory_dir.glob("*sop*")) + list(memory_dir.glob("*SOP*"))
+    sop_files = search_files("*sop*", root=memory_dir) + search_files("*SOP*", root=memory_dir)
     sop_names = " ".join(f.stem.lower() for f in sop_files)
     fam_score = sum(0.05 for kw in domain_keywords if kw in sop_names)
     factors["domain_familiarity"] = min(fam_score, 0.2)

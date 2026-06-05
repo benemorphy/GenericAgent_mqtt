@@ -159,7 +159,7 @@ def batch_process(src, l4_dir=None, dry_run=True):
     """Batch compress + extract history + archive. dry_run=True is safe default."""
     l4_dir = os.path.normpath(l4_dir or L4_DIR)
     raw_files = sorted(src) if isinstance(src, (list, tuple)) else \
-                sorted(glob.glob(os.path.join(src, 'model_responses_*.txt')))
+                sorted(glob.glob(os.path.join(src, 'model_responses_*.log')))
     if not raw_files:
         print("No raw files found"); return {'processed': 0, 'skipped': 0, 'errors': 0, 'new_sessions': 0}
 

@@ -1,0 +1,84 @@
+# Dead functions extracted from source files
+# Archive created: can be restored by inserting lines back
+
+
+# ===== run (from Mqtt_bbs_server/dag.py:128-206) =====
+    def run(self, board, timeout: float = 300) -> dict[str, dict]:
+        """
+        执行 DAG 工作流（阻塞直到完成或超时）
+
+        参数:
+            board: AgentBoard 实例
+            timeout: 整体超时
+
+        返回: task_name → TaskOutput dict
+        """
+        errors = self.validate()
+        if errors:
+            raise ValueError(f"DAG 校验失败: {', '.join(errors)}")
+
+        deadline = time.time() + timeout
+        tid_map = {}  # task_name → task_id
+
+        while time.time() < deadline:
+            # 检查是否全部完成
+            completed = {n for n, s in self._statuses.items()
+                         if s in (TaskStatus.SUCCESS, TaskStatus.FAILED, TaskStatus.SKIPPED)}
+            if len(completed) == len(self._tasks):
+                break
+
+            # 获取就绪任务
+            ready = self._ready_tasks()
+            for name in ready:
+                task = self._tasks[name]
+                self._statuses[name] = TaskStatus.RUNNING
+                # 发布任务
+                if task.target_agent:
+                    tid = board.post_task_routed(
+                        task.name, task.input,
+                        target_agent_id=task.target_agent,
+                    )
+                elif task.capability:
+                    tid = board.post_task_routed(
+                        task.name, task.input,
+                        target_capability=task.capability,
+                    )
+                else:
+                    tid = board.post_task(task.name, task.input)
+                tid_map[name] = tid
+                log.info(f"[DAG] [START] 启动任务 '{name}' → {tid}")
+
+            # 轮询完成的任务
+            for name, tid in list(tid_map.items()):
+                if self._statuses[name] != TaskStatus.RUNNING:
+                    continue
+                try:
+                    output = board.wait_task(tid, timeout=min(30, deadline - time.time()))
+                    if output and output.get("status") == "completed":
+                        self._results[name] = output
+                        self._statuses[name] = TaskStatus.SUCCESS
+                        log.info(f"[DAG] [OK] 任务 '{name}' 完成")
+                    else:
+                        # 重试逻辑
+                        task = self._tasks[name]
+                        if task.retry > 0:
+                            task.retry -= 1
+                            self._statuses[name] = TaskStatus.PENDING
+                            log.info(f"[DAG] [SYNC] 重试 '{name}' (剩余{task.retry})")
+                        else:
+                            self._results[name] = output or {}
+                            self._statuses[name] = TaskStatus.FAILED
+                            log.warning(f"[DAG] [FAIL] 任务 '{name}' 失败")
+                except Exception as e:
+                    log.warning(f"[DAG] [WARN] 等待任务 '{name}' 异常: {e}")
+
+            time.sleep(0.5)
+
+        # 返回结果
+        return {
+            name: {
+                "status": self._statuses[name].value,
+                "result": self._results.get(name, {}).get("result"),
+            }
+            for name in self._tasks
+        }
