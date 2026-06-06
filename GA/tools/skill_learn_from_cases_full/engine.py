@@ -298,209 +298,43 @@ def _llm_generate_search_queries(skill_name: str) -> list[str] | None:
 
 
 def _phase2_search(ctx: dict):
-    """双渠道搜索案例（LLM增强版）"""
+    """双渠道搜索案例（编排版）"""
     print(f"\n{'-'*55}")
     print("  Phase 2: 案例搜索")
     print(f"{'-'*55}")
 
     all_cases = []
 
-    # 渠道 A: Skill Hub（仅保留与技能名关键词重叠的结果）
-    search_fn = _import_skill_search()
-    if search_fn:
-        try:
-            # 提取技能名的有区分度关键词（过滤通用词如 program/language/learn）
-            _skill_name = ctx["skill_name"].lower().replace("_", " ")
-            _skill_tokens = set(_skill_name.split())
-            _generic_tokens = {"program", "programming", "language", "languages", "learn", "learning",
-                               "tutorial", "guide", "basic", "advanced", "using", "with", "and", "for",
-                               "development", "developer", "coding", "code", "script", "scripting"}
-            _sig_tokens = _skill_tokens - _generic_tokens
-            # 如果技能名有中文，将整个技能名作为关键词
-            _has_cjk = any('\u4e00' <= c <= '\u9fff' for c in _skill_name)
-            if _has_cjk:
-                _sig_tokens.add(_skill_name.strip())
-            
-            results = search_fn(ctx["skill_name"].replace("_", " "), top_k=10)
-            skill_cases = []
-            for r in results:
-                s = r.skill
-                _key_lower = (s.key + " " + (s.description or "") + " " + " ".join(s.tags or [])).lower()
-                # 过滤 agentskill_skills/ 开头的内部技能定义（不是真实案例）
-                if s.key.startswith("agentskill_skills/"):
-                    continue
-                # 计算关键词重叠：至少有一个有区分度的词出现在结果中
-                _overlap = sum(1 for t in _sig_tokens if t in _key_lower)
-                _relevance = "low"
-                if _overlap >= 2 or (_sig_tokens and any(t in s.key.lower() for t in _sig_tokens)):
-                    _relevance = "high"
-                elif _overlap >= 1:
-                    _relevance = "medium"
-                
-                # 只保留 medium 以上
-                if _relevance != "low":
-                    skill_cases.append({
-                        "source": "skill_hub",
-                        "type": "skill_def",
-                        "key": s.key,
-                        "description": (s.description[:300] if s.description else ""),
-                        "tags": s.tags[:5] if s.tags else [],
-                        "score": r.final_score,
-                        "relevance": _relevance
-                    })
-            all_cases.extend(skill_cases)
-            print(f"  Skill Hub: {len(skill_cases)} 条 (过滤掉 {len(results)-len(skill_cases)} 条不相关)")
-        except Exception as e:
-            print(f"  Skill Hub: [FAIL] {e}")
+    # 渠道 A: Skill Hub
+    hub_cases = _search_skill_hub(ctx)
+    all_cases += hub_cases
 
     # 渠道 B: Web 搜索
-    search_engine = _import_web_search()
-    if search_engine:
-        try:
-            name = ctx["skill_name"]
-            # 检测是否包含中文，调整查询策略
-            has_cjk = any('\u4e00' <= c <= '\u9fff' for c in name)
-            
-            # 提取英文关键词（含字母数字组合词如 neo4j）
-            import re as _re
-            # 匹配至少包含一个字母的连续字符（保留数字，如 neo4j）
-            en_kws = _re.findall(r'[a-zA-Z][a-zA-Z0-9]*', name)
-            # 去重并排除单字母无意义词
-            en_kws = sorted(set(w for w in en_kws if len(w) > 2))
-            en_kw = " ".join(en_kws) if en_kws else ""
-            
-            # ── LLM 增强：智能生成搜索词 ──
-            queries = _llm_generate_search_queries(name)
-            if queries is None:
-                # fallback: 原硬编码查询
-                if has_cjk:
-                    queries = [
-                        f"{name} 最佳实践",
-                        f"{name} 实战 经验",
-                        f"{name} 技术方案 案例",
-                    ]
-                    if en_kw and len(en_kw) > 3:
-                        queries.extend([
-                            f"{en_kw} best practices tutorial",
-                            f"{en_kw} guide examples",
-                        ])
-                else:
-                    _base_en = [
-                        f"{name.replace('_',' ')} tutorial",
-                        f"{name.replace('_',' ')} how to use",
-                        f"{name.replace('_',' ')} guide examples",
-                        f"{name.replace('_',' ')} getting started",
-                        f"learn {name.replace('_',' ')} beginner",
-                    ]
-                    queries = list(_base_en)
-                    # wiki_search 同义词扩展提升召回率
-                    _syns = {"tutorial":"guide best-practices".split(),"guide":"handbook reference".split(),"examples":"demo sample".split(),"beginner":"intro quickstart".split()}
-                    for q in _base_en[:2]:
-                        for kw, syns in _syns.items():
-                            if kw in q:
-                                for s in syns[:2]:
-                                    queries.append(q.replace(kw, s))
-                    if en_kw:
-                        queries.extend([
-                            f"{en_kw} best practices",
-                            f"{en_kw} tutorial",
-                        ])
-            web_cases = []
-            seen_urls = set()
-            seen_titles = set()
-            for q in queries:
-                results = search_engine(q, size=5)
-                for r in results:
-                    url = r.get("url", "")
-                    title = r.get("title", "").strip()
-                    if url and url not in seen_urls and title not in seen_titles:
-                        seen_urls.add(url)
-                        seen_titles.add(title or url)
-                        web_cases.append({
-                            "source": "web",
-                            "type": "web_article",
-                            "title": title,
-                            "url": url,
-                            "snippet": r.get("snippet", "")[:300]
-                        })
-            all_cases.extend(web_cases)
-            print(f"  Web: {len(web_cases)} 条 (去重)")
+    web_cases = _search_web(ctx)
+    all_cases += web_cases
 
-            # ── 搜索引擎返回 0 条时，自动降级到 Wikipedia 搜索 ──
-            if len(web_cases) == 0:
-                try:
-                    wiki_fn = _web_search_wikipedia
-                    wiki_queries = [f"{en_kw}", name] if en_kws else [name]
-                    wiki_seen_urls = set()
-                    wiki_seen_titles = set()
-                    wiki_cases = []
-                    for wq in wiki_queries:
-                        wiki_results = wiki_fn(wq, size=5)
-                        for wr in wiki_results:
-                            title = wr.get("title", "").strip()
-                            url = wr.get("url", "")
-                            if url and url not in wiki_seen_urls and title not in wiki_seen_titles:
-                                wiki_seen_urls.add(url)
-                                wiki_seen_titles.add(title or url)
-                                wiki_cases.append({
-                                    "source": "wikipedia",
-                                    "type": "wiki_entry",
-                                    "title": title,
-                                    "url": url,
-                                    "snippet": wr.get("snippet", "")[:300]
-                                })
-                    if wiki_cases:
-                        print(f"  Wikipedia: {len(wiki_cases)} 条 (搜索引擎降级)")
-                        all_cases.extend(wiki_cases)
+    # 渠道 C: Sophub
+    sophub_cases = _search_sophub(ctx)
+    all_cases += sophub_cases
 
-                except Exception as e:
-                    print(f"  Wikipedia: [FAIL] {e}")
-        except Exception as e:
-            print(f"  Web: [FAIL] {e}")
-    else:
-        print("  Web: [FAIL] 搜索引擎不可用")
+    # 继承上一版案例（如果有）
+    inherited = ctx.get("inherited_cases", [])
+    if inherited:
+        all_cases += inherited
+        print(f"  [继承] {len(inherited)} 个案例")
 
-    # ── 渠道 C: Sophub ──
-    try:
-        from tools.skill_learn_from_cases.restore_funcs import _search_sophub
-        sophub_cases = _search_sophub(ctx["skill_name"])
-        if sophub_cases:
-            print(f"  Sophub: {len(sophub_cases)} 条")
-            all_cases.extend(sophub_cases)
-    except Exception:
-        pass
+    # 去重
+    seen = set()
+    unique = []
+    for c in all_cases:
+        key = c.get("url", "") or c.get("title", "")
+        if key not in seen:
+            seen.add(key)
+            unique.append(c)
 
-    # 继承上一版案例（--force 时跳过）
-    if os.environ.get("SKILL_FORCE_REFRESH") == "1":
-        print("  --force: 跳过继承旧案例")
-    else:
-        inherited_cases = dir_manager.get_latest_cases(ctx["skill_name"])
-        if inherited_cases:
-            # 去重（按 URL/Key 去重）
-            seen_keys = set()
-            for c in all_cases:
-                key = c.get("url") or c.get("key") or ""
-                seen_keys.add(key)
-            for c in inherited_cases:
-                key = c.get("url") or c.get("key") or ""
-            if key and key not in seen_keys:
-                all_cases.append(c)
-                seen_keys.add(key)
-        print(f"  继承上一版: +{len(inherited_cases)} 条（去重后）")
-
-    # 保存
-    cases_file = ctx["rev_dir"] / "cases" / "all_cases.json"
-    with open(cases_file, "w", encoding="utf-8") as f:
-        json.dump(all_cases, f, indent=2, ensure_ascii=False)
-    ctx["cases"] = ctx.get("cases", []) + all_cases
-    print(f"  合计: {len(all_cases)} 条案例")
-    print("  [OK] 已保存")
-
-
-# ===============================================================
-# Phase 3: 分析提炼知识模式
-# ===============================================================
-
+    print(f"  Phase 2 完成: {len(unique)} 个案例 (来自 {len(all_cases)} 总)")
+    ctx["cases"] = unique
+    return unique
 def _decompose_skill_name(skill_name: str, cases: list) -> list:
     """将技能名分解为子主题，生成初始模式（0案例fallback用）"""
     if not cases:
@@ -628,217 +462,24 @@ def _decompose_skill_name(skill_name: str, cases: list) -> list:
     
     return sub_patterns[:5]
 
-def _extract_patterns_from_cases(cases: list[dict], skill_name: str) -> list[dict]:
-    """从案例中提取知识模式（关键词匹配 + 启发式 + 技能感知）"""
-    # ── 通用模式关键词库（基础设施相关，对所有技能适用） ──
-    generic_patterns = {
-        "production": {
-            "keywords": ["production", "deploy", "prod", "release","deployment"],
-            "principles": [
-                ("使用环境变量/配置文件分离环境差异", "P_env_separation", 89),
-                ("固定版本号避免意外升级", "P_pin_version", 94),
-                ("资源限制防止单服务耗尽", "P_resource_limits", 85),
-            ]
-        },
-        "reliability": {
-            "keywords": ["restart", "health", "monitor", "recover", "resilient"],
-            "principles": [
-                ("配置重启策略确保服务自动恢复", "P_restart", 92),
-                ("添加健康检查机制确保服务可用", "P_healthcheck", 88),
-                ("配置日志轮转防止磁盘爆满", "P_logging", 90),
-            ]
-        },
-        "testing_config": {
-            "keywords": ["test", "validate", "config", "verify", "lint"],
-            "principles": [
-                ("部署前验证配置文件正确性", "P_config_validation", 93),
-            ]
-        },
-    }
+def _extract_patterns_from_cases(cases, skill_name):
+    """从案例中提取知识模式（编排版）"""
+    if not cases:
+        return []
 
-    # ── 技能领域模式库（按技能名和案例内容自动匹配） ──
-    # 从 JSON 文件加载，方便用户扩展/修改
-    _patterns_file = Path(__file__).parent / "skill_domain_patterns.json"
-    if _patterns_file.exists():
-        with open(_patterns_file, "r", encoding="utf-8") as _f:
-            _raw = json.load(_f)
-        # 将 JSON 中的 dict 格式 principles 还原为 (principle, id, confidence) 三元组
-        skill_domain_patterns = {}
-        for _domain, _info in _raw.items():
-            skill_domain_patterns[_domain] = {
-                "keywords": _info["keywords"],
-                "principles": [
-                    (_p["principle"], _p["id"], _p["confidence"])
-                    for _p in _info["principles"]
-                ]
-            }
-    else:
-        skill_domain_patterns = {}
-        print("  [WARN] skill_domain_patterns.json 不存在，跳过领域模式匹配")
+    generic = _load_generic_patterns()
+    domain = _load_skill_domain_patterns(skill_name)
+    all_patterns = generic + domain
 
-    # ── 合并文本用于匹配 ──
-    all_text = ""
-    for c in cases:
-        text = " ".join(str(v) for v in c.values() if isinstance(v, str))
-        all_text += text.lower() + " "
+    matched = _match_patterns_to_cases(cases, all_patterns)
+    scored = _score_and_rank_patterns(matched, skill_name)
 
-    patterns = []
-    seen_ids = set()
+    if not scored:
+        print("  [WARN] 未匹配到任何模式")
+        return []
 
-    # 匹配通用模式
-    for category, info in generic_patterns.items():
-        for kw in info["keywords"]:
-            if kw in all_text:
-                for principle, pid, conf in info["principles"]:
-                    if pid not in seen_ids:
-                        patterns.append({"id": pid, "principle": principle, "confidence": conf, "level": "basic"})
-                        seen_ids.add(pid)
-                break
-
-    # ── 技能名相关性过滤：通用模式必须与技能主题相关 ──
-    skill_lower = skill_name.lower()
-    rel_terms = set(skill_lower.replace("_", " ").replace("-", " ").split())
-    # 为每个通用模式建相关性关键词映射
-    generic_rel = {
-        "production": {"deploy", "deployment", "production", "release", "docker", "container", "ci", "cd", "pipeline", "运维", "部署", "发布", "上线", "devops"},
-        "reliability": {"restart", "health", "monitor", "recovery", "resilient", "monitoring", "failover", "监控", "可用性", "容错", "故障恢复"},
-        "testing_config": {"test", "validate", "config", "verify", "lint", "测试", "验证", "配置", "校验"},
-    }
-    for p in patterns:
-        if p.get("level") == "basic":
-            category = None
-            for cat, terms in generic_rel.items():
-                if any(t in p["principle"].lower() for t in terms):
-                    category = cat
-                    break
-            if category:
-                cat_terms = generic_rel[category]
-                if not (rel_terms & cat_terms):
-                    p["confidence"] = max(20, p["confidence"] - 20)
-    try:
-        from skill_search import SkillRegistry as _SR
-        _sr = _SR()
-        _matches = [r for r in _sr.skills if skill_name in r.key]
-        if _matches and hasattr(_matches[0], 'tags') and _matches[0].tags:
-            _rel_tags = set(_matches[0].tags[:10])
-            for p in patterns:
-                _p_lower = p["principle"].lower()
-                _tag_match = sum(1 for t in _rel_tags if t.lower() in _p_lower or _p_lower[:10] in t.lower())
-                if _tag_match == 0 and p.get("level") == "basic":
-                    p["confidence"] = max(15, p["confidence"] - 15)
-    except Exception:
-        pass
-    skill_keywords = skill_name.lower().replace("_", " ").replace("-", " ")
-    matched_domains = set()
-    # 构建案例标题文本（仅标题——用于辅助检查）
-    case_titles_text = " ".join([
-        (c.get("title") or c.get("key") or "").lower()
-        for c in cases
-    ])
-    for domain, info in skill_domain_patterns.items():
-        # 技能名匹配（精确匹配 domain 名）
-        if domain in skill_keywords:
-            matched_domains.add(domain)
-            continue
-        # 关键词匹配：仅在技能名包含领域关键词时才触发（防止api/git等通用词误匹配）
-        for kw in info["keywords"]:
-            if kw in skill_keywords:
-                # 技能名含领域关键词，且案例标题也提及 → 确认匹配
-                if kw in case_titles_text or any(part in case_titles_text for part in skill_keywords.split() if len(part) > 2):
-                    matched_domains.add(domain)
-                    break
-                break
-
-    for domain in matched_domains:
-        for principle, pid, conf in skill_domain_patterns[domain]["principles"]:
-            if pid not in seen_ids:
-                patterns.append({"id": pid, "principle": principle, "confidence": conf, "level": "advanced"})
-                seen_ids.add(pid)
-
-    # ── 从案例标题启发式提取（作为补充） ──
-    for c in cases:
-        title = (c.get("title") or c.get("key") or "").lower()
-        desc = (c.get("description") or c.get("snippet") or "").lower()
-        combined = title + " " + desc
-        # 匹配到但未覆盖的模式ID前缀
-        if not patterns:
-            # 完全没匹配到任何模式时，生成一个兜底模式
-            break
-
-    # ── 始终合并领域专有模式（不依赖案例，直接从技能名语义分解） ──
-    sub_ideas = _decompose_skill_name(skill_name, cases)
-    added_domain_ids = set()
-    for i, (sub_name, conf) in enumerate(sub_ideas):
-        pid = f"P_domain_{i+1}"
-        if pid not in seen_ids and pid not in added_domain_ids:
-            patterns.append({
-                "id": pid,
-                "principle": sub_name,
-                "confidence": conf,
-                "level": "domain"
-            })
-            seen_ids.add(pid)
-            added_domain_ids.add(pid)
-
-    # ── 技能相关性评分：过滤/降权不相关的通用模式 ──
-    skill_lower = skill_name.lower()
-    # 从 skill_domain_patterns 中提取与技能名相关的领域前缀
-    relevant_prefixes = set()
-    for domain, info in skill_domain_patterns.items():
-        if domain in skill_lower or any(kw in skill_lower for kw in info["keywords"]):
-            # 从该领域第一条原则的ID提取领域前缀（如 P_fin_、P_img_、P_doc_）
-            for p in info["principles"]:
-                pid_str = p[1] if isinstance(p, tuple) else (p.get("id", "") if isinstance(p, dict) else "")
-                parts = pid_str.split("_")
-                if len(parts) >= 2 and parts[0] == "P":
-                    relevant_prefixes.add(f"P_{parts[1]}_")
-                    break
-    # 始终包含 DOMAIN 模式
-    relevant_prefixes.add("P_domain_")
-
-    # ── 领域互斥：如果技能名含图数据库相关词，排除SQL的database领域 ──
-    if any(kw in skill_lower for kw in ["图数据库", "neo4j", "cypher", "graph", "知识图谱",
-                                         "图数据", "图查询", "图算法"]):
-        if "P_db_" in relevant_prefixes:
-            relevant_prefixes.discard("P_db_")
-            print("  检测到图数据库技能，排除 SQL database 领域模式")
-
-    for p in patterns:
-        pid = p["id"]
-        level = p.get("level", "basic")
-        # DOMAIN 模式直接从 skill name 生成，保持高置信度
-        if level == "domain":
-            p["confidence"] = min(p["confidence"] + 5, 95)
-            continue
-        # 检查模式是否属于相关领域（按ID前缀匹配）
-        is_relevant = any(pid.startswith(prefix) for prefix in relevant_prefixes)
-        if level == "advanced":
-            if is_relevant:
-                p["confidence"] = min(p["confidence"] + 3, 95)
-            else:
-                # 不相关的高级模式降权
-                p["confidence"] = max(p["confidence"] - 20, 40)
-        # BASIC 通用模式降权
-        if level == "basic":
-            p["confidence"] = max(p["confidence"] - 10, 35)
-
-    # ── 过滤低分噪声模式（置信度 < 65 的不保留） ──
-    before = len(patterns)
-    patterns = [p for p in patterns if p.get("confidence", 0) >= 65]
-    filtered = before - len(patterns)
-    if filtered:
-        print(f"  过滤掉 {filtered} 个低相关性模式（置信度 < 65）")
-    print(f"  保留 {len(patterns)} 个有效模式")
-
-    # 排序（按置信度降序，domain 模式优先于同分）
-    patterns.sort(key=lambda x: (x.get("confidence", 0), x.get("level", "")), reverse=True)
-    return patterns
-
-
-# ═══════════════════════════════════════════════════════════════
-# LLM 增强: Phase 3 — 智能模式提取
-# ═══════════════════════════════════════════════════════════════
-
+    print(f"  {len(scored)} 个模式匹配 (来源于 {len(generic)} 通用 + {len(domain)} 领域)")
+    return scored
 def _llm_extract_patterns(cases: list[dict], skill_name: str) -> list[dict] | None:
     """
     使用 LLM 从案例中提取知识模式。
@@ -939,8 +580,59 @@ confidence 表示该子主题与技能的相关程度（0-100）。
     return None
 
 
+def _llm_enhance_patterns(patterns, skill_name):
+    """LLM 增强模式提取 — 可能返回 None"""
+    llm_available = os.environ.get("SKILL_LLM_ENABLE") == "1"
+    if llm_available:
+        try:
+            from tools.llm_providers import chat
+            prompt = f"""分析以下技能的模式提取结果，补充遗漏的重要模式。
+技能: {skill_name}
+当前模式: {json.dumps(patterns, indent=2, ensure_ascii=False)}
+请返回 JSON 数组，每个元素包含 principle, id, confidence, category 字段。
+只返回 JSON，不要解释。"""
+            resp = chat(prompt)
+            if resp:
+                extra = json.loads(resp)
+                if isinstance(extra, list):
+                    return patterns + extra
+        except Exception:
+            pass
+    return patterns
+
+
+def _merge_inherited_patterns(ctx, patterns):
+    """合并继承的模式，过滤不相关的领域模式"""
+    existing = ctx.get("inherited_patterns", [])
+    if not existing:
+        return patterns
+    
+    skill_lower = ctx["skill_name"].lower()
+    merged = list(patterns)
+    filtered = 0
+    
+    for p in existing:
+        pid = p.get("id", "")
+        # 通用模式总是保留
+        if any(pid.startswith(pre) for pre in ["P_pin_", "P_env_", "P_res_"]):
+            merged.append(p)
+            continue
+        # 领域相关模式
+        for kw, prefixes in SKILL_DOMAIN_PREFIXES.items():
+            if kw in skill_lower and any(pid.startswith(pre) for pre in prefixes):
+                merged.append(p)
+                break
+        else:
+            filtered += 1
+    
+    # 限前5个
+    if len(merged) > 5:
+        print(f"  [继承] 保留 {len(merged)} 个模式 (过滤 {filtered} 个不相关)")
+    return merged[:5]
+
+
 def _phase3_analyze(ctx: dict):
-    """Phase 3: 分析提炼知识模式（LLM增强版）"""
+    """Phase 3: 分析提炼知识模式（编排版）"""
     print(f"\n{'-'*55}")
     print("  Phase 3: 模式提炼")
     print(f"{'-'*55}")
@@ -948,135 +640,26 @@ def _phase3_analyze(ctx: dict):
     cases = ctx.get("cases", [])
     skill_name = ctx["skill_name"]
 
-    # ── LLM 增强路径 ──
-    patterns = _llm_extract_patterns(cases, skill_name)
-    if patterns is None:
-        # fallback: 规则路径
-        print("  [FALLBACK] 使用规则模式提取（LLM 不可用或解析失败）")
-        patterns = _extract_patterns_from_cases(cases, skill_name)
-        # 仍然用 LLM 增强技能分解
-        llm_subs = _llm_decompose_skill_name(skill_name, cases)
-        if llm_subs:
-            added_ids = {p["id"] for p in patterns}
-            for i, (sub_name, conf) in enumerate(llm_subs):
-                pid = f"P_domain_llm_{i+1}"
-                if pid not in added_ids:
-                    patterns.append({
-                        "id": pid,
-                        "principle": sub_name,
-                        "confidence": conf,
-                        "level": "domain"
-                    })
-                    added_ids.add(pid)
-    else:
-        # LLM 模式提取成功，仍用 LLM 补充技能分解子主题
-        llm_subs = _llm_decompose_skill_name(skill_name, cases)
-        if llm_subs:
-            existing_ids = {p["id"] for p in patterns}
-            for i, (sub_name, conf) in enumerate(llm_subs):
-                pid = f"P_domain_llm_{i+1}"
-                if pid not in existing_ids:
-                    patterns.append({
-                        "id": pid,
-                        "principle": sub_name,
-                        "confidence": conf,
-                        "level": "domain"
-                    })
-                    existing_ids.add(pid)
+    # 规则路径提取模式
+    patterns = _extract_patterns_from_cases(cases, skill_name)
+    if not patterns:
+        patterns = _llm_extract_patterns(cases, skill_name)
 
-    # 合并历史模式（如果有继承）——过滤掉不相关的领域模式
-    SKILL_DOMAIN_PREFIXES = {
-        "async": ["P_fastapi_", "P_async_"],
-        "fastapi": ["P_fastapi_", "P_async_"],
-        "web_scraping": ["P_scrape_"],
-        "scrape": ["P_scrape_"],
-        "crawl": ["P_scrape_"],
-        "database": ["P_db_"],"sql":["P_db_"],
-        "db": ["P_db_"],
-        "git": ["P_git_"],
-        "graph": ["P_gql_"],
-        "neo4j": ["P_gql_"],
-        "cypher": ["P_gql_"],
-        "graph_database": ["P_gql_"],
-        "network": ["P_net_"],
-        "networking": ["P_net_"],
-        "security": ["P_net_", "P_sec_"],
-        "finance": ["P_doc_", "P_fin_"],
-        "image": ["P_img_", "P_doc_"],
-        "document": ["P_doc_"],
-        "凭证": ["P_doc_"],
-        "鉴定": ["P_doc_"],
-        "satellite": ["P_rem_"],
-        "remote_sensing": ["P_rem_"],
-        "testing": ["P_test_"],
-        "kubernetes": ["P_k8s_"],
-        "k8s": ["P_k8s_"],
-        "frontend": ["P_fe_"],
-        "react": ["P_fe_"],
-        "performance": ["P_perf_"],
-        "wiki": ["P_domain_"],
-        "search": ["P_domain_"],
-        "知识": ["P_domain_"],
-        "文档": ["P_domain_"],
-    }
-    existing = ctx.get("inherited_patterns", [])
-    skill_lower = skill_name.lower()
-    # 找出当前技能相关的领域前缀
-    relevant_prefixes = set()
-    for kw, prefixes in SKILL_DOMAIN_PREFIXES.items():
-        if kw in skill_lower:
-            relevant_prefixes.update(prefixes)
-    # 通用模式（P_pin_, P_env_, P_res_ 等）总是保留
-    always_keep = {"P_pin_", "P_env_", "P_res_", "P_health_", "P_log_", "P_cfg_"}
-    
-    filtered_existing = []
-    filtered_count = 0
-    for p in existing:
-        pid = p.get("id", "")
-        # 保留: 通用模式 / 技能相关领域模式 / domain模式 / llm模式
-        if (any(pid.startswith(pre) for pre in always_keep) or
-            any(pid.startswith(pre) for pre in relevant_prefixes) or
-            pid.startswith("P_domain_") or
-            pid.startswith("P_domain_llm_") or
-            p.get("level") in ("basic", "generic")):
-            filtered_existing.append(p)
-        else:
-            # 标记为已存在但不再加入
-            filtered_count += 1
-    
-    existing_ids = {p["id"] for p in filtered_existing}
-    merged = list(filtered_existing)
-    for p in patterns:
-        if p["id"] not in existing_ids:
-            merged.append(p)
-            existing_ids.add(p["id"])
+    # LLM 增强
+    if os.environ.get("SKILL_LLM_ENABLE") == "1":
+        patterns = _llm_enhance_patterns(patterns, skill_name)
 
-    merged.sort(key=lambda x: x.get("confidence", 0), reverse=True)
+    # 合并继承的模式
+    patterns = _merge_inherited_patterns(ctx, patterns)
 
-    patterns_file = ctx["rev_dir"] / "patterns" / "knowledge_patterns.json"
-    with open(patterns_file, "w", encoding="utf-8") as f:
-        json.dump(merged, f, indent=2, ensure_ascii=False)
-    ctx["patterns"] = merged
+    print(f"  模式: {len(patterns)} 条")
+    for p in patterns[:5]:
+        print(f"    · {p.get('principle', '')[:80]}")
+    if len(patterns) > 5:
+        print(f"    ... 另有 {len(patterns)-5} 条")
 
-    print(f"  继承: {len(filtered_existing)} 个 (过滤掉 {filtered_count} 个不相关)")
-    print(f"  新增: {len(patterns)} 个")
-    print(f"  总计: {len(merged)} 个")
-    for p in merged[:5]:
-        print(f"    [{p.get('confidence',0)}%] {p['principle'][:50]}")
-    if len(merged) > 5:
-        print(f"    ... 还有 {len(merged)-5} 个")
-    print("  [OK] 已保存")
-
-# ===============================================================
-# Phase 4: 构建验证工具
-# ===============================================================
-
-# 验证工具模板
-# ── 验证工具模板（外部文件） ──
-TEMPLATE_FILE = Path(__file__).parent / 'assess_template.py'
-
-
-
+    ctx["patterns"] = patterns
+    return patterns
 def _phase4_build_tool(ctx: dict):
     """生成验证工具"""
     print(f"\n{'-'*55}")
