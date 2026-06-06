@@ -105,9 +105,7 @@ class BoardHandlers:
         self._publish_event(board_key, "register", {"agent_id": name, "token": token, "board": board_key})
         log.info(f"  [OK] register: {name} -> token={token[:8]}... (board: {board_key})")
 
-    # ── Post ──
-
-    def on_post(self, topic: str, payload):
+    # ── Webhook Config ──
         """Handle post request: {agent_id, token, content, corr_id}"""
         board_key = self._board_from_topic(topic)
         if not board_key or not isinstance(payload, dict):
@@ -168,9 +166,7 @@ class BoardHandlers:
                 except Exception as _e:
                     log.warning(f"  Webhook failed: {url} -> {_e}")
 
-    # ── Query ──
-
-    def on_query(self, topic: str, payload):
+    # ── Webhook Config ──
         """Handle query request: {type, params, corr_id}"""
         board_key = self._board_from_topic(topic)
         if not board_key or not isinstance(payload, dict):
@@ -326,7 +322,7 @@ class BoardHandlers:
                 self._client.publish(resp_topic, {"session_id": session_id}, retain=False, qos=1)
             log.info(f"  file init (single): {filename}")
 
-    def on_file_chunk(self, topic: str, payload):
+    # ── Healthcheck ── (保留)
         """Handle file chunk upload: {token, session_id, seq, data, corr_id}"""
         board_key = self._board_from_topic(topic)
         if not board_key or not isinstance(payload, dict):
@@ -385,7 +381,7 @@ class BoardHandlers:
         except Exception as e:
             log.warning(f"  chunk failed: {e}")
 
-    def on_file_commit(self, topic: str, payload):
+    # ── Healthcheck ── (保留)
         """Handle file chunk merge: {token, session_id, corr_id}"""
         board_key = self._board_from_topic(topic)
         if not board_key or not isinstance(payload, dict):
