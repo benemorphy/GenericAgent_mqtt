@@ -319,6 +319,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "mqtt_webui_rs"
+version = "0.1.0"
+dependencies = [
+ "rumqttc",
+ "serde",
+ "serde_json",
+ "tokio",
+ "ureq",
+]
+
+[[package]]
 name = "once_cell"
 version = "1.21.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -381,17 +392,6 @@ dependencies = [
  "libc",
  "untrusted",
  "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "rmqtt_webui_rs"
-version = "0.1.0"
-dependencies = [
- "rumqttc",
- "serde",
- "serde_json",
- "tokio",
- "ureq",
 ]
 
 [[package]]

@@ -730,7 +730,11 @@ class _TaskCard:
         }
 
     def _build(self):
-        header = f"**{self.status}**"
+        # 用最新 step summary 或 final output 做头部，而不是状态
+        topic = self.final[:60] if self.final else (
+            self.steps[-1][0][:60] if self.steps else self.status
+        )
+        header = f"**{topic}**"
         if self.page_no > 1:
             header += f"\n\n📄 工作卡片 {self.page_no}"
         els = [{"tag": "markdown", "content": header}]

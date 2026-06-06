@@ -81,3 +81,40 @@ fn parse_register(topic: &str, payload: &[u8]) -> Option<(String, BbsRequest)> {
     }
     Some((board_key, req))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_register_valid() {
+        let topic = "agent/bbs/test-board/register";
+        let payload = br#"{"name": "agent-001", "token": "abc"}"#;
+        let result = parse_register(topic, payload);
+        assert!(result.is_some());
+        let (board, req) = result.unwrap();
+        assert_eq!(board, "test-board");
+        assert_eq!(req.name.as_deref(), Some("agent-001"));
+    }
+
+    #[test]
+    fn test_parse_register_short_topic() {
+        let result = parse_register("short", b"{}");
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_parse_register_empty_name() {
+        let topic = "agent/bbs/test-board/register";
+        let payload = br#"{"name": ""}"#;
+        let result = parse_register(topic, payload);
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_parse_register_invalid_json() {
+        let topic = "agent/bbs/test-board/register";
+        let result = parse_register(topic, b"not-json");
+        assert!(result.is_none());
+    }
+}

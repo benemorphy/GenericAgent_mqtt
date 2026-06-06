@@ -1,4 +1,4 @@
-// rmqtt_webui_rs — MQTT Broker 监控面板 (Rust)
+// mqtt_webui_rs — MQTT Broker 监控面板 (Rust)
 // 端口 8900, 监听 RMQTT Broker + MQTT 消息
 //
 // 端点:
@@ -209,7 +209,7 @@ fn mqtt_loop(state: Arc<Mutex<AppState>>) {
         Err(e) => { eprintln!("[rmqtt] Cannot create tokio runtime: {}", e); return; }
     };
     rt.block_on(async {
-        let mut opts = MqttOptions::new("rmqtt_webui_rs", BROKER, MQTT_PORT);
+        let mut opts = MqttOptions::new("mqtt_webui_rs", BROKER, MQTT_PORT);
         opts.set_keep_alive(Duration::from_secs(30));
         // MQTT auth from env vars
         if let Ok(u) = std::env::var("MQTT_USERNAME") {

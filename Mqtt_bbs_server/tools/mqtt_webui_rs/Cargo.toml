@@ -1,5 +1,5 @@
 [package]
-name = "rmqtt_webui_rs"
+name = "mqtt_webui_rs"
 version = "0.1.0"
 edition = "2021"
 
