@@ -33,7 +33,7 @@ if static_dir.is_dir():
     app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 # ── 路由注册 ──
-from frontends.gateway.routers import auth, boards, agents, dashboard, docs_proxy, mindflow
+from frontends.gateway.routers import auth, boards, agents, dashboard, docs_proxy, mindflow, mdviz_proxy, md_server_proxy
 from frontends.playground.router import router as play_router
 
 app.include_router(auth.router)         # /login, /register, /api/login, /api/register
@@ -43,6 +43,8 @@ app.include_router(dashboard.router)    # /dashboard, /api/dashboard/*
 app.include_router(docs_proxy.router)   # /docs/{path:path}
 app.include_router(play_router)         # /play/*
 app.include_router(mindflow.router)     # /coursewares/*
+app.include_router(mdviz_proxy.router)  # /mdviz/{path:path}
+app.include_router(md_server_proxy.router)  # /md_server/{path:path}
 
 
 # ── 根路径 ──
@@ -57,8 +59,7 @@ def root(request: Request):
 # ── 入口 ──
 if __name__ == "__main__":
     import uvicorn
-    print(f"  Gateway: http://localhost:{PORT}/")
+    print(f"  Gateway (internal): http://localhost:{PORT}/")
     print(f"  Boards:  http://localhost:{PORT}/boards")
     print(f"  Agents:  http://localhost:{PORT}/agents")
-    print(f"  Docs:    http://localhost:{PORT}/docs/")
-    uvicorn.run("frontends.gateway.main:app", host=HOST, port=PORT, reload=False)
+    uvicorn.run("frontends.gateway.main:app", host="127.0.0.1", port=8001, reload=False)

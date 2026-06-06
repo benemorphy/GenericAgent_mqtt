@@ -1,13 +1,13 @@
 # [Global Memory Insight]
 Read L2 or ls ../memory/ for L3 when needed
 L0(META-SOP): memory_management_sop
-L2: Vision/OCR | RMQTT(broker启动) | MOSQUITTO(broker运行) | GATEWAY(网关8000/8001) | MQTT_BBS(BoardService) | FEISHU(飞书Bot) | MQTT_SERVICE_CHAIN(8服务拓扑) | QQ_BOT(NapCat) | MQTT_STRESS(扩展压测) | LLM_PROVIDER_FACTORY(Provider工厂) | DOUBAO_CDP(豆包搜索) | RUST_ENV(Rust MSVC) | FILE_SEARCH(es.exe已配) | ONTOLOGY_CODEGRAPH_BRIDGE(本体自动发现)
+L2: Vision/OCR | RMQTT(broker启动) | MOSQUITTO(broker运行) | GATEWAY(网关8000/8001) | MQTT_BBS(BoardService) | FEISHU(飞书Bot) | MQTT_SERVICE_CHAIN(8服务拓扑) | QQ_BOT(NapCat) | MQTT_STRESS(扩展压测) | LLM_PROVIDER_FACTORY(Provider工厂) | DOUBAO_CDP(豆包搜索) | RUST_ENV(Rust MSVC) | FILE_SEARCH(es.exe已配) | ONTOLOGY_CODEGRAPH_BRIDGE(本体自动发现) | MINDFLOW(课件引擎9900/MariaDB/注册表管线)
 L3: memory_cleanup_sop | skill_search | skills_learning_sop(案例驱动) | metacognition_sop(元认知) | failure_driven_learning_sop | clipboard_ocr | vision_api | gui_vision | adb_ui | keychain | ljqCtrl_sop+.py | metaso_search | ocr_utils | procmem_scanner | ui_detect | subagent | web_setup_sop | plan_sop | ga_mqtt_bbs_scenarios | water_env_monitoring_scenarios | supervisor_monitor(系统健康监控) | sche_tasks(定时任务) | doubao_cdp_usage(豆包CDP搜索) | **codegraph_first_sop(代码工作先CG)**
 | tmwebdriver_sop | autonomous_operation_sop | scheduled_task_sop | vision_sop
 | md_server_rs_mod_sop(代码高亮)
 | git_push_sop(Git审计推送) | feishu_connect_sop(飞书Bot) | push_cleanup_sop
 | agent_dreaming_sop | dream_engine(梦境引擎) | board_stress_sop(BBS压测) | board_service_diag_sop(BBS静默故障) | spaced_repetition_sop(间隔复习) | sqlite_to_mariadb_sop(DB迁移)
-| aesthetic_design_sop | clipboard_ocr_sop | code_review_principles | dream_command_rule | emqtt_design_principles(EMQTT原则) | github_contribution_sop | anthropic_kwp_learned(Anthropic技能)
+| ask_before_fork_sop(请示原则:上下文矛盾先问) | aesthetic_design_sop | clipboard_ocr_sop | code_review_principles | courseware_video_sop | dream_command_rule | emqtt_design_principles(EMQTT原则) | github_contribution_sop | anthropic_kwp_learned(Anthropic技能) | xiaohongshu_note_sop(小红书推送生成)
 | goal_mode_sop(目标模式) | goal_hive_sop(Hive多Worker) | goal_hive_master_duty(Master调度) | goal_nexus(人机协作) | procmem_scanner_sop(内存扫描) | qq_deploy_sop(QQ部署) | search_skills_sop | shutdown_rule | supervisor_sop(监控)
 | ai_coding_collaboration_sop | document_reading_sop | mqtt_persistence_analysis | mqtt_service_config | prompt_engineering_sop | rust_env_config | skill_learn_after_review_sop(技能复习) | sop_registry
 | data_explore_sop | research_synthesis_sop
@@ -21,7 +21,7 @@ L3: memory_cleanup_sop | skill_search | skills_learning_sop(案例驱动) | meta
 
 # MindFlow 课件技能: scripts/generate_courseware.py | cell_diagram.py (手绘细胞SVG) | mermaid_prerender.py
 L4: L4_raw_sessions/ historical sessions
-跨学科知识: meridian_ontology(经脉论与本体论:本体论→经脉论对应映射+推理规则) | meridians_perspective_on_ontology(经脉论→本体论:反向审视+七大挑战) | ontology_model_evolution(技术+哲学+经脉论三合一:本体论进化的四维光谱) | enterprise_social_governance_ontology(企业社会治理与本体论:义务时变图/双温度场/病点子图/多Agent脑暴) | ai_creation_emergence_brainstorm(AI超纲输出场景:创造者悖论/认知鸿沟/涌现主题) | ai_creation_scenarios(7场景叙事实现:创造者悖论/认知边界/他者之思/解释学困境/层级跃迁/反馈螺旋/身份重构) | ai_creation_scenarios_deep(创作准备:正文片段/角色关系/世界观/矛盾演化/真伪悬疑) | ai_creation_brainstorm_per_scene(7场景独立多Agent脑暴:35视角向各自元问题深挖) | ai_creation_resonance_map(暗中共振图谱:6层共振+1个最大共振)
+跨学科知识: meridian_ontology(经脉论与本体论:本体论→经脉论对应映射+推理规则) | meridians_perspective_on_ontology(经脉论→本体论:反向审视+七大挑战) | ontology_model_evolution(技术+哲学+经脉论三合一:本体论进化的四维光谱) | enterprise_social_governance_ontology(企业社会治理与本体论:义务时变图/双温度场/病点子图/多Agent脑暴) | ai_creation_emergence_brainstorm(AI超纲输出场景:创造者悖论/认知鸿沟/涌现主题) | ai_creation_scenarios(7场景叙事实现:创造者悖论/认知边界/他者之思/解释学困境/层级跃迁/反馈螺旋/身份重构) | ai_creation_scenarios_deep(创作准备:正文片段/角色关系/世界观/矛盾演化/真伪悬疑) | ai_creation_brainstorm_per_scene(7场景独立多Agent脑暴:35视角向各自元问题深挖) | ai_creation_resonance_map(暗中共振图谱:6层共振+1个最大共振) | ORACLE_ONTOLOGY(甲骨文本体: knowledge/oracle_ontology/, TTL+rdflib, 四层模型:Glyph→Grapheme→Sense+Component, 10个基础字, query.py查接口)
 
 Browser special ops: tmwebdriver_sop(file upload/image search/PDF blob/physical coords/HttpOnly Cookie/autofill bypass/cross-origin iframe/CDP/cross-tab)
 Keyboard & Mouse: ljqCtrl_sop(no pyautogui/activate first) Screenshot/Vision: ocr/vision_sop | No fullscreen capture, prefer window

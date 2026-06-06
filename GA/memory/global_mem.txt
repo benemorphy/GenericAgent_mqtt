@@ -268,7 +268,7 @@ HB#1 @ 2026-06-05 11:13
 ## [HEARTBEAT]
 # heartbeat | hb2
 HB#2 @ 2026-06-05 11:23
-事件: ['[]', "['success']", 'D:\\open_claw_agent\\Beneh\\GA_tools\\mdviz，输入路径栏，点击跳转之后，出现404,也无法回退，只能关闭应用']
+事件: ['[]', "['success']", '输入路径栏后404且无法回退']
 
 ## [HEARTBEAT]
 # heartbeat | hb3
@@ -321,3 +321,22 @@ HB#1 @ 2026-06-05 13:18
 # 桥接模块: tools/ontology_codegraph_bridge.py (自动发现189+实体/514+关系, 5min缓存, 静默回退静态)
 # 关闭: ontology_model.py 中 _USE_CODEGRAPH = False
 # DB: D:\open_claw_agent\Beneh\.codegraph\codegraph.db (5746节点/11366边/276文件)
+
+## [MINDFLOW]
+# MindFlow AI课件引擎 — D:\open_claw_agent\MindFlow
+# MariaDB: 127.0.0.1:3306, user=root, password=mariadb, db=mindflow, 服务=RUNNING
+# 注册表: courseware_registry(uk_gst唯一键) + coursewares(status字段)
+# 端口: 9900 | 首页list_coursewares_page只读注册表, DB断时空页
+# 注册函数: storage.py:506 register_courseware(grade,subject,topic,cw_id)
+# 管线断点: generate→save_courseware→(review未触发)→(register未调用)→首页空
+# key commit: 07ed541 (audit+registry+homepage) | e1322d6 (ABT+政治+纯DB首页+网关路由)
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-05 14:57
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-05 14:57
+事件: ['[]', '[]', '[]', '[]', '[]']

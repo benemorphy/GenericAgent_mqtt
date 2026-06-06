@@ -27,7 +27,7 @@ DEFAULT_BOARDS = {
     "agent-whiteboard": {"name": "whiteboard", "db": "agent_whiteboard.db"},
 }
 UPLOAD_DIR = None
-TOPIC_BBS = "bbs"
+TOPIC_BBS = "agent/bbs"
 
 # ── Webhook helper ──
 def webhook_send(url: str, data: dict):

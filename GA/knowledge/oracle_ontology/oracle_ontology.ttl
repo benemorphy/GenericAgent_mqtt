@@ -1,0 +1,261 @@
+@prefix ns1: <http://example.org/oracle-ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:Inscription a owl:Class .
+
+ns1:Region a owl:Class .
+
+ns1:belongsToEra a owl:ObjectProperty .
+
+ns1:belongsToRegion a owl:ObjectProperty .
+
+ns1:char a owl:DatatypeProperty .
+
+ns1:coOccursWith a owl:ObjectProperty .
+
+ns1:componentPosition a owl:DatatypeProperty .
+
+ns1:composes a owl:ObjectProperty .
+
+ns1:confidence a owl:DatatypeProperty .
+
+ns1:containsComponent a owl:ObjectProperty .
+
+<http://example.org/oracle-ontology/controversy/C001> a ns1:Controversy ;
+    rdfs:label "未识读字争议示例"@zh .
+
+ns1:definition a owl:DatatypeProperty .
+
+ns1:denotes a owl:ObjectProperty .
+
+ns1:disputedBy a owl:ObjectProperty .
+
+ns1:evolutionOf a owl:ObjectProperty .
+
+ns1:frequency a owl:DatatypeProperty .
+
+<http://example.org/oracle-ontology/glyph/G001> a ns1:Glyph ;
+    rdfs:label "甲骨文「日」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "日"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/圆形轮廓> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/日> .
+
+<http://example.org/oracle-ontology/glyph/G002> a ns1:Glyph ;
+    rdfs:label "甲骨文「月」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "月"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/半月形> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/月> .
+
+<http://example.org/oracle-ontology/glyph/G003> a ns1:Glyph ;
+    rdfs:label "甲骨文「山」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "山"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/三峰突起> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/山> .
+
+<http://example.org/oracle-ontology/glyph/G004> a ns1:Glyph ;
+    rdfs:label "甲骨文「水」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "水"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/水流形> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/水> .
+
+<http://example.org/oracle-ontology/glyph/G005> a ns1:Glyph ;
+    rdfs:label "甲骨文「雨」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "雨"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/天横>,
+        <http://example.org/oracle-ontology/component/雨滴> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/雨> .
+
+<http://example.org/oracle-ontology/glyph/G006b> a ns1:Glyph ;
+    ns1:char "王"@zh ;
+    ns1:variantOf <http://example.org/oracle-ontology/glyph/G006> .
+
+<http://example.org/oracle-ontology/glyph/G007> a ns1:Glyph ;
+    rdfs:label "甲骨文「贞」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "贞"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/鼎形> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/贞> .
+
+<http://example.org/oracle-ontology/glyph/G008> a ns1:Glyph ;
+    rdfs:label "甲骨文「卜」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "卜"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/龟裂纹> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/卜> .
+
+<http://example.org/oracle-ontology/glyph/G009> a ns1:Glyph ;
+    rdfs:label "甲骨文「田」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "田"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/田字形> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/田> .
+
+<http://example.org/oracle-ontology/glyph/G010> a ns1:Glyph ;
+    rdfs:label "甲骨文「年」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "年"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/人>,
+        <http://example.org/oracle-ontology/component/禾> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/年> .
+
+ns1:pronunciation a owl:DatatypeProperty .
+
+ns1:realizes a owl:ObjectProperty .
+
+ns1:variantOf a owl:ObjectProperty .
+
+ns1:Controversy a owl:Class .
+
+ns1:Era a owl:Class .
+
+<http://example.org/oracle-ontology/component/三峰突起> a ns1:Component ;
+    rdfs:label "三峰突起"@zh .
+
+<http://example.org/oracle-ontology/component/人> a ns1:Component ;
+    rdfs:label "人"@zh .
+
+<http://example.org/oracle-ontology/component/半月形> a ns1:Component ;
+    rdfs:label "半月形"@zh .
+
+<http://example.org/oracle-ontology/component/圆形轮廓> a ns1:Component ;
+    rdfs:label "圆形轮廓"@zh .
+
+<http://example.org/oracle-ontology/component/大斧形> a ns1:Component ;
+    rdfs:label "大斧形"@zh .
+
+<http://example.org/oracle-ontology/component/天横> a ns1:Component ;
+    rdfs:label "天横"@zh .
+
+<http://example.org/oracle-ontology/component/水流形> a ns1:Component ;
+    rdfs:label "水流形"@zh .
+
+<http://example.org/oracle-ontology/component/田字形> a ns1:Component ;
+    rdfs:label "田字形"@zh .
+
+<http://example.org/oracle-ontology/component/禾> a ns1:Component ;
+    rdfs:label "禾"@zh .
+
+<http://example.org/oracle-ontology/component/雨滴> a ns1:Component ;
+    rdfs:label "雨滴"@zh .
+
+<http://example.org/oracle-ontology/component/鼎形> a ns1:Component ;
+    rdfs:label "鼎形"@zh .
+
+<http://example.org/oracle-ontology/component/龟裂纹> a ns1:Component ;
+    rdfs:label "龟裂纹"@zh .
+
+<http://example.org/oracle-ontology/glyph/G006> a ns1:Glyph ;
+    rdfs:label "甲骨文「王」"@zh ;
+    ns1:belongsToEra <http://example.org/oracle-ontology/era/武丁> ;
+    ns1:char "王"@zh ;
+    ns1:confidence "0.95"^^xsd:float ;
+    ns1:containsComponent <http://example.org/oracle-ontology/component/大斧形> ;
+    ns1:realizes <http://example.org/oracle-ontology/grapheme/王> .
+
+<http://example.org/oracle-ontology/grapheme/卜> a ns1:Grapheme ;
+    ns1:char "卜"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/卜> ;
+    ns1:pronunciation "bu" .
+
+<http://example.org/oracle-ontology/grapheme/山> a ns1:Grapheme ;
+    ns1:char "山"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/山> ;
+    ns1:pronunciation "shan" .
+
+<http://example.org/oracle-ontology/grapheme/年> a ns1:Grapheme ;
+    ns1:char "年"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/年> ;
+    ns1:pronunciation "nian" .
+
+<http://example.org/oracle-ontology/grapheme/日> a ns1:Grapheme ;
+    ns1:char "日"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/日> ;
+    ns1:pronunciation "ri" .
+
+<http://example.org/oracle-ontology/grapheme/月> a ns1:Grapheme ;
+    ns1:char "月"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/月> ;
+    ns1:pronunciation "yue" .
+
+<http://example.org/oracle-ontology/grapheme/水> a ns1:Grapheme ;
+    ns1:char "水"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/水> ;
+    ns1:pronunciation "shui" .
+
+<http://example.org/oracle-ontology/grapheme/王> a ns1:Grapheme ;
+    ns1:char "王"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/王> ;
+    ns1:pronunciation "wang" .
+
+<http://example.org/oracle-ontology/grapheme/田> a ns1:Grapheme ;
+    ns1:char "田"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/田> ;
+    ns1:pronunciation "tian" .
+
+<http://example.org/oracle-ontology/grapheme/贞> a ns1:Grapheme ;
+    ns1:char "贞"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/贞> ;
+    ns1:pronunciation "zhen" .
+
+<http://example.org/oracle-ontology/grapheme/雨> a ns1:Grapheme ;
+    ns1:char "雨"@zh ;
+    ns1:denotes <http://example.org/oracle-ontology/sense/雨> ;
+    ns1:pronunciation "yu" .
+
+<http://example.org/oracle-ontology/sense/卜> a ns1:Sense ;
+    ns1:definition "占卜/龟裂"@zh .
+
+<http://example.org/oracle-ontology/sense/山> a ns1:Sense ;
+    ns1:definition "山/山峰"@zh .
+
+<http://example.org/oracle-ontology/sense/年> a ns1:Sense ;
+    ns1:definition "年/收成"@zh .
+
+<http://example.org/oracle-ontology/sense/日> a ns1:Sense ;
+    ns1:definition "太阳/白天"@zh .
+
+<http://example.org/oracle-ontology/sense/月> a ns1:Sense ;
+    ns1:definition "月亮/月份"@zh .
+
+<http://example.org/oracle-ontology/sense/水> a ns1:Sense ;
+    ns1:definition "水/河流"@zh .
+
+<http://example.org/oracle-ontology/sense/王> a ns1:Sense ;
+    ns1:definition "君王/国王"@zh .
+
+<http://example.org/oracle-ontology/sense/田> a ns1:Sense ;
+    ns1:definition "田/狩猎"@zh .
+
+<http://example.org/oracle-ontology/sense/贞> a ns1:Sense ;
+    ns1:definition "占卜/问卜"@zh .
+
+<http://example.org/oracle-ontology/sense/雨> a ns1:Sense ;
+    ns1:definition "雨水/下雨"@zh .
+
+ns1:Grapheme a owl:Class .
+
+ns1:Sense a owl:Class .
+
+<http://example.org/oracle-ontology/era/武丁> a ns1:Era ;
+    rdfs:label "武丁"@zh .
+
+ns1:Glyph a owl:Class .
+
+ns1:Component a owl:Class .
+
