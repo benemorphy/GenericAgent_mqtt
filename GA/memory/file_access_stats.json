@@ -20,8 +20,8 @@
     "last": "2026-05-13"
   },
   "engine.py": {
-    "count": 1,
-    "last": "2026-05-13"
+    "count": 2,
+    "last": "2026-06-07"
   },
   "metaso_search.py": {
     "count": 4,
@@ -462,5 +462,9 @@
   "ask_before_fork_sop.md": {
     "count": 1,
     "last": "2026-06-05"
+  },
+  "rumination_sop.md": {
+    "count": 1,
+    "last": "2026-06-07"
   }
 }
