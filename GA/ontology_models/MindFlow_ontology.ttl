@@ -1,0 +1,1063 @@
+@prefix ont: <http://codegraph.ontology/MindFlow/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ont:Class_ a owl:Class .
+
+ont:Function a owl:Class .
+
+ont:MindFlow a ont:Project ;
+    rdfs:label "MindFlow" ;
+    ont:contains ont:app_ai_init_py,
+        ont:app_api_agent_py,
+        ont:app_api_courseware_py,
+        ont:app_api_diagram_py,
+        ont:app_api_init_py,
+        ont:app_api_router_py,
+        ont:app_core_config_py,
+        ont:app_core_database_py,
+        ont:app_core_models_py,
+        ont:app_courseware_models_py,
+        ont:app_domain_courseware_auditor_phase1_py,
+        ont:app_domain_courseware_auditor_py,
+        ont:app_domain_courseware_cell_diagram_py,
+        ont:app_domain_courseware_diagram_renderer_py,
+        ont:app_domain_courseware_mermaid_prerender_py,
+        ont:app_domain_courseware_mermaid_render_mjs,
+        ont:app_domain_courseware_qa_py,
+        ont:app_domain_courseware_review_committee_py,
+        ont:app_domain_courseware_routing_py,
+        ont:app_domain_courseware_storage_py,
+        ont:app_domain_tools_registry_py,
+        ont:app_engine_ai_courseware_provider_py,
+        ont:app_engine_ai_ga_provider_py,
+        ont:app_engine_ai_providers_impl_ga_adapter_py,
+        ont:app_learning_models_py,
+        ont:app_learning_tracker_py,
+        ont:app_main_py,
+        ont:app_ontology_models_py,
+        ont:app_ontology_schemas_history_py,
+        ont:app_ontology_schemas_math_py,
+        ont:app_skill_phases_ai_courseware_py,
+        ont:app_skill_phases_ai_plan_py,
+        ont:app_skill_phases_ai_quiz_py,
+        ont:app_skill_phases_courseware_py,
+        ont:app_skill_phases_init_py,
+        ont:app_skill_phases_interaction_py,
+        ont:app_skill_phases_ontology_py,
+        ont:app_skill_phases_planning_py,
+        ont:app_skill_phases_renderer_py,
+        ont:app_skill_phases_review_py,
+        ont:app_skill_router_py,
+        ont:app_static_coursewares_client_template_py,
+        ont:app_static_coursewares_kg_force_js,
+        ont:app_static_coursewares_knowledge_graph_js,
+        ont:app_static_coursewares_ontology_nav_js,
+        ont:app_static_coursewares_slide_nav_js,
+        ont:app_static_coursewares_theme_toggle_js,
+        ont:app_static_renderer_engine_js,
+        ont:docker_compose_yml,
+        ont:scripts_brainstorm_courseware_py,
+        ont:scripts_generate_courseware_py,
+        ont:scripts_generate_courseware_v2_py,
+        ont:skills_plotly_basic_py,
+        ont:skills_plotly_examples_demo_plots_py,
+        ont:skills_plotly_init_py,
+        ont:start_app_py .
+
+ont:Module a owl:Class .
+
+ont:Route a owl:Class .
+
+ont:Variable a owl:Class .
+
+ont:calls a owl:ObjectProperty .
+
+ont:class_0c46fd526bd9f485eccf5bfc6373ff90 ont:extends ont:class_c3458f4e1cf072b2e3d820afe9d923ee .
+
+ont:class_245afcb7e0d0c9cce9e57ebf807a897b ont:extends ont:class_c3458f4e1cf072b2e3d820afe9d923ee .
+
+ont:class_a7c7b7bec8de8b5166cde39a58cc00a6 ont:extends ont:class_c3458f4e1cf072b2e3d820afe9d923ee .
+
+ont:class_c8f3938ab238e49f20e7142d406a1aa3 ont:extends ont:class_c3458f4e1cf072b2e3d820afe9d923ee .
+
+ont:class_ce5acf1ad422a9581d2af2af18f603b4 ont:extends ont:class_c3458f4e1cf072b2e3d820afe9d923ee .
+
+ont:class_e91c83953fb02673447fa0070181381e ont:extends ont:class_7a385404b2f8e3ac9c6220799c573d0b .
+
+ont:contains a owl:ObjectProperty .
+
+ont:defines a owl:ObjectProperty .
+
+ont:dependsOn a owl:TransitiveProperty ;
+    rdfs:subPropertyOf ont:imports .
+
+ont:extends a owl:ObjectProperty .
+
+ont:file_app_ai_init_py ont:imports ont:import_5669a3dc605fe50138162f4df7308ee0,
+        ont:import_b539c60b624d98d2f0c69507989a2134 .
+
+ont:file_app_api_agent_py ont:contains ont:class_4fb2f65ae51f38cd0cb32d6b93ee6e58,
+        ont:function_728dda817678393ad21fd17454b9312f,
+        ont:function_f7b8105b788decba1ca3b19ead772384,
+        ont:import_0ebbd10a895e770fab243a765be6aad4,
+        ont:import_26ff821e1cb1bcf61912379bebcb7b16,
+        ont:import_289579ab2ef7832600bb5b80c4b68edb,
+        ont:import_c81860d146e0cd43cb39a0e22dd9a28a,
+        ont:variable_5f42aa12be8ae6c4d370c885dbfb87f3 ;
+    ont:imports ont:import_0ebbd10a895e770fab243a765be6aad4,
+        ont:import_26ff821e1cb1bcf61912379bebcb7b16,
+        ont:import_289579ab2ef7832600bb5b80c4b68edb,
+        ont:import_c81860d146e0cd43cb39a0e22dd9a28a .
+
+ont:file_app_api_courseware_py ont:contains ont:class_2966aec65d06ee672dfc70ecaa681fff,
+        ont:function_03c442faf2773be6f56ab74d7fdde03f,
+        ont:function_16e86e432dccf043b61fc6f81c1e1097,
+        ont:function_1bddabdcb3d621a17c9fd33cf9c7a5d0,
+        ont:function_2550e8c24706d96d28e3f2f97fe8dc2f,
+        ont:function_2c71a0921580e5cdf85be6c4b87f27ef,
+        ont:function_30e4409f2c2d8c571598bed1a8f6c089,
+        ont:function_3b4b7faed51c226869edb685b34c0d76,
+        ont:function_490116e533bcc4d58d3e6bd1a77e22e1,
+        ont:function_677b254939b507e9284e325f3bd376e6,
+        ont:function_8501c7cc877fee13bcd88aa8eae66b38,
+        ont:function_9f30c3b1bda112de921d181b902ebbe8,
+        ont:function_cef0322c7a8eda552857b5946887d252,
+        ont:function_ded5be42a4ea36036be06a44d1d4edb8,
+        ont:import_187745e26262ae4c3ddb7c7982814b1f,
+        ont:import_2b393a934ffaf08593888c4ff98f7f88,
+        ont:import_30c9397bcb83917bbad2ad087255e105,
+        ont:import_3b1bbbc7aa1b9826a15d57a9215ebb27,
+        ont:import_4889ea71609d5323651bd94b993e9963,
+        ont:import_564b7537a0322913d8f7f6fc27fa0413,
+        ont:import_56a374102c217b7d4848d1b50bc60657,
+        ont:import_7a9c30f507938a2f3c90ac26caba3e94,
+        ont:import_7d6a9949b1748eb87dfb4fa16b2cc3fa,
+        ont:import_9975b0f6a8052c0c669a67bce163ca3d,
+        ont:import_a4a6b0783ffa70ebd925322f15231a2d,
+        ont:import_d0a6e5df82b554e06dfe64196d6d8dd0,
+        ont:variable_e3ddf83c8c378e6ad6a53a7fe34f3b38 ;
+    ont:imports ont:import_187745e26262ae4c3ddb7c7982814b1f,
+        ont:import_30c9397bcb83917bbad2ad087255e105,
+        ont:import_3b1bbbc7aa1b9826a15d57a9215ebb27,
+        ont:import_4889ea71609d5323651bd94b993e9963,
+        ont:import_564b7537a0322913d8f7f6fc27fa0413,
+        ont:import_7a9c30f507938a2f3c90ac26caba3e94,
+        ont:import_9975b0f6a8052c0c669a67bce163ca3d,
+        ont:import_a4a6b0783ffa70ebd925322f15231a2d,
+        ont:import_d0a6e5df82b554e06dfe64196d6d8dd0 .
+
+ont:file_app_api_diagram_py ont:contains ont:class_edf7d08ca50658403a2b9807c64568df,
+        ont:function_205c1d33c1d60d98e763fbfafc29fee6,
+        ont:function_caf945c7243f848d7345a8450a4fbcff,
+        ont:import_05d83821c869f4b7b033202f15e1a306,
+        ont:import_2957c0c79410ee46030a2abb9c25d8bc,
+        ont:import_3fbd502349525e896e4f6155d0cd18c5,
+        ont:import_83ab87061ad7310a3a0477e8efb73529,
+        ont:import_fd12ec4573ed4f7834ca081cb478b81c,
+        ont:variable_5549a3c0151b3c94da85f363d079d61a ;
+    ont:imports ont:import_05d83821c869f4b7b033202f15e1a306,
+        ont:import_2957c0c79410ee46030a2abb9c25d8bc,
+        ont:import_3fbd502349525e896e4f6155d0cd18c5,
+        ont:import_83ab87061ad7310a3a0477e8efb73529,
+        ont:import_fd12ec4573ed4f7834ca081cb478b81c .
+
+ont:file_app_api_router_py ont:imports ont:import_172d692cbfcbfae66153836d2a8894ea,
+        ont:import_1a2c8daeff69c2b413e6161597219ab7,
+        ont:import_31c04a000af25870bffb6ef943e9b481,
+        ont:import_3f4c4f016da4331f404ee947a437ce79,
+        ont:import_fb68f740b117049661a197a8ee1ca902 .
+
+ont:file_app_core_config_py ont:imports ont:import_79ad79c1fe1360147f2017fcabb0773d,
+        ont:import_b5345476947371099130fbb90e96f614 .
+
+ont:file_app_core_database_py ont:contains ont:function_2036aa8ff520a5a294496535cfb9355c,
+        ont:function_9876c347a0309491bc3b47bcab7c9fca,
+        ont:function_a705aaf61106d0cbfcb0fa2ba813d88a,
+        ont:import_0db0c87e2fd656e601142848e2f4e4d2,
+        ont:import_1c1abda232bb7a4536b6dab157488c42,
+        ont:import_80ab9c3d366e34d2b028a231c4d24d7c,
+        ont:import_a89a1d705c413d0cb39ee641dad7cf64,
+        ont:import_ec36f3ca00c263f3a5d47f3487f9a48a,
+        ont:import_f97611b79d573cda98850423d3a84ee7,
+        ont:variable_1da29c8d561843a504c4212d395afa59,
+        ont:variable_8457fb6b3a200f76d10dd07348daf6f8,
+        ont:variable_ba58d0af590eb53da1d2d8ea3b9802c0 ;
+    ont:imports ont:import_0db0c87e2fd656e601142848e2f4e4d2,
+        ont:import_80ab9c3d366e34d2b028a231c4d24d7c,
+        ont:import_a89a1d705c413d0cb39ee641dad7cf64,
+        ont:import_f97611b79d573cda98850423d3a84ee7 .
+
+ont:file_app_core_models_py ont:contains ont:class_598795ef6fb5eb49d02a20c2eac87a53,
+        ont:class_fd2dfc8047a50369dc4a7082f15dacc2,
+        ont:import_4421fd92daa0cd72536c1d36a600fdd0,
+        ont:import_72e85828b2b7c98e5580090a56b4fd90,
+        ont:import_e7c6dfdb3793a9ef7e86de2b7bcc31e0 ;
+    ont:imports ont:import_4421fd92daa0cd72536c1d36a600fdd0,
+        ont:import_72e85828b2b7c98e5580090a56b4fd90,
+        ont:import_e7c6dfdb3793a9ef7e86de2b7bcc31e0 .
+
+ont:file_app_courseware_models_py ont:contains ont:class_07673d89f339bf57c59d2179a342346d,
+        ont:class_0bea79ec72be51c79b1cf34de176c1a2,
+        ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_21a8d30c06796d27ff59bcc166e9e5ef,
+        ont:class_2dab1d4111a735c0de55d626c421141c,
+        ont:class_2f2f8d4bd7b8dfd56a995933d0f6a1dd,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb,
+        ont:class_38e8264457d87e430752b9c28f49f45b,
+        ont:class_7e8b032612a4fbcf3c06918424f892d4,
+        ont:class_a15a24736a725f8785e115fde3130bed,
+        ont:class_d63fe66dd5efe99ebdabfa60aa4dc786,
+        ont:class_e534f6be7221d4586bbababb2b31b138,
+        ont:class_f33fa43afd93650eebb7cd0bb50951c3,
+        ont:import_32bd66f6354d439df6ad61dde6fede21,
+        ont:import_34c7dbc22f3f99e3c83ff0d404d3242f,
+        ont:import_5ba44d2a3986d487740af6a2cbd51712,
+        ont:import_8d556f6ee6c9ea554417fe51fd6b3af7,
+        ont:variable_12e84f1d0b67481c351c107dee8d4f83 ;
+    ont:imports ont:import_32bd66f6354d439df6ad61dde6fede21,
+        ont:import_34c7dbc22f3f99e3c83ff0d404d3242f,
+        ont:import_5ba44d2a3986d487740af6a2cbd51712,
+        ont:import_8d556f6ee6c9ea554417fe51fd6b3af7 .
+
+ont:file_app_domain_courseware_auditor_phase1_py ont:contains ont:function_42af0a59fb23accfe94c18065de96276,
+        ont:function_605f65943b2944d14f4e008140388cf9,
+        ont:function_e4a39375c53f87dfda295e038c6b8fdd,
+        ont:function_ebb8604bde81b17e485e5d46bd946416,
+        ont:import_2b0b4668756137fdf00aa04c4f4b7155,
+        ont:import_5d73797db776e05cb82b114c55010759 ;
+    ont:imports ont:import_5d73797db776e05cb82b114c55010759 .
+
+ont:file_app_domain_courseware_auditor_py ont:imports ont:import_6e65ae30b45ed1ff2c0cc3eb86c0cdb5,
+        ont:import_9150cc37fc17be0c8d7bbcda52898477,
+        ont:import_9d8317085db2c880f54daebb311b1f12,
+        ont:import_e87bb2c09f3042b57cbc8b689c2d7cc0 .
+
+ont:file_app_domain_courseware_cell_diagram_py ont:contains ont:class_3b90a7c03b86d5165453702725fa4ac5,
+        ont:function_2c4f49bf2bc527210a5bc5bc66abdbd7,
+        ont:function_3111005f941150872c73e6d5ede998ae,
+        ont:function_50d3426e2477dab6d474a8142fe01062,
+        ont:function_5c77ee13d794687824ae480195925e02,
+        ont:function_7afe2163b081b5e7dc941f4ff32de8dd,
+        ont:function_939c63151093a88355b52b7dd0c08eb7,
+        ont:function_a6b19d4811d9b7b87ac9593e7c26786a,
+        ont:function_a88524d0bcbbf20e3396998b1e1a92fd,
+        ont:function_b005b292e30b482e8c21685870a52792,
+        ont:function_db613115ac497c2897282a5b59ac44df,
+        ont:function_e2b17888524717a6a6c2efd2a22be23f,
+        ont:function_f8ed54658e4fe42aacf0493dd76ee825,
+        ont:import_5f6b3dde7bd2cb7d74d83cd5ed9c2e9c,
+        ont:import_75deb0e11eabadff4a1c0f2018030547,
+        ont:variable_68f98826828cf9c858886cbdf023dcf4,
+        ont:variable_9aff15c56de5fc8e0ae16015299e7c72 ;
+    ont:imports ont:import_5f6b3dde7bd2cb7d74d83cd5ed9c2e9c .
+
+ont:file_app_domain_courseware_diagram_renderer_py ont:contains ont:function_06d2de7d479e61bf5f94acc85927bedc,
+        ont:function_085ae548f68a8b760604541e45d59b03,
+        ont:function_12442f2c0619dcc9c849ed9748c204f5,
+        ont:function_137c025dd6624c98fcd98e816561e8c7,
+        ont:function_25c133794fee03fee6c2c67dfc8cbf45,
+        ont:function_26a0829ba248fc484159b6557be7a88f,
+        ont:function_28bcd226c06c039b76930939581e3f76,
+        ont:function_46997a1056510f4849d54c121bc2415c,
+        ont:function_46a439d696b85489a3ca59b54b4e67b1,
+        ont:function_49c1871d87d928423a4418bfddab0ae3,
+        ont:function_505a35d9217a4de5871bbc17bddd13f4,
+        ont:function_695620a5d8d7e6ed814dfe8fc8c26747,
+        ont:function_7289a9b18b4285167fd6a70eb1474a8e,
+        ont:function_77eccb91fc31fcde1240c8b788241433,
+        ont:function_785f5f96fd6a68a316072e2b3da9b9ce,
+        ont:function_7e125c230a1f6d6a787e2c0e2d424ff4,
+        ont:function_83c4d89842f9fff516f110c56ae9c2e4,
+        ont:function_8aab6f945366296443afbc4d4c37fcb5,
+        ont:function_a89d2ac2475dd07a950599817546c07e,
+        ont:function_a966c26e791abd0c4f1d9da48eaf3185,
+        ont:function_ac7add8747f61b0258c2b63da9cb727f,
+        ont:function_ada85f4598f7c41ff8c2fea22c9dab91,
+        ont:function_b76d38e1c6cdc51bcd5c38ba79250c71,
+        ont:function_bdedc3b97be7b9bfabbc9eeca4b3b3e0,
+        ont:function_c209269e24a268f753a48eaa1453e476,
+        ont:function_c3c3bbe7176b922edc5a9a126f08cf08,
+        ont:function_d7ec169548ee047adfc5fc3ee83ff7db,
+        ont:function_e04967f5cc7ad5562bc63e413fb92bc8,
+        ont:import_21c6dbd7d8e90b2c86bc3d6777419226,
+        ont:import_5917c16ae2f100544e88e10ef258ecec,
+        ont:import_77c71033a74a26420af2aaf9fc6129c3 ;
+    ont:imports ont:import_5917c16ae2f100544e88e10ef258ecec .
+
+ont:file_app_domain_courseware_mermaid_prerender_py ont:contains ont:function_51c2fd740ea050c68d288bd2eb922912,
+        ont:function_8584f103b2259582e4febf59b3b9bed9,
+        ont:function_ca8b04db66b828098741ad41140ed9fd,
+        ont:import_3a2327a3c27ba65ed6d29c1a15ae4856,
+        ont:import_3cd9ee5fe15652513b7169c21da0e4f8,
+        ont:import_7e1c9245a9d7e64784a300aba8813217,
+        ont:import_8a96dbb7c99c8edfcf6de48c729a6c52,
+        ont:import_a8744fd4760a9d1cc324a07de4471425,
+        ont:import_b01ed581c0bf45524f7acac6f8f9f3dd,
+        ont:import_faed7d59d70c117338e703f65934b28b,
+        ont:variable_5be9614759762ccef1fd3a080282ed2d,
+        ont:variable_6e4ac470925af636dc7d722551250333 ;
+    ont:imports ont:import_7e1c9245a9d7e64784a300aba8813217,
+        ont:import_b01ed581c0bf45524f7acac6f8f9f3dd .
+
+ont:file_app_domain_courseware_mermaid_render_mjs ont:contains ont:constant_066cfb3d7663e91114b66e389a327990,
+        ont:constant_072921e57ce50ac0a2aaad241ec1dab8,
+        ont:constant_488c6abe16e93d769271cc456d39e69f,
+        ont:constant_df2714ec69f4e7d7ccfe10fd8d238fee,
+        ont:import_34c57f5affeeff086b87379e8be29f9f,
+        ont:import_7ba966932d7560b2c5cd0205b870b74d,
+        ont:variable_f9e2cf8f0cf541d146d7cd69b20e33cb ;
+    ont:imports ont:import_34c57f5affeeff086b87379e8be29f9f,
+        ont:import_7ba966932d7560b2c5cd0205b870b74d .
+
+ont:file_app_domain_courseware_qa_py ont:imports ont:import_6c9a4ca810707b803298193789b75a19,
+        ont:import_a7955a074c04073356fb4677400796cd .
+
+ont:file_app_domain_courseware_review_committee_py ont:imports ont:import_1f2285e9a22830eb1676c223cb33ca48,
+        ont:import_2c417e9a2ca95b94e8dafa8d7365eb0a,
+        ont:import_6ed8bf853e62c3afad93d5b5461e8d3d,
+        ont:import_dfc17641d213b7a1f84c31fb36a38253 .
+
+ont:file_app_domain_courseware_routing_py ont:contains ont:function_0f24651f8dab4e92892539f040cf0c55,
+        ont:function_484324d54ad0a2c0d55e43499f98b3d8,
+        ont:function_4f5ee4b218f69ea9c8b0be53d66bee18,
+        ont:function_5aa8170d83c562b5967b38d93109b39d,
+        ont:function_7a88182bd07baa422b570d64073006d6,
+        ont:function_902936c2da998aed2e1f6abcd47404f3,
+        ont:function_bca196e51fdceb6e3071a13553d47002,
+        ont:import_8939f4c2a436801810cf8bfdbdc62d4e,
+        ont:import_a6149c58d22c94e4657460b90e3aefc7,
+        ont:import_c2bdb9fddae0ee7e69ddc1efa73d1208,
+        ont:import_e6c82f701c6be7aefbc7ab76edb3569f,
+        ont:variable_04e34fc891d974adfd105d2de6fcb74e,
+        ont:variable_2410c4ca3e927efd01b05b96a7d1ec63,
+        ont:variable_759384f47b75b523e790e44c33c8591b,
+        ont:variable_888b42f9926f4b38c1daa7de81978b39 ;
+    ont:imports ont:import_8939f4c2a436801810cf8bfdbdc62d4e,
+        ont:import_c2bdb9fddae0ee7e69ddc1efa73d1208 .
+
+ont:file_app_domain_courseware_storage_py ont:contains ont:function_2dd1da1e28fdf33c3c984e33dc13d940,
+        ont:function_9e1fa1166c8c452e1c1e112c9581cdfe,
+        ont:function_f52d6180598a5eb7271b2905a8a1b3e2,
+        ont:import_026a0cd5a0b3bba4def2c42be7265dc9,
+        ont:import_1a0856dc0e57c869e13e955d73d012e2,
+        ont:import_2d9c4bd4b4e03784829c8ad17ad25f58,
+        ont:import_2eb7f32538e23104f49751b013cf98da,
+        ont:import_3bdacc98f76424d1cce4d8b6b3616662,
+        ont:import_5511ad7a2ec5517778d34f295101f191,
+        ont:import_5a807cc1db2986c254d245617c0f108c,
+        ont:import_60e32c406ddcb5b07ec38761a2c2142f,
+        ont:import_69d4eb3188fc0bcaa6b74a28961e8adf,
+        ont:import_a34cbc6e442f1e2b456bafefe3330de8,
+        ont:import_a50e23026d5ad882ef5e0e5097093d2a,
+        ont:import_e05fdf1fcca77682ba98381f13cae7a6,
+        ont:import_ec4abc3edb5a85dc6eeda694feca4cb5,
+        ont:variable_0d16e8f6cf8173dd6a590fa110a26a7b,
+        ont:variable_2511cc84425f61fc2501941aa46a9a4d,
+        ont:variable_57622d749473edc16c522a02a3d1087b,
+        ont:variable_85644e108cd17806ad57706dbb836bff,
+        ont:variable_d9c6ff3e6161300d1bf84243c548efc0 ;
+    ont:imports ont:import_2d9c4bd4b4e03784829c8ad17ad25f58,
+        ont:import_2eb7f32538e23104f49751b013cf98da,
+        ont:import_3bdacc98f76424d1cce4d8b6b3616662,
+        ont:import_5a807cc1db2986c254d245617c0f108c,
+        ont:import_a50e23026d5ad882ef5e0e5097093d2a,
+        ont:import_e05fdf1fcca77682ba98381f13cae7a6,
+        ont:import_ec4abc3edb5a85dc6eeda694feca4cb5 .
+
+ont:file_app_domain_tools_registry_py ont:calls ont:function_dbaeeb5b6e05740e5df918c98d408b12 ;
+    ont:imports ont:import_3ee520f2ac4819d6a9fb2b978c26ad85 .
+
+ont:file_app_engine_ai_courseware_provider_py ont:imports ont:import_ae7798836db9b548d5226961095acee2 .
+
+ont:file_app_engine_ai_ga_provider_py ont:imports ont:import_0560e745b102d33fb4d2cc29bb4b5120,
+        ont:import_e00326127036646a489bfcde62b56c61 .
+
+ont:file_app_engine_ai_providers_impl_ga_adapter_py ont:imports ont:import_cd6b3b4e9f4e3e33b3850d71f316b5db .
+
+ont:file_app_learning_models_py ont:imports ont:import_3783c11485b16099c3522b63399afcd3,
+        ont:import_ad0d614840bc34b986daa854f035fd59,
+        ont:import_e7266ff149b62fbeb38d3c515a4184e0,
+        ont:import_f69a17aff3f49346d171abe49acb850a .
+
+ont:file_app_learning_tracker_py ont:imports ont:import_0cbead67dc05d2e612b39407c8e808b8,
+        ont:import_db0c7fc6818282ade3e0585d0e293315,
+        ont:import_e0b503bf3251aef64fc41f956bf00255 .
+
+ont:file_app_main_py ont:imports ont:import_105994f342a09d5e4603f71b86089468,
+        ont:import_3a9dface4bbffd1e41964c9f4b67c2c3,
+        ont:import_4418dd22ad0fe96532009313a6694a56,
+        ont:import_4d97e48ec68aa30d26b9da22299ac52e,
+        ont:import_75fe3d4fafde2ce556ba278a7536f460,
+        ont:import_a62ff2299fade7b5abe137c84dc1ef27,
+        ont:import_c67737efa3350d1027ce7c1e39e246e7,
+        ont:import_d41e965609b4c0323e17d99e8b40805a,
+        ont:import_e78bd474c80ef04a0abcfcf9620cac5b,
+        ont:import_fd6ca959aacd7f935037ad7bdb21e253 .
+
+ont:file_app_ontology_models_py ont:imports ont:import_1e4b9a42c8bd13395e160d4cb2d4c2c5,
+        ont:import_d1601803829e9038ab685248fd2847c6,
+        ont:import_d21d961b4ec1ccbaa9680ff8b5f0921b .
+
+ont:file_app_ontology_schemas_history_py ont:imports ont:import_f7c886df2a19ecb4ed3785043f850947 .
+
+ont:file_app_ontology_schemas_math_py ont:imports ont:import_8dd6fe323e1d0bd2d4e58ebc4455ef4c .
+
+ont:file_app_skill_phases_ai_courseware_py ont:imports ont:import_0ff4f544b0a35528b7648ba48e3cd0f7,
+        ont:import_588a51e8f9b2968fd0c31b9f3c8652cd,
+        ont:import_9791550f9001b97f915f60da776f5003,
+        ont:import_9bf81c5bce2455473fe7fe13c044ab67,
+        ont:import_bc298cd3f588db98d48f3c6b40d81407 .
+
+ont:file_app_skill_phases_ai_plan_py ont:imports ont:import_266f9600e16c17188b1057fec2619a04,
+        ont:import_640b5d79d25db16d26219daa4cd05eee,
+        ont:import_b9074ca4a6039772f9883dd9d5b9fb2d,
+        ont:import_e2ce8a9c7f236d350d51983d52bbb9ce .
+
+ont:file_app_skill_phases_ai_quiz_py ont:imports ont:import_1758d861cd10f3727c38850c9df65fd9,
+        ont:import_29569c0b4fbc678797d19eb412accab9,
+        ont:import_57bf4b82a00e4543b3f117bc3ed4ea79,
+        ont:import_69b86049a6225e191fa82ddf8f8b95ba .
+
+ont:file_app_skill_phases_courseware_py ont:imports ont:import_18ceab8ccf9a00d5f94b6871dc8bd39c,
+        ont:import_3314ad1ecc1a1c30ef3fdce20aa9ad87,
+        ont:import_35bd00eab2c6a2d27a7a427c4f3642c0,
+        ont:import_8d7f8599c9cf30ce5e3b4b7f4b229194,
+        ont:import_926ca9ea1beb063be792f502043fb04f .
+
+ont:file_app_skill_phases_init_py ont:imports ont:import_116f56a93df1ff214b777451d07eebeb,
+        ont:import_c7f25e46fecc2350f3a33c46cebda4ad .
+
+ont:file_app_skill_phases_interaction_py ont:imports ont:import_29cd97af1ed521cfbe8e8ee579d7ae54,
+        ont:import_a2e82ac9266fec56df46669589483f05,
+        ont:import_c6a5c9f729bf8eddf60940abc874c947 .
+
+ont:file_app_skill_phases_ontology_py ont:imports ont:import_54e6387099f9dfa41cd390c13a8fc796,
+        ont:import_e8621f358b55c2bb6e91d511e475f6f6 .
+
+ont:file_app_skill_phases_planning_py ont:imports ont:import_59ef9d5e10c7f1d9405876416a0c2935,
+        ont:import_f900f5bb37bf5038b3ff4fe9540821f8 .
+
+ont:file_app_skill_phases_renderer_py ont:imports ont:import_395916229fd4ad3245a8d170abbe4a61,
+        ont:import_562d6881d87c1fa1e0dfeb675bd17d86,
+        ont:import_6738b09ac8ebb31055bd533d3a781bbc,
+        ont:import_9000f571d07f2ce0054bc6076cffcc92 .
+
+ont:file_app_skill_phases_review_py ont:imports ont:import_5974f5884c34339ea80b3403cde5bfc9,
+        ont:import_b675fce3b13d7c1039d6b4c366104268,
+        ont:import_cb46f49f8f7ac6aa7fc7cf1d19d4b2ce,
+        ont:import_ceb9b39e8157918e5a8d1b46f4a240ab,
+        ont:import_d31ac5ef6d5500f9037c5047e4f83561 .
+
+ont:file_app_skill_router_py ont:imports ont:import_0ccd64f8a0495d8e4eb181c7f1777c9a,
+        ont:import_19ec7f77736b66f8cdc841d949848f42,
+        ont:import_1e39d984dfd843a38d2902585629b869,
+        ont:import_26e247b070b4a6027bdce279f59ca98d,
+        ont:import_29c87efbee5767b32de3ff3f3d93770b,
+        ont:import_2f76ca35886bd8958a8748c46a7ae176,
+        ont:import_365c3490b1fbf7f5fcf9990d8206fe38,
+        ont:import_496d5c8b3e1d2f544204c386575984bc,
+        ont:import_710df57d27cdc09fe731f4b783dd6762,
+        ont:import_98dcfd1b81899551f3f5a51d4a6f68ff,
+        ont:import_a02e8b68921d7187d655b315449b0230,
+        ont:import_a2f7a8ed45eef0c28e80fbb06afbaa6c,
+        ont:import_bfa168376039ac603ebecf94ef9ef932,
+        ont:import_fba3e96fe5d4323356fa17512630075b .
+
+ont:file_scripts_brainstorm_courseware_py ont:imports ont:import_9781d919cc9ea1ca7751ffc08ad70f63,
+        ont:import_ed511cde523d24f974c9e32ee921f54c .
+
+ont:file_scripts_generate_courseware_py ont:imports ont:import_5c4488f73a6e8fc09f71a2222138fdba,
+        ont:import_72e251fccebb03e849d536c5b6ebc325,
+        ont:import_a8cdaa540e7b822583f237f52fc4af6c,
+        ont:import_bb204506feb78272303beba4491a3af0,
+        ont:import_ccf52549bac6da0800eab28aab5e47ff,
+        ont:import_e4cfe1e0f36f0b0287106e59632ac9be .
+
+ont:file_scripts_generate_courseware_v2_py ont:imports ont:import_23be87481e6586946d6f6df82eb39cee,
+        ont:import_31fb9a78bced529299f753d68c1f589e,
+        ont:import_4414e9698b504b9821f48b13dc0eb326,
+        ont:import_dd2f2f00ad144fcc8149bc0b31e33ddf,
+        ont:import_ef43936c4bd8efa276b67f80de99230e .
+
+ont:file_skills_plotly_basic_py ont:imports ont:import_1c76a633ac9f9c64da2482f19e52f118 .
+
+ont:file_skills_plotly_examples_demo_plots_py ont:imports ont:import_caab50311c06e6fc03650b06db5cdc06 .
+
+ont:file_start_app_py ont:imports ont:import_69b8a9fe7daf29997ec194c74bf29822 .
+
+ont:function_02613572f5efd6c54b15cbccf7cd343c ont:calls ont:function_f2dd1d444b2c4fb441a1b555b1d88f34 .
+
+ont:function_12e324ad77ac2c4ee6e6b6ee485fd4ad ont:calls ont:function_a966c26e791abd0c4f1d9da48eaf3185 .
+
+ont:function_49e9cab588352ac30645b0103b1dc600 ont:calls ont:function_f52d6180598a5eb7271b2905a8a1b3e2 .
+
+ont:function_4a24906e0ad431ed88c55ef9e5c1f4b5 ont:instantiates ont:class_27698e7e0c08c315ef617d56c7af9c44 .
+
+ont:function_4f45982298b5dc789f2a5876341255be ont:instantiates ont:class_27698e7e0c08c315ef617d56c7af9c44 .
+
+ont:function_510537762790d15f6e7a146555559e6e ont:calls ont:function_ef74803ab9923861e8f94aed5bfd2064 .
+
+ont:function_554abb450ae8129bd598186b3d17616a ont:instantiates ont:class_680133cd9d00241e9bf7f18b43810eca .
+
+ont:function_66a6043dce12d760e759a71ed400cb8a ont:calls ont:function_9e1fa1166c8c452e1c1e112c9581cdfe,
+        ont:function_f52d6180598a5eb7271b2905a8a1b3e2 .
+
+ont:function_6bd86e14d63f485949f7aeffd2d6322f ont:instantiates ont:class_680133cd9d00241e9bf7f18b43810eca .
+
+ont:function_79ea0d87c91b603ccdf405634f89600e ont:instantiates ont:class_39910aedf3871fa0939e8c1d03c38268 .
+
+ont:function_81540c64f81493d76e6bfe494aa87a11 ont:calls ont:function_007fccb816d91da584474c175abb9354,
+        ont:function_490116e533bcc4d58d3e6bd1a77e22e1 .
+
+ont:function_94423604a4f7738c227920f51a031fd9 ont:instantiates ont:class_e29414b4951fe08d7a8aeef316412d6a .
+
+ont:function_a174b10824be1ea14fc857671d0e13fa ont:instantiates ont:class_949ac22c9b3d2fff6d370f083160f7d4,
+        ont:class_eac6b60d1228fdcd3051a8a3e4648f95 .
+
+ont:function_c6bdd7d08de2505d9443d36319f7ccb9 ont:instantiates ont:class_7a385404b2f8e3ac9c6220799c573d0b .
+
+ont:function_d7c52204915c27da95a62ef3bd729fba ont:calls ont:function_ef74803ab9923861e8f94aed5bfd2064 .
+
+ont:function_e318523c90ffea6650834e49b3033c1a ont:instantiates ont:class_27698e7e0c08c315ef617d56c7af9c44 .
+
+ont:function_e44557ec73c5f30c55d3ba94102b5ae7 ont:calls ont:function_490116e533bcc4d58d3e6bd1a77e22e1 .
+
+ont:function_edef942bf3e67ab26edf5f4cbba9b282 ont:instantiates ont:class_27698e7e0c08c315ef617d56c7af9c44 .
+
+ont:instantiates a owl:ObjectProperty .
+
+ont:method_05c44fc24d9826203a1f1793a9deccce ont:instantiates ont:class_a4bc83069a77d549b34076f2eb7fe30f .
+
+ont:method_116c6f62f3c0c4b91c972dfbf1eefe44 ont:instantiates ont:class_0bea79ec72be51c79b1cf34de176c1a2,
+        ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb .
+
+ont:method_16093468008eed8f453f8982054a60c8 ont:calls ont:method_457e9ddb35769a61f9111b865f71ead0,
+        ont:method_e0aaf9c69d110244ee77839c60a6d669 .
+
+ont:method_1d1b7add0033fc652542e3ddae9b89a1 ont:instantiates ont:class_0bea79ec72be51c79b1cf34de176c1a2,
+        ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb .
+
+ont:method_29fdf242614ba452ce3c901187c10d98 ont:instantiates ont:class_eac6b60d1228fdcd3051a8a3e4648f95 .
+
+ont:method_2c97eea24311aab3a94a59bf4563aa3e ont:instantiates ont:class_bc1fca761d66a877d85dfc612d7ef128,
+        ont:class_f0220e5a2269e4b5340724ed2a006712 .
+
+ont:method_3a5166582626ce2106d40880c89c500e ont:instantiates ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb .
+
+ont:method_400e15d2f9a4c4c923b9a60ad1b07876 ont:instantiates ont:class_192626ed3d56197fea984c4865737239 .
+
+ont:method_41b18f1566739b64838aad27e54c4744 ont:instantiates ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_2f2f8d4bd7b8dfd56a995933d0f6a1dd,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb .
+
+ont:method_44cb6fa4c28d1e75760d66d5854da783 ont:instantiates ont:class_1c56c61118cc9f509bcd59931e94bf31 .
+
+ont:method_47de8524206a36700e65ee23331e8cca ont:instantiates ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_21a8d30c06796d27ff59bcc166e9e5ef,
+        ont:class_2dab1d4111a735c0de55d626c421141c,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb,
+        ont:class_7e8b032612a4fbcf3c06918424f892d4,
+        ont:class_d63fe66dd5efe99ebdabfa60aa4dc786,
+        ont:class_eac6b60d1228fdcd3051a8a3e4648f95,
+        ont:class_f33fa43afd93650eebb7cd0bb50951c3 .
+
+ont:method_4a503d0501149b3d2f89776987b48e4a ont:instantiates ont:class_c86c2873a49d49771ac9388bac1498d2,
+        ont:class_d8f5bf0fb096e879f18ffe720757ac4a .
+
+ont:method_4bfa1dc357d8248102721c398ecf7ba6 ont:instantiates ont:class_1262eadcba3ddd06ee86394fc42e2803,
+        ont:class_29cb7c17d5bc4c7ceec9d7cc17b555a4,
+        ont:class_39910aedf3871fa0939e8c1d03c38268,
+        ont:class_680133cd9d00241e9bf7f18b43810eca,
+        ont:class_7a385404b2f8e3ac9c6220799c573d0b,
+        ont:class_eac6b60d1228fdcd3051a8a3e4648f95,
+        ont:class_fc56079e0ba708627a0bacc4f29b38c8 .
+
+ont:method_57098e91686fcab78eef811de0b391dc ont:instantiates ont:class_367a86f05aa432654b264ac9e94a9fcb .
+
+ont:method_68127b661453aaeef05bab8485de1751 ont:instantiates ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb .
+
+ont:method_6a57eb4b269fdf9f6f029f3daff854ad ont:instantiates ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_2f2f8d4bd7b8dfd56a995933d0f6a1dd,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb .
+
+ont:method_6cd7c023e8698db943a030bb946acbc8 ont:calls ont:method_0e27914ce9220b9bdd01c0df5868fb5c,
+        ont:method_e0aaf9c69d110244ee77839c60a6d669 .
+
+ont:method_86d940a4730976c83d47c3f8baad04cf ont:instantiates ont:class_0bea79ec72be51c79b1cf34de176c1a2,
+        ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb,
+        ont:class_d8f5bf0fb096e879f18ffe720757ac4a .
+
+ont:method_a25c2fb0784f7d27561d2456ec27fefe ont:instantiates ont:class_a51a54636e369c5896748e56c0e8defd .
+
+ont:method_d0dbecad672b4e777d3e1ef7d267ec58 ont:instantiates ont:class_a8189cd2c171bbc808d2d88f3b55a9d4 .
+
+ont:method_e180d911f5743852200642367ef0b3eb ont:instantiates ont:class_0bea79ec72be51c79b1cf34de176c1a2,
+        ont:class_15bd61c9236ec5a20f7518f0f0be334c,
+        ont:class_165cb1346e9c394cccf60f46464b42a7,
+        ont:class_367a86f05aa432654b264ac9e94a9fcb .
+
+ont:method_fe0a0b46079b710ccf29ec9846f57e35 ont:instantiates ont:class_2dab1d4111a735c0de55d626c421141c,
+        ont:class_7a385404b2f8e3ac9c6220799c573d0b,
+        ont:class_a15a24736a725f8785e115fde3130bed,
+        ont:class_d63fe66dd5efe99ebdabfa60aa4dc786 .
+
+ont:references a owl:ObjectProperty .
+
+ont:route_app_api_agent_py_16_GET_tools ont:references ont:function_f7b8105b788decba1ca3b19ead772384 .
+
+ont:route_app_api_agent_py_22_POST_execute ont:references ont:function_728dda817678393ad21fd17454b9312f .
+
+ont:route_app_api_courseware_py_135_POST_generate ont:references ont:function_2c71a0921580e5cdf85be6c4b87f27ef .
+
+ont:route_app_api_courseware_py_158_GET_by_route_level ont:references ont:function_677b254939b507e9284e325f3bd376e6 .
+
+ont:route_app_api_courseware_py_16_GET_list ont:references ont:function_16e86e432dccf043b61fc6f81c1e1097 .
+
+ont:route_app_api_courseware_py_173_GET_list ont:references ont:function_3b4b7faed51c226869edb685b34c0d76 .
+
+ont:route_app_api_courseware_py_183_GET_spec ont:references ont:function_2550e8c24706d96d28e3f2f97fe8dc2f .
+
+ont:route_app_api_courseware_py_260_GET_cw_id_preview ont:references ont:function_9f30c3b1bda112de921d181b902ebbe8 .
+
+ont:route_app_api_courseware_py_280_GET_capabilities ont:references ont:function_8501c7cc877fee13bcd88aa8eae66b38 .
+
+ont:route_app_api_courseware_py_287_GET_cw_id ont:references ont:function_490116e533bcc4d58d3e6bd1a77e22e1 .
+
+ont:route_app_api_courseware_py_294_GET_cw_id_html ont:references ont:function_30e4409f2c2d8c571598bed1a8f6c089 .
+
+ont:route_app_api_courseware_py_316_POST_cell_diagram ont:references ont:function_03c442faf2773be6f56ab74d7fdde03f .
+
+ont:route_app_api_courseware_py_327_POST_cell_diagram_inject_cw_id ont:references ont:function_cef0322c7a8eda552857b5946887d252 .
+
+ont:route_app_api_courseware_py_74_GET ont:references ont:function_ded5be42a4ea36036be06a44d1d4edb8 .
+
+ont:route_app_api_diagram_py_19_POST_render ont:references ont:function_205c1d33c1d60d98e763fbfafc29fee6 .
+
+ont:route_app_api_diagram_py_31_GET_types ont:references ont:function_caf945c7243f848d7345a8450a4fbcff .
+
+ont:route_app_main_py_53_GET ont:references ont:function_2a7a29af85c337d2b643a4472519300e .
+
+ont:route_app_main_py_66_GET_health ont:references ont:function_b0d90d9624384ae4f3692343c67bc221 .
+
+ont:route_app_skill_router_py_109_POST_review ont:references ont:function_b176bb4c048c50700dbc3c2592786041 .
+
+ont:route_app_skill_router_py_121_POST_learning_record ont:references ont:function_f21ac376fad89e32c594d21cc9d7e25f .
+
+ont:route_app_skill_router_py_134_GET_learning_progress_user_id_courseware_id ont:references ont:function_916881cf824ffac91140fb630412435a .
+
+ont:route_app_skill_router_py_143_GET_learning_recommend_user_id ont:references ont:function_2959e8f48de00adb5b5d4fcfe524119e .
+
+ont:route_app_skill_router_py_149_GET_learning_history_user_id ont:references ont:function_1bf56eb37ebaaeefd08c45de31997ae8 .
+
+ont:route_app_skill_router_py_157_POST_ai_plan ont:references ont:function_274a6b68e089b08ef0dc77762193a838 .
+
+ont:route_app_skill_router_py_169_POST_ai_courseware ont:references ont:function_60b99b2013e83c222b4fe9cbfb7941af .
+
+ont:route_app_skill_router_py_181_POST_ai_quiz ont:references ont:function_99482cc1817d1a6ad978a1f7659e0181 .
+
+ont:route_app_skill_router_py_25_POST_plan ont:references ont:function_e90a37daea29095896e2ea107a2b5c3a .
+
+ont:route_app_skill_router_py_36_POST_enrich ont:references ont:function_c43969b9fcddff55ae63a37145777e73 .
+
+ont:route_app_skill_router_py_47_POST_validate ont:references ont:function_c325cb9748504cc7053b7f5fd8b16b84 .
+
+ont:route_app_skill_router_py_52_POST_validate_enriched ont:references ont:function_f419fab5e5b47291dafea52484cd3c19 .
+
+ont:route_app_skill_router_py_57_POST_courseware ont:references ont:function_10e1493250ae89c47d59034b61908f82 .
+
+ont:route_app_skill_router_py_67_GET_phases ont:references ont:function_fbc10aa30ac9493bcb6d4c7fddbad711 .
+
+ont:route_app_skill_router_py_73_GET_schemas ont:references ont:function_77164ca188617f71a3be539ad6ec64f4 .
+
+ont:route_app_skill_router_py_89_POST_interact ont:references ont:function_69f9118d0e9c9dec4c23d655fa4812e5 .
+
+ont:route_app_skill_router_py_99_POST_render ont:references ont:function_5148f8abb770327e10f8dbfd46873cd2 .
+
+ont:Project a owl:Class .
+
+ont:app_ai_init_py a ont:File ;
+    rdfs:label "app/ai/__init__.py" .
+
+ont:app_api_agent_py a ont:File ;
+    rdfs:label "app/api/agent.py" .
+
+ont:app_api_courseware_py a ont:File ;
+    rdfs:label "app/api/courseware.py" .
+
+ont:app_api_diagram_py a ont:File ;
+    rdfs:label "app/api/diagram.py" .
+
+ont:app_api_init_py a ont:File ;
+    rdfs:label "app/api/__init__.py" .
+
+ont:app_api_router_py a ont:File ;
+    rdfs:label "app/api/router.py" .
+
+ont:app_core_config_py a ont:File ;
+    rdfs:label "app/core/config.py" .
+
+ont:app_core_database_py a ont:File ;
+    rdfs:label "app/core/database.py" .
+
+ont:app_core_models_py a ont:File ;
+    rdfs:label "app/core/models.py" .
+
+ont:app_courseware_models_py a ont:File ;
+    rdfs:label "app/courseware/models.py" .
+
+ont:app_domain_courseware_auditor_phase1_py a ont:File ;
+    rdfs:label "app/domain/courseware/auditor_phase1.py" .
+
+ont:app_domain_courseware_auditor_py a ont:File ;
+    rdfs:label "app/domain/courseware/auditor.py" .
+
+ont:app_domain_courseware_cell_diagram_py a ont:File ;
+    rdfs:label "app/domain/courseware/cell_diagram.py" .
+
+ont:app_domain_courseware_diagram_renderer_py a ont:File ;
+    rdfs:label "app/domain/courseware/diagram_renderer.py" .
+
+ont:app_domain_courseware_mermaid_prerender_py a ont:File ;
+    rdfs:label "app/domain/courseware/mermaid_prerender.py" .
+
+ont:app_domain_courseware_mermaid_render_mjs a ont:File ;
+    rdfs:label "app/domain/courseware/mermaid_render.mjs" .
+
+ont:app_domain_courseware_qa_py a ont:File ;
+    rdfs:label "app/domain/courseware/qa.py" .
+
+ont:app_domain_courseware_review_committee_py a ont:File ;
+    rdfs:label "app/domain/courseware/review_committee.py" .
+
+ont:app_domain_courseware_routing_py a ont:File ;
+    rdfs:label "app/domain/courseware/routing.py" .
+
+ont:app_domain_courseware_storage_py a ont:File ;
+    rdfs:label "app/domain/courseware/storage.py" .
+
+ont:app_domain_tools_registry_py a ont:File ;
+    rdfs:label "app/domain/tools/registry.py" .
+
+ont:app_engine_ai_courseware_provider_py a ont:File ;
+    rdfs:label "app/engine/ai/courseware_provider.py" .
+
+ont:app_engine_ai_ga_provider_py a ont:File ;
+    rdfs:label "app/engine/ai/ga_provider.py" .
+
+ont:app_engine_ai_providers_impl_ga_adapter_py a ont:File ;
+    rdfs:label "app/engine/ai/providers_impl/ga_adapter.py" .
+
+ont:app_learning_models_py a ont:File ;
+    rdfs:label "app/learning/models.py" .
+
+ont:app_learning_tracker_py a ont:File ;
+    rdfs:label "app/learning/tracker.py" .
+
+ont:app_main_py a ont:File ;
+    rdfs:label "app/main.py" .
+
+ont:app_ontology_models_py a ont:File ;
+    rdfs:label "app/ontology/models.py" .
+
+ont:app_ontology_schemas_history_py a ont:File ;
+    rdfs:label "app/ontology/schemas/history.py" .
+
+ont:app_ontology_schemas_math_py a ont:File ;
+    rdfs:label "app/ontology/schemas/math.py" .
+
+ont:app_skill_phases_ai_courseware_py a ont:File ;
+    rdfs:label "app/skill/phases/ai_courseware.py" .
+
+ont:app_skill_phases_ai_plan_py a ont:File ;
+    rdfs:label "app/skill/phases/ai_plan.py" .
+
+ont:app_skill_phases_ai_quiz_py a ont:File ;
+    rdfs:label "app/skill/phases/ai_quiz.py" .
+
+ont:app_skill_phases_courseware_py a ont:File ;
+    rdfs:label "app/skill/phases/courseware.py" .
+
+ont:app_skill_phases_init_py a ont:File ;
+    rdfs:label "app/skill/phases/__init__.py" .
+
+ont:app_skill_phases_interaction_py a ont:File ;
+    rdfs:label "app/skill/phases/interaction.py" .
+
+ont:app_skill_phases_ontology_py a ont:File ;
+    rdfs:label "app/skill/phases/ontology.py" .
+
+ont:app_skill_phases_planning_py a ont:File ;
+    rdfs:label "app/skill/phases/planning.py" .
+
+ont:app_skill_phases_renderer_py a ont:File ;
+    rdfs:label "app/skill/phases/renderer.py" .
+
+ont:app_skill_phases_review_py a ont:File ;
+    rdfs:label "app/skill/phases/review.py" .
+
+ont:app_skill_router_py a ont:File ;
+    rdfs:label "app/skill/router.py" .
+
+ont:app_static_coursewares_client_template_py a ont:File ;
+    rdfs:label "app/static/coursewares/client_template.py" .
+
+ont:app_static_coursewares_kg_force_js a ont:File ;
+    rdfs:label "app/static/coursewares/kg-force.js" .
+
+ont:app_static_coursewares_knowledge_graph_js a ont:File ;
+    rdfs:label "app/static/coursewares/knowledge-graph.js" .
+
+ont:app_static_coursewares_ontology_nav_js a ont:File ;
+    rdfs:label "app/static/coursewares/ontology-nav.js" .
+
+ont:app_static_coursewares_slide_nav_js a ont:File ;
+    rdfs:label "app/static/coursewares/slide-nav.js" .
+
+ont:app_static_coursewares_theme_toggle_js a ont:File ;
+    rdfs:label "app/static/coursewares/theme-toggle.js" .
+
+ont:app_static_renderer_engine_js a ont:File ;
+    rdfs:label "app/static/renderer/engine.js" .
+
+ont:class_e29414b4951fe08d7a8aeef316412d6a ont:extends ont:class_7a385404b2f8e3ac9c6220799c573d0b .
+
+ont:docker_compose_yml a ont:File ;
+    rdfs:label "docker-compose.yml" .
+
+ont:function_41795ef239a1f1b074582bcb80e8d806 ont:calls ont:function_ef74803ab9923861e8f94aed5bfd2064 .
+
+ont:function_46ba8004caa4ff1f644da9b88e138e81 ont:calls ont:function_490116e533bcc4d58d3e6bd1a77e22e1,
+        ont:function_4942d3f833de2805e69104e6ddb84bdf,
+        ont:function_7c93b9263284e599fdbda4d919d284e8 .
+
+ont:function_7afe2163b081b5e7dc941f4ff32de8dd ont:calls ont:function_939c63151093a88355b52b7dd0c08eb7 .
+
+ont:function_8d2ab4a3406cadfd79f4783849ac0a24 ont:calls ont:function_04b5b21026a8f7bc9be7eea65b11b893,
+        ont:function_41795ef239a1f1b074582bcb80e8d806,
+        ont:function_46ba8004caa4ff1f644da9b88e138e81,
+        ont:function_490116e533bcc4d58d3e6bd1a77e22e1 .
+
+ont:function_ca8b04db66b828098741ad41140ed9fd ont:calls ont:function_51c2fd740ea050c68d288bd2eb922912 .
+
+ont:function_f2dd1d444b2c4fb441a1b555b1d88f34 ont:calls ont:function_490116e533bcc4d58d3e6bd1a77e22e1,
+        ont:function_4acece1b6452482a1271f6a0976028a9 .
+
+ont:imports a owl:ObjectProperty .
+
+ont:method_0e27914ce9220b9bdd01c0df5868fb5c ont:instantiates ont:class_949ac22c9b3d2fff6d370f083160f7d4,
+        ont:class_eac6b60d1228fdcd3051a8a3e4648f95 .
+
+ont:method_457e9ddb35769a61f9111b865f71ead0 ont:calls ont:method_9d224e98e914b71d8d153e9a1d7c5a28 ;
+    ont:instantiates ont:class_07b67d500144085a9b720eead655c09e,
+        ont:class_86eebf60cab8eb07c4f5d1150113a584 .
+
+ont:scripts_brainstorm_courseware_py a ont:File ;
+    rdfs:label "scripts/brainstorm_courseware.py" .
+
+ont:scripts_generate_courseware_py a ont:File ;
+    rdfs:label "scripts/generate_courseware.py" .
+
+ont:scripts_generate_courseware_v2_py a ont:File ;
+    rdfs:label "scripts/generate_courseware_v2.py" .
+
+ont:skills_plotly_basic_py a ont:File ;
+    rdfs:label "skills/plotly/basic.py" .
+
+ont:skills_plotly_examples_demo_plots_py a ont:File ;
+    rdfs:label "skills/plotly/examples/demo_plots.py" .
+
+ont:skills_plotly_init_py a ont:File ;
+    rdfs:label "skills/plotly/__init__.py" .
+
+ont:start_app_py a ont:File ;
+    rdfs:label "start_app.py" .
+
+ont:class_3b90a7c03b86d5165453702725fa4ac5 ont:contains ont:method_0d38fdaf6887f1154d0e292a02201d9b,
+        ont:method_3016bd31a13d9099685088f18ca4884e,
+        ont:method_411cbda5565a381941d4093ed65ae45d,
+        ont:method_55e3f001c94d76c2a4b5496784c3efff,
+        ont:method_8437ec882ce65920a1f302e3c3ecd160,
+        ont:method_8d042341fbd1f743795d1720baf8134f,
+        ont:method_9619df75dc916e414a9cab930f6ff901,
+        ont:method_9bb9886d366ee3782979046d4ad901b7,
+        ont:method_b48d5bfb4d76d15cf9c561ae938f968e,
+        ont:method_bd32317ef58ff5d291239b5525e88e35,
+        ont:method_f13084bf3572c9805f2846471e1a2b0d .
+
+ont:class_a071e5911009cc5a76871e8ffd6f4c8d ont:extends ont:class_c3458f4e1cf072b2e3d820afe9d923ee .
+
+ont:function_007fccb816d91da584474c175abb9354 ont:calls ont:function_7a88182bd07baa422b570d64073006d6,
+        ont:function_8d2ab4a3406cadfd79f4783849ac0a24,
+        ont:function_f52d6180598a5eb7271b2905a8a1b3e2 .
+
+ont:function_03c442faf2773be6f56ab74d7fdde03f ont:calls ont:function_939c63151093a88355b52b7dd0c08eb7 .
+
+ont:function_06d2de7d479e61bf5f94acc85927bedc ont:calls ont:function_ac7add8747f61b0258c2b63da9cb727f,
+        ont:function_bdedc3b97be7b9bfabbc9eeca4b3b3e0 .
+
+ont:function_205c1d33c1d60d98e763fbfafc29fee6 ont:calls ont:function_a966c26e791abd0c4f1d9da48eaf3185 .
+
+ont:function_22c80a3ff88ae5a45ba41e0c308b5aa7 ont:calls ont:function_f52d6180598a5eb7271b2905a8a1b3e2 .
+
+ont:function_2c4f49bf2bc527210a5bc5bc66abdbd7 ont:calls ont:method_3016bd31a13d9099685088f18ca4884e,
+        ont:method_8d042341fbd1f743795d1720baf8134f .
+
+ont:function_2c71a0921580e5cdf85be6c4b87f27ef ont:calls ont:function_007fccb816d91da584474c175abb9354,
+        ont:function_1a6e5834ab5eb64ffabc0a21d01008e0,
+        ont:function_490116e533bcc4d58d3e6bd1a77e22e1,
+        ont:method_6022f99140db9393730c8ad475ffdde7,
+        ont:method_64746663c6c1af0bc6e69827adead61e,
+        ont:method_9d224e98e914b71d8d153e9a1d7c5a28,
+        ont:method_c28d0d726fbde8be0e0fd00b0035fde9 ;
+    ont:instantiates ont:class_07b67d500144085a9b720eead655c09e,
+        ont:class_86eebf60cab8eb07c4f5d1150113a584,
+        ont:class_949ac22c9b3d2fff6d370f083160f7d4,
+        ont:class_eac6b60d1228fdcd3051a8a3e4648f95 .
+
+ont:function_2dd1da1e28fdf33c3c984e33dc13d940 ont:calls ont:function_f52d6180598a5eb7271b2905a8a1b3e2 .
+
+ont:function_30e4409f2c2d8c571598bed1a8f6c089 ont:calls ont:function_1a6e5834ab5eb64ffabc0a21d01008e0,
+        ont:function_1bddabdcb3d621a17c9fd33cf9c7a5d0,
+        ont:method_64746663c6c1af0bc6e69827adead61e ;
+    ont:instantiates ont:class_2dab1d4111a735c0de55d626c421141c,
+        ont:class_a071e5911009cc5a76871e8ffd6f4c8d .
+
+ont:function_3111005f941150872c73e6d5ede998ae ont:calls ont:method_8d042341fbd1f743795d1720baf8134f,
+        ont:method_9bb9886d366ee3782979046d4ad901b7 .
+
+ont:function_3b4b7faed51c226869edb685b34c0d76 ont:calls ont:function_22c80a3ff88ae5a45ba41e0c308b5aa7,
+        ont:function_5aa8170d83c562b5967b38d93109b39d,
+        ont:function_bca196e51fdceb6e3071a13553d47002 .
+
+ont:function_50d3426e2477dab6d474a8142fe01062 ont:calls ont:method_411cbda5565a381941d4093ed65ae45d,
+        ont:method_8d042341fbd1f743795d1720baf8134f,
+        ont:method_9619df75dc916e414a9cab930f6ff901,
+        ont:method_bd32317ef58ff5d291239b5525e88e35 .
+
+ont:function_5c77ee13d794687824ae480195925e02 ont:calls ont:method_8d042341fbd1f743795d1720baf8134f,
+        ont:method_9619df75dc916e414a9cab930f6ff901 .
+
+ont:function_677b254939b507e9284e325f3bd376e6 ont:calls ont:function_22c80a3ff88ae5a45ba41e0c308b5aa7,
+        ont:function_5aa8170d83c562b5967b38d93109b39d,
+        ont:function_bca196e51fdceb6e3071a13553d47002 .
+
+ont:function_728dda817678393ad21fd17454b9312f ont:calls ont:function_2be19baf196f643616183f533e9aea5c .
+
+ont:function_7a88182bd07baa422b570d64073006d6 ont:calls ont:function_0f24651f8dab4e92892539f040cf0c55,
+        ont:function_484324d54ad0a2c0d55e43499f98b3d8,
+        ont:function_4f5ee4b218f69ea9c8b0be53d66bee18,
+        ont:function_5aa8170d83c562b5967b38d93109b39d,
+        ont:function_902936c2da998aed2e1f6abcd47404f3,
+        ont:function_bca196e51fdceb6e3071a13553d47002 .
+
+ont:function_9e1fa1166c8c452e1c1e112c9581cdfe ont:calls ont:function_2dd1da1e28fdf33c3c984e33dc13d940 .
+
+ont:function_9f30c3b1bda112de921d181b902ebbe8 ont:calls ont:function_1a6e5834ab5eb64ffabc0a21d01008e0,
+        ont:function_1bddabdcb3d621a17c9fd33cf9c7a5d0,
+        ont:function_e1421f066df37d35f68e4667c6472fc6,
+        ont:method_64746663c6c1af0bc6e69827adead61e ;
+    ont:instantiates ont:class_2dab1d4111a735c0de55d626c421141c,
+        ont:class_a071e5911009cc5a76871e8ffd6f4c8d .
+
+ont:function_a6b19d4811d9b7b87ac9593e7c26786a ont:calls ont:method_3016bd31a13d9099685088f18ca4884e,
+        ont:method_8d042341fbd1f743795d1720baf8134f,
+        ont:method_b48d5bfb4d76d15cf9c561ae938f968e .
+
+ont:function_a88524d0bcbbf20e3396998b1e1a92fd ont:calls ont:function_939c63151093a88355b52b7dd0c08eb7 .
+
+ont:function_b005b292e30b482e8c21685870a52792 ont:calls ont:method_3016bd31a13d9099685088f18ca4884e,
+        ont:method_8d042341fbd1f743795d1720baf8134f,
+        ont:method_9619df75dc916e414a9cab930f6ff901,
+        ont:method_b48d5bfb4d76d15cf9c561ae938f968e .
+
+ont:function_caf945c7243f848d7345a8450a4fbcff ont:calls ont:function_8aab6f945366296443afbc4d4c37fcb5 .
+
+ont:function_cef0322c7a8eda552857b5946887d252 ont:calls ont:function_a88524d0bcbbf20e3396998b1e1a92fd .
+
+ont:function_db613115ac497c2897282a5b59ac44df ont:calls ont:method_3016bd31a13d9099685088f18ca4884e,
+        ont:method_8d042341fbd1f743795d1720baf8134f .
+
+ont:function_ded5be42a4ea36036be06a44d1d4edb8 ont:calls ont:function_16e86e432dccf043b61fc6f81c1e1097 .
+
+ont:function_e2b17888524717a6a6c2efd2a22be23f ont:calls ont:method_8d042341fbd1f743795d1720baf8134f,
+        ont:method_9619df75dc916e414a9cab930f6ff901 .
+
+ont:function_f7b8105b788decba1ca3b19ead772384 ont:calls ont:function_667c849217e4b1bb072897cd9ed267c2 .
+
+ont:function_f8ed54658e4fe42aacf0493dd76ee825 ont:calls ont:method_8d042341fbd1f743795d1720baf8134f,
+        ont:method_b48d5bfb4d76d15cf9c561ae938f968e .
+
+ont:method_9d224e98e914b71d8d153e9a1d7c5a28 ont:instantiates ont:class_eac6b60d1228fdcd3051a8a3e4648f95 .
+
+ont:class_949ac22c9b3d2fff6d370f083160f7d4 ont:extends ont:class_c3458f4e1cf072b2e3d820afe9d923ee .
+
+ont:function_1bddabdcb3d621a17c9fd33cf9c7a5d0 ont:calls ont:function_490116e533bcc4d58d3e6bd1a77e22e1 .
+
+ont:function_a966c26e791abd0c4f1d9da48eaf3185 ont:calls ont:function_06d2de7d479e61bf5f94acc85927bedc,
+        ont:function_085ae548f68a8b760604541e45d59b03,
+        ont:function_12442f2c0619dcc9c849ed9748c204f5,
+        ont:function_137c025dd6624c98fcd98e816561e8c7,
+        ont:function_25c133794fee03fee6c2c67dfc8cbf45,
+        ont:function_26a0829ba248fc484159b6557be7a88f,
+        ont:function_28bcd226c06c039b76930939581e3f76,
+        ont:function_46997a1056510f4849d54c121bc2415c,
+        ont:function_46a439d696b85489a3ca59b54b4e67b1,
+        ont:function_49c1871d87d928423a4418bfddab0ae3,
+        ont:function_505a35d9217a4de5871bbc17bddd13f4,
+        ont:function_695620a5d8d7e6ed814dfe8fc8c26747,
+        ont:function_7289a9b18b4285167fd6a70eb1474a8e,
+        ont:function_77eccb91fc31fcde1240c8b788241433,
+        ont:function_785f5f96fd6a68a316072e2b3da9b9ce,
+        ont:function_7e125c230a1f6d6a787e2c0e2d424ff4,
+        ont:function_83c4d89842f9fff516f110c56ae9c2e4,
+        ont:function_a89d2ac2475dd07a950599817546c07e,
+        ont:function_ac7add8747f61b0258c2b63da9cb727f,
+        ont:function_ada85f4598f7c41ff8c2fea22c9dab91,
+        ont:function_b76d38e1c6cdc51bcd5c38ba79250c71,
+        ont:function_c3c3bbe7176b922edc5a9a126f08cf08,
+        ont:function_d7ec169548ee047adfc5fc3ee83ff7db,
+        ont:function_e04967f5cc7ad5562bc63e413fb92bc8 .
+
+ont:function_ef74803ab9923861e8f94aed5bfd2064 ont:calls ont:function_ac7add8747f61b0258c2b63da9cb727f .
+
+ont:function_1a6e5834ab5eb64ffabc0a21d01008e0 ont:calls ont:function_f52d6180598a5eb7271b2905a8a1b3e2 .
+
+ont:function_939c63151093a88355b52b7dd0c08eb7 ont:calls ont:function_2c4f49bf2bc527210a5bc5bc66abdbd7,
+        ont:function_3111005f941150872c73e6d5ede998ae,
+        ont:function_50d3426e2477dab6d474a8142fe01062,
+        ont:function_5c77ee13d794687824ae480195925e02,
+        ont:function_a6b19d4811d9b7b87ac9593e7c26786a,
+        ont:function_b005b292e30b482e8c21685870a52792,
+        ont:function_db613115ac497c2897282a5b59ac44df,
+        ont:function_e2b17888524717a6a6c2efd2a22be23f,
+        ont:function_f8ed54658e4fe42aacf0493dd76ee825,
+        ont:method_3016bd31a13d9099685088f18ca4884e,
+        ont:method_8d042341fbd1f743795d1720baf8134f,
+        ont:method_9619df75dc916e414a9cab930f6ff901,
+        ont:method_9bb9886d366ee3782979046d4ad901b7,
+        ont:method_b48d5bfb4d76d15cf9c561ae938f968e,
+        ont:method_f13084bf3572c9805f2846471e1a2b0d ;
+    ont:instantiates ont:class_3b90a7c03b86d5165453702725fa4ac5 .
+
+ont:function_ac7add8747f61b0258c2b63da9cb727f ont:calls ont:function_ada85f4598f7c41ff8c2fea22c9dab91,
+        ont:function_c209269e24a268f753a48eaa1453e476 .
+
+ont:function_490116e533bcc4d58d3e6bd1a77e22e1 ont:calls ont:function_1a6e5834ab5eb64ffabc0a21d01008e0 .
+
+ont:File a owl:Class .
+

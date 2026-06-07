@@ -1,0 +1,141 @@
+@prefix ont: <http://codegraph.ontology/A-supply-analysis/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ont:A-supply-analysis a ont:Project ;
+    rdfs:label "A-supply-analysis" .
+
+ont:A_supply_analysis ont:contains ont:api_main_py,
+        ont:clean_pipeline_py,
+        ont:clients_supply_client_py,
+        ont:models_models_py .
+
+ont:Class_ a owl:Class .
+
+ont:Function a owl:Class .
+
+ont:Module a owl:Class .
+
+ont:Route a owl:Class .
+
+ont:Variable a owl:Class .
+
+ont:calls a owl:ObjectProperty .
+
+ont:contains a owl:ObjectProperty .
+
+ont:defines a owl:ObjectProperty .
+
+ont:dependsOn a owl:TransitiveProperty ;
+    rdfs:subPropertyOf ont:imports .
+
+ont:extends a owl:ObjectProperty .
+
+ont:file_api_main_py ont:contains ont:function_34ef79d6fad3d74afb8eea9bba8a16e1,
+        ont:function_4b1291ea50dc53069cedbb48eb437130,
+        ont:function_63167ea6f8e90c7ff7b0ad601be0b1a2,
+        ont:function_9a0294f59dfa651cc283fa53c3977e20,
+        ont:function_af49098249ac036cf10852b3f7b96c43,
+        ont:function_b18748f68c716a9a4e4d68fc82aa77d6,
+        ont:function_d2843ec6d54160439a8593143de0ce3d,
+        ont:function_f87c44c7739d618042020dfdbb5ad570,
+        ont:import_4bfcd2839ca6cb958cb1394dc3df66c3,
+        ont:import_57fa66c8410b49e63218b221edc90c44,
+        ont:import_6ee42c8555a3da3bcd48c275bcc6394a,
+        ont:import_7f67fa88d6dc8e0bb4596c62817a2946,
+        ont:import_8b70db43429d45551df136b5d438e41e,
+        ont:import_c5d764ff0e8695ce874418168c9d48c2,
+        ont:import_dbd4a773d2843e8d009f93968c8581c4,
+        ont:import_edcc1dc463817b95288fafcaf7d89ae8,
+        ont:variable_8b99ebb19a4a4929225f668e57aeb350,
+        ont:variable_b59ec872efecc5759f41d24ffd066408,
+        ont:variable_c93f57ee23eb31661faea4c68982fdf4 ;
+    ont:imports ont:import_4bfcd2839ca6cb958cb1394dc3df66c3,
+        ont:import_7f67fa88d6dc8e0bb4596c62817a2946,
+        ont:import_dbd4a773d2843e8d009f93968c8581c4,
+        ont:import_edcc1dc463817b95288fafcaf7d89ae8 .
+
+ont:file_clean_pipeline_py ont:contains ont:function_810bf01090a1552ebb06c65599e609df,
+        ont:function_ad3bc023af3b3485ae740f75d662300e,
+        ont:function_baaac02493464edd4331b97dc446eb42,
+        ont:import_8ff4ad143831f341f2fc91bc5fc16ee1,
+        ont:import_a6519b833feab5e86fad76075c9b61f5,
+        ont:import_a97e0719f00c045eb0d483936fa04e9a,
+        ont:import_bae1b3f980cdaa2683860aa559c314e4,
+        ont:variable_0b61481f08bf730698551ea8f76c28df,
+        ont:variable_3f94584303042103a815aaaf021afab3,
+        ont:variable_729f7e0e55c6851319641ae403f6cd46,
+        ont:variable_7b5c46ac4198b592aaa28c005ae15fed,
+        ont:variable_800229d097f927bf42e419644f0e4219,
+        ont:variable_8a06a0f0d79448ee19e4dbecdaa243d0,
+        ont:variable_950461d505242fac490fa465725ede80 .
+
+ont:file_clients_supply_client_py ont:contains ont:class_4564d684a53d119e70e9cf27ec8a53d0,
+        ont:import_4dede1ca336024dce640a31e5c48bd98,
+        ont:import_7554ea8217c07356d5f70744dc468b81,
+        ont:import_867b5f273cf6459d6fb28f8cb0546561,
+        ont:import_abf9d15f484fcc1a0e963879859b513c,
+        ont:variable_87cdfc7ff755ee71c5b4d9b608699fb5 ;
+    ont:imports ont:import_4dede1ca336024dce640a31e5c48bd98 .
+
+ont:file_models_models_py ont:contains ont:class_3beafbd5e6c7cb9cc9d88194a7cedd99,
+        ont:class_52b8504bc7f78360435089bf12d4a8a2,
+        ont:class_70abbb433959a7519df5a64db51451be,
+        ont:class_997a6f251c47e32dd84393f643f85d7a,
+        ont:import_4792807f668076a79497fe35aa48cf0e,
+        ont:import_637c234e07e83da93462eebcd9b4682c,
+        ont:import_66455b54c3c16eb342fef45a255e42e3 ;
+    ont:imports ont:import_4792807f668076a79497fe35aa48cf0e,
+        ont:import_637c234e07e83da93462eebcd9b4682c,
+        ont:import_66455b54c3c16eb342fef45a255e42e3 .
+
+ont:instantiates a owl:ObjectProperty .
+
+ont:references a owl:ObjectProperty .
+
+ont:Project a owl:Class .
+
+ont:api_main_py a ont:File ;
+    rdfs:label "api/main.py" .
+
+ont:class_4564d684a53d119e70e9cf27ec8a53d0 ont:contains ont:method_04a0cb08f4f304d87c1ef49cf69dc980,
+        ont:method_0f846075213ce2bb16dcde5d6f37665f,
+        ont:method_46f0b5bbd541bae26602ad3107a6d38e,
+        ont:method_48da3618a2293ecea19dbdf5634a247d,
+        ont:method_4dd6dec82e40c248b8ee9bfd5fb64600,
+        ont:method_519ea07fd29477acee730e4ee0e451b7,
+        ont:method_86d16e19180388635a72e0647048e1cc,
+        ont:method_c66a79f5973918c201c8ec68a036a1b0,
+        ont:method_f4439bf2bcf92478d8b52e8309005403 .
+
+ont:clean_pipeline_py a ont:File ;
+    rdfs:label "clean_pipeline.py" .
+
+ont:clients_supply_client_py a ont:File ;
+    rdfs:label "clients/supply_client.py" .
+
+ont:function_9a0294f59dfa651cc283fa53c3977e20 ont:calls ont:function_810bf01090a1552ebb06c65599e609df ;
+    ont:instantiates ont:class_3beafbd5e6c7cb9cc9d88194a7cedd99,
+        ont:class_70abbb433959a7519df5a64db51451be .
+
+ont:imports a owl:ObjectProperty .
+
+ont:method_04a0cb08f4f304d87c1ef49cf69dc980 ont:calls ont:method_c66a79f5973918c201c8ec68a036a1b0 .
+
+ont:method_0f846075213ce2bb16dcde5d6f37665f ont:calls ont:method_c66a79f5973918c201c8ec68a036a1b0 .
+
+ont:method_46f0b5bbd541bae26602ad3107a6d38e ont:calls ont:method_c66a79f5973918c201c8ec68a036a1b0 .
+
+ont:method_48da3618a2293ecea19dbdf5634a247d ont:calls ont:method_86d16e19180388635a72e0647048e1cc .
+
+ont:method_4dd6dec82e40c248b8ee9bfd5fb64600 ont:calls ont:method_519ea07fd29477acee730e4ee0e451b7 .
+
+ont:method_f4439bf2bcf92478d8b52e8309005403 ont:calls ont:method_86d16e19180388635a72e0647048e1cc .
+
+ont:models_models_py a ont:File ;
+    rdfs:label "models/models.py" .
+
+ont:function_810bf01090a1552ebb06c65599e609df ont:calls ont:function_baaac02493464edd4331b97dc446eb42 .
+
+ont:File a owl:Class .
+
