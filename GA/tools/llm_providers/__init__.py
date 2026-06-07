@@ -105,7 +105,7 @@ def _legacy_resolve_session(cfg_name: str, cfg: dict) -> Any:
     raise ValueError(f"[ProviderRegistry] No provider matched for '{cfg_name}'")
 
 # auto_import: 尝试导入各 Provider 模块（它们会在模块级自行 register）
-for _mod_name in ['claude', 'openai', 'doubao', 'doubao_backend']:
+for _mod_name in ['claude', 'openai']:
     try:
         importlib.import_module(f'tools.llm_providers.{_mod_name}')
     except ImportError:

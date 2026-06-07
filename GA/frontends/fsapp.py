@@ -886,6 +886,35 @@ def handle_message(data):
     threading.Thread(target=run_agent, daemon=True).start()
 
 
+CMD_HELP_TEXT = """命令列表:
+/stop - 停止当前任务
+/status - 查看状态
+/llm - 查看当前模型列表
+/llm [n] - 切换到第 n 个模型
+/restore - 恢复上次对话历史
+/continue - 列出可恢复会话
+/continue [n] - 恢复第 n 个会话
+/new - 开启新对话并清空当前上下文
+/remind - 定时提醒（add/list/del）
+/inspired - 查看灵感板
+/task <type> <json> - 发布MQTT任务
+/todo - 待办管理（add/done/del）
+/hitl - 审批管理（list/approve/reject）
+/dream - Agent梦境（记忆回放+跨域联想）
+/help - 显示帮助"""
+
+
+def _cmd_stop(agent, user_tasks, open_id, chat_id):
+    """处理 /stop 命令"""
+    if open_id in user_tasks:
+        user_tasks[open_id]["running"] = False
+    agent.abort()
+    if chat_id:
+        send_message(chat_id, "正在停止...", receive_id_type="chat_id")
+    else:
+        send_message(open_id, "正在停止...")
+
+
 def handle_command(open_id, cmd, chat_id=None):
     def _send_cmd_response(content):
         if chat_id:
@@ -895,6 +924,7 @@ def handle_command(open_id, cmd, chat_id=None):
     parts = (cmd or "").split()
     op = (parts[0] if parts else "").lower()
     if op == "/stop":
+        _cmd_stop(agent, user_tasks, open_id, chat_id)
         if open_id in user_tasks:
             user_tasks[open_id]["running"] = False
         agent.abort()
@@ -902,26 +932,26 @@ def handle_command(open_id, cmd, chat_id=None):
     elif op == "/new":
         _send_cmd_response(reset_conversation(agent))
     elif op == "/help":
-        _send_cmd_response("命令列表:\n/stop - 停止当前任务\n/status - 查看状态\n/llm - 查看当前模型列表\n/llm [n] - 切换到第 n 个模型\n/restore - 恢复上次对话历史\n/continue - 列出可恢复会话\n/continue [n] - 恢复第 n 个会话\n/new - 开启新对话并清空当前上下文\n/remind - 定时提醒（add/list/del）\n/inspired - 查看灵感板\n/task <type> <json> - 发布MQTT任务\n/todo - 待办管理（add/done/del）\n/hitl - 审批管理（list/approve/reject）\n/dream - Agent梦境（记忆回放+跨域联想）\n/help - 显示帮助")
+        _send_cmd_response(CMD_HELP_TEXT)
     elif op == "/status":
         llm = agent.get_llm_name() if agent.llmclient else "未配置"
-        _send_cmd_response(f"状态: {'🔴 运行中' if agent.is_running else '🟢 空闲'}\nLLM: [{agent.llm_no}] {llm}")
+        _send_cmd_response(f"状态: {'运行中' if agent.is_running else '空闲'}\nLLM: [{agent.llm_no}] {llm}")
     elif op == "/llm":
         if not agent.llmclient:
-            return _send_cmd_response("❌ 当前没有可用的 LLM 配置")
+            return _send_cmd_response("当前没有可用的 LLM 配置")
         if len(parts) > 1:
             try:
                 agent.next_llm(int(parts[1]))
-                return _send_cmd_response(f"✅ 已切换到 [{agent.llm_no}] {agent.get_llm_name()}")
+                return _send_cmd_response(f"已切换到 [{agent.llm_no}] {agent.get_llm_name()}")
             except Exception:
                 return _send_cmd_response(f"用法: /llm <0-{len(agent.list_llms()) - 1}>")
-        lines = [f"{'→' if cur else '  '} [{i}] {name}" for i, name, cur in agent.list_llms()]
+        lines = [f"{'->' if cur else '  '} [{i}] {name}" for i, name, cur in agent.list_llms()]
         _send_cmd_response("LLMs:\n" + "\n".join(lines))
     elif op == "/restore":
         try:
             restored_info, err = format_restore()
             if err:
-                return _send_cmd_response(err.replace("❌ ", ""))
+                return _send_cmd_response(err.replace("", ""))
             restored, fname, count = restored_info
             agent.history.extend(restored)
             agent.abort()
@@ -932,6 +962,7 @@ def handle_command(open_id, cmd, chat_id=None):
         _send_cmd_response(handle_continue_frontend(agent, cmd))
     elif op == "/remind":
         sub = parts[1] if len(parts) > 1 else ""
+        if sub == "add" and len(parts) >= 4:
         if sub == "add" and len(parts) >= 4:
             raw = " ".join(parts[2:])
             r = _reminder.add(raw, open_id=open_id)
@@ -956,23 +987,19 @@ def handle_command(open_id, cmd, chat_id=None):
             _send_cmd_response(REMIND_HELP)
     elif op == "/inspired":
         _board = _get_inspiration_board()
-        # 支持子命令
         if len(parts) >= 3 and parts[1] == "add":
             _title = " ".join(parts[2:])
             _idea_id = _board.add_idea(_title.strip())
-            if _idea_id:
-                _send_cmd_response(f"✨ 已添加灵感 #{_idea_id}: {_title.strip()}")
-            else:
-                _send_cmd_response("❌ 添加灵感失败")
+            _send_cmd_response(f"已添加灵感 #{_idea_id}: {_title.strip()}" if _idea_id else "添加灵感失败")
         else:
             _ideas = _board.load_all()
             if not _ideas:
-                _send_cmd_response("📋 灵感板为空")
+                _send_cmd_response("灵感板为空")
             else:
-                _lines = [f"💡 灵感板 ({len(_ideas)}/20 条活跃)"]
+                _lines = [f"灵感板 ({len(_ideas)}/20 条活跃)"]
                 for _idea in _ideas:
-                    _icon = {"new": "\U0001f7d7", "thinking": "\U0001f914", "in_progress": "\U0001f528", "implemented": "\u2705"}.get(_idea["status"], "\U0001f4a1")
-                    _src = "\U0001f464" if _idea.get("source") == "user" else "\U0001f916"
+                    _icon = {"new": "", "thinking": "", "in_progress": "", "implemented": ""}.get(_idea["status"], "")
+                    _src = "" if _idea.get("source") == "user" else ""
                     _tag = f" [{', '.join(_idea.get('tags', []))}]" if _idea.get("tags") else ""
                     _lines.append(f"{_icon} #{_idea['id']} {_src} {_idea['title']}{_tag}")
                     if _idea.get("detail"):
@@ -981,17 +1008,18 @@ def handle_command(open_id, cmd, chat_id=None):
     elif op == "/task":
         board = _get_board()
         if not board:
-            _send_cmd_response("❌ MQTT BBS 未连接")
+            _send_cmd_response("MQTT BBS 未连接")
         elif len(parts) < 3:
-            _send_cmd_response("用法: /task <type> <input_json>\n示例: /task analyse {\"target\":\"log\"}")
+            _send_cmd_response("用法: /task <type> <input_json>")
         else:
             try:
                 task_type = parts[1]
                 task_input = json.loads(" ".join(parts[2:]))
                 tid = board.post_task(task_type, task_input)
-                _send_cmd_response(f"📤 任务已发布:\n  ID: {tid}\n  类型: {task_type}\n  输入: {json.dumps(task_input, ensure_ascii=False)[:200]}")
-                # 后台等结果
-                def _wait_and_notify(tid, chat_id, open_id):
+                _send_cmd_response(f"任务已发布:\n  ID: {tid}\n  类型: {task_type}")
+                threading.Thread(target=_wait_and_notify, args=(tid, chat_id, open_id), daemon=True).start()
+            except Exception as e:
+                _send_cmd_response(f"任务发布失败: {e}")
                     try:
                         import time
                         for _ in range(30):
