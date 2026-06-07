@@ -1,0 +1,2618 @@
+@prefix ont: <http://beneh.ga/ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ont:Class_ a owl:Class .
+
+ont:Function a owl:Class .
+
+ont:Import a owl:Class .
+
+ont:Risk a owl:Class .
+
+ont:TMWebDriver_py a ont:Module ;
+    rdfs:label "TMWebDriver.py" .
+
+ont:Variable a owl:Class .
+
+ont:agent_loop_py a ont:Module ;
+    rdfs:label "agent_loop.py" .
+
+ont:agentmain_py a ont:Module ;
+    rdfs:label "agentmain.py" .
+
+ont:agents_init_py a ont:Module ;
+    rdfs:label "agents/__init__.py" .
+
+ont:agents_langgraph_multi_agent_py a ont:Module ;
+    rdfs:label "agents/langgraph_multi_agent.py" .
+
+ont:agents_node_orchestrator_ui_py a ont:Module ;
+    rdfs:label "agents/node_orchestrator_ui.py" .
+
+ont:assets_agent_bbs_py a ont:Module ;
+    rdfs:label "assets/agent_bbs.py" .
+
+ont:assets_code_run_header_py a ont:Module ;
+    rdfs:label "assets/code_run_header.py" .
+
+ont:assets_configure_mykey_py a ont:Module ;
+    rdfs:label "assets/configure_mykey.py" .
+
+ont:assets_init_py a ont:Module ;
+    rdfs:label "assets/__init__.py" .
+
+ont:assets_tmwd_cdp_bridge_background_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/background.js" .
+
+ont:assets_tmwd_cdp_bridge_config_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/config.js" .
+
+ont:assets_tmwd_cdp_bridge_content_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/content.js" .
+
+ont:assets_tmwd_cdp_bridge_disable_dialogs_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/disable_dialogs.js" .
+
+ont:assets_tmwd_cdp_bridge_popup_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/popup.js" .
+
+ont:calls a owl:ObjectProperty .
+
+ont:class_31f1ccfb2eb404becbc1ba8886d3b501 ont:extends ont:class_a03f506390626a6e441285b5390ac512 .
+
+ont:class_353da289da9a652bfd7f0bbcbfdbe32b ont:extends ont:class_489a9625a66c4d19046a82c4ba6d547a .
+
+ont:class_37850c31793207b8ada3c527ea5e0cbd ont:extends ont:class_63a40dba77c3f4be587b363a8a53eccd .
+
+ont:class_42747bd3d52cea13ddf61f9b0c052b23 ont:extends ont:class_2aa6fb7340176e78a2f88bff97e084b5 .
+
+ont:class_7b83a106a4b7d916560c49ddd3839108 ont:extends ont:class_489a9625a66c4d19046a82c4ba6d547a .
+
+ont:class_7fe37db008321d4e7b719830df3f9d9a ont:extends ont:class_63a40dba77c3f4be587b363a8a53eccd .
+
+ont:class_8214a0e6cc57079e4bcd00faeb50e809 ont:extends ont:class_63a40dba77c3f4be587b363a8a53eccd .
+
+ont:class_d3c8a208bb66c3d7c9ccb13aae622191 ont:extends ont:class_2ff3622975b261bf8bcea629f27543f7 .
+
+ont:class_e07db7eff3524ee2f88f65358e0e471c ont:extends ont:class_489a9625a66c4d19046a82c4ba6d547a .
+
+ont:class_f877d4a80a51746f290fb8dabb9034e3 ont:extends ont:class_a03f506390626a6e441285b5390ac512 .
+
+ont:class_fe95d97598bc17e5e3a5e7848a3c3c0a ont:extends ont:class_63a40dba77c3f4be587b363a8a53eccd .
+
+ont:contains a owl:ObjectProperty .
+
+ont:defines a owl:ObjectProperty .
+
+ont:dependsOn a owl:ObjectProperty,
+        owl:TransitiveProperty .
+
+ont:extends a owl:ObjectProperty .
+
+ont:file_TMWebDriver_py ont:contains ont:class_3ca55271f5316926c59e3cb74273dd18,
+        ont:class_e7169d931c5cf3a88868aab8a015ac74,
+        ont:import_0418bf936b7c0ab5f2f3a3b960121576,
+        ont:import_1342459a6ba381b5e5eaa1aa3bf2db2f,
+        ont:import_1b56c1860e83796108b4944dde1e3034,
+        ont:import_320fc460d42ec4c70b39c802b934aa77,
+        ont:import_3b8933963377474837edbd606addc041,
+        ont:import_3eb3b64ab4c55e1401fa45e841c86ec6,
+        ont:import_596a61818b445437dda63d87ebd126b8,
+        ont:import_8819c40555c0ee53df1e24049c5a33d6,
+        ont:import_b0054c89ec190866f67410fe694f817d,
+        ont:import_bd1c734b5f7eeaed4d1616a3a16db583,
+        ont:import_c52d4afeca4fdaf6cab37a798b7254e5,
+        ont:import_d9bd24ca2c28b5f5b72e2b45e2ce03b1,
+        ont:variable_f163192f94feeb0a205f1655a2a5ba9c ;
+    ont:imports ont:import_3b8933963377474837edbd606addc041,
+        ont:import_3eb3b64ab4c55e1401fa45e841c86ec6,
+        ont:import_8819c40555c0ee53df1e24049c5a33d6 .
+
+ont:file_agent_loop_py ont:contains ont:class_45371241ed2cf3e61340d572411586ac,
+        ont:class_abdc3f1146cee0d5066aeb7bdf1e5039,
+        ont:function_019320a37162a738d9f33f547c5e4a1e,
+        ont:function_30056826585ebab75ed0567a09775a4a,
+        ont:function_8640102608de9826f107c2fba3ccff07,
+        ont:function_878b2e46e9dbf6f880cdade3014853a4,
+        ont:function_8add529967be2094cac8e933f1706c9e,
+        ont:function_cbc480f926a14774e993948bdd8e8388,
+        ont:function_e60d343a75a5c38100245f22a2347915,
+        ont:import_02262a9e25733ea0b2b0d0d71167e462,
+        ont:import_5366c7240f43e36fcfe642edf1cd0ff1,
+        ont:import_856b5cb0848687336c12f918a707b6cf,
+        ont:import_8d04ca08381199b5827052959aab65de,
+        ont:import_c0975ac65f1d755caa460cbaea2c34fc,
+        ont:import_d683ab593ed57f29d17d8e5193f62880,
+        ont:variable_32a15ec7c9f6636b3fcfb8ed25418949,
+        ont:variable_5227df6e5e0a86cc653e4dc256424894 ;
+    ont:imports ont:import_856b5cb0848687336c12f918a707b6cf,
+        ont:import_8d04ca08381199b5827052959aab65de,
+        ont:import_c0975ac65f1d755caa460cbaea2c34fc .
+
+ont:file_agentmain_py ont:calls ont:function_56a3b9ef2135f648dbe37df88f347e1f,
+        ont:function_5da74b5b044dcf1fea955b02d850710a,
+        ont:function_e9b4889e4587b61a9be620d115f1fc54,
+        ont:method_08353b7508d0c326b3141aca5e84218e,
+        ont:method_116ea293dadec6aaca98efd75a9b7721,
+        ont:method_760a11c88e2e0da1093e3113695ebfba,
+        ont:method_a585bf79e3ee1290f536850e69fdc1a7 ;
+    ont:contains ont:class_39bab5833cb0823386634a133749102a,
+        ont:function_5da74b5b044dcf1fea955b02d850710a,
+        ont:function_69c346d4e0692e86e32812cdd8f96e8b,
+        ont:function_8bafe4206dde1dac6c54107913b582b3,
+        ont:function_e79af6af83ef65ab2368c0dc5b34840b,
+        ont:import_1270b4c416d09eb729145c8adf269c10,
+        ont:import_218a40403ee39e8414671f9fd2ed9bf5,
+        ont:import_2df738fb836c86844443ee5d64044e8f,
+        ont:import_4081774a68b0c068175dec2d3eae2ae4,
+        ont:import_440e855adcdfea40cd8a2265cdec0ffd,
+        ont:import_50cafbeccaf91fe1b8ef010bb36d6ca4,
+        ont:import_55c0200a923d730e69073994a879e145,
+        ont:import_6467d21c0963d395f5611e56a7ac78dd,
+        ont:import_67ec65d8038cbec0d0b425ff3063688e,
+        ont:import_6a1f4df176c449dbd43ccfdd61e4eaed,
+        ont:import_6c5bf100399d86f95d3bf67e917e6e05,
+        ont:import_7f6098645ca96acbf5163d61c6e0eeab,
+        ont:import_8e85e0ee15c08ab1b6b9b840c0214500,
+        ont:import_926797bcf34949f7c1078101a3eb03cc,
+        ont:import_9b39d57012d94a94134515ce787b377e,
+        ont:import_aa10b989fa5eb72606c795e5848f978b,
+        ont:import_c26436990e35f4a1197bb9a032ed0777,
+        ont:import_c68b6d7969534e62c6d73e30963af00a,
+        ont:import_cf93a8cbbf2bb2f6e2b607c4a0f93186,
+        ont:import_d7ea2da712af2281bfbd8ee316f06acd,
+        ont:import_ddb2d7df33132b90140cb51c26203973,
+        ont:import_f1fb11a22bc82a3d3d74b6f5579ada90,
+        ont:variable_0584d9f2beeac0467e7e5091b2ef8def,
+        ont:variable_0a03f416df16b0eb8cf17aff4674a729,
+        ont:variable_0e02f4ea9c9a1950d183100baf37539d,
+        ont:variable_1051ca6225f57a158ae098d69981273d,
+        ont:variable_280c97e613f4c274928e1227fe2def72,
+        ont:variable_2bbb70779aa2321a6e6b9bc6cd750208,
+        ont:variable_2e7805ae8d1179f038537fa9bf72791f,
+        ont:variable_2e9c436f8193bccb8341cb5a0e65ad45,
+        ont:variable_2fea76efe6f0b124a9df154760cca3b6,
+        ont:variable_3c59c5805c1110a37a23e37751e1715e,
+        ont:variable_3deb2bed6b8c2d4e31a1936d4fa8dc78,
+        ont:variable_3e084a60ba339a8dbf36af8783bd2de7,
+        ont:variable_456e09da566d590a92aeffa86db7641a,
+        ont:variable_49a83752a235b296e7c1487484229a64,
+        ont:variable_65a701d84bbb752f83252d0e729c8257,
+        ont:variable_77563f2525c1d0caa496557fa84cccb4,
+        ont:variable_79c2d67d03b79699a1101417834b04e6,
+        ont:variable_820d8ed9f7c4e4430abe1b561aaf7222,
+        ont:variable_87894057d1e5d884620c4299274cefb7,
+        ont:variable_8eee9ff23b757bf03826a69fbfc4dce9,
+        ont:variable_9506df9ffeac891c1d01fcf05d4af6bf,
+        ont:variable_995d1daa049c54fef213d5d7d511614e,
+        ont:variable_a1e1c7348b11cb25a554cdbd35738847,
+        ont:variable_a3afbdc2827ba60b1e8151a1eb0c4bd6,
+        ont:variable_c6f00c1430d88f639cc1fe82ec404239,
+        ont:variable_cb051e053fb462b436ad5b849eaae44d,
+        ont:variable_ccb09453c0a9a79c15116ccdca7a2711,
+        ont:variable_df19e537db6816aae9ec39d1e765cea4,
+        ont:variable_e45580a9db7a97595b1e14f94fe77377,
+        ont:variable_e92613d1d382c2bcf019adc7ebe104d4,
+        ont:variable_f331955dedef832168517fb21487a6d0,
+        ont:variable_f6e98c62d8c7737f46a8c72cda557e1e,
+        ont:variable_f760a804295f0f29a6a68884b6da0e2b,
+        ont:variable_f9bc6d360912e42fae1aa2beb273de1a,
+        ont:variable_fa6b52d75f1fd2b79422e4bbf117b3d1,
+        ont:variable_febc4a7b6c82050ddea436b1f46e9055 ;
+    ont:imports ont:import_55c0200a923d730e69073994a879e145,
+        ont:import_67ec65d8038cbec0d0b425ff3063688e,
+        ont:import_6c5bf100399d86f95d3bf67e917e6e05,
+        ont:import_8e85e0ee15c08ab1b6b9b840c0214500,
+        ont:import_9b39d57012d94a94134515ce787b377e,
+        ont:import_aa10b989fa5eb72606c795e5848f978b,
+        ont:import_c26436990e35f4a1197bb9a032ed0777,
+        ont:import_c68b6d7969534e62c6d73e30963af00a,
+        ont:import_ddb2d7df33132b90140cb51c26203973,
+        ont:import_f1fb11a22bc82a3d3d74b6f5579ada90 .
+
+ont:file_agents_langgraph_multi_agent_py ont:contains ont:class_973f2476d8d66c15f437de98449ab848,
+        ont:function_341b3c3034f08bfc2029e4dc3a588097,
+        ont:function_49e48f42f8ab2bb55ac5bfd160a6251e,
+        ont:function_8e1a77f1f73cce4e7f3cdb6eb38c6488,
+        ont:function_a206852185c9bb78fdb73cda84648f6d,
+        ont:function_bb48e2c63d665ec116499d5944b3e2ff,
+        ont:function_c0b839570a875100753105e0f433bf7d,
+        ont:function_cae16f2044101d791146bd0577b63ea0,
+        ont:function_e9668b91538bc5354886ed32d71fdb3c,
+        ont:import_015422e8f7768b9418ec87cbfbbf7e15,
+        ont:import_1e6ffc0f1ca66128ece643faa4221e84,
+        ont:import_a71bdd7e672e22c9c63072f465db6e91,
+        ont:import_e33e421f60dd43ebf69e4a79f8c74b85,
+        ont:variable_333e39ef5200bb93aae14878d783b92d,
+        ont:variable_f69dee6439bbf371d134ef5b04346914 ;
+    ont:imports ont:import_015422e8f7768b9418ec87cbfbbf7e15,
+        ont:import_a71bdd7e672e22c9c63072f465db6e91 .
+
+ont:file_agents_node_orchestrator_ui_py ont:calls ont:function_8a9b3774207dddbc6c0f444b50245d8f,
+        ont:method_972077d91276f10f1b702f5c62d0706e ;
+    ont:contains ont:function_8a9b3774207dddbc6c0f444b50245d8f,
+        ont:function_a1ba122a7efb36122f02f3730f32b919,
+        ont:function_a8cdb390604a5797284331ede3b714df,
+        ont:function_cb01880863593efcfdacf451177b5a60,
+        ont:function_d94069cc29886aaf924652e8554fc5f2,
+        ont:import_15a5d8b878f61b296ad60106dd5959bd,
+        ont:import_54b13243249acce69d0b68bb9b1a8f4b,
+        ont:import_687cd5f9459befac5b22f497c47c27eb,
+        ont:import_70df31ba0bc5a8f86c1892b313aa8533,
+        ont:import_844d3e0cebd49b8502d523aac5b25d23,
+        ont:import_99919728562c3f48445eaf9df09c1a85,
+        ont:import_d415ab213a6e35934824d93b53c3febc,
+        ont:import_d8e83cd66802ba81823541a5ec4c1f17,
+        ont:variable_88dee24d1ceba62ecc695f98263c4bb8,
+        ont:variable_c5b8bd91faf9278af07fff8ddcfc05a5,
+        ont:variable_e6684904972eb271871e5cf4f438e2b5 ;
+    ont:imports ont:import_15a5d8b878f61b296ad60106dd5959bd,
+        ont:import_844d3e0cebd49b8502d523aac5b25d23,
+        ont:import_d415ab213a6e35934824d93b53c3febc .
+
+ont:file_assets_agent_bbs_py ont:calls ont:method_972077d91276f10f1b702f5c62d0706e ;
+    ont:contains ont:class_36898b8bda2d848e8477d56d88df73ee,
+        ont:function_008072dee2ea376fb867974fdf908bbd,
+        ont:function_1fba7e68a3f76da9440e18ff85f51402,
+        ont:function_22c048837a4e71f37312f8f760b3fc63,
+        ont:function_2f47c16ba381e826238f9d5a948ccfd2,
+        ont:function_3367d773806d4f38fed75d14273e3624,
+        ont:function_3a80fe8f3063b63edcbe3f515bc9d111,
+        ont:function_4412794eece5cb2e949acc73631e4f75,
+        ont:function_4e0c8431a605974dc1bc1055fb49e45f,
+        ont:function_8790661f922668796b04bc5e2345f19e,
+        ont:function_9362997cc7c303d324a8815b79b64ebe,
+        ont:function_ac92b2b0648cc35ab822e00c32372f35,
+        ont:function_c42a368f6877142581d24f37fe5595c5,
+        ont:function_cc790f335806f9d817b2b2d4248a7888,
+        ont:function_dd5239dfc5c897b3a7586002ba024de2,
+        ont:function_e2bdfbefbb5b7d9073f4ea0c616fc6be,
+        ont:function_fd552453d7910b4ea9b7d6b40772e51e,
+        ont:import_0b44cc72067a1d1d3d2ae375efbd2e2d,
+        ont:import_107edde8ceb805cb945591da531cbbbe,
+        ont:import_25b48dc8a4374f0b28ea1ffb7a470792,
+        ont:import_3c11c73a5b6fc5bcf89d0659909b3b1f,
+        ont:import_51fd107deab1c0761f91b25e0c29abb9,
+        ont:import_5b0783489645a76aa3f5fcc344ed5829,
+        ont:import_61f1b1a116fcb63c061268b7bb5a262f,
+        ont:import_6d6b009eb4af3b688566848e6c30fb4f,
+        ont:import_75abbb22689f2f662f4fbb3797ef1f7a,
+        ont:import_8a7297bf403eb8b9c059d6fdbe39c30b,
+        ont:import_99d5d4fb713a74d6509e1b2ba42a9176,
+        ont:import_d1f4cc35706faabedde79995a6262684,
+        ont:import_dc7471fde7e2f2a3822fe577d18a92e0,
+        ont:variable_53b48eaa2b79318bc8e53a22fd6772b6,
+        ont:variable_a61a1cff61db078a216f3a635127d2c4,
+        ont:variable_b25634704f9b9907f4ab279175987968,
+        ont:variable_c0ddd8fb9a7326876bb590da4d9576c0,
+        ont:variable_c6d58139850248835910d8a7243bf478,
+        ont:variable_fa6d0dac9d0082d4fc5fef7eb9bfd6b4 ;
+    ont:imports ont:import_107edde8ceb805cb945591da531cbbbe,
+        ont:import_25b48dc8a4374f0b28ea1ffb7a470792,
+        ont:import_3c11c73a5b6fc5bcf89d0659909b3b1f,
+        ont:import_61f1b1a116fcb63c061268b7bb5a262f,
+        ont:import_6d6b009eb4af3b688566848e6c30fb4f,
+        ont:import_8a7297bf403eb8b9c059d6fdbe39c30b,
+        ont:import_d1f4cc35706faabedde79995a6262684 .
+
+ont:file_assets_code_run_header_py ont:contains ont:function_7db48246a4e6395072b9026d24561301,
+        ont:function_91bb531eb45538b5f054d144f6aa1ef0,
+        ont:function_b4d800ebdb8ce766e222e29642d3611b,
+        ont:import_996dc4cb77a6f8b6480baf5f882cc4bc,
+        ont:import_c99401946ba9992680ca5f92d8e2c7f8,
+        ont:import_df1f879642c2412e1b192931d84d63ee,
+        ont:variable_103e0b289d6fd2ff5cbed479693ad941,
+        ont:variable_736e621c15d6f1690e4722ac8507306a .
+
+ont:file_assets_configure_mykey_py ont:calls ont:function_beff33c86477fe6f8c323721cabf86ae ;
+    ont:contains ont:function_0dd36c90d6b99a210c5db512e3fcd9b0,
+        ont:function_246eed0d80ce4ba0cdcf4474f1430ab4,
+        ont:function_24a3bdeb20da77183b0de78753464b73,
+        ont:function_2bd159f0244fdce5c9e84c0534fa96bb,
+        ont:function_4149bf18d1aacd1cea36dc006bcca660,
+        ont:function_440676bffc59dee15159c0608aaab99c,
+        ont:function_441b110e739d66a1bd7ea78a32ad61ad,
+        ont:function_45daa09d8ab4bf987ff396a44347e3a5,
+        ont:function_53019d9b072a0cdd900cce47999beba0,
+        ont:function_5f0e0be5a5b47ede6ac32664ab9186b5,
+        ont:function_6959974f2760ad1d6dd2257a2041bff5,
+        ont:function_6b1c2c657abaa52da685175c1db6ddcc,
+        ont:function_6fa7ba511dd641b9d7321ad0eb5a2829,
+        ont:function_875ce833f4eb2a3b12c5038794831311,
+        ont:function_9aaa5c01384981a0999d49e7e4d7d2f6,
+        ont:function_a7b66d54f1b44a1468f2c2878a585940,
+        ont:function_b1966b5f4072f21fff32716427d86878,
+        ont:function_b2b180b7a7170eb21142f8bccd6ef400,
+        ont:function_beff33c86477fe6f8c323721cabf86ae,
+        ont:function_c002381230e1e8e235d00c864efa3edb,
+        ont:function_d2a6b04c157f7f33daf5413ac3508355,
+        ont:function_d7e6cabf26eb38b76a06ec31099bf2f9,
+        ont:function_d9e163141a814ddaf38cb63d36d02c4f,
+        ont:function_de5c5be10fceaec63d8ea75170b4032c,
+        ont:function_ec39359e353d9c08e5439e0e6bb691e5,
+        ont:function_f6dc2c1f86276e26eed70049a1629df5,
+        ont:import_291c905113d2dcb80ddc5df559277b65,
+        ont:import_3dea159d856bc1526bbd28610311cef6,
+        ont:import_56564e8859e11951baf082bc754aca70,
+        ont:import_5ca63416a45a36a264545c90c2bfec80,
+        ont:import_662a5778aa58da1492f43ce069e8e533,
+        ont:import_b8355f649bf0623cdb6fbc6529ab7973,
+        ont:import_f94f6cea66a50c90b90254704a1f5a1e,
+        ont:variable_040cc9362931d375239818f5bf3dfefb,
+        ont:variable_1e42ecb5901aa3725cd39451fc56f2a8,
+        ont:variable_7b289d857a489b0af8f6b1f959fa9600,
+        ont:variable_b5ce10006fd012fa2e69e497003700c9,
+        ont:variable_e12e2c30988215c227c6ee1ef0298411 ;
+    ont:imports ont:import_f94f6cea66a50c90b90254704a1f5a1e .
+
+ont:file_assets_tmwd_cdp_bridge_background_js ont:calls ont:function_3e816846a6da53cbaf4aeae802962034 ;
+    ont:contains ont:constant_52d55c65315ce28f55a396afa5feb63b,
+        ont:function_156e5514f6d38912fca0cb9658a6d41f,
+        ont:function_1ea57fc8784d2de85f95c70d22362eda,
+        ont:function_23829129be504e97edd1bccac9713503,
+        ont:function_2e0e600ff96865309ab9a2c8870c9c9a,
+        ont:function_319827033bdcc0d41af62fa4c46eb1e7,
+        ont:function_3e816846a6da53cbaf4aeae802962034,
+        ont:function_43adde6c47af300a8d7b12bda7394c20,
+        ont:function_664e6e0f674bcf0e24dbe4c8ffd94403,
+        ont:function_665a7eed5d3d5d8b3caa1fb976c35a7f,
+        ont:function_68d4f178c4100a91155e34925307fbe8,
+        ont:function_86b3bd683613dea4354c4379220cc569,
+        ont:function_887b6470ed62273c9867f143b9f7032e,
+        ont:function_a265cdcb23d5dc016917be4fc2f510f9,
+        ont:function_ce1659237ae0b8b2be15bce8b84562f0,
+        ont:variable_a5ec8787f3612e8d5aead8fe063e5833 .
+
+ont:file_assets_tmwd_cdp_bridge_config_js ont:contains ont:constant_c136095608ca424d2e2ac5c1fc37cf05 .
+
+ont:file_assets_tmwd_cdp_bridge_popup_js ont:contains ont:function_8551429fd9b3967991a1c8aa5c7a4b08 .
+
+ont:file_frontends_archive_conductor_py ont:calls ont:method_972077d91276f10f1b702f5c62d0706e,
+        ont:method_a585bf79e3ee1290f536850e69fdc1a7 ;
+    ont:contains ont:class_21aad716871128648e2be5d0cceddb99,
+        ont:class_30c576cf1de55ded0b074e07b561fe06,
+        ont:class_8131793da0042653f6c14fa96c73d521,
+        ont:class_ad7d36cac59606ec75eeaafafdc8bd8c,
+        ont:function_1b506386cf084a86dc112d3e20533de2,
+        ont:function_231456d494fce5270381df8560da8f6f,
+        ont:function_237c9441410d959b7dbaa7dbcd82f455,
+        ont:function_263d0e225f0a1306696e20164d4d9e8d,
+        ont:function_3048543590a3fa9cd4a99fc8da8c688a,
+        ont:function_31021d8ce5e3a299319bbbeddda6e3dd,
+        ont:function_34624fa6f4b5f84742904361e2c418b0,
+        ont:function_3da56416b397163fc9f5494cd91af1b1,
+        ont:function_3fd2417ef1960baa20d2f23f02047eac,
+        ont:function_45b63b79b66f49dbfbc88e78fb728bcd,
+        ont:function_4cd2976778923912cb19c3776dd8f6df,
+        ont:function_4e238b5d1415a9840e531b4f2381b2c3,
+        ont:function_544e483e3b27f4267a1fb7d0fb4483c4,
+        ont:function_6495fee5c038e8ca762ee01b6cbb58c0,
+        ont:function_804789eb5499413ddc6c15dc9ade87b5,
+        ont:function_89a7f95c85948361960b8e372ff17c8b,
+        ont:function_8c649c48f38a8c089ef4d47a6f08d846,
+        ont:function_967d1248b269b0728daea8880d99abf7,
+        ont:function_9a6469b16864563bc372eff2a39d16ab,
+        ont:function_9b84d01518d3f9147d810697b426b477,
+        ont:function_9d68660095c54e4e56a1b7cdceb32765,
+        ont:function_ad7b80b41c987b93cc72f9af5d750431,
+        ont:function_ce58ba1fbe6830abbac6383801cbc272,
+        ont:function_d4aef2329824d82b260e763aeb364e82,
+        ont:function_d632dafab859bd1590fef6c72533cbf4,
+        ont:function_d81e6c7af3e86c54237ab00b5175e36b,
+        ont:function_da2239532e1d55fa5825607966e4a99c,
+        ont:function_dde7b4090e704c74f644c3a6d758e3cc,
+        ont:function_e24888a814e8084aaae632c4cbc4b45b,
+        ont:import_0a9ed70988111bc0acab2dc0f1122591,
+        ont:import_0f33120659abd9228439c2bbba5a48ca,
+        ont:import_1025915e9420b05f5d3834b09b1ce7af,
+        ont:import_1f51e2cd96a2917281cb58a003bc11e9,
+        ont:import_2e8dcf6291e000f230c6612df88fbcc0,
+        ont:import_33c340c6178ac0020523c1f62ca56802,
+        ont:import_54e77fa3b80039c1186472a00b4a0837,
+        ont:import_67024f213b00b2a81081fb2e8bd60ede,
+        ont:import_6bc028f0e298ea416f0bcc4dbbfd01ce,
+        ont:import_6f9348a0f88e9a0a24d09140ddf8ff32,
+        ont:import_798dd41e53e27222145f250e919989ab,
+        ont:import_7ac1c5bce5046051ee05ca05cf784465,
+        ont:import_7c00468ce9bc57c95eb09f5e994e55ae,
+        ont:import_82ceae311c16c0a3f71dfb2294dda39f,
+        ont:import_97f85bbdae7e15ccf32d83659ec00b9e,
+        ont:import_9a0bbb0fadd10e51bcc0c6398988f4cb,
+        ont:import_e2d45900c87f2d666d55527ada833a7a,
+        ont:import_fc37abbafc4dc71c93ea5bdc9160c972,
+        ont:variable_05c22779a23c90751093e1ac017abc4b,
+        ont:variable_0f1e86b9a772ea997ee4381d07dee3fe,
+        ont:variable_2f2dc59a9d92d3ffe02f550248b540e3,
+        ont:variable_2fe88054e112630636b30f27c49a916d,
+        ont:variable_6b71a710d0c1ecb9edadf212a62e5925,
+        ont:variable_71af132e04f66c793d53fc0ceafbd9cd,
+        ont:variable_7472b68cf4967bec9e7a7967df72c5c6,
+        ont:variable_9f26427edc6480719339738e93d8c179,
+        ont:variable_a7a1b14d925e6e06c155f04e75730658,
+        ont:variable_aebf3f38487cdd152c40358e97f7088d,
+        ont:variable_b3438fb3515762d9af72a3ad7a10d41d,
+        ont:variable_b465eaea2dc35e98f09fa9f0b25b7cbd,
+        ont:variable_c854c7aa933d3f3061e22d3ffa0e5087,
+        ont:variable_ce05133c7546c35737789260be9f9a11,
+        ont:variable_d8f7f342371d6f9efd042833d4172831,
+        ont:variable_dc0bca8883d9b98f870e14c5e40ebea7 ;
+    ont:imports ont:import_0a9ed70988111bc0acab2dc0f1122591,
+        ont:import_1025915e9420b05f5d3834b09b1ce7af,
+        ont:import_33c340c6178ac0020523c1f62ca56802,
+        ont:import_67024f213b00b2a81081fb2e8bd60ede,
+        ont:import_7ac1c5bce5046051ee05ca05cf784465,
+        ont:import_fc37abbafc4dc71c93ea5bdc9160c972 .
+
+ont:file_frontends_archive_dcapp_py ont:calls ont:function_5d91c0949d77876e6834b3850546121f,
+        ont:function_9f6d4a4a1885ecf8b97c823c27171b44,
+        ont:method_a585bf79e3ee1290f536850e69fdc1a7 ;
+    ont:contains ont:class_0100e955066fc9bec1e9a558b8050ebc,
+        ont:function_81f0274432f67c260d2f65877fd9e374,
+        ont:function_99b69abf33c8c503a69a24da35fa94af,
+        ont:function_afdc706dbcd0a5fe508b2b57f29843f3,
+        ont:import_06f590d063bf9eb2eff44f86b5f730be,
+        ont:import_2af7e72722178a41f099a4468ad5dba2,
+        ont:import_3affc494a4e28b266ecdd5a14a170222,
+        ont:import_449efcc4a40808bda464fae976139f3d,
+        ont:import_605bb4b171020e7b3871cfad27ec0e31,
+        ont:import_868bdfeaa26658bec3e547d65a11649b,
+        ont:import_953eac86d81875455816600a2ddda1c9,
+        ont:import_a2f31d825653fe51a99f331a8dd5ac92,
+        ont:import_a5aee518d20def2ec3ba4737471eaf8e,
+        ont:import_d02fef948066bfc85bb56f15c76792e6,
+        ont:variable_178a60850f4e5bff86d918f61f463a04,
+        ont:variable_2a8a1deb6d0b7391d5e1aad96d7d3376,
+        ont:variable_47009c75fd02aa9fac255d88b70d66d4,
+        ont:variable_64c736423d8dd60ff582f86ae5b1f3a1,
+        ont:variable_990912aad3cc4cec5a63e7d983890a4f,
+        ont:variable_ad667df1e51ea4aa9b0666890fba1986,
+        ont:variable_bbdcb61f79513936f4a75e46ac077a84,
+        ont:variable_c8f33cc5dfb3bda4d521cfcc21642d16,
+        ont:variable_d654999387086a54b852fcfc936faec3,
+        ont:variable_e9525894506b533263d8c83ab4990dc0,
+        ont:variable_f3e6451f9be5ec525aae33f7076ce577 ;
+    ont:imports ont:import_06f590d063bf9eb2eff44f86b5f730be,
+        ont:import_a2f31d825653fe51a99f331a8dd5ac92 ;
+    ont:instantiates ont:class_0100e955066fc9bec1e9a558b8050ebc .
+
+ont:file_frontends_archive_desktop_bridge_py ont:calls ont:function_06068a86fe57b7d12e4ad071dedb8c77 ;
+    ont:contains ont:class_153fb1712aeab60eefc0eb78ab1e0912,
+        ont:class_35207d23fa141dd6fbe4564e3685a3ec,
+        ont:class_b0bf6a34c0f4dcb0d3be8fb1197d552b,
+        ont:function_06068a86fe57b7d12e4ad071dedb8c77,
+        ont:function_18d076e9ee674440eac6c36ba06dff63,
+        ont:function_210fb536b42a682c8300833362f1e3d8,
+        ont:function_2ba510cc7316c2a08907b46f8c24c4d8,
+        ont:function_2f5ee647fe271fafed97715cd64f3cb6,
+        ont:function_3070eaeb6d9caf1aea2b9c372a2399a7,
+        ont:function_399b9a0a63d6c2c5e21894eac6a5dd07,
+        ont:function_3b909942122ec72b7076945a1e800a09,
+        ont:function_4a90195bf3545e9104de95d49073b63f,
+        ont:function_527372122cb3f0588dcc54106bc1e30d,
+        ont:function_59ff97f0f6be2502a526f1d21047d468,
+        ont:function_79cf9c25fee1cd5e57d9b03aecde7ad9,
+        ont:function_7d56b612d0dae89d1c6cc209d0fe5152,
+        ont:function_802c96b38acef2df8f8f0aa9ac78d2ae,
+        ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:function_92adbfe53af715322b291ce023ee5fb4,
+        ont:function_a08c82a9678c821a586a69476c7abe00,
+        ont:function_cb6bc1df1dbf05d5c962d286ddf46736,
+        ont:function_cfb3ba054a85ffcab36c5c89ac49f353,
+        ont:function_e8fff77b7f60c06dd6cbb658895e58b7,
+        ont:function_edd0c712ece04c129e27cf3854824b07,
+        ont:function_fb9f029571aaa2bf7a27d3cf4bc62ffd,
+        ont:import_01b4bf3134e7789e2680c1df0fce5349,
+        ont:import_17d816556d039118a58fcf945f479e73,
+        ont:import_24c3e6e67d082741bc6fecc30c5a32be,
+        ont:import_27eabf4bb2453e7feb2deb927eb18792,
+        ont:import_2abea2e0ecdb09ad0a28dd2c76940261,
+        ont:import_472b6051bf9deb003825dfade7d06b59,
+        ont:import_4e55e42c9ee645d5aa65d647b537006f,
+        ont:import_4f067f877cbcd55894ac43dc1bde436a,
+        ont:import_8a896d70fc58e0a90e1cd98cd5fef99e,
+        ont:import_9e0030e076f1df2346ee15e1adf379bd,
+        ont:import_9e1a9a75a2d7f2050e276b7773c38069,
+        ont:import_9f45f2f263f1839b7dca0e30463f5fd3,
+        ont:import_c104a121005056023ea29337060868e5,
+        ont:import_d37099f2941f31d1d8c63ed67fb19c08,
+        ont:import_e0b25bc054fe567881bd9b3b765f79e5,
+        ont:import_e4e739f082719634fa580bb32a3b05d4,
+        ont:variable_00a91ead69bdbca9b03fa1e77d857a84,
+        ont:variable_0eb7530688c3e3f9c824f6db0992c37f,
+        ont:variable_10f634975c39b878166f5fb228a81ed7,
+        ont:variable_b7fe8538c067c3589c105062243eecd2,
+        ont:variable_c00f02249c0eff46bb77571c0eb8b48f,
+        ont:variable_d2f569a47b822641d1d7f2c74a0b04c5,
+        ont:variable_e08a9b94a76780676e9d23db2989df9e ;
+    ont:imports ont:import_4e55e42c9ee645d5aa65d647b537006f,
+        ont:import_9e1a9a75a2d7f2050e276b7773c38069,
+        ont:import_9f45f2f263f1839b7dca0e30463f5fd3,
+        ont:import_d37099f2941f31d1d8c63ed67fb19c08 .
+
+ont:file_frontends_archive_dingtalkapp_py ont:calls ont:function_5d91c0949d77876e6834b3850546121f,
+        ont:function_9f6d4a4a1885ecf8b97c823c27171b44,
+        ont:method_872e61b3a660a2e819f12aad1229aa6c ;
+    ont:contains ont:class_87407f634fbfbb105fad11e9d07a81ce,
+        ont:class_b2f9308eeb1ac44178fdd502d0726d18,
+        ont:import_0339944cb5f5b36ff1c239d716b6fc49,
+        ont:import_25440b03ba44c3f05e25ee2661c5a1a1,
+        ont:import_5af7a53398985e90dcc62864bbcc26ce,
+        ont:import_6689757a19aa3cba14cf749fc6c08299,
+        ont:import_687bcec05b6a940c97c342d832f5460a,
+        ont:import_984b2dc32c349552325fb4fcac30b174,
+        ont:import_9d499b6f7304f6e193988de1436fe37c,
+        ont:import_b7fa86e47be546cc8f8898d07e16633d,
+        ont:import_f0f029a628563f0619ab8bd74fc048bf,
+        ont:import_f977088f75c569c24b0c23bb86b1b6bc,
+        ont:variable_10d1ed4e95da4d9c0c11249e1c8fea8d,
+        ont:variable_2ea7d50808367a15427e2540c71bdc54,
+        ont:variable_9c2816540233938c715f22de155c6e8a,
+        ont:variable_b8e01b719a1c991654a8afd7b3713f9e,
+        ont:variable_e75d51e3bacbdecdd6a46b558745a66a ;
+    ont:imports ont:import_0339944cb5f5b36ff1c239d716b6fc49,
+        ont:import_9d499b6f7304f6e193988de1436fe37c,
+        ont:import_b7fa86e47be546cc8f8898d07e16633d ;
+    ont:instantiates ont:class_87407f634fbfbb105fad11e9d07a81ce .
+
+ont:file_frontends_archive_genericagent_acp_bridge_py ont:contains ont:class_5c3a445dbf55f376857549f72b630fdc,
+        ont:import_0d1cb31e599765f0199b6923f18adb6e,
+        ont:import_1226a827325380502f040a6dbc1b8e7c,
+        ont:import_29908bf2af64418ebc18581f70f91181,
+        ont:import_30b845b49dca2f9d5939df5a406a3fd1,
+        ont:import_5d424522beee2596c7a742c43fd7c59f,
+        ont:import_5da51a3402d4751be5cc93a2b1e52bea,
+        ont:import_864ff90e7fd37d2f57f8c28b8e570a32,
+        ont:import_8c4274062ad1111ed57cf7d04a383563,
+        ont:import_8d91578f3e59607fd71877ac0b0b0c52,
+        ont:import_ac2cb01213d5eab66bfefdbe5ae88e5e,
+        ont:import_b00a45df08819e70ca821c15aac28e29,
+        ont:import_d81b96d21119a5fe608db49749feeba7,
+        ont:import_eae3bb33c219f1349b9e26f0a67445ba,
+        ont:variable_2b8618dec5e06853f4c005c699862cc8,
+        ont:variable_587d3edb96a909719823de579065174e,
+        ont:variable_650454c2c5bf38c64a87fd0a43cdfae5,
+        ont:variable_9cbe80c15587ccdd3a11d7c73cbfd6e0 ;
+    ont:imports ont:import_30b845b49dca2f9d5939df5a406a3fd1,
+        ont:import_b00a45df08819e70ca821c15aac28e29,
+        ont:import_eae3bb33c219f1349b9e26f0a67445ba .
+
+ont:file_frontends_archive_qqapp_py ont:imports ont:import_181141c402c65149a3d035fcb0325d08,
+        ont:import_4c8f9a03cb797d3158e772197a9194bc,
+        ont:import_dc9ce93ce1ffe6d5b05b2a6e72402aa3 ;
+    ont:instantiates ont:class_8f3bd967f657f71e55e5cfe80acb2acf .
+
+ont:file_frontends_archive_qtapp_py ont:imports ont:import_613920b0b7c63ba494fccd797133407f,
+        ont:import_7bb119cfba7fd6e1a63deafe27589fcd,
+        ont:import_b5738697a22d03019959b955dd72fbd2,
+        ont:import_c3840505ef4952b006e0229df1b386b2,
+        ont:import_d9d928a0e1523ed6ad0192fe07d58385,
+        ont:import_e0ca3306243678b94e7fad64da0942b3,
+        ont:import_f59c9bd16b19273e9d88976683eb3075 .
+
+ont:file_frontends_archive_stapp2_py ont:imports ont:import_05ed10235e909d9100fc5dc8edde536d,
+        ont:import_96fddc171726b05644770bada6b9e134,
+        ont:import_b7fd7cac39c8744cbc27cf6b63f6c050,
+        ont:import_cbfa5d4ee5b2410aab733196820438f9 .
+
+ont:file_frontends_archive_subagent_dashboard_py ont:imports ont:import_0bd7766add548175356e5c0b5d137c38,
+        ont:import_1572e476aaf19960b35ac31a8a8e08c3,
+        ont:import_8a4c6481204519e2520d06a69a0ab943 .
+
+ont:file_frontends_archive_tgapp_py ont:imports ont:import_27f3704c9c0e73c8849345af6ead96ba,
+        ont:import_2946550b76bc9af94b5c03b80901a70d,
+        ont:import_499ebfb8fd0f76833fcc3b1af09cf266,
+        ont:import_74b575598d8423e9353691a2ba6356f1,
+        ont:import_9cbdc896ff827828d485a03aeda44056,
+        ont:import_a78ce24776ea2291b6d22612dfec701a,
+        ont:import_b9f8a439009468101546dcc7fb6331c3,
+        ont:import_e1ed0b0d607dd0536e0e8ddf1eb5b9a0,
+        ont:import_eeda4032745849aef8a93a14dbfef9d7,
+        ont:import_f7006c4c7c8dadd260e5a44839e59ebf .
+
+ont:file_frontends_archive_tuiapp_v2_py ont:imports ont:import_0ca841a08d61b73ce80b91cafec2c5bd,
+        ont:import_11d2ff1767c8b5dcf799a64917924316,
+        ont:import_154d9c2632df8b289d17beaec0ee17f3,
+        ont:import_263e53734cc21bacb1c332229c14314f,
+        ont:import_375e0e0a3e27d215512bf3a267c6d3e1,
+        ont:import_3849e9ce0c665f532fc607e8ba9a1aeb,
+        ont:import_3d348d19fa3c60f345a931b7995f9636,
+        ont:import_412d982a90e20308136c033260de088e,
+        ont:import_4b37b40713d89a0b5e97557ff5674fba,
+        ont:import_5ffc840ad2449b736571a065c85f75d3,
+        ont:import_6016c77f60fd599b98c89bc953ee2c50,
+        ont:import_6c66180e879e959c3517ed9b028569bc,
+        ont:import_6f950d093efe949b3e245ed5f63c1d4f,
+        ont:import_7b11235d214c09949714b6b3c7c76182,
+        ont:import_8d85fa3a173ee14cc323d447f975bb15,
+        ont:import_9f04800cff649e578545d4fba5e74566,
+        ont:import_c16544223919cdd8ae5593b8387b246b,
+        ont:import_f1d3e7d541a1ea3479110497f1e99ac6 .
+
+ont:file_frontends_archive_wechatapp_py ont:imports ont:import_02827e7601b47733c66d7df7621cee5e,
+        ont:import_28265b7221072a1d8345e4ad5e491cc6,
+        ont:import_66eef3dc1fe6b058dd4256b0853c7ff0,
+        ont:import_f3299476e487fa17b30631031b889c77 .
+
+ont:file_frontends_archive_wecomapp_py ont:imports ont:import_4447b76f9e51ae25e34fbe0426763ed9,
+        ont:import_6984901b9e1538516698c5ab35d732ca,
+        ont:import_7fd4d04900892369f7b8bd8efea2c713,
+        ont:import_9d2c9bcda011e8263a045336cd6e70e2,
+        ont:import_bbded38a925f89c8c85f0ef40705e4e2 .
+
+ont:file_frontends_bbs_browser_app_py ont:imports ont:import_32cf74ea4bef71824fa9bc2d13055011,
+        ont:import_345e6ff4fc83deaf7a59f1674c669894,
+        ont:import_61f4ac9fb713db426ba2b5593e82bb06,
+        ont:import_9ee5da9b4037d1700aeedaad9fc4a832,
+        ont:import_e5c7349142111a310b823d741708b390,
+        ont:import_f1d78fa3a129e1946a5572e41f5700cf,
+        ont:import_f8649d90133b32ca34d0b050f15271de,
+        ont:import_f944af9766bace56e2da00912edc28a1 .
+
+ont:file_frontends_bbs_browser_auth_py ont:imports ont:import_30bcef144a909706f9e943b2db43cc20,
+        ont:import_46aaa2ea57d4f4a1cb6fb8825989cd2d,
+        ont:import_d0cb51cb80fa6b7140cff9cf6d3a08e8,
+        ont:import_e8c6796c1eb9e70829111bc21d863dc5 .
+
+ont:file_frontends_bbs_browser_database_py ont:imports ont:import_6ceaed020d7b04f22cee641f67c23774,
+        ont:import_a425190ac3fa083cc407e5db1731bf37 .
+
+ont:file_frontends_btw_cmd_py ont:imports ont:import_bf1fe3480c336ac8c9e547d4b43c8cb0 .
+
+ont:file_frontends_chatapp_common_py ont:imports ont:import_4b0c5c3c2d9cef0f76ef5f6520497979,
+        ont:import_7e9228c04a61fd108d3ab06c2fed67ae,
+        ont:import_ad90c104c105b48c777eddeb01df5bac .
+
+ont:file_frontends_dashboard_mqtt_py ont:imports ont:import_8e2319becf464eeca830e71fc2873477,
+        ont:import_deb0cc10f7f268385e18d026e22121bc .
+
+ont:file_frontends_desktop_pet_pyw ont:imports ont:import_c1d04e5eac29b2cb0db3776107a9402d,
+        ont:import_fa11de6f6e5bfb5783af3c5e825caa4e ;
+    ont:instantiates ont:class_babcc3d17a99274bf6514c5c2206437b .
+
+ont:file_frontends_desktop_pet_v2_pyw ont:imports ont:import_0ff926eab7a55de229b428351ef9c785,
+        ont:import_4b0b392a1a83cb9e7b7ab76a81a04434,
+        ont:import_5f1b4e069c8a6c43553ebd124c2ff6f4,
+        ont:import_708c7c8eb3faa4f681a801fcbf36e27b,
+        ont:import_7dd364b5ade39f917e6bae39b99b52a5,
+        ont:import_81d0c66fffdc4c3a0a515c88a4aca1b1,
+        ont:import_8e013127bd86fe3232d06fc5d7e85028,
+        ont:import_acc7f0479912d177381ab1a08b9228b1,
+        ont:import_c40515a66d84f1e3688698945327a990,
+        ont:import_d3ed3269c175c7fb4744341dfcff5700 .
+
+ont:file_frontends_desktop_src_tauri_src_lib_rs ont:imports ont:import_297ca8fc31d0d60d8461a769b610c127,
+        ont:import_3696c88f1add5ab4e3be10bc02179432,
+        ont:import_3c9c1cfe021604004c8226e973ce90af,
+        ont:import_4b73d9f849a7ec7b537a9d184a8c5189,
+        ont:import_65232050ae19cd0b07e0024afef21823,
+        ont:import_b7ee713c94323d29d46b42deb0619ad0,
+        ont:import_e2b46e8164b0ef30b9bfafa864b8bb00 .
+
+ont:file_frontends_export_cmd_py ont:imports ont:import_5b331d93791a6697f88d7a3ae252d401,
+        ont:import_c41899835f838c026e8722b8d8952458 .
+
+ont:file_frontends_fsapp_py ont:imports ont:import_030d336e2b0b0943501dbdf158756dd9,
+        ont:import_50eb1d7124d114c29adf87e3472b7b42,
+        ont:import_75f2b22d993e279d7a85e4607d456bcc,
+        ont:import_7d94d4b4caadb77eb4e315aa3bcd9cf5,
+        ont:import_97a76af956ed3af66cd86269eb131f5a,
+        ont:import_ede6af2523bf0b44979ac76e380cc6f7,
+        ont:import_f409371a9d3ae051b3f33de08c45bb6c,
+        ont:import_ff0b96b33feca83dfaadc1ec7e946c2e .
+
+ont:file_frontends_gateway_config_py ont:imports ont:import_819021679263a25f9adba1481980c579 .
+
+ont:file_frontends_gateway_main_py ont:imports ont:import_1338f1644cf8f01ff4cc7b415522c13a,
+        ont:import_1dbe808ceca39f296f7ead321555cc92,
+        ont:import_4f289316bc2890807d2a592f10a1ab1f,
+        ont:import_558991ee48f18673553878be44a5bf93,
+        ont:import_5a326611695b0ac21ed5ae0984bee2f8,
+        ont:import_5f0420050221e94eaf733361dd4751a5,
+        ont:import_6b73c0d0c0e390648c953032876cdf76,
+        ont:import_8e2814d35de5906626655121db011e8a,
+        ont:import_9910b969aa37f82768995e68290197e5 .
+
+ont:file_frontends_gateway_routers_agents_py ont:imports ont:import_2b3a5ce3b46e75bca1e4be46164ad82c,
+        ont:import_abdc8ba0736770db66223531864f379d,
+        ont:import_c062da21fe27224e1d057f63d2d0b35d,
+        ont:import_c08cbc4eac89ba6095fdbb26b2bb257c,
+        ont:import_e82a7bc931692e740401c92c53f62806,
+        ont:import_f6e23d63fcee0f98e050ec4f36513819 .
+
+ont:file_frontends_gateway_routers_auth_py ont:imports ont:import_530642134b44b5efab1c4fc64a206125,
+        ont:import_7ad6c1fabc79acf7c002d9a49d4f505c,
+        ont:import_a6a3af386eb0a342eb75f7549523d4c8,
+        ont:import_b9d6bcfbc816450b268acae8fab18e4f,
+        ont:import_cafad73d246f58e056a6f905ef88cc8d .
+
+ont:file_frontends_gateway_routers_boards_py ont:imports ont:import_31b914d9cda40e9ba3b3f5206bcfd559,
+        ont:import_4f3a5ccdb2c9b83285eada0e3ba6ad85,
+        ont:import_7c38f5a71255f029a69e2a0c51c82ba3,
+        ont:import_a65c8a215fe062c41f6756a6bf911227,
+        ont:import_c9ea422698445b668a93b228d5d31ffb,
+        ont:import_ecde3efa71d43213ff3d0c448e96b07c .
+
+ont:file_frontends_gateway_routers_dashboard_py ont:imports ont:import_54500320f2b04ad62ae0e21bee01e68f,
+        ont:import_5e0197c8e1c6961e8dbff2ef01147897,
+        ont:import_9b836b413d514366cc2adfbd8b203f32,
+        ont:import_9eeb17dc977abd31d0d654ecbe026854,
+        ont:import_b2a4209b3214eaa022476655d972c735,
+        ont:import_e389b65292aba869e443e4925415f1ea .
+
+ont:file_frontends_gateway_routers_docs_proxy_py ont:imports ont:import_0ad8628fed43f01a8fc271a500187a0f,
+        ont:import_7362ddb99a576d84a6d80d134c7e2aa6,
+        ont:import_a3b857ecb43bd98f5b93beebb5ab2e2d,
+        ont:import_cc4b6d876c01ecc160b477f69914c07f,
+        ont:import_dfbf9f19fa23d1924353a6ec9ad133a3 .
+
+ont:file_frontends_gateway_routers_md_server_proxy_py ont:imports ont:import_22b4244abcc5732252e537b5224e3ec9,
+        ont:import_d7c1b782eef199e9b7bb2038dbe11d33,
+        ont:import_ef1efcf6249a6cb5953a4ec2be04b448,
+        ont:import_faff6504242227bb14eb6b2fc99e6a06 .
+
+ont:file_frontends_gateway_routers_mdviz_proxy_py ont:imports ont:import_147c765da03a048289cbefcb8099fc5f,
+        ont:import_425f98761d009d215b0c1b26d1acf626,
+        ont:import_5e3976824a9a5bc4fe551dd1d6c53ef2,
+        ont:import_876a3aaafecd5ffa7e3dac7bd91f10f6,
+        ont:import_dc2f5df00396b50f90c3261b5d7026bb,
+        ont:import_edc1dfa94e532a5c0274493e9149ed50 .
+
+ont:file_frontends_gateway_routers_mindflow_py ont:imports ont:import_3402b43ca08233df9a487409a4ca4f7d,
+        ont:import_5cd1fc29026c6c1eb4e0e82846a98ddc,
+        ont:import_7ea2ce9319d58c48c45167233f316c1e,
+        ont:import_9c132936a49be7c7a035bab796bf5989 .
+
+ont:file_frontends_playground_router_py ont:imports ont:import_31204b46c4d34952d524bee6ac0de718,
+        ont:import_3877f65c0954fb185de1251496368ffb,
+        ont:import_859462d7cdcf5ce02b427d63e9282b4f,
+        ont:import_d4858fa8b28289f3e8b403564a029c72,
+        ont:import_e17e89375a5b52680e1a18cb71c34ece .
+
+ont:file_frontends_stapp_py ont:imports ont:import_1eb7c80f07af3e2e851f4e66f6b7aa3d,
+        ont:import_229401595dfe08d3227fca38cbb9bd0f,
+        ont:import_3326c16cb350daf35133fbacb08be262,
+        ont:import_5c44d1d5b9133d33566f0ff4bd9ea9c2,
+        ont:import_743cee9e08c3dac44d40b81c925a6577,
+        ont:import_c370b4d96bf36244613f934ddc2aa15e,
+        ont:import_e10638285b39364988b076445eb743c2,
+        ont:import_f0a9e92f91fabee30c4c94f653abe603 .
+
+ont:file_ga_cli_main_py ont:imports ont:import_0260a5b3d5f3c0d4e05e75eb2d2785c2 .
+
+ont:file_ga_py ont:imports ont:import_3e88d97ad0ba69069280fc0e75a7723c,
+        ont:import_3ee3a0792671e0a8d56b5f81900ce1cc,
+        ont:import_42643656d1b55c32edcd715a4aec550a,
+        ont:import_656be5ce02b6c50bed5255fcafe4946d,
+        ont:import_7da7c2846d0c7c623fb9002f1a6dfc9f,
+        ont:import_ca6621979ff24c1e1c397ae9ab041ef5,
+        ont:import_e7c8181933acae6e03cede9943ebadfc .
+
+ont:file_hub_pyw ont:imports ont:import_437903afd40d3c946094ab9e06e543df,
+        ont:import_e0964c53bf16a989b2eba2d195a79961 .
+
+ont:file_knowledge_oracle_ontology_query_py ont:imports ont:import_4c3aa3ada037bd078454250bc41e2d6f,
+        ont:import_ac29dd97d7ca403f41b061c59226da19 .
+
+ont:file_llmcore_py ont:imports ont:import_2b9bf491d56c3edc50ffd649c308f209,
+        ont:import_3f80765525a6bf9b6050c7d49583978b,
+        ont:import_5802f2d062a89e5d02b43bac1f258510,
+        ont:import_5f72ae23ea4e8dc882511988cc35445f,
+        ont:import_8c65adb1735d26bbeacac876ebb2b9ca,
+        ont:import_a37a444d7ad8d15b6f9339f8538d7380,
+        ont:import_e7bb77b729006c7d23bf5845ee807828 .
+
+ont:file_memory_L4_raw_sessions_compress_session_py ont:imports ont:import_0636ac78c02c966509d7ab83440f5f25,
+        ont:import_de4240bcf23e34af5d85f21d2be6d734 .
+
+ont:file_memory_autonomous_operation_sop_helper_py ont:imports ont:import_a3c4a1ba72ba482c1ddb15715d81c3f4,
+        ont:import_ed5309e198264580ea10bd51b1c0e2b2 .
+
+ont:file_memory_clipboard_ocr_py ont:imports ont:import_1a81fc714854e786da60e7665d002f32,
+        ont:import_25ce370c420b4d330bf65e4c4c280a01,
+        ont:import_25dc9bbb420e1d92cf378f69cef0bcf5,
+        ont:import_e65513746bceab05a50ec77cc43ce1b4 .
+
+ont:file_memory_ljqCtrl_py ont:imports ont:import_fcd29280b117fd465f1c491ed2c91605 .
+
+ont:file_memory_ocr_utils_py ont:imports ont:import_1f2c296e107c9b5c4e0377c8dd1640b3 .
+
+ont:file_memory_skill_search_skill_search_engine_py ont:imports ont:import_6b04e9c2af66ff0c2caca6783c119ca1 .
+
+ont:file_memory_skill_search_skill_search_init_py ont:imports ont:import_0b70e3abfc1a3188f10df5a4cff47925 .
+
+ont:file_memory_skill_search_skill_search_main_py ont:imports ont:import_6e633d0c7a65375c12935431b7118907 .
+
+ont:file_memory_sop_registry_py ont:imports ont:import_3fe0a94c1c2a16324e5c6ead60c01433 .
+
+ont:file_memory_ui_detect_py ont:imports ont:import_266301265f02af6d5dad71cf6433695f,
+        ont:import_27bdbcdd2612920780c6a6cfc269ecb2,
+        ont:import_a035065547945cde725d76457304088f,
+        ont:import_fec473f5a8a960f907ea506ea2d4c529 .
+
+ont:file_memory_vision_api_py ont:imports ont:import_a356e993e6781a5d98f841da80c02fcd,
+        ont:import_f58a294ce59917ea4a2770bf1fcc81ce .
+
+ont:file_mqtt_priority_py ont:imports ont:import_eecaeec6351124e8d353bea3969761fa .
+
+ont:file_plugins_curiosity_board_py ont:imports ont:import_146cff706845f6475f21d48a7100b123 .
+
+ont:file_plugins_langfuse_tracing_py ont:imports ont:import_5c673280bbaf7df53ff9ad835a35d688,
+        ont:import_5f4da530f984e86e651708af47df8953 .
+
+ont:file_reflect_agent_team_worker_py ont:imports ont:import_1f66a00251b62a13aede04692d6cc0e0 .
+
+ont:file_reflect_goal_nexus_py ont:imports ont:import_96b6a13f9136e47618b1794d38db0d41,
+        ont:import_be57cd2d23886c783162482a17cc57fd,
+        ont:import_d5db3e1df683eaf6ab4fb5f942269885 .
+
+ont:file_reflect_scheduler_py ont:imports ont:import_625b92be915d80f379ece71faf46ff88 .
+
+ont:file_reflect_supervisor_monitor_py ont:imports ont:import_bfbd341f84761f0e0577f6f22eef93f3 .
+
+ont:file_scripts_git_push_py ont:imports ont:import_b544b69b614ba0252c8ac216a510551c .
+
+ont:file_tests_run_master_py ont:imports ont:import_d14a48657e578cb9aebb1e44bc40d572 .
+
+ont:file_tests_test_board_config_py ont:imports ont:import_05c89659858ec925b60fd0f8e919e80d,
+        ont:import_dfdb86fb2e8853fcb19201e380b7b8cb .
+
+ont:file_tests_test_board_core_py ont:imports ont:import_bf0f685893c241ec8e3c8aa3d1cb9e0c,
+        ont:import_d194044a1956a1d43d7bc23cb7f285c2 .
+
+ont:file_tests_test_board_service_integration_py ont:imports ont:import_7d7131835a61e72432059c687933aae4 .
+
+ont:file_tests_test_board_service_py ont:imports ont:import_5341db8adf9c507d3f9d0ce36ea214f6,
+        ont:import_960a8309f602c494b679794f9a4a0007 .
+
+ont:file_tests_test_goal_bbs_py ont:imports ont:import_466f525648265e17c0342333308fa8d9,
+        ont:import_707ff56ff4438a48f348b8f2f4e0aef3 .
+
+ont:file_tests_test_security_audit_py ont:imports ont:import_92eb7147f39fb142f73f3af4111887a9 .
+
+ont:file_tests_test_tgapp_stream_segments_py ont:imports ont:import_fa9afcfea5a316d7ee970f8b32840fe9 .
+
+ont:file_tests_test_turn_policies_py ont:imports ont:import_640bb0c269b57ecbfcd1f1fb3471778c .
+
+ont:file_tests_worker_debug_py ont:imports ont:import_d960ef5d2402a2b09b68c234ed6a4993 .
+
+ont:file_tests_worker_py ont:imports ont:import_69f9202b4fc82aaaa01c24212a8b71ec .
+
+ont:file_tools_agent_runner_py ont:imports ont:import_65333457e24bf58766fd4914ee5daaa9 .
+
+ont:file_tools_base_py ont:imports ont:import_85942dcfeb5e44cbff81231a4974708f,
+        ont:import_99435077d36001feda7a34db1700b8ae,
+        ont:import_d21ea07c521806e20158722ce6539392 .
+
+ont:file_tools_brainstorm_swarm_py ont:imports ont:import_133359939350207a4429bd1cb70c8f16 .
+
+ont:file_tools_codegraph_db_py ont:imports ont:import_38356b9efee447bae808b8df313cac0e,
+        ont:import_5e7e12a0e51fb413c883f0e7175e86df,
+        ont:import_d67664afece4ba525af3acc1a5532c2e .
+
+ont:file_tools_constraint_dashboard_py ont:imports ont:import_74b456c6e59abc0b1e33b101cabf584d .
+
+ont:file_tools_curiosity_board_client_py ont:imports ont:import_d15e44e3fc16c450cdbf2cb5add6642f,
+        ont:import_e3331d1715412b025d5fb39752b87a0f,
+        ont:import_ff624d91689e323e783173f844b862fc .
+
+ont:file_tools_curiosity_hooks_py ont:imports ont:import_84a38f5cda7df0e26cd80b12c51c3915,
+        ont:import_ed395584e453800162f1f18792a7dce2 .
+
+ont:file_tools_diagnosis_agent_py ont:imports ont:import_b11cdec2ce5f7b1cbdcd00cffc6e60e6,
+        ont:import_b88a118f3493eae7955ec0232b70987d,
+        ont:import_cbf08e644a16482235354e1f27a91335,
+        ont:import_f9d58cfe52059187961f70d742b75929 .
+
+ont:file_tools_dream_engine_py ont:imports ont:import_27bf86e908b03455a556fafd7c6ae45d .
+
+ont:file_tools_failure_tracker_py ont:imports ont:import_013db7052dd570edf042a6113e46c743 .
+
+ont:file_tools_feishu_reminder_py ont:imports ont:import_1166f587a4d148876bbd1048f811acbe,
+        ont:import_b8f88777c29ff1d2804721938e35f5dd .
+
+ont:file_tools_file_search_py ont:imports ont:import_1e09788e8c4ef3c2e4d52b3ee87f150b,
+        ont:import_5c545166c610154b11d47b421b477574 .
+
+ont:file_tools_ga_utils_py ont:imports ont:import_b265e645a4c2e609007e9153bc34af6f .
+
+ont:file_tools_gui_vision_py ont:imports ont:import_3dc3b03fcfe63a68376a2a2a9d00e382,
+        ont:import_565e7ff579039a718e9c3c01bd6c6545,
+        ont:import_7d0a222da952d63cae41cbd461f8ee38,
+        ont:import_c42986c179ea0c07be2f7058e27bdb6e .
+
+ont:file_tools_heartbeat_memory_py ont:imports ont:import_0954a8bcae9aaac2dd25600246fd9f29,
+        ont:import_252dbe9206c0d637ea815ff578cb6324,
+        ont:import_b1e975dc9270a60222003eeac4e4299d,
+        ont:import_fe5904ea0600e9a22a5eb2e04c65bc1f .
+
+ont:file_tools_history_compressor_py ont:imports ont:import_f4773da8141dfb0f7a5c0a9c80ca759e .
+
+ont:file_tools_hitl_approval_py ont:imports ont:import_b9c68a49005dbff65ec487a076b564bf .
+
+ont:file_tools_hooks_default_py ont:imports ont:import_8426afcf49702247c7713a8c1104c386,
+        ont:import_d354a2a562eab06d728d3b186255aeeb .
+
+ont:file_tools_inspiration_board_py ont:imports ont:import_ed4db9560cbb3bae85b64dd58ba352ea,
+        ont:import_f94cfea035a4d74aa662f5b9fd09cecd .
+
+ont:file_tools_learn_skill_from_cases_dir_manager_py ont:imports ont:import_9a70645d87f1210c079bf82063416861 .
+
+ont:file_tools_learn_skill_from_cases_engine_py ont:imports ont:import_0949826a2dd177985018bf2fdb09082e,
+        ont:import_513f19d15badd83e14f1016a0d116d8b,
+        ont:import_99aae3bed77315d8e20890dcbc77cc4a .
+
+ont:file_tools_learn_skill_from_cases_main_py ont:imports ont:import_66943c657d557304ac0ccd2b591a9097,
+        ont:import_afc4f4cc43eb9fe76d770650334b1d34 .
+
+ont:file_tools_lineage_tracer_py ont:imports ont:import_3802296a6461df174681906da30e2046,
+        ont:import_a20c30412d20eef12e9693b887f3e371 .
+
+ont:file_tools_llm_providers_claude_py ont:imports ont:import_2c2ca50676fa8c54b8b77edba4e4f716 .
+
+ont:file_tools_llm_providers_init_py ont:imports ont:import_b180347ba920f1f051e4f3dedc0d2b70 .
+
+ont:file_tools_llm_providers_openai_py ont:imports ont:import_545d6262b3a2ea0eb90bc3c378df94ab .
+
+ont:file_tools_llm_providers_session_py ont:imports ont:import_8722814e4ddde19228bbf8ca63ed8e65,
+        ont:import_a3894a71acc27700a9886952a2377e15,
+        ont:import_b3b976cd8c284810fdf35026afd077f1 .
+
+ont:file_tools_llm_py ont:imports ont:import_336e0fea483de5ccb255039b7f73d853 .
+
+ont:file_tools_memory_types_py ont:imports ont:import_09254a9742b10e88debd14f6a50032ea,
+        ont:import_1f4923520d22efb6cd97a973cb180e0c,
+        ont:import_e630073a1688249a266c9d2f23af834f .
+
+ont:file_tools_metaso_search_py ont:imports ont:import_1102130d7fcd9f138c552f459fee0047 .
+
+ont:file_tools_ontology_codegraph_bridge_py ont:imports ont:import_6bae83e0257dd259881fb37168b1ed6a,
+        ont:import_8270b684b0bce0c605ac1a2de9dea90f,
+        ont:import_af262280eb45cb2844300cf77ce16cb8 .
+
+ont:file_tools_ontology_model_py ont:imports ont:import_753c663feb4e3d0270283eccd868d105,
+        ont:import_c7dbde29b1ef4bc784d162ce1fbb94e6 .
+
+ont:file_tools_pii_masker_py ont:imports ont:import_b09c208bf448ace53927e1c721d3cffe .
+
+ont:file_tools_plan_validator_default_py ont:imports ont:import_82669e942df20f7254487f22f47770ef .
+
+ont:file_tools_prompt_utils_py ont:imports ont:import_a6b8212d483326454b19a24bce05b535 .
+
+ont:file_tools_reflection_engine_py ont:imports ont:import_435ffa446dbeb0b3375882a1ce15f1de,
+        ont:import_ab49f4d17462cc690385d87ef325c8dd,
+        ont:import_efbcc79cdafdbe00847e7c4b48a2760d .
+
+ont:file_tools_reflection_optimizer_py ont:imports ont:import_467889161c96c76f320f413f40e45913,
+        ont:import_ae7310fbe7cf1fcde2d10973b8ec5175,
+        ont:import_bb33216f612f409d5f522192af263f4e,
+        ont:import_c22664d7b1d39656125b477ef646c939,
+        ont:import_fc6d35c3d64e5f8f3b3a6af59a098279 .
+
+ont:file_tools_registry_py ont:imports ont:import_e8fa03138f6ab6c8a171be58f27a0452 .
+
+ont:file_tools_resource_version_py ont:imports ont:import_780cec2a449e7d572573d21b9e63e3ac,
+        ont:import_a94cddd09de4ee139820db9b902d3b54 .
+
+ont:file_tools_skill_learn_from_cases_full_dir_manager_py ont:imports ont:import_79da0af1646d7f8ca0a4018e48a88de1 .
+
+ont:file_tools_skill_learn_from_cases_full_engine_py ont:imports ont:import_03459f51c8d521b006eaf5f8e373ec30,
+        ont:import_5a97587a8df8e65fdfbaf2a5541f59e0,
+        ont:import_5f42a78ff7942dc17c2ca6c67b8285ae,
+        ont:import_90b0688de550694584dc6fc529a5738a,
+        ont:import_a9c786ccb1e27880a1d42645032fb2eb .
+
+ont:file_tools_skill_learn_from_cases_full_env_detector_py ont:imports ont:import_5007bdb70c556754c3b55161b01a09db .
+
+ont:file_tools_skill_learn_from_cases_full_llm_helper_py ont:imports ont:import_a742bd893cfd456de0904c35ba9292e3,
+        ont:import_b4e5885a1fd9a80a6e1476dc4026f35e .
+
+ont:file_tools_skill_learn_from_cases_full_main_py ont:imports ont:import_36aa0893e1bdd2e96214c6cf3c2f73ef,
+        ont:import_508b1e4643e7f4911c6ae0716e1d4728,
+        ont:import_60133dd6189995ea3c8a245c1bf0181e,
+        ont:import_6e43605a5030071f277a315ee69d271f .
+
+ont:file_tools_skill_learn_from_cases_full_name_converter_py ont:imports ont:import_e980d4090f8d59bb805d33ca0eee827a .
+
+ont:file_tools_skill_learn_from_cases_full_restore_funcs_py ont:imports ont:import_e01a9baaac373dfe8fa91ba6a75cdc87 .
+
+ont:file_tools_skill_review_py ont:imports ont:import_30e5c307dbcebe0a0c7a4818d0ba26a1 .
+
+ont:file_tools_step_detector_py ont:imports ont:import_17b7b0b00df9326ed61e77b1b55a10bc .
+
+ont:file_tools_todo_manager_py ont:imports ont:import_3fe2d685fba8b01828242b6b7df1fac3 .
+
+ont:file_tools_tool_definitions_py ont:imports ont:import_0a01f7a862c560c19cdae4782742386a,
+        ont:import_7aaa4c5d1cd1e3e64d814fa663c1981f,
+        ont:import_fc4845f18156cc66a4b2176ff068b6db .
+
+ont:file_tools_tracer_py ont:imports ont:import_0a5ac75a64b3d83aeb0ebff6a812491f,
+        ont:import_63d0b58d67a276345f43c000508e05be,
+        ont:import_aa487759d7cfde3ce6bfeee11deb8ce2 .
+
+ont:file_tools_turn_policy_py ont:imports ont:import_c866ab513fad8f974f22437738f4c264 .
+
+ont:frontends_archive_conductor_py a ont:Module ;
+    rdfs:label "frontends/_archive/conductor.py" .
+
+ont:frontends_archive_dcapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/dcapp.py" .
+
+ont:frontends_archive_desktop_bridge_py a ont:Module ;
+    rdfs:label "frontends/_archive/desktop_bridge.py" .
+
+ont:frontends_archive_dingtalkapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/dingtalkapp.py" .
+
+ont:frontends_archive_genericagent_acp_bridge_py a ont:Module ;
+    rdfs:label "frontends/_archive/genericagent_acp_bridge.py" .
+
+ont:frontends_archive_launcher_mqtt_py a ont:Module ;
+    rdfs:label "frontends/_archive/launcher_mqtt.py" .
+
+ont:frontends_archive_qqapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/qqapp.py" .
+
+ont:frontends_archive_qtapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/qtapp.py" .
+
+ont:frontends_archive_stapp2_py a ont:Module ;
+    rdfs:label "frontends/_archive/stapp2.py" .
+
+ont:frontends_archive_subagent_dashboard_py a ont:Module ;
+    rdfs:label "frontends/_archive/subagent_dashboard.py" .
+
+ont:frontends_archive_tgapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/tgapp.py" .
+
+ont:frontends_archive_tuiapp_v2_py a ont:Module ;
+    rdfs:label "frontends/_archive/tuiapp_v2.py" .
+
+ont:frontends_archive_wechatapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/wechatapp.py" .
+
+ont:frontends_archive_wecomapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/wecomapp.py" .
+
+ont:frontends_bbs_browser_app_py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/app.py" .
+
+ont:frontends_bbs_browser_auth_py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/auth.py" .
+
+ont:frontends_bbs_browser_config_py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/config.py" .
+
+ont:frontends_bbs_browser_database_py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/database.py" .
+
+ont:frontends_bbs_browser_init_py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/__init__.py" .
+
+ont:frontends_btw_cmd_py a ont:Module ;
+    rdfs:label "frontends/btw_cmd.py" .
+
+ont:frontends_chatapp_common_py a ont:Module ;
+    rdfs:label "frontends/chatapp_common.py" .
+
+ont:frontends_continue_cmd_py a ont:Module ;
+    rdfs:label "frontends/continue_cmd.py" .
+
+ont:frontends_dashboard_mqtt_py a ont:Module ;
+    rdfs:label "frontends/dashboard_mqtt.py" .
+
+ont:frontends_desktop_pet_pyw a ont:Module ;
+    rdfs:label "frontends/desktop_pet.pyw" .
+
+ont:frontends_desktop_pet_v2_pyw a ont:Module ;
+    rdfs:label "frontends/desktop_pet_v2.pyw" .
+
+ont:frontends_desktop_src_tauri_build_rs a ont:Module ;
+    rdfs:label "frontends/desktop/src-tauri/build.rs" .
+
+ont:frontends_desktop_src_tauri_src_lib_rs a ont:Module ;
+    rdfs:label "frontends/desktop/src-tauri/src/lib.rs" .
+
+ont:frontends_desktop_src_tauri_src_main_rs a ont:Module ;
+    rdfs:label "frontends/desktop/src-tauri/src/main.rs" .
+
+ont:frontends_desktop_static_app_js a ont:Module ;
+    rdfs:label "frontends/desktop/static/app.js" .
+
+ont:frontends_desktop_static_ga_web_js a ont:Module ;
+    rdfs:label "frontends/desktop/static/ga-web.js" .
+
+ont:frontends_export_cmd_py a ont:Module ;
+    rdfs:label "frontends/export_cmd.py" .
+
+ont:frontends_fsapp_py a ont:Module ;
+    rdfs:label "frontends/fsapp.py" .
+
+ont:frontends_gateway_config_py a ont:Module ;
+    rdfs:label "frontends/gateway/config.py" .
+
+ont:frontends_gateway_init_py a ont:Module ;
+    rdfs:label "frontends/gateway/__init__.py" .
+
+ont:frontends_gateway_main_py a ont:Module ;
+    rdfs:label "frontends/gateway/main.py" .
+
+ont:frontends_gateway_routers_agents_py a ont:Module ;
+    rdfs:label "frontends/gateway/routers/agents.py" .
+
+ont:frontends_gateway_routers_auth_py a ont:Module ;
+    rdfs:label "frontends/gateway/routers/auth.py" .
+
+ont:frontends_gateway_routers_boards_py a ont:Module ;
+    rdfs:label "frontends/gateway/routers/boards.py" .
+
+ont:frontends_gateway_routers_dashboard_py a ont:Module ;
+    rdfs:label "frontends/gateway/routers/dashboard.py" .
+
+ont:frontends_gateway_routers_docs_proxy_py a ont:Module ;
+    rdfs:label "frontends/gateway/routers/docs_proxy.py" .
+
+ont:frontends_gateway_routers_init_py a ont:Module ;
+    rdfs:label "frontends/gateway/routers/__init__.py" .
+
+ont:frontends_gateway_routers_md_server_proxy_py a ont:Module ;
+    rdfs:label "frontends/gateway/routers/md_server_proxy.py" .
+
+ont:frontends_gateway_routers_mdviz_proxy_py a ont:Module ;
+    rdfs:label "frontends/gateway/routers/mdviz_proxy.py" .
+
+ont:frontends_gateway_routers_mindflow_py a ont:Module ;
+    rdfs:label "frontends/gateway/routers/mindflow.py" .
+
+ont:frontends_init_py a ont:Module ;
+    rdfs:label "frontends/__init__.py" .
+
+ont:frontends_playground_init_py a ont:Module ;
+    rdfs:label "frontends/playground/__init__.py" .
+
+ont:frontends_playground_room_py a ont:Module ;
+    rdfs:label "frontends/playground/room.py" .
+
+ont:frontends_playground_router_py a ont:Module ;
+    rdfs:label "frontends/playground/router.py" .
+
+ont:frontends_stapp_py a ont:Module ;
+    rdfs:label "frontends/stapp.py" .
+
+ont:function_00822e48ee4caebeabf8e8acbb883bf3 ont:instantiates ont:class_83cfb98e9e1a2393e01a599e1b71bf22 .
+
+ont:function_0deb7a07b9baf123fbad9eb65a1723f2 ont:instantiates ont:class_e0980e0cbe1f9c1421d7ca8617ed83f1 .
+
+ont:function_116c0480494fecad3c5f3ea2718ca633 ont:instantiates ont:class_39bab5833cb0823386634a133749102a .
+
+ont:function_11b22d9628ce863ca4190314cd8a2501 ont:instantiates ont:class_1920fb8a16684fa93810c64ded97bc59 .
+
+ont:function_182148dfd1af731d4d64e0659458edaa ont:instantiates ont:class_8093f57fc80403407b83f61e45b5d2e0 .
+
+ont:function_1eceed845aa53e449490c067bbc3e6ab ont:instantiates ont:class_f54a5d560f878254f87413c1948481c2 .
+
+ont:function_2830fbf7b1517cd0311634228b0d0f77 ont:instantiates ont:class_83cfb98e9e1a2393e01a599e1b71bf22 .
+
+ont:function_29c36d6a95e22cd408a10fa6ba0ff060 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:function_3f8d472a6ae89561e3d89b6e0c5562f0 ont:instantiates ont:class_5e8bf62af55ad745e2020c9d6f961a19 .
+
+ont:function_4747d32bd84a8949be472b01242a3752 ont:instantiates ont:class_51a6b96698eae3dd1b0ebcf41d6c2080 .
+
+ont:function_4a1bfc6c29952f88bc54fc4bb9e6b891 ont:instantiates ont:class_5318f48c8aff8229e74f1536fbb9c546 .
+
+ont:function_4f4e9d6e3d9e1a41591079c1fcf57fe5 ont:instantiates ont:class_83cfb98e9e1a2393e01a599e1b71bf22 .
+
+ont:function_5947eb3d4fa36fef98061296d99eacd5 ont:instantiates ont:class_a4d4c3b6885e1a6862cbade11db52869 .
+
+ont:function_66a0a72d0af16f680f07779f3678068c ont:instantiates ont:class_a4d4c3b6885e1a6862cbade11db52869 .
+
+ont:function_7f6245e4bb977df11686b77139608765 ont:instantiates ont:class_3999f0da23be2221390912ea2d679acf .
+
+ont:function_8046f70cd1b73610482ac07141111bb1 ont:instantiates ont:class_672858c27a82a19b1efa913301a42d89 .
+
+ont:function_814ee7b74065e95f3f20bcad473f5d36 ont:instantiates ont:class_bef072a18d9507a6e2d1b93974d6dfc4 .
+
+ont:function_837ae400993ad2015105111c1e25cb22 ont:instantiates ont:class_d5f251b956be9b82f4150e9a1ce3bc6e .
+
+ont:function_8db3b4b4389dc50a5a6a3e5a57618835 ont:instantiates ont:class_4e8906d3c419ca4d43bd1b0109366fcb .
+
+ont:function_94bbfa513170d4eea934e29ceee077e2 ont:instantiates ont:class_3999f0da23be2221390912ea2d679acf .
+
+ont:function_a152175870024cc8bacd359b47e8019e ont:instantiates ont:class_e95f2e19d6df947776c02a7e4c50bf06 .
+
+ont:function_a575068de5f0081e64e4883e447414fb ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:function_a9c66027fe3964bc6583facfe88282ef ont:instantiates ont:class_4cd0f34240733e4c5b5d5f980b5d8f6c .
+
+ont:function_abdcd944a779bc552239f47b36a7b9d8 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:function_aecaa222f4df027a929e6b52649b501e ont:instantiates ont:class_5f19584631d6ce89a72382c11ac9e494,
+        ont:class_6944f85b5b60b23b451e9553d104904f .
+
+ont:function_c642174acfe0217915027b52c11f589a ont:instantiates ont:class_71f7e658be123abad0084f95c3fbfb39 .
+
+ont:function_ce24ecb0226d0ce7a67aa8e7fbf0a71a ont:instantiates ont:class_3999f0da23be2221390912ea2d679acf .
+
+ont:function_dceafba79907845fd4ae7aacdf5fa3e3 ont:instantiates ont:class_3999f0da23be2221390912ea2d679acf .
+
+ont:function_e8c76b8a7402b7eb20220e39ff036a64 ont:instantiates ont:class_78c406f5ae46bb219489344dadfb5e0f .
+
+ont:function_edc9cf2c17c7f7cf8d43d879b5a403fa ont:instantiates ont:class_a4d4c3b6885e1a6862cbade11db52869 .
+
+ont:function_f401811f55472721bf285c78614f0007 ont:instantiates ont:class_a4d4c3b6885e1a6862cbade11db52869 .
+
+ont:function_f8146eeb6db115c2604ee45369f82ad2 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:function_fe23242d28549f922aeb8a88c6237ef5 ont:instantiates ont:class_99fd34b2977831266a64214a4e7a9e17,
+        ont:class_b0a77e93cf97b6db534d19d6552f9db1,
+        ont:class_def3dd7b6a32b9f82264cddca5ded4b7,
+        ont:class_ff4afbd53e0856f363428aada3f76d65 .
+
+ont:ga_cli_cli_py a ont:Module ;
+    rdfs:label "ga_cli/cli.py" .
+
+ont:ga_cli_init_py a ont:Module ;
+    rdfs:label "ga_cli/__init__.py" .
+
+ont:ga_cli_main_py a ont:Module ;
+    rdfs:label "ga_cli/__main__.py" .
+
+ont:ga_py a ont:Module ;
+    rdfs:label "ga.py" .
+
+ont:github_workflows_ci_yml a ont:Module ;
+    rdfs:label ".github/workflows/ci.yml" .
+
+ont:github_workflows_release_yml a ont:Module ;
+    rdfs:label ".github/workflows/release.yml" .
+
+ont:hub_pyw a ont:Module ;
+    rdfs:label "hub.pyw" .
+
+ont:imports a owl:ObjectProperty .
+
+ont:init_py a ont:Module ;
+    rdfs:label "__init__.py" .
+
+ont:instantiates a owl:ObjectProperty .
+
+ont:knowledge_oracle_ontology_init_py a ont:Module ;
+    rdfs:label "knowledge/oracle_ontology/__init__.py" .
+
+ont:knowledge_oracle_ontology_query_py a ont:Module ;
+    rdfs:label "knowledge/oracle_ontology/query.py" .
+
+ont:knowledge_oracle_ontology_schema_py a ont:Module ;
+    rdfs:label "knowledge/oracle_ontology/schema.py" .
+
+ont:launch_pyw a ont:Module ;
+    rdfs:label "launch.pyw" .
+
+ont:llmcore_py a ont:Module ;
+    rdfs:label "llmcore.py" .
+
+ont:memory_L4_raw_sessions_compress_session_py a ont:Module ;
+    rdfs:label "memory/L4_raw_sessions/compress_session.py" .
+
+ont:memory_adb_ui_py a ont:Module ;
+    rdfs:label "memory/adb_ui.py" .
+
+ont:memory_autonomous_operation_sop_helper_py a ont:Module ;
+    rdfs:label "memory/autonomous_operation_sop/helper.py" .
+
+ont:memory_clipboard_ocr_py a ont:Module ;
+    rdfs:label "memory/clipboard_ocr.py" .
+
+ont:memory_init_py a ont:Module ;
+    rdfs:label "memory/__init__.py" .
+
+ont:memory_keychain_py a ont:Module ;
+    rdfs:label "memory/keychain.py" .
+
+ont:memory_ljqCtrl_py a ont:Module ;
+    rdfs:label "memory/ljqCtrl.py" .
+
+ont:memory_ocr_utils_py a ont:Module ;
+    rdfs:label "memory/ocr_utils.py" .
+
+ont:memory_procmem_scanner_py a ont:Module ;
+    rdfs:label "memory/procmem_scanner.py" .
+
+ont:memory_skill_search_skill_search_engine_py a ont:Module ;
+    rdfs:label "memory/skill_search/skill_search/engine.py" .
+
+ont:memory_skill_search_skill_search_init_py a ont:Module ;
+    rdfs:label "memory/skill_search/skill_search/__init__.py" .
+
+ont:memory_skill_search_skill_search_main_py a ont:Module ;
+    rdfs:label "memory/skill_search/skill_search/__main__.py" .
+
+ont:memory_sop_registry_py a ont:Module ;
+    rdfs:label "memory/sop_registry.py" .
+
+ont:memory_ui_detect_py a ont:Module ;
+    rdfs:label "memory/ui_detect.py" .
+
+ont:memory_vision_api_py a ont:Module ;
+    rdfs:label "memory/vision_api.py" .
+
+ont:method_03a204d238c859d84539dfb78d632faa ont:instantiates ont:class_5318f48c8aff8229e74f1536fbb9c546 .
+
+ont:method_04b0eea9794d7003cb073003e79f9e08 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:method_055585a63f512b97c049d79a9ac15d31 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_0798e04e668aa76980e139b6474060c3 ont:instantiates ont:class_eaaee990a4f3ba28ea99ab6fd78e27fb .
+
+ont:method_0af8c6fa6115f70af8ac2c7746710944 ont:instantiates ont:class_fd76034457bd42c88a542a3702409a6b .
+
+ont:method_0f334ef1bced07f666160c2d41fff252 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_1038fc3a44309cb434131f4e8616d5b0 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_10fe568d0cabc8d173e376e3670f0179 ont:instantiates ont:class_4a53aa27250756da5f3e517211d558c9,
+        ont:class_72af392aa81a28862b79583e89db512c .
+
+ont:method_16142e321731218b6ee2c20eff144317 ont:instantiates ont:class_752bd16789a51e47303ecea7e68eb97a .
+
+ont:method_1615cf2b4cc21985c2c9ad485981a04e ont:instantiates ont:class_84fd7378fe97218c2f370b372a00dea9 .
+
+ont:method_16d922f9a67b1d672e1b24c01211bfdf ont:instantiates ont:class_78d61244123874e21a621bfdbecf4c01 .
+
+ont:method_196a02438cc92805455ebb6e57b02fdf ont:instantiates ont:class_5318f48c8aff8229e74f1536fbb9c546 .
+
+ont:method_1c645217c9d9f409826703563f9b157f ont:instantiates ont:class_3ca55271f5316926c59e3cb74273dd18 .
+
+ont:method_2d4a7b6fba371f08cfe54d9f3748ce28 ont:instantiates ont:class_39515e8ad71650c5360ea421bd475349 .
+
+ont:method_30536501b16344f25602598dc3deb518 ont:instantiates ont:class_d4d95143ed10abfe4ea821fe02d56175 .
+
+ont:method_364ba42ebeab0b6620452f054ff1baa8 ont:instantiates ont:class_5e14ce4e68d085f4b2b5fd8dabfad6a6 .
+
+ont:method_371e2d054c192badc2847f61960e4602 ont:instantiates ont:class_8625dea302a927e1d7dcd56d8e88071c .
+
+ont:method_3849aab6f03d5db9ebe45a2756310848 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_3c7246940b4b48cf5d03ec39b2af691e ont:instantiates ont:class_c32120c245ce40beb75510101358ac79 .
+
+ont:method_3f86c06bcb310ba9a00fb9eb58d3f642 ont:calls ont:function_08ec140ce735d59823e00b08365e99f2,
+        ont:method_2e09a3e9030eec9911203bb170204819 .
+
+ont:method_43d912c99c57c560fddd4328db572195 ont:instantiates ont:class_99fd34b2977831266a64214a4e7a9e17 .
+
+ont:method_488f26fe659ab52015090127e3545469 ont:instantiates ont:class_03d869f1479533e7a5e8a8a517dbc1ee .
+
+ont:method_4ef4a7285920cea1361e26e530c2eff3 ont:instantiates ont:class_254cc0feaa11f392aced93b1ed2c3c12 .
+
+ont:method_4f2bd9debde09a647db3b2d91c0fbb89 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_58eb34dc58c7fe87a51770f6d608ad00 ont:instantiates ont:class_5318f48c8aff8229e74f1536fbb9c546 .
+
+ont:method_5c4129109372c368f69497927fcb2f60 ont:instantiates ont:class_8add052634ccb90039c334072c874f5b .
+
+ont:method_5db177c8fdfb9adf540308379a941a68 ont:instantiates ont:class_248c44da1c783624473295a41b08d20a,
+        ont:class_4a53aa27250756da5f3e517211d558c9 .
+
+ont:method_5e82e71af73a689d2a336af50c0a78df ont:instantiates ont:class_862a512b041f89d51927985b69074101 .
+
+ont:method_61fdf6b28c406875e6a5d6a73ada9385 ont:instantiates ont:class_3171152665b777f84a5560f67b6e7ef2 .
+
+ont:method_622a8deb76ce124ed5a37600e571f79b ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_62da8c900896d4b0e3081a5045d87b28 ont:instantiates ont:class_8625dea302a927e1d7dcd56d8e88071c .
+
+ont:method_6a4c33601c31ec1f781a77ab5dacd628 ont:instantiates ont:class_e565706dcf94d25a364c3eb56f413a36 .
+
+ont:method_6ed1cda0f05db5d964786d131e0f2867 ont:instantiates ont:class_ff4afbd53e0856f363428aada3f76d65 .
+
+ont:method_72c9e825de03f0de44dc2994b43e2bea ont:instantiates ont:class_4a53aa27250756da5f3e517211d558c9 .
+
+ont:method_730f0eb659fe768aec43040ccef9a260 ont:instantiates ont:class_e22c6055e7d0965b6b68d687cb0c83e5 .
+
+ont:method_75409385300b42b96c2bf42d77ca8211 ont:instantiates ont:class_b0a77e93cf97b6db534d19d6552f9db1 .
+
+ont:method_7735ffe425cb2fa9f0db9e6e2ec45d52 ont:calls ont:function_00fa535b0976c34b3018a08d1c9481b9,
+        ont:function_08ec140ce735d59823e00b08365e99f2,
+        ont:method_2e09a3e9030eec9911203bb170204819,
+        ont:method_870ae42936c1dc3f9c175c31208b2e7c ;
+    ont:instantiates ont:class_a2b49f10861b59bbf0c30dcb0614d92d .
+
+ont:method_7835400e5d18860ab230bff65b57f6ed ont:instantiates ont:class_fecb7c42bf5565ed909eb7a3c7024575 .
+
+ont:method_7ba86decdbd5825b3c660a614305d51e ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_89b074325834a8f540b3984fba0299d0 ont:instantiates ont:class_5318f48c8aff8229e74f1536fbb9c546 .
+
+ont:method_8c902e67c17f1569ecb8e29fcbde3bfd ont:instantiates ont:class_5318f48c8aff8229e74f1536fbb9c546 .
+
+ont:method_8f8535ef4c1a877413f034c5912e7877 ont:instantiates ont:class_18c913e8e73394b448ac43998885f27a .
+
+ont:method_92ec5b0ea9931abad14fdd96b04eb58a ont:instantiates ont:class_def3dd7b6a32b9f82264cddca5ded4b7 .
+
+ont:method_9637869425e2fd67299218254e00a8e1 ont:instantiates ont:class_4e8906d3c419ca4d43bd1b0109366fcb,
+        ont:class_5955fc712fc199454d0c8732c76f9f8d .
+
+ont:method_9a85c40cff1075afdccfca35b88aa0bb ont:instantiates ont:class_84fd7378fe97218c2f370b372a00dea9 .
+
+ont:method_9abd8a27c45ab0d45acba1cd44f311e9 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_9ae75f5a807e348ca103325668963fcf ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_9b18b2cac50ac41e81c127d82d7ab713 ont:instantiates ont:class_10494c5f8eaff92980fbf835000d303f .
+
+ont:method_a31d2361168784e3a4c9f674e2fd1d4f ont:instantiates ont:class_f5e894ad71aa00780e9f8a25324cfecf .
+
+ont:method_afae3ad382602c825d60a0358dcbd5b4 ont:instantiates ont:class_a6b7ee2742ab7e1247ca3154f6296d39 .
+
+ont:method_b3842f75f500d3739b7e36a19cebba90 ont:instantiates ont:class_5318f48c8aff8229e74f1536fbb9c546 .
+
+ont:method_c7927f629f510625003fb21bd7996f14 ont:instantiates ont:class_4e8906d3c419ca4d43bd1b0109366fcb,
+        ont:class_5955fc712fc199454d0c8732c76f9f8d .
+
+ont:method_caa5b876dd5be5ba45628cb2b1d4f090 ont:instantiates ont:class_5318f48c8aff8229e74f1536fbb9c546 .
+
+ont:method_cf4876f453817fb1d5c105e814b0b3c3 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_d27f15f82c4b2397156413d86cf86d60 ont:instantiates ont:class_9b17088984d75d1b93ca6ee476739b96 .
+
+ont:method_d51cd870d41e8c93f688792645000777 ont:instantiates ont:class_e565706dcf94d25a364c3eb56f413a36 .
+
+ont:method_d60c337b4f0503b353bf93025f86cbc1 ont:instantiates ont:class_36485f038bf1cfa24540541b196fac01 .
+
+ont:method_d87d3c0b4bf74ed62677310896b1fa77 ont:instantiates ont:class_9b17088984d75d1b93ca6ee476739b96 .
+
+ont:method_dc0843428d31c8488eebdc160c34254a ont:instantiates ont:class_21665f20323a28d8b17c95c18d7239e6 .
+
+ont:method_de293ddcdab297382cd570c7340fd34f ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_e107bf60c43767965f9cce6dbdfee494 ont:instantiates ont:class_91b458d37a05555b5adf6c1fcc712ae6 .
+
+ont:method_e2533e4646676689a6a76cd9a3de0e59 ont:instantiates ont:class_f27ff77f5140e003b6de30b6efc335b8 .
+
+ont:method_e322cba195c80edc1c6aaeebafc03a07 ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_f57144c22250168ca467024f430147fd ont:instantiates ont:class_afe3166263d50db8dc06e9cbe9413937 .
+
+ont:method_f643620721ed36978d207ed2f18dc5a8 ont:instantiates ont:class_eaaee990a4f3ba28ea99ab6fd78e27fb .
+
+ont:method_fde3da5002a00695c4abde18c5138d75 ont:instantiates ont:class_e565706dcf94d25a364c3eb56f413a36 .
+
+ont:mqtt_priority_py a ont:Module ;
+    rdfs:label "mqtt_priority.py" .
+
+ont:plugins_curiosity_board_py a ont:Module ;
+    rdfs:label "plugins/curiosity_board.py" .
+
+ont:plugins_init_py a ont:Module ;
+    rdfs:label "plugins/__init__.py" .
+
+ont:plugins_langfuse_tracing_py a ont:Module ;
+    rdfs:label "plugins/langfuse_tracing.py" .
+
+ont:profiles_init_py a ont:Module ;
+    rdfs:label "profiles/__init__.py" .
+
+ont:references a owl:ObjectProperty .
+
+ont:reflect_agent_team_worker_py a ont:Module ;
+    rdfs:label "reflect/agent_team_worker.py" .
+
+ont:reflect_autonomous_py a ont:Module ;
+    rdfs:label "reflect/autonomous.py" .
+
+ont:reflect_goal_bbs_py a ont:Module ;
+    rdfs:label "reflect/goal_bbs.py" .
+
+ont:reflect_goal_mode_py a ont:Module ;
+    rdfs:label "reflect/goal_mode.py" .
+
+ont:reflect_goal_nexus_py a ont:Module ;
+    rdfs:label "reflect/goal_nexus.py" .
+
+ont:reflect_goal_prism_py a ont:Module ;
+    rdfs:label "reflect/goal_prism.py" .
+
+ont:reflect_init_py a ont:Module ;
+    rdfs:label "reflect/__init__.py" .
+
+ont:reflect_scheduler_py a ont:Module ;
+    rdfs:label "reflect/scheduler.py" .
+
+ont:reflect_supervisor_monitor_py a ont:Module ;
+    rdfs:label "reflect/supervisor_monitor.py" .
+
+ont:route_agents_node_orchestrator_ui_py_497_GET ont:references ont:function_cb01880863593efcfdacf451177b5a60 .
+
+ont:route_agents_node_orchestrator_ui_py_501_GET_api_nodes ont:references ont:function_a1ba122a7efb36122f02f3730f32b919 .
+
+ont:route_agents_node_orchestrator_ui_py_523_POST_api_execute ont:references ont:function_a8cdb390604a5797284331ede3b714df .
+
+ont:route_assets_agent_bbs_py_111_GET_readme ont:references ont:function_9362997cc7c303d324a8815b79b64ebe .
+
+ont:route_assets_agent_bbs_py_114_GET ont:references ont:function_3367d773806d4f38fed75d14273e3624 .
+
+ont:route_assets_agent_bbs_py_148_POST_register ont:references ont:function_3a80fe8f3063b63edcbe3f515bc9d111 .
+
+ont:route_assets_agent_bbs_py_160_POST_post ont:references ont:function_4412794eece5cb2e949acc73631e4f75 .
+
+ont:route_assets_agent_bbs_py_169_GET_poll ont:references ont:function_cc790f335806f9d817b2b2d4248a7888 .
+
+ont:route_assets_agent_bbs_py_176_GET_count ont:references ont:function_ac92b2b0648cc35ab822e00c32372f35 .
+
+ont:route_assets_agent_bbs_py_182_GET_authors ont:references ont:function_fd552453d7910b4ea9b7d6b40772e51e .
+
+ont:route_assets_agent_bbs_py_187_GET_posts ont:references ont:function_008072dee2ea376fb867974fdf908bbd .
+
+ont:route_assets_agent_bbs_py_198_POST_file_upload ont:references ont:function_4e0c8431a605974dc1bc1055fb49e45f .
+
+ont:route_assets_agent_bbs_py_203_GET_file_rand_id_filename ont:references ont:function_8790661f922668796b04bc5e2345f19e .
+
+ont:route_frontends_archive_conductor_py_342_GET ont:references ont:function_804789eb5499413ddc6c15dc9ade87b5 .
+
+ont:route_frontends_archive_conductor_py_346_GET_readme ont:references ont:function_3da56416b397163fc9f5494cd91af1b1 .
+
+ont:route_frontends_archive_conductor_py_350_GET_subagent ont:references ont:function_1b506386cf084a86dc112d3e20533de2 .
+
+ont:route_frontends_archive_conductor_py_354_POST_subagent ont:references ont:function_d81e6c7af3e86c54237ab00b5175e36b .
+
+ont:route_frontends_archive_conductor_py_360_POST_subagent_sid ont:references ont:function_231456d494fce5270381df8560da8f6f .
+
+ont:route_frontends_archive_conductor_py_389_GET_chat ont:references ont:function_dde7b4090e704c74f644c3a6d758e3cc .
+
+ont:route_frontends_archive_conductor_py_398_POST_chat ont:references ont:function_d4aef2329824d82b260e763aeb364e82 .
+
+ont:route_frontends_bbs_browser_app_py_102_GET_api_logout ont:references ont:function_5d84274f80d8f85d298caecb90ddea44 .
+
+ont:route_frontends_bbs_browser_app_py_110_POST_api_verify_send ont:references ont:function_11b8eaacd084750ac7363629594a125c .
+
+ont:route_frontends_bbs_browser_app_py_123_POST_api_verify_check ont:references ont:function_73ef6365ab47f5dfe6c720f78e4d793a .
+
+ont:route_frontends_bbs_browser_app_py_136_GET ont:references ont:function_8e3b5154d864e27729117d76c53503fc .
+
+ont:route_frontends_bbs_browser_app_py_145_GET_board_board_id ont:references ont:function_2294b965c5eaa965096d2985735effb5 .
+
+ont:route_frontends_bbs_browser_app_py_169_GET_search ont:references ont:function_c67b576d8f945c483da9a8d161c27339 .
+
+ont:route_frontends_bbs_browser_app_py_188_GET_api_boards ont:references ont:function_4447ba21837a6290bc99dd609f52ace9 .
+
+ont:route_frontends_bbs_browser_app_py_193_GET_api_boards_board_id_posts ont:references ont:function_4bf0999d5fe73dc2ce7291050104d66a .
+
+ont:route_frontends_bbs_browser_app_py_42_GET_login ont:references ont:function_e9f1ff6e4a6badb7bcc82e1c145f0e60 .
+
+ont:route_frontends_bbs_browser_app_py_51_GET_register ont:references ont:function_3419e378bcb349caee7f160f942022d0 .
+
+ont:route_frontends_bbs_browser_app_py_60_POST_api_register ont:references ont:function_fc87800429bf4ca541b9930a09514026 .
+
+ont:route_frontends_bbs_browser_app_py_74_POST_api_login ont:references ont:function_832b1a4c468e9dcaa72ea42180ccb21f .
+
+ont:route_frontends_bbs_browser_app_py_89_POST_api_email_login ont:references ont:function_ff71f11a4805c03bc0d80b7190c0306e .
+
+ont:route_frontends_gateway_main_py_51_GET ont:references ont:function_5063468a0bb4ac9c13a29a35980fdede .
+
+ont:route_frontends_gateway_routers_agents_py_61_GET_agents ont:references ont:function_5071d6c2f80ae6e2a831e1bc2e33ada3 .
+
+ont:route_frontends_gateway_routers_agents_py_68_GET_agents_agent_id ont:references ont:function_8634674558fbfedc3004582710503c53 .
+
+ont:route_frontends_gateway_routers_auth_py_121_POST_api_email_login ont:references ont:function_c64542b33e027fa9a313ff6fc2f1d272 .
+
+ont:route_frontends_gateway_routers_auth_py_154_POST_api_email_send_code ont:references ont:function_e964cbaee33f96d449df4519f8fe4478 .
+
+ont:route_frontends_gateway_routers_auth_py_164_POST_api_email_verify ont:references ont:function_c07ddd62a7813d0be6bb9f36d47a18cb .
+
+ont:route_frontends_gateway_routers_auth_py_33_GET_login ont:references ont:function_b8be73b63216e85a361f90513eaba0d2 .
+
+ont:route_frontends_gateway_routers_auth_py_42_GET_register ont:references ont:function_1aab66df8731238b131b5c21937407c3 .
+
+ont:route_frontends_gateway_routers_auth_py_51_POST_api_register ont:references ont:function_a050c6145025c711516771aa7f23d86a .
+
+ont:route_frontends_gateway_routers_auth_py_67_POST_api_login ont:references ont:function_aaee5b014045d84ad833092ce162824f .
+
+ont:route_frontends_gateway_routers_auth_py_82_GET_api_logout ont:references ont:function_fa8b1a6e9059f46db1fd785437e14020 .
+
+ont:route_frontends_gateway_routers_auth_py_94_POST_api_email_register ont:references ont:function_e5f8c81a69247d4c69248620e8bf89d9 .
+
+ont:route_frontends_gateway_routers_boards_py_102_GET_boards_board_id ont:references ont:function_d28cf36711f01980ee92eaf58b04a056 .
+
+ont:route_frontends_gateway_routers_boards_py_39_GET_boards ont:references ont:function_334185fc6d633c4f92a8a09f4809d99f .
+
+ont:route_frontends_gateway_routers_boards_py_46_GET_boards_search ont:references ont:function_a967ec90dfce5c6de3f68009bd5c1d34 .
+
+ont:route_frontends_gateway_routers_boards_py_55_GET_boards_diagnosis ont:references ont:function_b38115c8385e6e17bd6a5a483c2f1a68 .
+
+ont:route_frontends_gateway_routers_boards_py_63_POST_boards_diagnosis_run ont:references ont:function_5d2aadfa61b8d8ecbd2a20730f0acbd4 .
+
+ont:route_frontends_gateway_routers_dashboard_py_113_GET_api_dashboard_posts ont:references ont:function_9c3851263cd1eca322c56a15ab565c27 .
+
+ont:route_frontends_gateway_routers_dashboard_py_84_GET_dashboard ont:references ont:function_3858020361f6f238a898df44e5540dea .
+
+ont:route_frontends_gateway_routers_dashboard_py_93_GET_api_dashboard_overview ont:references ont:function_cfa892bb4864d2de64340a4f0974c89f .
+
+ont:route_frontends_gateway_routers_dashboard_py_99_GET_api_dashboard_agents ont:references ont:function_294552859a0440a349513074c7d5f582 .
+
+ont:route_frontends_gateway_routers_docs_proxy_py_39_GET_docs_path_path ont:references ont:function_393d491cb20a5d5d7c26322f19bfe3e1 .
+
+ont:route_frontends_gateway_routers_md_server_proxy_py_38_GET_md_server_path_path ont:references ont:function_8c6e0fb12681efe7063b5035cf4e4e0d .
+
+ont:route_frontends_gateway_routers_md_server_proxy_py_65_GET_md_server ont:references ont:function_af1ead5d8a211a75d252de9bc289f752 .
+
+ont:route_frontends_gateway_routers_mdviz_proxy_py_41_GET_mdviz_path_path ont:references ont:function_a0ffe9e0ab1112ce1914c2b3253b16cf .
+
+ont:route_frontends_gateway_routers_mindflow_py_21_GET_static_coursewares_path_path ont:references ont:function_9252e5db213c5d21c9d74ae3b34872a4 .
+
+ont:route_frontends_gateway_routers_mindflow_py_39_GET_coursewares_path_path ont:references ont:function_737e3c8c5069847e3245cd5b080eddcb .
+
+ont:route_frontends_gateway_routers_mindflow_py_66_POST_coursewares_path_path ont:references ont:function_bbdbfcaa3c225ebc35a66f08d68df96e .
+
+ont:route_frontends_playground_router_py_26_GET_play ont:references ont:function_64942dc625e90c18913246981dd3365e .
+
+ont:scripts_git_push_py a ont:Module ;
+    rdfs:label "scripts/git_push.py" .
+
+ont:scripts_goal_sentinel_py a ont:Module ;
+    rdfs:label "scripts/goal_sentinel.py" .
+
+ont:scripts_goal_wait_py a ont:Module ;
+    rdfs:label "scripts/goal_wait.py" .
+
+ont:scripts_init_py a ont:Module ;
+    rdfs:label "scripts/__init__.py" .
+
+ont:scripts_stress_test_bbs_py a ont:Module ;
+    rdfs:label "scripts/stress_test_bbs.py" .
+
+ont:simphtml_py a ont:Module ;
+    rdfs:label "simphtml.py" .
+
+ont:tests_conftest_py a ont:Module ;
+    rdfs:label "tests/conftest.py" .
+
+ont:tests_debug_worker1_py a ont:Module ;
+    rdfs:label "tests/debug_worker1.py" .
+
+ont:tests_init_py a ont:Module ;
+    rdfs:label "tests/__init__.py" .
+
+ont:tests_run_master_py a ont:Module ;
+    rdfs:label "tests/run_master.py" .
+
+ont:tests_test_board_config_py a ont:Module ;
+    rdfs:label "tests/test_board_config.py" .
+
+ont:tests_test_board_core_py a ont:Module ;
+    rdfs:label "tests/test_board_core.py" .
+
+ont:tests_test_board_service_integration_py a ont:Module ;
+    rdfs:label "tests/test_board_service_integration.py" .
+
+ont:tests_test_board_service_py a ont:Module ;
+    rdfs:label "tests/test_board_service.py" .
+
+ont:tests_test_goal_bbs_py a ont:Module ;
+    rdfs:label "tests/test_goal_bbs.py" .
+
+ont:tests_test_phase2_sentinel_prism_py a ont:Module ;
+    rdfs:label "tests/test_phase2_sentinel_prism.py" .
+
+ont:tests_test_phase3_nexus_py a ont:Module ;
+    rdfs:label "tests/test_phase3_nexus.py" .
+
+ont:tests_test_security_audit_py a ont:Module ;
+    rdfs:label "tests/test_security_audit.py" .
+
+ont:tests_test_tgapp_stream_segments_py a ont:Module ;
+    rdfs:label "tests/test_tgapp_stream_segments.py" .
+
+ont:tests_test_turn_policies_py a ont:Module ;
+    rdfs:label "tests/test_turn_policies.py" .
+
+ont:tests_worker_debug_py a ont:Module ;
+    rdfs:label "tests/_worker_debug.py" .
+
+ont:tests_worker_py a ont:Module ;
+    rdfs:label "tests/_worker.py" .
+
+ont:tools_agent_runner_py a ont:Module ;
+    rdfs:label "tools/agent_runner.py" .
+
+ont:tools_base_py a ont:Module ;
+    rdfs:label "tools/base.py" .
+
+ont:tools_brainstorm_swarm_py a ont:Module ;
+    rdfs:label "tools/brainstorm_swarm.py" .
+
+ont:tools_browser_service_py a ont:Module ;
+    rdfs:label "tools/browser_service.py" .
+
+ont:tools_codegraph_db_py a ont:Module ;
+    rdfs:label "tools/codegraph_db.py" .
+
+ont:tools_codegraph_mcp_py a ont:Module ;
+    rdfs:label "tools/codegraph_mcp.py" .
+
+ont:tools_config_service_py a ont:Module ;
+    rdfs:label "tools/config_service.py" .
+
+ont:tools_constraint_dashboard_py a ont:Module ;
+    rdfs:label "tools/constraint_dashboard.py" .
+
+ont:tools_curiosity_board_client_py a ont:Module ;
+    rdfs:label "tools/curiosity_board_client.py" .
+
+ont:tools_curiosity_hooks_py a ont:Module ;
+    rdfs:label "tools/curiosity_hooks.py" .
+
+ont:tools_curiosity_trigger_py a ont:Module ;
+    rdfs:label "tools/curiosity_trigger.py" .
+
+ont:tools_diagnosis_agent_py a ont:Module ;
+    rdfs:label "tools/diagnosis_agent.py" .
+
+ont:tools_dream_engine_py a ont:Module ;
+    rdfs:label "tools/dream_engine.py" .
+
+ont:tools_failure_tracker_py a ont:Module ;
+    rdfs:label "tools/failure_tracker.py" .
+
+ont:tools_feishu_reminder_py a ont:Module ;
+    rdfs:label "tools/feishu_reminder.py" .
+
+ont:tools_ffmpeg_utils_py a ont:Module ;
+    rdfs:label "tools/ffmpeg_utils.py" .
+
+ont:tools_file_search_py a ont:Module ;
+    rdfs:label "tools/file_search.py" .
+
+ont:tools_ga_utils_py a ont:Module ;
+    rdfs:label "tools/ga_utils.py" .
+
+ont:tools_ga_watchdog_py a ont:Module ;
+    rdfs:label "tools/ga_watchdog.py" .
+
+ont:tools_gui_vision_py a ont:Module ;
+    rdfs:label "tools/gui_vision.py" .
+
+ont:tools_heartbeat_memory_py a ont:Module ;
+    rdfs:label "tools/heartbeat_memory.py" .
+
+ont:tools_history_cmd_py a ont:Module ;
+    rdfs:label "tools/history_cmd.py" .
+
+ont:tools_history_compressor_py a ont:Module ;
+    rdfs:label "tools/history_compressor.py" .
+
+ont:tools_hitl_approval_py a ont:Module ;
+    rdfs:label "tools/hitl_approval.py" .
+
+ont:tools_hooks_default_py a ont:Module ;
+    rdfs:label "tools/hooks_default.py" .
+
+ont:tools_init_py a ont:Module ;
+    rdfs:label "tools/__init__.py" .
+
+ont:tools_inspiration_board_py a ont:Module ;
+    rdfs:label "tools/inspiration_board.py" .
+
+ont:tools_learn_skill_from_cases_dir_manager_py a ont:Module ;
+    rdfs:label "tools/learn_skill_from_cases/dir_manager.py" .
+
+ont:tools_learn_skill_from_cases_eng_patterns_data_py a ont:Module ;
+    rdfs:label "tools/learn_skill_from_cases/eng_patterns_data.py" .
+
+ont:tools_learn_skill_from_cases_engine_py a ont:Module ;
+    rdfs:label "tools/learn_skill_from_cases/engine.py" .
+
+ont:tools_learn_skill_from_cases_init_py a ont:Module ;
+    rdfs:label "tools/learn_skill_from_cases/__init__.py" .
+
+ont:tools_learn_skill_from_cases_main_py a ont:Module ;
+    rdfs:label "tools/learn_skill_from_cases/__main__.py" .
+
+ont:tools_lineage_tracer_py a ont:Module ;
+    rdfs:label "tools/lineage_tracer.py" .
+
+ont:tools_lint_filenames_py a ont:Module ;
+    rdfs:label "tools/lint_filenames.py" .
+
+ont:tools_llm_providers_claude_py a ont:Module ;
+    rdfs:label "tools/llm_providers/claude.py" .
+
+ont:tools_llm_providers_init_py a ont:Module ;
+    rdfs:label "tools/llm_providers/__init__.py" .
+
+ont:tools_llm_providers_openai_py a ont:Module ;
+    rdfs:label "tools/llm_providers/openai.py" .
+
+ont:tools_llm_providers_session_py a ont:Module ;
+    rdfs:label "tools/llm_providers/session.py" .
+
+ont:tools_llm_py a ont:Module ;
+    rdfs:label "tools/_llm.py" .
+
+ont:tools_logger_py a ont:Module ;
+    rdfs:label "tools/logger.py" .
+
+ont:tools_memory_types_py a ont:Module ;
+    rdfs:label "tools/memory_types.py" .
+
+ont:tools_metaso_search_py a ont:Module ;
+    rdfs:label "tools/metaso_search.py" .
+
+ont:tools_observability_py a ont:Module ;
+    rdfs:label "tools/observability.py" .
+
+ont:tools_ontology_codegraph_bridge_py a ont:Module ;
+    rdfs:label "tools/ontology_codegraph_bridge.py" .
+
+ont:tools_ontology_model_py a ont:Module ;
+    rdfs:label "tools/ontology_model.py" .
+
+ont:tools_pii_masker_py a ont:Module ;
+    rdfs:label "tools/pii_masker.py" .
+
+ont:tools_plan_validator_default_py a ont:Module ;
+    rdfs:label "tools/plan_validator_default.py" .
+
+ont:tools_prompt_utils_py a ont:Module ;
+    rdfs:label "tools/prompt_utils.py" .
+
+ont:tools_reflection_engine_py a ont:Module ;
+    rdfs:label "tools/reflection_engine.py" .
+
+ont:tools_reflection_optimizer_py a ont:Module ;
+    rdfs:label "tools/reflection_optimizer.py" .
+
+ont:tools_registry_py a ont:Module ;
+    rdfs:label "tools/registry.py" .
+
+ont:tools_resource_version_py a ont:Module ;
+    rdfs:label "tools/resource_version.py" .
+
+ont:tools_retry_utils_py a ont:Module ;
+    rdfs:label "tools/retry_utils.py" .
+
+ont:tools_security_audit_py a ont:Module ;
+    rdfs:label "tools/security_audit.py" .
+
+ont:tools_session_compactor_py a ont:Module ;
+    rdfs:label "tools/session_compactor.py" .
+
+ont:tools_skill_learn_from_cases_full_assess_template_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/assess_template.py" .
+
+ont:tools_skill_learn_from_cases_full_dir_manager_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/dir_manager.py" .
+
+ont:tools_skill_learn_from_cases_full_engine_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/engine.py" .
+
+ont:tools_skill_learn_from_cases_full_env_detector_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/env_detector.py" .
+
+ont:tools_skill_learn_from_cases_full_init_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/__init__.py" .
+
+ont:tools_skill_learn_from_cases_full_llm_helper_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/llm_helper.py" .
+
+ont:tools_skill_learn_from_cases_full_logging_setup_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/logging_setup.py" .
+
+ont:tools_skill_learn_from_cases_full_main_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/__main__.py" .
+
+ont:tools_skill_learn_from_cases_full_name_converter_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/name_converter.py" .
+
+ont:tools_skill_learn_from_cases_full_practical_hooks_docker_compose_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/practical_hooks/docker_compose.py" .
+
+ont:tools_skill_learn_from_cases_full_practical_hooks_document_check_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/practical_hooks/document_check.py" .
+
+ont:tools_skill_learn_from_cases_full_practical_hooks_git_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/practical_hooks/git.py" .
+
+ont:tools_skill_learn_from_cases_full_practical_hooks_neo4j_hook_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/practical_hooks/neo4j_hook.py" .
+
+ont:tools_skill_learn_from_cases_full_practical_hooks_python_async_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/practical_hooks/python_async.py" .
+
+ont:tools_skill_learn_from_cases_full_practical_hooks_react_hook_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/practical_hooks/react_hook.py" .
+
+ont:tools_skill_learn_from_cases_full_practical_hooks_sql_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/practical_hooks/sql.py" .
+
+ont:tools_skill_learn_from_cases_full_practical_hooks_ui_design_hook_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/practical_hooks/ui_design_hook.py" .
+
+ont:tools_skill_learn_from_cases_full_restore_funcs_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/restore_funcs.py" .
+
+ont:tools_skill_learn_from_cases_full_url_extract_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/url_extract.py" .
+
+ont:tools_skill_learn_from_cases_full_weread_extract_py a ont:Module ;
+    rdfs:label "tools/skill_learn_from_cases_full/weread_extract.py" .
+
+ont:tools_skill_review_py a ont:Module ;
+    rdfs:label "tools/skill_review.py" .
+
+ont:tools_slash_cmd_registry_py a ont:Module ;
+    rdfs:label "tools/slash_cmd_registry.py" .
+
+ont:tools_stats_collector_py a ont:Module ;
+    rdfs:label "tools/stats_collector.py" .
+
+ont:tools_step_detector_py a ont:Module ;
+    rdfs:label "tools/step_detector.py" .
+
+ont:tools_todo_manager_py a ont:Module ;
+    rdfs:label "tools/todo_manager.py" .
+
+ont:tools_tool_definitions_py a ont:Module ;
+    rdfs:label "tools/tool_definitions.py" .
+
+ont:tools_tracer_py a ont:Module ;
+    rdfs:label "tools/tracer.py" .
+
+ont:tools_turn_policy_py a ont:Module ;
+    rdfs:label "tools/turn_policy.py" .
+
+ont:class_35207d23fa141dd6fbe4564e3685a3ec ont:contains ont:method_01628d60e25feddde8660f186b92ca5f,
+        ont:method_4136e96bb5a470e934d6a3693c1806eb,
+        ont:method_4ee1cfaca07d333f7242676fa214ba61,
+        ont:method_681382ce94e0185b9ee46376fb40a73b,
+        ont:method_6881cf602bf07097ff64b30a9c58e1c2,
+        ont:method_8016207b64758adba732c65faab8fa08,
+        ont:method_a8b76053a169c052a6c36559271d236a,
+        ont:method_ac4c98ecbafb95e7f3c085cae88532f9,
+        ont:method_d07044bbffe106f58d4d1e5436a7b3f4,
+        ont:method_e0ed62aa26c433ace00ca58e0a0708c6,
+        ont:method_e9d2bca2a064b4400745905e00588f2a,
+        ont:method_f2a1ea05c7c16fb70ccb473be5076d50,
+        ont:method_fae1e95af9c539bd82a8b6ae7f3ea418,
+        ont:method_fbb1c62449153c0547a5b94259f6655d .
+
+ont:class_36898b8bda2d848e8477d56d88df73ee ont:contains ont:method_3db804055896cd42c1898bacb6a8a838 .
+
+ont:class_3e3467f5073745b13b04f53a9c166e4e ont:contains ont:method_a4ece1508b6f5d482d59a2a802fd196e .
+
+ont:class_5c3a445dbf55f376857549f72b630fdc ont:contains ont:method_08353b7508d0c326b3141aca5e84218e,
+        ont:method_2cd03ac7a7213715dbb3ad0c547c1cad,
+        ont:method_56bff359fdad2e95c39bdd208c461c11 .
+
+ont:class_72af392aa81a28862b79583e89db512c ont:extends ont:class_4a53aa27250756da5f3e517211d558c9 .
+
+ont:class_874acf3ae18699e15890e92870feaff4 ont:extends ont:class_abdc3f1146cee0d5066aeb7bdf1e5039 .
+
+ont:class_8f3bd967f657f71e55e5cfe80acb2acf ont:extends ont:class_2ff3622975b261bf8bcea629f27543f7 .
+
+ont:class_b0bf6a34c0f4dcb0d3be8fb1197d552b ont:contains ont:method_02aa7d5326f6068527b1025fea14d6ab,
+        ont:method_74c0b4ea7310ea6b4ff49c0676849f7c,
+        ont:method_ac9ee5c3bb5fde34410a2954836234f1 .
+
+ont:class_be35b930a5e5aa5385de6e29061946ee ont:contains ont:method_4ab189e6aab2eff000105f435bce8f14,
+        ont:method_9fe60b4e80e55cf2320b4b4f5093bca0,
+        ont:method_dade6b27cc76c67f3c58ed94a5a0b890 ;
+    ont:extends ont:function_544e483e3b27f4267a1fb7d0fb4483c4 .
+
+ont:function_18d076e9ee674440eac6c36ba06dff63 ont:calls ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:method_e0ed62aa26c433ace00ca58e0a0708c6 .
+
+ont:function_1fba7e68a3f76da9440e18ff85f51402 ont:calls ont:function_22c048837a4e71f37312f8f760b3fc63 .
+
+ont:function_237c9441410d959b7dbaa7dbcd82f455 ont:calls ont:method_a585bf79e3ee1290f536850e69fdc1a7 .
+
+ont:function_2ba510cc7316c2a08907b46f8c24c4d8 ont:calls ont:function_210fb536b42a682c8300833362f1e3d8,
+        ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:method_4d985cf82c0657f38d03770b04dcc6d5 .
+
+ont:function_2f5ee647fe271fafed97715cd64f3cb6 ont:calls ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:method_4136e96bb5a470e934d6a3693c1806eb .
+
+ont:function_34624fa6f4b5f84742904361e2c418b0 ont:calls ont:function_9b84d01518d3f9147d810697b426b477 .
+
+ont:function_37a0339f862a573f2165166a9c2fb3ed ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_972077d91276f10f1b702f5c62d0706e .
+
+ont:function_399b9a0a63d6c2c5e21894eac6a5dd07 ont:calls ont:method_77b9744930927dd20e03421e6dc220a5 .
+
+ont:function_3b909942122ec72b7076945a1e800a09 ont:calls ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:method_fbb1c62449153c0547a5b94259f6655d .
+
+ont:function_43d924c2e3db63929958104c6981dd20 ont:calls ont:method_103c30e4cfe1838448fb410195467353,
+        ont:method_3a14a339295ab4087af20a4748eefa18,
+        ont:method_86106cb92fb8ba19a9b263a2d89bdba0 .
+
+ont:function_4a90195bf3545e9104de95d49073b63f ont:calls ont:function_210fb536b42a682c8300833362f1e3d8,
+        ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:method_d07044bbffe106f58d4d1e5436a7b3f4,
+        ont:method_fbb1c62449153c0547a5b94259f6655d .
+
+ont:function_4cd2976778923912cb19c3776dd8f6df ont:calls ont:function_9b84d01518d3f9147d810697b426b477,
+        ont:method_bcb5298464f67f8f5c537a04c9473fc2 .
+
+ont:function_527372122cb3f0588dcc54106bc1e30d ont:calls ont:function_8a9b614666f636f73454d03d96ae7ef6 .
+
+ont:function_52a82c8837c86706e5433e09fe386028 ont:instantiates ont:class_27533e763edff808f23449961ab42ea8,
+        ont:class_ab0dc72b2a2ecbedb450dd3a1f3bde6d .
+
+ont:function_721d6ed5b55d0a3a55cd94b3458c82dc ont:calls ont:method_906cc2dfb3ebe899325cf07cb71a9892 .
+
+ont:function_79cf9c25fee1cd5e57d9b03aecde7ad9 ont:calls ont:function_210fb536b42a682c8300833362f1e3d8,
+        ont:function_8a9b614666f636f73454d03d96ae7ef6 .
+
+ont:function_79e61adafe12bf8ede2733119ab09fd4 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_82f25a428c3696178249ff25c2c71d25 ;
+    ont:instantiates ont:class_e7169d931c5cf3a88868aab8a015ac74 .
+
+ont:function_7a7e6f4c3272a57c1706009f8965cf93 ont:calls ont:method_972077d91276f10f1b702f5c62d0706e .
+
+ont:function_7d56b612d0dae89d1c6cc209d0fe5152 ont:calls ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:method_6881cf602bf07097ff64b30a9c58e1c2,
+        ont:method_fbb1c62449153c0547a5b94259f6655d .
+
+ont:function_7db48246a4e6395072b9026d24561301 ont:calls ont:function_b4d800ebdb8ce766e222e29642d3611b,
+        ont:variable_103e0b289d6fd2ff5cbed479693ad941 .
+
+ont:function_8551429fd9b3967991a1c8aa5c7a4b08 ont:calls ont:method_a7d9ae2c4f837c6f4574f62abf048340 .
+
+ont:function_89a7f95c85948361960b8e372ff17c8b ont:calls ont:function_3048543590a3fa9cd4a99fc8da8c688a,
+        ont:function_6495fee5c038e8ca762ee01b6cbb58c0,
+        ont:function_9d68660095c54e4e56a1b7cdceb32765,
+        ont:function_e24888a814e8084aaae632c4cbc4b45b,
+        ont:method_9526df5c0937a9c86bda90221135898c,
+        ont:method_a585bf79e3ee1290f536850e69fdc1a7 ;
+    ont:instantiates ont:class_39bab5833cb0823386634a133749102a .
+
+ont:function_8c649c48f38a8c089ef4d47a6f08d846 ont:calls ont:variable_d8f7f342371d6f9efd042833d4172831 .
+
+ont:function_8e1a77f1f73cce4e7f3cdb6eb38c6488 ont:calls ont:function_2280f1907dc0061230d8ed2f215de880 .
+
+ont:function_91bb531eb45538b5f054d144f6aa1ef0 ont:calls ont:variable_736e621c15d6f1690e4722ac8507306a .
+
+ont:function_cb6bc1df1dbf05d5c962d286ddf46736 ont:calls ont:function_210fb536b42a682c8300833362f1e3d8,
+        ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:method_a8b76053a169c052a6c36559271d236a .
+
+ont:function_ce1659237ae0b8b2be15bce8b84562f0 ont:calls ont:function_68d4f178c4100a91155e34925307fbe8,
+        ont:method_a7d9ae2c4f837c6f4574f62abf048340 .
+
+ont:function_cfb3ba054a85ffcab36c5c89ac49f353 ont:calls ont:function_92adbfe53af715322b291ce023ee5fb4,
+        ont:function_fafc38ac86408b8caf9c9689cd86e7dd .
+
+ont:function_d94069cc29886aaf924652e8554fc5f2 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:function_ddf9a8d35bb3b53fce8ea256ae4c432d ont:calls ont:method_f42ec7d569c13298ce448ddf44592e57 .
+
+ont:function_e79af6af83ef65ab2368c0dc5b34840b ont:calls ont:method_b8aba63e091787c9d706dc5a100cf5be .
+
+ont:function_e8fff77b7f60c06dd6cbb658895e58b7 ont:calls ont:function_8a9b614666f636f73454d03d96ae7ef6 .
+
+ont:function_e9668b91538bc5354886ed32d71fdb3c ont:calls ont:function_341b3c3034f08bfc2029e4dc3a588097 .
+
+ont:function_edd0c712ece04c129e27cf3854824b07 ont:calls ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:method_8016207b64758adba732c65faab8fa08 .
+
+ont:function_f3e243cc7bd3107c41470fbcf4c97adc ont:contains ont:class_3e3467f5073745b13b04f53a9c166e4e,
+        ont:class_453c43c49c936984383cc2e62c8cf804 .
+
+ont:function_fb9f029571aaa2bf7a27d3cf4bc62ffd ont:calls ont:function_8a9b614666f636f73454d03d96ae7ef6,
+        ont:method_01628d60e25feddde8660f186b92ca5f,
+        ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:method_105b654f5afac7a4c3e582812c80017f ont:calls ont:method_86106cb92fb8ba19a9b263a2d89bdba0 .
+
+ont:method_3110bad3313edea5703ad810d4dbcc0b ont:instantiates ont:class_eaaee990a4f3ba28ea99ab6fd78e27fb .
+
+ont:method_3db804055896cd42c1898bacb6a8a838 ont:calls ont:function_22c048837a4e71f37312f8f760b3fc63,
+        ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:method_4822becc9287dd66cb4e710a7c0f7b58 ont:calls ont:method_29893ae03ad1d7720fe8dbb71bcbb603 .
+
+ont:method_4ab189e6aab2eff000105f435bce8f14 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_6131a2bfcef98b5bc987cff6b4bf1839,
+        ont:method_8242d1dcb45855d3064131947f1d23af,
+        ont:method_8bb1dbcb63bdadbb661f28e2b52ff815,
+        ont:variable_ab3b6c126b4d94f60d54b618f3a7a673 .
+
+ont:method_56bdd22ffd27a341688dd749d1417fba ont:instantiates ont:class_714d4f819ae3318396241cc36cf78790 .
+
+ont:method_67ccd5b2e08edab917266a8c3660252c ont:calls ont:method_642df4115f5078e268ca8b4eea8196fd,
+        ont:method_ef6190d9b9ffbf6c5ad7975415949b9a .
+
+ont:method_6d640a8a2cd9e85a073d779b502ea478 ont:instantiates ont:class_eaaee990a4f3ba28ea99ab6fd78e27fb .
+
+ont:method_86a9ff017a7ef0572e3a52e5595aeea5 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_7249f1d3ac36023b08b342eb814e8232 .
+
+ont:method_870ae42936c1dc3f9c175c31208b2e7c ont:calls ont:method_760a11c88e2e0da1093e3113695ebfba,
+        ont:method_a585bf79e3ee1290f536850e69fdc1a7,
+        ont:variable_0584d9f2beeac0467e7e5091b2ef8def .
+
+ont:method_a10983cd4c79926a304fff55eea0b8ee ont:calls ont:method_103c30e4cfe1838448fb410195467353,
+        ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_b1c9f09750aefe76620a5c5e9baaaf22 .
+
+ont:method_af71de0db20742cd1a236a611ffea81a ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:method_c5b3bda0f50f24ab52de9e1edcc7903e ont:calls ont:function_3062cd7264ef6322fb44ba862860aa04,
+        ont:method_86f244456b40f22fb6eed81257ef7cd2 .
+
+ont:method_d6f59d7fbdbf390fbeabd197f6e84872 ont:instantiates ont:class_8636166089828670a7507be850947164 .
+
+ont:method_dade6b27cc76c67f3c58ed94a5a0b890 ont:calls ont:method_1b9c93752d6cd12df5ef3adadd2e6cf9 .
+
+ont:method_e9d2bca2a064b4400745905e00588f2a ont:calls ont:function_3070eaeb6d9caf1aea2b9c372a2399a7,
+        ont:method_3297e51af967bab6d7597fa2ce2c9d53,
+        ont:method_681382ce94e0185b9ee46376fb40a73b,
+        ont:method_9526df5c0937a9c86bda90221135898c,
+        ont:method_ac4c98ecbafb95e7f3c085cae88532f9 .
+
+ont:method_eac0555d133bc84d5b0b5d6437b0a17d ont:calls ont:method_3a14a339295ab4087af20a4748eefa18 .
+
+ont:class_0100e955066fc9bec1e9a558b8050ebc ont:contains ont:method_0c491b8876efe6d6e157162acc53e2fc,
+        ont:method_22f5a0f3ed0b095dc80bde12ff40d991,
+        ont:method_3e93cc70beb39a3a8a11d53975213c48,
+        ont:method_4470b5970b33aac9f0d1807d88bc4150,
+        ont:method_6edb12b7c68a7d885aff2e5799d0d4b1,
+        ont:method_7427d2212a1269f1aeb8bfc94a1cd26c,
+        ont:method_86d13458acc2d750a0c9e81c05d7a523,
+        ont:method_906cc2dfb3ebe899325cf07cb71a9892,
+        ont:method_9250700504c6e3be25a7961821933a72,
+        ont:method_971a9df8be063613c673599e1c74e332,
+        ont:method_a585bf79e3ee1290f536850e69fdc1a7,
+        ont:method_ccfe077b875033b26679f806971c5351,
+        ont:method_cd1d9932929b7cf14560103b25be31b2,
+        ont:method_d89a80b34b06e7c51d8e85a1ad40585d,
+        ont:method_e65fed14c427df51e8935548218afa95 ;
+    ont:extends ont:class_2ff3622975b261bf8bcea629f27543f7 .
+
+ont:class_3ca55271f5316926c59e3cb74273dd18 ont:contains ont:method_103c30e4cfe1838448fb410195467353,
+        ont:method_105b654f5afac7a4c3e582812c80017f,
+        ont:method_1b9c93752d6cd12df5ef3adadd2e6cf9,
+        ont:method_3a14a339295ab4087af20a4748eefa18,
+        ont:method_642df4115f5078e268ca8b4eea8196fd,
+        ont:method_67ccd5b2e08edab917266a8c3660252c,
+        ont:method_8242d1dcb45855d3064131947f1d23af,
+        ont:method_86106cb92fb8ba19a9b263a2d89bdba0,
+        ont:method_9dc2886d74bca539a715a44e2af8f1ba,
+        ont:method_a10983cd4c79926a304fff55eea0b8ee,
+        ont:method_b1c9f09750aefe76620a5c5e9baaaf22,
+        ont:method_eac0555d133bc84d5b0b5d6437b0a17d,
+        ont:method_ef6190d9b9ffbf6c5ad7975415949b9a .
+
+ont:class_87407f634fbfbb105fad11e9d07a81ce ont:contains ont:method_4792df92755e1d46583f26c62c5aed4a,
+        ont:method_7249f1d3ac36023b08b342eb814e8232,
+        ont:method_86f244456b40f22fb6eed81257ef7cd2,
+        ont:method_872e61b3a660a2e819f12aad1229aa6c,
+        ont:method_b2bc36c2315fc40ba2af06385e81da49,
+        ont:method_c5b3bda0f50f24ab52de9e1edcc7903e ;
+    ont:extends ont:class_2ff3622975b261bf8bcea629f27543f7 .
+
+ont:class_abdc3f1146cee0d5066aeb7bdf1e5039 ont:contains ont:method_080daf93dbafab7052612f85c18f2faa,
+        ont:method_33a0999eaa59aa74c9eb15f7e8bccdff,
+        ont:method_b3ef151922142273c1206d83cd1e03c3,
+        ont:method_bff582506d1e754fe1cc67bb8ecbdd43 .
+
+ont:class_b0a77e93cf97b6db534d19d6552f9db1 ont:extends ont:class_99fd34b2977831266a64214a4e7a9e17 .
+
+ont:class_b2f9308eeb1ac44178fdd502d0726d18 ont:contains ont:method_6928c0efb6e5e805e8fb66cd4082e825,
+        ont:method_86a9ff017a7ef0572e3a52e5595aeea5 .
+
+ont:class_def3dd7b6a32b9f82264cddca5ded4b7 ont:extends ont:class_a03f506390626a6e441285b5390ac512 .
+
+ont:class_ff4afbd53e0856f363428aada3f76d65 ont:extends ont:class_a03f506390626a6e441285b5390ac512 .
+
+ont:function_008072dee2ea376fb867974fdf908bbd ont:calls ont:function_c42a368f6877142581d24f37fe5595c5,
+        ont:function_e2bdfbefbb5b7d9073f4ea0c616fc6be,
+        ont:method_b72f7af49cafd4423961a5ef5d744230 .
+
+ont:function_06068a86fe57b7d12e4ad071dedb8c77 ont:contains ont:function_3bb7236a4762b738a18900dbe0c244b0,
+        ont:function_69434ddc55e64f1bdfa46ed0d49d20d9 .
+
+ont:function_156e5514f6d38912fca0cb9658a6d41f ont:calls ont:method_4e4e44b9b82118b3efb839db6e6fb765 .
+
+ont:function_1b506386cf084a86dc112d3e20533de2 ont:calls ont:function_263d0e225f0a1306696e20164d4d9e8d .
+
+ont:function_1ea57fc8784d2de85f95c70d22362eda ont:calls ont:function_23829129be504e97edd1bccac9713503,
+        ont:function_43adde6c47af300a8d7b12bda7394c20 .
+
+ont:function_231456d494fce5270381df8560da8f6f ont:calls ont:function_4e238b5d1415a9840e531b4f2381b2c3,
+        ont:function_967d1248b269b0728daea8880d99abf7,
+        ont:function_9b84d01518d3f9147d810697b426b477,
+        ont:method_bcb5298464f67f8f5c537a04c9473fc2 .
+
+ont:function_23829129be504e97edd1bccac9713503 ont:calls ont:function_887b6470ed62273c9867f143b9f7032e .
+
+ont:function_246eed0d80ce4ba0cdcf4474f1430ab4 ont:calls ont:function_24a3bdeb20da77183b0de78753464b73,
+        ont:function_45daa09d8ab4bf987ff396a44347e3a5,
+        ont:function_53019d9b072a0cdd900cce47999beba0,
+        ont:function_6b1c2c657abaa52da685175c1db6ddcc,
+        ont:function_c002381230e1e8e235d00c864efa3edb .
+
+ont:function_2e0e600ff96865309ab9a2c8870c9c9a ont:calls ont:function_319827033bdcc0d41af62fa4c46eb1e7,
+        ont:function_664e6e0f674bcf0e24dbe4c8ffd94403,
+        ont:function_68d4f178c4100a91155e34925307fbe8,
+        ont:function_a265cdcb23d5dc016917be4fc2f510f9,
+        ont:method_4d985cf82c0657f38d03770b04dcc6d5,
+        ont:method_4e4e44b9b82118b3efb839db6e6fb765,
+        ont:method_a7d9ae2c4f837c6f4574f62abf048340,
+        ont:method_f42ec7d569c13298ce448ddf44592e57 .
+
+ont:function_2f47c16ba381e826238f9d5a948ccfd2 ont:calls ont:function_e2bdfbefbb5b7d9073f4ea0c616fc6be,
+        ont:method_b72f7af49cafd4423961a5ef5d744230 .
+
+ont:function_30056826585ebab75ed0567a09775a4a ont:contains ont:function_f6516b9bfeb6971a7f749583cfc0ac5c .
+
+ont:function_3a80fe8f3063b63edcbe3f515bc9d111 ont:calls ont:function_c42a368f6877142581d24f37fe5595c5,
+        ont:function_e2bdfbefbb5b7d9073f4ea0c616fc6be,
+        ont:method_b72f7af49cafd4423961a5ef5d744230 .
+
+ont:function_3da56416b397163fc9f5494cd91af1b1 ont:calls ont:function_d632dafab859bd1590fef6c72533cbf4 .
+
+ont:function_3e816846a6da53cbaf4aeae802962034 ont:calls ont:function_156e5514f6d38912fca0cb9658a6d41f,
+        ont:function_1ea57fc8784d2de85f95c70d22362eda,
+        ont:function_2e0e600ff96865309ab9a2c8870c9c9a,
+        ont:function_665a7eed5d3d5d8b3caa1fb976c35a7f,
+        ont:function_68d4f178c4100a91155e34925307fbe8,
+        ont:method_a7d9ae2c4f837c6f4574f62abf048340 .
+
+ont:function_43adde6c47af300a8d7b12bda7394c20 ont:calls ont:function_887b6470ed62273c9867f143b9f7032e .
+
+ont:function_440676bffc59dee15159c0608aaab99c ont:calls ont:function_24a3bdeb20da77183b0de78753464b73,
+        ont:function_53019d9b072a0cdd900cce47999beba0 .
+
+ont:function_4412794eece5cb2e949acc73631e4f75 ont:calls ont:function_2f47c16ba381e826238f9d5a948ccfd2,
+        ont:function_c42a368f6877142581d24f37fe5595c5,
+        ont:function_e2bdfbefbb5b7d9073f4ea0c616fc6be,
+        ont:method_b72f7af49cafd4423961a5ef5d744230 .
+
+ont:function_441b110e739d66a1bd7ea78a32ad61ad ont:calls ont:function_24a3bdeb20da77183b0de78753464b73,
+        ont:function_6959974f2760ad1d6dd2257a2041bff5,
+        ont:function_6b1c2c657abaa52da685175c1db6ddcc .
+
+ont:function_45daa09d8ab4bf987ff396a44347e3a5 ont:calls ont:function_53019d9b072a0cdd900cce47999beba0 .
+
+ont:function_4e238b5d1415a9840e531b4f2381b2c3 ont:calls ont:function_9b84d01518d3f9147d810697b426b477,
+        ont:method_9526df5c0937a9c86bda90221135898c .
+
+ont:function_544e483e3b27f4267a1fb7d0fb4483c4 ont:calls ont:function_263d0e225f0a1306696e20164d4d9e8d,
+        ont:function_9d68660095c54e4e56a1b7cdceb32765 .
+
+ont:function_5f0e0be5a5b47ede6ac32664ab9186b5 ont:calls ont:function_4149bf18d1aacd1cea36dc006bcca660,
+        ont:function_53019d9b072a0cdd900cce47999beba0,
+        ont:function_6b1c2c657abaa52da685175c1db6ddcc,
+        ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:function_665a7eed5d3d5d8b3caa1fb976c35a7f ont:calls ont:method_4e4e44b9b82118b3efb839db6e6fb765 .
+
+ont:function_6959974f2760ad1d6dd2257a2041bff5 ont:calls ont:function_24a3bdeb20da77183b0de78753464b73,
+        ont:function_440676bffc59dee15159c0608aaab99c,
+        ont:function_53019d9b072a0cdd900cce47999beba0,
+        ont:function_5f0e0be5a5b47ede6ac32664ab9186b5,
+        ont:function_6b1c2c657abaa52da685175c1db6ddcc,
+        ont:function_d7e6cabf26eb38b76a06ec31099bf2f9 .
+
+ont:function_69c346d4e0692e86e32812cdd8f96e8b ont:calls ont:function_ac43be71af2b8c11361529e4431fc220 .
+
+ont:function_802c96b38acef2df8f8f0aa9ac78d2ae ont:calls ont:function_59ff97f0f6be2502a526f1d21047d468 .
+
+ont:function_8bafe4206dde1dac6c54107913b582b3 ont:calls ont:method_1e02834548e3dd5a8db02f8585a6c57f,
+        ont:method_56bdd22ffd27a341688dd749d1417fba,
+        ont:method_d6f59d7fbdbf390fbeabd197f6e84872 .
+
+ont:function_967d1248b269b0728daea8880d99abf7 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:function_99b69abf33c8c503a69a24da35fa94af ont:calls ont:function_3729660cee484a00cc323d3695805e3c,
+        ont:function_7d3544a64bf294e3c352c8197feb73ea .
+
+ont:function_9aaa5c01384981a0999d49e7e4d7d2f6 ont:calls ont:function_2bd159f0244fdce5c9e84c0534fa96bb,
+        ont:function_6fa7ba511dd641b9d7321ad0eb5a2829,
+        ont:function_875ce833f4eb2a3b12c5038794831311 .
+
+ont:function_a265cdcb23d5dc016917be4fc2f510f9 ont:calls ont:function_319827033bdcc0d41af62fa4c46eb1e7,
+        ont:function_68d4f178c4100a91155e34925307fbe8,
+        ont:method_a7d9ae2c4f837c6f4574f62abf048340 .
+
+ont:function_ac92b2b0648cc35ab822e00c32372f35 ont:calls ont:function_c42a368f6877142581d24f37fe5595c5,
+        ont:function_e2bdfbefbb5b7d9073f4ea0c616fc6be,
+        ont:method_b72f7af49cafd4423961a5ef5d744230 .
+
+ont:function_afdc706dbcd0a5fe508b2b57f29843f3 ont:calls ont:function_99b69abf33c8c503a69a24da35fa94af .
+
+ont:function_b0fbe22832dce0c3d7558cf1221e62e4 ont:calls ont:function_a7b66d54f1b44a1468f2c2878a585940,
+        ont:method_08353b7508d0c326b3141aca5e84218e,
+        ont:method_2cd03ac7a7213715dbb3ad0c547c1cad .
+
+ont:function_b1966b5f4072f21fff32716427d86878 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:function_beff33c86477fe6f8c323721cabf86ae ont:calls ont:function_0dd36c90d6b99a210c5db512e3fcd9b0,
+        ont:function_246eed0d80ce4ba0cdcf4474f1430ab4,
+        ont:function_24a3bdeb20da77183b0de78753464b73,
+        ont:function_6b1c2c657abaa52da685175c1db6ddcc,
+        ont:function_9aaa5c01384981a0999d49e7e4d7d2f6,
+        ont:function_b2b180b7a7170eb21142f8bccd6ef400,
+        ont:function_d2a6b04c157f7f33daf5413ac3508355,
+        ont:function_d9e163141a814ddaf38cb63d36d02c4f,
+        ont:function_de5c5be10fceaec63d8ea75170b4032c,
+        ont:function_ec39359e353d9c08e5439e0e6bb691e5 .
+
+ont:function_c002381230e1e8e235d00c864efa3edb ont:contains ont:function_581ffd6737cf379bda986233fcd5c935,
+        ont:function_ddf9a8d35bb3b53fce8ea256ae4c432d,
+        ont:function_df5e4ad57bc2e84ac6c454998b8c38eb .
+
+ont:function_cbc480f926a14774e993948bdd8e8388 ont:calls ont:function_019320a37162a738d9f33f547c5e4a1e,
+        ont:function_30056826585ebab75ed0567a09775a4a,
+        ont:function_30d5e46ea93d915575d374f039b1b8af,
+        ont:function_8640102608de9826f107c2fba3ccff07,
+        ont:function_878b2e46e9dbf6f880cdade3014853a4,
+        ont:method_33a0999eaa59aa74c9eb15f7e8bccdff,
+        ont:method_7f62fc78bd267b6989009ce6d1e0e009,
+        ont:method_b3ef151922142273c1206d83cd1e03c3 ;
+    ont:contains ont:function_30d5e46ea93d915575d374f039b1b8af .
+
+ont:function_cc790f335806f9d817b2b2d4248a7888 ont:calls ont:function_c42a368f6877142581d24f37fe5595c5,
+        ont:function_e2bdfbefbb5b7d9073f4ea0c616fc6be,
+        ont:method_b72f7af49cafd4423961a5ef5d744230 .
+
+ont:function_ce58ba1fbe6830abbac6383801cbc272 ont:calls ont:function_45b63b79b66f49dbfbc88e78fb728bcd,
+        ont:function_6495fee5c038e8ca762ee01b6cbb58c0,
+        ont:function_9b84d01518d3f9147d810697b426b477,
+        ont:method_9526df5c0937a9c86bda90221135898c ;
+    ont:instantiates ont:class_30c576cf1de55ded0b074e07b561fe06,
+        ont:class_39bab5833cb0823386634a133749102a .
+
+ont:function_d2a6b04c157f7f33daf5413ac3508355 ont:calls ont:method_6d640a8a2cd9e85a073d779b502ea478 .
+
+ont:function_d4aef2329824d82b260e763aeb364e82 ont:calls ont:function_9d68660095c54e4e56a1b7cdceb32765 .
+
+ont:function_d7e6cabf26eb38b76a06ec31099bf2f9 ont:calls ont:function_b1966b5f4072f21fff32716427d86878,
+        ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:function_d81e6c7af3e86c54237ab00b5175e36b ont:calls ont:function_ce58ba1fbe6830abbac6383801cbc272 .
+
+ont:function_dd5239dfc5c897b3a7586002ba024de2 ont:calls ont:function_e2bdfbefbb5b7d9073f4ea0c616fc6be,
+        ont:method_b72f7af49cafd4423961a5ef5d744230 .
+
+ont:function_dde7b4090e704c74f644c3a6d758e3cc ont:calls ont:function_ad7b80b41c987b93cc72f9af5d750431 .
+
+ont:function_ec39359e353d9c08e5439e0e6bb691e5 ont:calls ont:function_441b110e739d66a1bd7ea78a32ad61ad .
+
+ont:function_f6dc2c1f86276e26eed70049a1629df5 ont:calls ont:function_9bbc502a95c04da3d001d8eba3fb247f,
+        ont:function_b0fbe22832dce0c3d7558cf1221e62e4,
+        ont:method_08353b7508d0c326b3141aca5e84218e,
+        ont:method_2cd03ac7a7213715dbb3ad0c547c1cad ;
+    ont:contains ont:function_9bbc502a95c04da3d001d8eba3fb247f,
+        ont:function_b0fbe22832dce0c3d7558cf1221e62e4 .
+
+ont:function_fd552453d7910b4ea9b7d6b40772e51e ont:calls ont:function_c42a368f6877142581d24f37fe5595c5,
+        ont:function_e2bdfbefbb5b7d9073f4ea0c616fc6be,
+        ont:method_b72f7af49cafd4423961a5ef5d744230 .
+
+ont:method_01628d60e25feddde8660f186b92ca5f ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:method_1b9c93752d6cd12df5ef3adadd2e6cf9 ont:calls ont:method_8bb1dbcb63bdadbb661f28e2b52ff815 .
+
+ont:method_22f5a0f3ed0b095dc80bde12ff40d991 ont:calls ont:method_971a9df8be063613c673599e1c74e332 .
+
+ont:method_2e09a3e9030eec9911203bb170204819 ont:calls ont:function_061edc8233f4e94b5d3f2fa7dc9331aa,
+        ont:function_7b3ab9f10abac8390076006e8be8c8b2,
+        ont:method_08353b7508d0c326b3141aca5e84218e,
+        ont:method_2cd03ac7a7213715dbb3ad0c547c1cad .
+
+ont:method_3297e51af967bab6d7597fa2ce2c9d53 ont:calls ont:function_180552918f61a66de251058a0a16fbd0,
+        ont:function_28542ee5055b3052e929c76ec0454d15,
+        ont:function_298b8a487d6f78abbeaa4c961266fb81,
+        ont:function_69c346d4e0692e86e32812cdd8f96e8b,
+        ont:function_8bafe4206dde1dac6c54107913b582b3,
+        ont:function_cbc480f926a14774e993948bdd8e8388,
+        ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_3110bad3313edea5703ad810d4dbcc0b,
+        ont:method_94c67316b8374337f62fcc4461cfab3b,
+        ont:method_bcb5298464f67f8f5c537a04c9473fc2 ;
+    ont:instantiates ont:class_874acf3ae18699e15890e92870feaff4 .
+
+ont:method_4136e96bb5a470e934d6a3693c1806eb ont:calls ont:method_0220450f6bc175462ad933b3d97f5160,
+        ont:method_fae1e95af9c539bd82a8b6ae7f3ea418 .
+
+ont:method_4470b5970b33aac9f0d1807d88bc4150 ont:calls ont:function_0f35ee6f7e355c3fe08b69dcd46731ef,
+        ont:function_afdc706dbcd0a5fe508b2b57f29843f3,
+        ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_6edb12b7c68a7d885aff2e5799d0d4b1 .
+
+ont:method_4792df92755e1d46583f26c62c5aed4a ont:calls ont:method_4792df92755e1d46583f26c62c5aed4a .
+
+ont:method_642df4115f5078e268ca8b4eea8196fd ont:contains ont:class_be35b930a5e5aa5385de6e29061946ee .
+
+ont:method_681382ce94e0185b9ee46376fb40a73b ont:calls ont:method_a585bf79e3ee1290f536850e69fdc1a7,
+        ont:method_fae1e95af9c539bd82a8b6ae7f3ea418 .
+
+ont:method_6881cf602bf07097ff64b30a9c58e1c2 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:method_6928c0efb6e5e805e8fb66cd4082e825 ont:calls ont:method_6928c0efb6e5e805e8fb66cd4082e825 .
+
+ont:method_7249f1d3ac36023b08b342eb814e8232 ont:calls ont:function_f57c4748fa1b8b05cae4b94c1ced880a,
+        ont:method_77b9744930927dd20e03421e6dc220a5,
+        ont:method_9250700504c6e3be25a7961821933a72,
+        ont:method_cd1d9932929b7cf14560103b25be31b2 .
+
+ont:method_7427d2212a1269f1aeb8bfc94a1cd26c ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_86d13458acc2d750a0c9e81c05d7a523,
+        ont:method_971a9df8be063613c673599e1c74e332,
+        ont:method_bcb5298464f67f8f5c537a04c9473fc2 .
+
+ont:method_8016207b64758adba732c65faab8fa08 ont:calls ont:function_3070eaeb6d9caf1aea2b9c372a2399a7,
+        ont:method_e0ed62aa26c433ace00ca58e0a0708c6 .
+
+ont:method_8242d1dcb45855d3064131947f1d23af ont:calls ont:method_82f25a428c3696178249ff25c2c71d25 ;
+    ont:instantiates ont:class_e7169d931c5cf3a88868aab8a015ac74 .
+
+ont:method_86f244456b40f22fb6eed81257ef7cd2 ont:calls ont:method_b2bc36c2315fc40ba2af06385e81da49 ;
+    ont:contains ont:function_37a0339f862a573f2165166a9c2fb3ed .
+
+ont:method_906cc2dfb3ebe899325cf07cb71a9892 ont:calls ont:function_f57c4748fa1b8b05cae4b94c1ced880a,
+        ont:method_0c491b8876efe6d6e157162acc53e2fc,
+        ont:method_22f5a0f3ed0b095dc80bde12ff40d991,
+        ont:method_3e93cc70beb39a3a8a11d53975213c48,
+        ont:method_6edb12b7c68a7d885aff2e5799d0d4b1,
+        ont:method_7427d2212a1269f1aeb8bfc94a1cd26c,
+        ont:method_77b9744930927dd20e03421e6dc220a5,
+        ont:method_9250700504c6e3be25a7961821933a72,
+        ont:method_ccfe077b875033b26679f806971c5351,
+        ont:method_cd1d9932929b7cf14560103b25be31b2 .
+
+ont:method_94c67316b8374337f62fcc4461cfab3b ont:calls ont:function_180552918f61a66de251058a0a16fbd0,
+        ont:method_33a0999eaa59aa74c9eb15f7e8bccdff .
+
+ont:method_9dc2886d74bca539a715a44e2af8f1ba ont:calls ont:method_6131a2bfcef98b5bc987cff6b4bf1839,
+        ont:variable_ab3b6c126b4d94f60d54b618f3a7a673 .
+
+ont:method_a8b76053a169c052a6c36559271d236a ont:calls ont:function_3070eaeb6d9caf1aea2b9c372a2399a7,
+        ont:function_802c96b38acef2df8f8f0aa9ac78d2ae,
+        ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_ac4c98ecbafb95e7f3c085cae88532f9 .
+
+ont:method_ac9ee5c3bb5fde34410a2954836234f1 ont:calls ont:method_02aa7d5326f6068527b1025fea14d6ab,
+        ont:method_707909baa96dc38f2f46f3ef9201ad02 .
+
+ont:method_b2bc36c2315fc40ba2af06385e81da49 ont:contains ont:function_7a7e6f4c3272a57c1706009f8965cf93 .
+
+ont:method_ccfe077b875033b26679f806971c5351 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_971a9df8be063613c673599e1c74e332 .
+
+ont:method_d07044bbffe106f58d4d1e5436a7b3f4 ont:calls ont:function_3070eaeb6d9caf1aea2b9c372a2399a7 ;
+    ont:instantiates ont:class_153fb1712aeab60eefc0eb78ab1e0912 .
+
+ont:method_d89a80b34b06e7c51d8e85a1ad40585d ont:calls ont:method_d89a80b34b06e7c51d8e85a1ad40585d,
+        ont:method_e65fed14c427df51e8935548218afa95 ;
+    ont:contains ont:function_5ae461a5066a8cf65e395c77f82d4e2a,
+        ont:function_721d6ed5b55d0a3a55cd94b3458c82dc .
+
+ont:method_ef6190d9b9ffbf6c5ad7975415949b9a ont:contains ont:function_43d924c2e3db63929958104c6981dd20,
+        ont:function_79e61adafe12bf8ede2733119ab09fd4,
+        ont:function_caaf165287b76b416d0f1cbcb8be7263,
+        ont:function_f3e243cc7bd3107c41470fbcf4c97adc .
+
+ont:class_99fd34b2977831266a64214a4e7a9e17 ont:extends ont:class_a03f506390626a6e441285b5390ac512 .
+
+ont:class_e565706dcf94d25a364c3eb56f413a36 ont:extends ont:class_8add052634ccb90039c334072c874f5b .
+
+ont:class_e7169d931c5cf3a88868aab8a015ac74 ont:contains ont:method_6131a2bfcef98b5bc987cff6b4bf1839,
+        ont:method_80352195e9d4e9babae9fef95d2672cf,
+        ont:method_82f25a428c3696178249ff25c2c71d25,
+        ont:method_8bb1dbcb63bdadbb661f28e2b52ff815,
+        ont:method_af71de0db20742cd1a236a611ffea81a .
+
+ont:function_22c048837a4e71f37312f8f760b3fc63 ont:calls ont:function_dd5239dfc5c897b3a7586002ba024de2 .
+
+ont:method_0220450f6bc175462ad933b3d97f5160 ont:calls ont:method_29893ae03ad1d7720fe8dbb71bcbb603,
+        ont:method_4efb5c20918ee00c441266f34780c07e .
+
+ont:method_103c30e4cfe1838448fb410195467353 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_6131a2bfcef98b5bc987cff6b4bf1839 .
+
+ont:method_33a0999eaa59aa74c9eb15f7e8bccdff ont:calls ont:function_8add529967be2094cac8e933f1706c9e,
+        ont:method_30113b930c8712de3f09d102a7726a7a,
+        ont:method_8c1961c586a664306fcd47c7bf23f772 ;
+    ont:instantiates ont:class_45371241ed2cf3e61340d572411586ac .
+
+ont:method_3a14a339295ab4087af20a4748eefa18 ont:calls ont:function_28e22cb494ecda313ea44feae6b8ba32,
+        ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_6131a2bfcef98b5bc987cff6b4bf1839,
+        ont:method_9dc2886d74bca539a715a44e2af8f1ba,
+        ont:method_b1c9f09750aefe76620a5c5e9baaaf22 .
+
+ont:method_86106cb92fb8ba19a9b263a2d89bdba0 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_6131a2bfcef98b5bc987cff6b4bf1839,
+        ont:method_b1c9f09750aefe76620a5c5e9baaaf22 .
+
+ont:method_872e61b3a660a2e819f12aad1229aa6c ont:calls ont:method_872e61b3a660a2e819f12aad1229aa6c ;
+    ont:instantiates ont:class_b2f9308eeb1ac44178fdd502d0726d18 .
+
+ont:method_9250700504c6e3be25a7961821933a72 ont:calls ont:function_1c3aa940bae8ac16fa9bf6909801ad04,
+        ont:method_0220450f6bc175462ad933b3d97f5160,
+        ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_4efb5c20918ee00c441266f34780c07e,
+        ont:method_6edb12b7c68a7d885aff2e5799d0d4b1,
+        ont:method_760a11c88e2e0da1093e3113695ebfba,
+        ont:method_86d13458acc2d750a0c9e81c05d7a523,
+        ont:method_bcb5298464f67f8f5c537a04c9473fc2 .
+
+ont:method_cd1d9932929b7cf14560103b25be31b2 ont:calls ont:function_81f0274432f67c260d2f65877fd9e374,
+        ont:method_4470b5970b33aac9f0d1807d88bc4150,
+        ont:method_6edb12b7c68a7d885aff2e5799d0d4b1,
+        ont:method_86d13458acc2d750a0c9e81c05d7a523,
+        ont:method_9526df5c0937a9c86bda90221135898c .
+
+ont:class_39bab5833cb0823386634a133749102a ont:contains ont:method_0220450f6bc175462ad933b3d97f5160,
+        ont:method_29893ae03ad1d7720fe8dbb71bcbb603,
+        ont:method_3297e51af967bab6d7597fa2ce2c9d53,
+        ont:method_4822becc9287dd66cb4e710a7c0f7b58,
+        ont:method_4efb5c20918ee00c441266f34780c07e,
+        ont:method_760a11c88e2e0da1093e3113695ebfba,
+        ont:method_94c67316b8374337f62fcc4461cfab3b,
+        ont:method_9526df5c0937a9c86bda90221135898c,
+        ont:method_bcb5298464f67f8f5c537a04c9473fc2 .
+
+ont:function_263d0e225f0a1306696e20164d4d9e8d ont:calls ont:function_31021d8ce5e3a299319bbbeddda6e3dd,
+        ont:function_9a6469b16864563bc372eff2a39d16ab .
+
+ont:function_9d68660095c54e4e56a1b7cdceb32765 ont:calls ont:function_3fd2417ef1960baa20d2f23f02047eac,
+        ont:function_45b63b79b66f49dbfbc88e78fb728bcd,
+        ont:function_ad7b80b41c987b93cc72f9af5d750431 .
+
+ont:function_ad7b80b41c987b93cc72f9af5d750431 ont:calls ont:function_da2239532e1d55fa5825607966e4a99c,
+        ont:method_707909baa96dc38f2f46f3ef9201ad02 .
+
+ont:method_29893ae03ad1d7720fe8dbb71bcbb603 ont:calls ont:function_25f67e0ff2527dad0c40417eae2efa87,
+        ont:function_52a82c8837c86706e5433e09fe386028,
+        ont:method_4e4e44b9b82118b3efb839db6e6fb765 ;
+    ont:instantiates ont:class_27533e763edff808f23449961ab42ea8,
+        ont:class_362c2cd27813276869920b7b3609463c,
+        ont:class_ab0dc72b2a2ecbedb450dd3a1f3bde6d .
+
+ont:method_760a11c88e2e0da1093e3113695ebfba ont:calls ont:function_5da74b5b044dcf1fea955b02d850710a,
+        ont:method_29893ae03ad1d7720fe8dbb71bcbb603,
+        ont:method_4efb5c20918ee00c441266f34780c07e .
+
+ont:method_86d13458acc2d750a0c9e81c05d7a523 ont:calls ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_a585bf79e3ee1290f536850e69fdc1a7,
+        ont:variable_0584d9f2beeac0467e7e5091b2ef8def .
+
+ont:method_8bb1dbcb63bdadbb661f28e2b52ff815 ont:calls ont:method_6131a2bfcef98b5bc987cff6b4bf1839 .
+
+ont:method_b1c9f09750aefe76620a5c5e9baaaf22 ont:calls ont:import_596a61818b445437dda63d87ebd126b8,
+        ont:method_972077d91276f10f1b702f5c62d0706e .
+
+ont:method_e0ed62aa26c433ace00ca58e0a0708c6 ont:calls ont:function_3070eaeb6d9caf1aea2b9c372a2399a7,
+        ont:method_23162e3f93b816956de19e6232ea7bc7,
+        ont:method_e0ed62aa26c433ace00ca58e0a0708c6 .
+
+ont:method_6edb12b7c68a7d885aff2e5799d0d4b1 ont:calls ont:function_3062cd7264ef6322fb44ba862860aa04,
+        ont:method_23162e3f93b816956de19e6232ea7bc7 .
+
+ont:function_3070eaeb6d9caf1aea2b9c372a2399a7 ont:calls ont:method_ac9ee5c3bb5fde34410a2954836234f1 .
+
+ont:function_53019d9b072a0cdd900cce47999beba0 ont:calls ont:function_0dd36c90d6b99a210c5db512e3fcd9b0,
+        ont:function_f6dc2c1f86276e26eed70049a1629df5 .
+
+ont:function_9b84d01518d3f9147d810697b426b477 ont:calls ont:function_263d0e225f0a1306696e20164d4d9e8d,
+        ont:function_ad7b80b41c987b93cc72f9af5d750431 .
+
+ont:method_08353b7508d0c326b3141aca5e84218e ont:calls ont:method_08353b7508d0c326b3141aca5e84218e,
+        ont:method_2cd03ac7a7213715dbb3ad0c547c1cad .
+
+ont:method_2cd03ac7a7213715dbb3ad0c547c1cad ont:calls ont:method_2cd03ac7a7213715dbb3ad0c547c1cad .
+
+ont:method_6131a2bfcef98b5bc987cff6b4bf1839 ont:calls ont:method_8bb1dbcb63bdadbb661f28e2b52ff815 .
+
+ont:method_a585bf79e3ee1290f536850e69fdc1a7 ont:calls ont:method_a585bf79e3ee1290f536850e69fdc1a7 .
+
+ont:function_8a9b614666f636f73454d03d96ae7ef6 ont:calls ont:function_92adbfe53af715322b291ce023ee5fb4 .
+
+ont:Module a owl:Class .
+

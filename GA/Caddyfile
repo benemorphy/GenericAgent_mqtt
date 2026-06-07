@@ -37,6 +37,13 @@
         reverse_proxy 127.0.0.1:9900
     }
 
+    # A-supply-analysis 供应链数据 — 端口 8765
+    @supply path /supply* /supply/*
+    handle @supply {
+        uri strip_prefix /supply
+        reverse_proxy 127.0.0.1:8765
+    }
+
     # MindFlow 静态资源 — 直接代理到 9900
     @mfstatic path /static/coursewares/*
     handle @mfstatic {

@@ -1,3 +1,11 @@
+---
+skill: memory_management
+domain: memory
+version: "1.0"
+tags: [meta-sop, memory, governance]
+cc_quick: "META-SOP记忆治理 — ACTION-VERIFIED唯真/同步更新规则"
+cc_keywords: ["记忆管理", "META-SOP", "ACTION-VERIFIED", "记忆规则"]
+---
 ## 0. 核心公理 (Core Axioms - 最高优先级)
 1.  **行动验证原则 (Action-Verified Only)**
     *   **定义**：任何写入 L1/L2/L3 的信息，必须源自**成功的工具调用结果**（如 `shell` 执行成功、`file_read` 确认内容存在、代码运行通过）。

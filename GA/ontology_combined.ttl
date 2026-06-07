@@ -1,0 +1,202 @@
+@prefix ont: <http://beneh.ga/ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ont:Class_ a owl:Class .
+
+ont:CodeComponent a owl:Class .
+
+ont:Function a owl:Class .
+
+ont:TMWebDriver_py a ont:Module ;
+    rdfs:label "TMWebDriver.py" .
+
+ont:Variable a owl:Class .
+
+ont:__init___py a ont:Module ;
+    rdfs:label "__init__.py" .
+
+ont:_github_workflows_ci_yml a ont:Module ;
+    rdfs:label ".github/workflows/ci.yml" .
+
+ont:_github_workflows_release_yml a ont:Module ;
+    rdfs:label ".github/workflows/release.yml" .
+
+ont:agent_loop_py a ont:Module ;
+    rdfs:label "agent_loop.py" .
+
+ont:agentmain_py a ont:Module ;
+    rdfs:label "agentmain.py" .
+
+ont:agents___init___py a ont:Module ;
+    rdfs:label "agents/__init__.py" .
+
+ont:agents_langgraph_multi_agent_py a ont:Module ;
+    rdfs:label "agents/langgraph_multi_agent.py" .
+
+ont:agents_node_orchestrator_ui_py a ont:Module ;
+    rdfs:label "agents/node_orchestrator_ui.py" .
+
+ont:assets___init___py a ont:Module ;
+    rdfs:label "assets/__init__.py" .
+
+ont:assets_agent_bbs_py a ont:Module ;
+    rdfs:label "assets/agent_bbs.py" .
+
+ont:assets_code_run_header_py a ont:Module ;
+    rdfs:label "assets/code_run_header.py" .
+
+ont:assets_configure_mykey_py a ont:Module ;
+    rdfs:label "assets/configure_mykey.py" .
+
+ont:assets_tmwd_cdp_bridge_background_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/background.js" .
+
+ont:assets_tmwd_cdp_bridge_config_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/config.js" .
+
+ont:assets_tmwd_cdp_bridge_content_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/content.js" .
+
+ont:assets_tmwd_cdp_bridge_disable_dialogs_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/disable_dialogs.js" .
+
+ont:assets_tmwd_cdp_bridge_popup_js a ont:Module ;
+    rdfs:label "assets/tmwd_cdp_bridge/popup.js" .
+
+ont:calls a owl:ObjectProperty .
+
+ont:defines a owl:ObjectProperty .
+
+ont:dependsOn a owl:ObjectProperty,
+        owl:TransitiveProperty .
+
+<http://beneh.ga/ontology/file:TMWebDriver_py> ont:defines <http://beneh.ga/ontology/import:0418bf936b7c0ab5f2f3a3b960121576>,
+        <http://beneh.ga/ontology/import:1342459a6ba381b5e5eaa1aa3bf2db2f>,
+        <http://beneh.ga/ontology/import:1b56c1860e83796108b4944dde1e3034>,
+        <http://beneh.ga/ontology/import:320fc460d42ec4c70b39c802b934aa77>,
+        <http://beneh.ga/ontology/import:3b8933963377474837edbd606addc041>,
+        <http://beneh.ga/ontology/import:596a61818b445437dda63d87ebd126b8>,
+        <http://beneh.ga/ontology/import:8819c40555c0ee53df1e24049c5a33d6>,
+        <http://beneh.ga/ontology/import:b0054c89ec190866f67410fe694f817d>,
+        <http://beneh.ga/ontology/import:bd1c734b5f7eeaed4d1616a3a16db583>,
+        <http://beneh.ga/ontology/import:d9bd24ca2c28b5f5b72e2b45e2ce03b1> ;
+    ont:imports <http://beneh.ga/ontology/import:3b8933963377474837edbd606addc041>,
+        <http://beneh.ga/ontology/import:3eb3b64ab4c55e1401fa45e841c86ec6>,
+        <http://beneh.ga/ontology/import:8819c40555c0ee53df1e24049c5a33d6> .
+
+<http://beneh.ga/ontology/file:agent_loop_py> ont:imports <http://beneh.ga/ontology/import:856b5cb0848687336c12f918a707b6cf>,
+        <http://beneh.ga/ontology/import:8d04ca08381199b5827052959aab65de>,
+        <http://beneh.ga/ontology/import:c0975ac65f1d755caa460cbaea2c34fc> .
+
+<http://beneh.ga/ontology/file:agentmain_py> ont:imports <http://beneh.ga/ontology/import:67ec65d8038cbec0d0b425ff3063688e>,
+        <http://beneh.ga/ontology/import:9b39d57012d94a94134515ce787b377e>,
+        <http://beneh.ga/ontology/import:c68b6d7969534e62c6d73e30963af00a>,
+        <http://beneh.ga/ontology/import:f1fb11a22bc82a3d3d74b6f5579ada90> .
+
+ont:frontends___init___py a ont:Module ;
+    rdfs:label "frontends/__init__.py" .
+
+ont:frontends__archive_conductor_py a ont:Module ;
+    rdfs:label "frontends/_archive/conductor.py" .
+
+ont:frontends__archive_dcapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/dcapp.py" .
+
+ont:frontends__archive_desktop_bridge_py a ont:Module ;
+    rdfs:label "frontends/_archive/desktop_bridge.py" .
+
+ont:frontends__archive_dingtalkapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/dingtalkapp.py" .
+
+ont:frontends__archive_genericagent_acp_bridge_py a ont:Module ;
+    rdfs:label "frontends/_archive/genericagent_acp_bridge.py" .
+
+ont:frontends__archive_launcher_mqtt_py a ont:Module ;
+    rdfs:label "frontends/_archive/launcher_mqtt.py" .
+
+ont:frontends__archive_qqapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/qqapp.py" .
+
+ont:frontends__archive_qtapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/qtapp.py" .
+
+ont:frontends__archive_stapp2_py a ont:Module ;
+    rdfs:label "frontends/_archive/stapp2.py" .
+
+ont:frontends__archive_subagent_dashboard_py a ont:Module ;
+    rdfs:label "frontends/_archive/subagent_dashboard.py" .
+
+ont:frontends__archive_tgapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/tgapp.py" .
+
+ont:frontends__archive_tuiapp_v2_py a ont:Module ;
+    rdfs:label "frontends/_archive/tuiapp_v2.py" .
+
+ont:frontends__archive_wechatapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/wechatapp.py" .
+
+ont:frontends__archive_wecomapp_py a ont:Module ;
+    rdfs:label "frontends/_archive/wecomapp.py" .
+
+ont:frontends_bbs_browser___init___py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/__init__.py" .
+
+ont:frontends_bbs_browser_app_py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/app.py" .
+
+ont:frontends_bbs_browser_auth_py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/auth.py" .
+
+ont:frontends_bbs_browser_config_py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/config.py" .
+
+ont:frontends_bbs_browser_database_py a ont:Module ;
+    rdfs:label "frontends/bbs_browser/database.py" .
+
+ont:frontends_btw_cmd_py a ont:Module ;
+    rdfs:label "frontends/btw_cmd.py" .
+
+ont:frontends_chatapp_common_py a ont:Module ;
+    rdfs:label "frontends/chatapp_common.py" .
+
+ont:frontends_continue_cmd_py a ont:Module ;
+    rdfs:label "frontends/continue_cmd.py" .
+
+ont:frontends_dashboard_mqtt_py a ont:Module ;
+    rdfs:label "frontends/dashboard_mqtt.py" .
+
+ont:frontends_desktop_pet_pyw a ont:Module ;
+    rdfs:label "frontends/desktop_pet.pyw" .
+
+ont:frontends_desktop_pet_v2_pyw a ont:Module ;
+    rdfs:label "frontends/desktop_pet_v2.pyw" .
+
+ont:frontends_desktop_src-tauri_build_rs a ont:Module ;
+    rdfs:label "frontends/desktop/src-tauri/build.rs" .
+
+ont:frontends_desktop_src-tauri_src_lib_rs a ont:Module ;
+    rdfs:label "frontends/desktop/src-tauri/src/lib.rs" .
+
+ont:frontends_desktop_src-tauri_src_main_rs a ont:Module ;
+    rdfs:label "frontends/desktop/src-tauri/src/main.rs" .
+
+ont:frontends_desktop_static_app_js a ont:Module ;
+    rdfs:label "frontends/desktop/static/app.js" .
+
+ont:frontends_desktop_static_ga-web_js a ont:Module ;
+    rdfs:label "frontends/desktop/static/ga-web.js" .
+
+ont:frontends_export_cmd_py a ont:Module ;
+    rdfs:label "frontends/export_cmd.py" .
+
+ont:frontends_fsapp_py a ont:Module ;
+    rdfs:label "frontends/fsapp.py" .
+
+ont:frontends_gateway___init___py a ont:Module ;
+    rdfs:label "frontends/gateway/__init__.py" .
+
+ont:imports a owl:ObjectProperty .
+
+ont:Module a owl:Class .
+

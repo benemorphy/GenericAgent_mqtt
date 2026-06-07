@@ -42,7 +42,7 @@
 
 ### 步骤3：监察等待 + 读取结论
 
-主agent主动观察subagent输出（MQTT模式: 订阅 board/task/{id}/output 推送通知；文件模式: 读 output.txt）。`--verbose`输出含原始工具结果，而非无脑sleep轮询：
+主agent主动观察output.txt进度（`--verbose`输出含原始工具结果），而非无脑sleep轮询：
 
 1. **观察**：读output.txt，审查subagent的探测方向和原始数据
 2. **纠偏**（按需）：

@@ -40,8 +40,8 @@
     "last": "2026-06-06"
   },
   "global_mem.txt": {
-    "count": 115,
-    "last": "2026-06-05"
+    "count": 116,
+    "last": "2026-06-08"
   },
   "skills_learning_sop.md": {
     "count": 30,
@@ -176,8 +176,8 @@
     "last": "2026-05-18"
   },
   "tmwebdriver_sop.md": {
-    "count": 5,
-    "last": "2026-05-29"
+    "count": 6,
+    "last": "2026-06-07"
   },
   "qq_deploy_sop.md": {
     "count": 3,
@@ -292,8 +292,8 @@
     "last": "2026-05-22"
   },
   "goal_mode_sop.md": {
-    "count": 15,
-    "last": "2026-06-02"
+    "count": 16,
+    "last": "2026-06-08"
   },
   "RUST_ENV": {
     "count": 1,
@@ -466,5 +466,21 @@
   "rumination_sop.md": {
     "count": 1,
     "last": "2026-06-07"
+  },
+  "sync_upstream_sop.md": {
+    "count": 1,
+    "last": "2026-06-07"
+  },
+  "web_testing_sop.md": {
+    "count": 1,
+    "last": "2026-06-07"
+  },
+  "restore_funcs.py": {
+    "count": 1,
+    "last": "2026-06-08"
+  },
+  "codegraph_ontology_bridge_sop.md": {
+    "count": 1,
+    "last": "2026-06-08"
   }
 }
