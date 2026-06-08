@@ -10,7 +10,7 @@ import hmac
 import json
 import base64
 from fastapi import Request, HTTPException
-from frontends.bbs_browser.config import JWT_SECRET, JWT_EXPIRY_SECONDS
+from services.bbs_data.config import JWT_SECRET, JWT_EXPIRY_SECONDS
 
 
 def decode_jwt(token: str) -> dict:

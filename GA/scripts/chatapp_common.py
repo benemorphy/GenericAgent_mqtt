@@ -383,9 +383,9 @@ class AgentChatMixin:
 
 
 from agentmain import GeneraticAgent as _GA
-from frontends.continue_cmd import handle_frontend_command as _handle_continue_frontend, install as _install_continue, reset_conversation as _reset_conversation
+from scripts.continue_cmd import handle_frontend_command as _handle_continue_frontend, install as _install_continue, reset_conversation as _reset_conversation
 _install_continue(_GA)
-from frontends.btw_cmd import handle_frontend_command as _handle_btw_frontend, install as _install_btw; _install_btw(_GA)
+from scripts.btw_cmd import handle_frontend_command as _handle_btw_frontend, install as _install_btw; _install_btw(_GA)
 
 
 def create_agent(verbose=False, inc_out=True):

@@ -5,7 +5,7 @@ from pathlib import Path
 from fastapi import APIRouter, Request, Query, Depends
 from fastapi.responses import HTMLResponse
 from frontends.auth import require_user
-from frontends.bbs_browser.database import get_boards, get_board, query_posts, query_all_posts as search_all
+from services.bbs_data.database import get_boards, get_board, query_posts, query_all_posts as search_all
 from frontends.web_ui import render_template
 
 router = APIRouter(dependencies=[Depends(require_user)])

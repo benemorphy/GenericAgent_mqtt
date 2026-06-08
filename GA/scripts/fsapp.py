@@ -13,8 +13,8 @@ sys.path.insert(0, FRONTENDS_ROOT)
 sys.path.insert(0, GA_ROOT)
 os.chdir(PROJECT_ROOT)
 from agentmain import GeneraticAgent
-from frontends.chatapp_common import format_restore, create_agent
-from frontends.continue_cmd import handle_frontend_command as handle_continue_frontend, reset_conversation
+from scripts.chatapp_common import format_restore, create_agent
+from scripts.continue_cmd import handle_frontend_command as handle_continue_frontend, reset_conversation
 
 agent, mykeys = create_agent(verbose=False)
 from tools.feishu_reminder import ReminderManager, start_reminder_checker, format_reminder_list, REMIND_HELP

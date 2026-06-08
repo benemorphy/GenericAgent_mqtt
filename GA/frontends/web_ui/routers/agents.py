@@ -6,7 +6,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 
 from frontends.auth import require_user
-from frontends.bbs_browser.database import get_db
+from services.bbs_data.database import get_db
 from frontends.web_ui import render_template
 
 router = APIRouter(dependencies=[Depends(require_user)])
