@@ -12,9 +12,22 @@ import json
 import os
 from pathlib import Path
 
+try:
+    from memory.keychain import keys
+    _API_KEY = keys.deepseek_api_key.use()
+except Exception:
+    _API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
+
 # ── 配置 ──
 GBRAIN_REPO = Path("D:/open_claw_agent/gbrain")
-BUN = os.environ.get("BUN_PATH", "bun")
+BUN = os.environ.get("BUN_PATH", r"C:\Users\user\AppData\Roaming\npm\bun.CMD")
+
+def _get_env() -> dict:
+    """返回包含 DEEPSEEK_API_KEY 的环境变量"""
+    env = os.environ.copy()
+    if _API_KEY:
+        env["DEEPSEEK_API_KEY"] = _API_KEY
+    return env
 
 # ── 可用工具清单 ──
 _TOOLS = [
@@ -35,11 +48,12 @@ def _run_gbrain(*args: str, timeout: int = 60) -> subprocess.CompletedProcess:
     """运行 gbrain CLI 命令"""
     if not GBRAIN_REPO.exists():
         raise FileNotFoundError(f"gbrain repository not found at {GBRAIN_REPO}")
-    cmd = [BUN, "run", str(GBRAIN_REPO / "src/cli.ts"), *args]
+    cmd = [str(BUN), "run", str(GBRAIN_REPO / "src/cli.ts"), *args]
     return subprocess.run(
         cmd,
         capture_output=True, text=True,
-        timeout=timeout, cwd=str(GBRAIN_REPO)
+        timeout=timeout, cwd=str(GBRAIN_REPO),
+        env=_get_env()
     )
 
 
