@@ -15,7 +15,8 @@ from fastapi.templating import Jinja2Templates
 
 from .config import HOST, PORT
 from .database import init_db, seed_boards, get_boards, get_board, query_posts, query_all_posts
-from .auth import require_user, optional_user, register_user, login_user, login_user_email, send_verify_code, check_verify
+from frontends.auth import require_user, optional_user
+from .auth import register_user, login_user, login_user_email, send_verify_code, check_verify
 
 # ── 初始化 ──
 app = FastAPI(title="BBS Board Browser")

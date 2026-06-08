@@ -13,7 +13,7 @@ router = APIRouter(dependencies=[Depends(require_user)])
 
 def _render(name: str, **ctx) -> str:
     user = ctx.pop('user', None)
-    return _TEMPLATES.get_template(name).render(user=user, nav_active='play', **ctx)
+    return _T.get_template(name).render(user=user, nav_active='play', **ctx)
 
 
 @router.get("/play", response_class=HTMLResponse)
