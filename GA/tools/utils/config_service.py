@@ -5,7 +5,7 @@ ConfigService — 统一配置加载与热重载
 从 mykey.py 扫描所有配置变量，支持 profile 切换与运行时热重载。
 
 用法:
-  from tools.config_service import ConfigService
+  from tools.utils.config_service import ConfigService
   cfg = ConfigService.instance()
   all_configs = cfg.reload()
   llm_config  = cfg.get('native_claude_config0')

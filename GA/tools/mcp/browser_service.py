@@ -4,7 +4,7 @@
 浏览器不可用时，Agent的文件操作、代码执行等核心功能不受影响。
 
 Usage:
-    from tools.browser_service import browser_service
+    from tools.mcp.browser_service import browser_service
     if browser_service.available:
         driver = browser_service.driver
         sessions = browser_service.get_all_sessions()

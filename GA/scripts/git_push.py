@@ -40,7 +40,7 @@ BRANCH_PREFIX = "auto-push"
 
 def get_token():
     """从 ConfigService 读取 GitHub token"""
-    from tools.config_service import ConfigService
+    from tools.utils.config_service import ConfigService
     token = ConfigService.instance().get('github_token')
     if token:
         return token
@@ -83,7 +83,7 @@ def get_current_commit_message():
 
 def audit():
     """推送前安全审计（委托给 tools/security_audit）"""
-    from tools.security_audit import audit_files, print_report
+    from tools.security.security_audit import audit_files, print_report
     ok, details, summary = audit_files()
     return print_report(ok, details, summary)
 
@@ -97,7 +97,7 @@ _COMPLEXITY_THRESHOLD = 150  # 函数行数超过此值打印警告
 def codegraph_audit():
     """推送前 CodeGraph 代码质量审计（仅警告，不阻塞推送）"""
     try:
-        from tools.codegraph_db import db_available, find_dead_imports, analyze_complexity
+        from tools.mcp.codegraph_db import db_available, find_dead_imports, analyze_complexity
     except ImportError:
         return
     if not db_available():

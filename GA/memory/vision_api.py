@@ -88,11 +88,11 @@ def _prepare_image(image_input, max_pixels=1440000):
 
 def _load_config():
     """向后兼容存根，保留供外部调用"""
-    from tools.config_service import ConfigService
+    from tools.utils.config_service import ConfigService
     return ConfigService.instance().get_all()
 
 def _call_claude(b64, prompt, timeout, max_tokens=1024):
-    from tools.config_service import ConfigService
+    from tools.utils.config_service import ConfigService
     cfg = ConfigService.instance().get(CLAUDE_CONFIG_KEY)
     resp = requests.post(
         cfg['apibase'] + '/v1/messages',

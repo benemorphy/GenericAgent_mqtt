@@ -4,7 +4,7 @@
 每次调用独立启动进程，无需常驻。
 
 用法:
-    from tools.codegraph_mcp import codegraph_call
+    from tools.mcp.codegraph_mcp import codegraph_call
     result = codegraph_call("codegraph_get_symbol_info", {"symbol": "foo"})
 
 可用工具列表见: https://github.com/colbymchenry/codegraph
@@ -136,7 +136,7 @@ def codegraph_call(tool_name: str, tool_args: dict = None,
     """
     # P0: SQLite 原生优先 (500x加速)
     try:
-        from tools.codegraph_db import codegraph_call as _sqlite_call
+        from tools.mcp.codegraph_db import codegraph_call as _sqlite_call
         sqlite_result = _sqlite_call(tool_name, tool_args, workspace, max_files, graph_only, timeout)
         if sqlite_result.get("status") == "success" and sqlite_result.get("source") == "sqlite":
             sqlite_result.pop("source", None)

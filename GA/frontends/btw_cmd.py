@@ -129,7 +129,7 @@ def handle_frontend_command(agent, query) -> str:
 
 def install(cls):
     """Register /btw handler via slash_cmd_registry (replaces monkey-patch)."""
-    from tools.slash_cmd_registry import register, NOT_MINE
+    from tools.agent.slash_cmd_registry import register, NOT_MINE
 
     def handler(agent, raw_query, display_queue):
         s = (raw_query or '').strip()

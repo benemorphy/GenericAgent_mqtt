@@ -68,7 +68,7 @@ def format_history(count=_DEFAULT_COUNT, raw=False):
 def handler(agent, raw_query, display_queue):
     """注册到 slash_cmd_registry 的 handler"""
     if not raw_query.startswith("/history"):
-        from tools.slash_cmd_registry import NOT_MINE
+        from tools.agent.slash_cmd_registry import NOT_MINE
         return NOT_MINE
 
     parts = raw_query.strip().split()
@@ -89,7 +89,7 @@ def handler(agent, raw_query, display_queue):
 
 def register():
     """方便从外部调用的注册函数"""
-    from tools.slash_cmd_registry import register as reg
+    from tools.agent.slash_cmd_registry import register as reg
     reg("/history", handler,
         help_text="/history [N] -- 查看最近N条会话概述")
 

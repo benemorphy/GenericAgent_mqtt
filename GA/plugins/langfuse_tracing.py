@@ -9,7 +9,7 @@ import threading
 import sys
 
 try:
-    from tools.config_service import ConfigService
+    from tools.utils.config_service import ConfigService
     _cfg = ConfigService.instance().get('langfuse_config')
     from langfuse import Langfuse
     _lf = Langfuse(**_cfg) if _cfg else None

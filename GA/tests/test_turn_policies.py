@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from tools.turn_policy import (
+from tools.agent.turn_policy import (
     policy_danger_ask_user,
     policy_danger_retry,
     policy_inject_memory,
@@ -35,7 +35,7 @@ def test_plan_limit():
     assert policy_plan_limit(10, None, "") == "", "non-plan should skip"
 
 def test_chain():
-    from tools.constraint_dashboard import policy_constraint_dashboard
+    from tools.observability.constraint_dashboard import policy_constraint_dashboard
     class FakeHandler:
         constraint_dashboard = None
     policies = [p for p in DEFAULT_TURN_POLICIES if p is not policy_constraint_dashboard]

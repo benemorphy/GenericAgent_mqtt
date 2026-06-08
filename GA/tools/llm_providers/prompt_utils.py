@@ -4,7 +4,7 @@ These are standalone functions that take a handler (or its attributes) as parame
 instead of using self directly.
 """
 
-from tools.ga_utils import fold_earlier
+from tools.utils.ga_utils import fold_earlier
 
 
 def get_anchor_prompt(handler, skip=False):

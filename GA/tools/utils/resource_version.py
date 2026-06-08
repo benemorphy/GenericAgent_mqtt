@@ -4,7 +4,7 @@
 版本化 Prompt/Tool/Agent 资源，支持快照/对比/回滚/提升。
 
 用法:
-    from tools.resource_version import rvm
+    from tools.utils.resource_version import rvm
     v = rvm.snapshot("tool", "code_run", snapshot={"code": "..."})
     diff = rvm.compare("tool", "code_run", v1=1, v2=2)
     rvm.rollback("tool", "code_run", target_version=1)

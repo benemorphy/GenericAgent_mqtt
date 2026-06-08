@@ -46,7 +46,7 @@ def search_agent(state: AgentState) -> dict:
     # 当前为演示，使用模拟数据
     try:
         sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-        from tools.metaso_search import metaso_search_text
+        from tools.utils.metaso_search import metaso_search_text
         results = metaso_search_text(task, size=3)
         search_results = results if results else f"搜索 '{task}' 未找到结果"
     except Exception:

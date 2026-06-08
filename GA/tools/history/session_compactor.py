@@ -5,7 +5,7 @@ Session Compactor — 后台自动压缩 L4 原始历史
 7 天冷却期，daemon 线程不阻塞主流程。
 
 用法:
-    from tools.session_compactor import start_auto_compact
+    from tools.history.session_compactor import start_auto_compact
     start_auto_compact()  # 启动后台线程
 """
 
@@ -45,7 +45,7 @@ def _get_l4_path() -> str:
 
 def _get_dir_size_kb(path: str) -> float:
     """递归计算目录大小(KB)"""
-    from tools.file_search import search_files
+    from tools.utils.file_search import search_files
     total = sum(f.stat().st_size for f in search_files("*", root=path))
     return total / 1024.0
 
@@ -141,7 +141,7 @@ def rotate_l4_sessions(retain_days: int = _RETENTION_DAYS) -> int:
     l4_path = _get_l4_path()
     cutoff = time.time() - retain_days * 86400
     deleted = 0
-    from tools.file_search import search_files
+    from tools.utils.file_search import search_files
     for fpath in search_files("*", root=l4_path):
         if fpath.is_file() and fpath.stat().st_mtime < cutoff:
             os.remove(str(fpath))

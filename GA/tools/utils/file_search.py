@@ -4,7 +4,7 @@
 调用者无需关心底层：有 Everything 自动走 es.exe（毫秒级），否则自动降级 os.walk。
 
 用法:
-    from tools.file_search import search_files, search_name, es_search, es_available
+    from tools.utils.file_search import search_files, search_name, es_search, es_available
 
     # [推荐] 自动路由 — Everything 可用则走 es.exe，否则降级 os.walk
     files = search_files("*.md", root="D:/project")

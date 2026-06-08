@@ -220,7 +220,7 @@ def score_feasibility(domain_a: str, domain_b: str, detail: str = "") -> dict:
     factors = {}
 
     # 1. 已有工具可用的加分
-    from tools.file_search import search_files
+    from tools.utils.file_search import search_files
     tools_dir = Path(__file__).resolve().parent
     existing_tools = [f.stem for f in search_files("*.py", root=tools_dir)]
     domain_keywords = (domain_a + " " + domain_b).lower().split()

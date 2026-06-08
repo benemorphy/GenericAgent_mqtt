@@ -8,11 +8,11 @@ Usage in ga.py __init__:
     register_default_hooks(self)
 
 For custom policies, import from tools.turn_policy:
-    from tools.turn_policy import register_turn_policies, policy_danger_ask_user
+    from tools.agent.turn_policy import register_turn_policies, policy_danger_ask_user
 """
 
-from tools.ga_utils import consume_file
-from tools.turn_policy import (
+from tools.utils.ga_utils import consume_file
+from tools.agent.turn_policy import (
     register_turn_policies,
 )
 

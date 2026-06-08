@@ -2,7 +2,7 @@
 GenericAgent 日志模块 — 替代 print 的分级日志
 
 用法:
-    from tools.logger import log
+    from tools.utils.logger import log
     log.info("Agent started")
     log.warn("Retry attempt %d", n)
     log.error("Failed: %s", err, exc_info=True)

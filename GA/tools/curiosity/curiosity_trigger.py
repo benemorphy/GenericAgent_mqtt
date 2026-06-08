@@ -5,7 +5,7 @@ CuriosityTrigger — Agent 好奇心自动检测触发器
 通过 CURIOSITY_ENABLED 环境变量控制开关（默认开启）。
 
 用法:
-    from tools.curiosity_trigger import check_curiosity_triggers
+    from tools.curiosity.curiosity_trigger import check_curiosity_triggers
     triggers = check_curiosity_triggers(tool_results, "agent_alpha")
     for t in triggers:
         ctx.publish("board/curiosity/post", t)

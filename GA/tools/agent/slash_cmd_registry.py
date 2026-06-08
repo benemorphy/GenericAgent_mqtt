@@ -7,7 +7,7 @@ The new approach: Plugins register into a handler list. agentmain dispatches
 built-in commands first, then iterates registered handlers.
 
 Usage:
-    from tools.slash_cmd_registry import NOT_MINE, register, get_help_texts
+    from tools.agent.slash_cmd_registry import NOT_MINE, register, get_help_texts
 
     def my_handler(agent, raw_query, display_queue):
         if not raw_query.startswith('/mycmd'): return NOT_MINE

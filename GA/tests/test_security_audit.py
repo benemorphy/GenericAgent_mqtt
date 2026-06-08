@@ -4,7 +4,7 @@ import sys
 import tempfile
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from tools.security_audit import audit_files, _parse_git_status, SENSITIVE_PATTERNS
+from tools.security.security_audit import audit_files, _parse_git_status, SENSITIVE_PATTERNS
 
 
 class TestParseGitStatus:

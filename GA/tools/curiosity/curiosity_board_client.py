@@ -4,7 +4,7 @@ CuriosityBoard Client — 好奇心讨论板客户端
 供 GA Handler 使用，通过 MQTT 与 CuriosityBoardPlugin 通信。
 
 用法:
-    from tools.curiosity_board_client import CuriosityBoardClient
+    from tools.curiosity.curiosity_board_client import CuriosityBoardClient
     client = CuriosityBoardClient("agent_alpha")
     client.connect()
     post_id = client.post_curiosity(signal)

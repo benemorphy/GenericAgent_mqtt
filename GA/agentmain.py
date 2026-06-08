@@ -18,9 +18,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from llmcore import reload_mykeys, ToolClient, MixinSession, NativeToolClient, NativeClaudeSession, NativeOAISession, resolve_client
 from agent_loop import agent_runner_loop
 from ga import GenericAgentHandler, get_global_memory
-from tools.ga_utils import smart_format, format_error, consume_file
-from tools.tracer import tracer
-from tools.reflection_optimizer import optimizer
+from tools.utils.ga_utils import smart_format, format_error, consume_file
+from tools.observability.tracer import tracer
+from tools.reflection.reflection_optimizer import optimizer
 from tools.heartbeat_memory import hb
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -144,7 +144,7 @@ class GenericAgent:
         if raw_query.strip() == '/resume':
             return r'帮我看看最近有哪些会话可以恢复。读model_responses/目录，按修改时间取最近10个文件，从每个文件里找最后一个<history>...</history>块，用一句话总结每个会话在聊什么，列表给我选。注意读文件后要把字面的\n替换成真换行才能正确匹配。'
         # Registered handler chain (replaces fragile monkey-patch chain)
-        from tools.slash_cmd_registry import dispatch, NOT_MINE
+        from tools.agent.slash_cmd_registry import dispatch, NOT_MINE
         result = dispatch(self, raw_query, display_queue)
         if result is not NOT_MINE:
             return result
@@ -250,7 +250,7 @@ def _heartbeat_loop():
     while True:
         try:
             # 从 Tracer 获取自上次心跳以来的新记录
-            from tools.tracer import tracer as _tr
+            from tools.observability.tracer import tracer as _tr
             recent = _tr.recent(20)
             if recent and len(recent) > _last_hb_trace_count[0]:
                 new_records = recent[:min(10, len(recent) - _last_hb_trace_count[0])]
@@ -269,7 +269,7 @@ _hb_thread = threading.Thread(target=_heartbeat_loop, daemon=True)
 _hb_thread.start()
 
 try:
-    from tools.session_compactor import start_auto_compact
+    from tools.history.session_compactor import start_auto_compact
     start_auto_compact()
     log.debug("后台自动压缩已启动")
 except Exception:

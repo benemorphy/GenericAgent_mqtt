@@ -5,8 +5,8 @@ LLM Session 层 — 会话管理与多模型回退
 
 import time
 import copy
-from tools.retry_utils import retry_stream
-from tools.logger import log
+from tools.utils.retry_utils import retry_stream
+from tools.utils.logger import log
 
 # ── 临时依赖：从 llmcore 导入工具函数（后续独立到 utils.py） ──
 from llmcore import (

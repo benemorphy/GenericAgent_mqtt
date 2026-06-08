@@ -52,7 +52,7 @@ def _search_mem(query: str, n_results: int = 3) -> List[SearchResult]:
 def _search_code(query: str, n_results: int = 5) -> List[SearchResult]:
     """代码搜索 CodeGraph"""
     try:
-        from tools.codegraph_mcp import codegraph_call
+        from tools.mcp.codegraph_mcp import codegraph_call
         
         results = []
         
