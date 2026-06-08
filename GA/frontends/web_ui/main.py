@@ -8,7 +8,7 @@ FastAPI Web UI — 入口
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 
-from frontends.web_ui.config import HOST, PORT
+from services.bbs_data.config import HOST, PORT
 from frontends.auth import optional_user
 
 app = FastAPI(title="GenericAgent Web UI", docs_url="/api/docs")
