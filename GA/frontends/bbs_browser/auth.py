@@ -62,48 +62,6 @@ def create_jwt(user: dict) -> str:
     return f"{header}.{body}.{sig}"
 
 
-def decode_jwt(token: str) -> dict:
-    """解码验证 JWT"""
-    import json
-    import base64
-    try:
-        parts = token.split(".")
-        if len(parts) != 3:
-            raise ValueError("invalid token")
-        header, body, sig = parts
-        import hmac
-        expected_sig = base64.urlsafe_b64encode(
-            hmac.new(JWT_SECRET.encode(), f"{header}.{body}".encode(), hashlib.sha256).digest()
-        ).rstrip(b"=").decode()
-        if sig != expected_sig:
-            raise ValueError("signature mismatch")
-        payload = json.loads(base64.urlsafe_b64decode(body + "=="))
-        if payload.get("exp", 0) < time.time():
-            raise ValueError("token expired")
-        return payload
-    except Exception as e:
-        raise HTTPException(status_code=401, detail=f"登录无效: {e}")
-
-
-def require_user(request: Request):
-    """FastAPI 依赖注入 — 从 cookie 解析用户"""
-    token = request.cookies.get("token")
-    if not token:
-        raise HTTPException(status_code=401, detail="请先登录")
-    return decode_jwt(token)
-
-
-def optional_user(request: Request):
-    """可选用户注入（未登录时返回 None）"""
-    token = request.cookies.get("token")
-    if not token:
-        return None
-    try:
-        return decode_jwt(token)
-    except Exception:
-        return None
-
-
 def register_user(username: str, password: str, display_name: str = "") -> dict:
     """注册用户"""
     if len(username) < 2 or len(password) < 4:

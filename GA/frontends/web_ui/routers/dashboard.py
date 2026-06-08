@@ -9,12 +9,7 @@ from fastapi.responses import HTMLResponse
 
 from frontends.auth import require_user
 from frontends.bbs_browser.database import get_db
-
-from jinja2 import Environment, FileSystemLoader
-
-_TEMPLATES = Environment(loader=FileSystemLoader(
-    Path(__file__).resolve().parent.parent / "templates"
-))
+from frontends.web_ui import templates as _T
 
 router = APIRouter(dependencies=[Depends(require_user)])
 
@@ -29,7 +24,7 @@ _cache = {
 
 def _render(name: str, **ctx) -> str:
     user = ctx.pop('user', None)
-    return _TEMPLATES.get_template(name).render(user=user, nav_active='dashboard', **ctx)
+    return _T.get_template(name).render(user=user, nav_active='dashboard', **ctx)
 
 
 def _get_overview() -> dict:

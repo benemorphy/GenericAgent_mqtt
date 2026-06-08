@@ -6,11 +6,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 
 from frontends.auth import require_user
-from jinja2 import Environment, FileSystemLoader
-
-_TEMPLATES = Environment(loader=FileSystemLoader(
-    Path(__file__).resolve().parent / "templates"
-))
+from frontends.playground import templates as _T
 
 router = APIRouter(dependencies=[Depends(require_user)])
 
