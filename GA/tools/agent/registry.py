@@ -2,7 +2,7 @@
 """GA 统一注册中心 (P1: 替代 14+ do_* 手动分发 + 30+ handle_* 硬编码)
 
 用法:
-    from tools.registry import TOOL, AGENT, FRONTEND, MEMORY
+    from tools.agent.registry import TOOL, AGENT, FRONTEND, MEMORY
 
     @TOOL.register()
     def my_tool(args, response):
@@ -54,7 +54,7 @@ class Registry:
                 self._functions[key] = item
             # P4: 版本化注册快照
             try:
-                from tools.resource_version import rvm
+                from tools.utils.resource_version import rvm
                 rvm.snapshot("tool", key, {"doc": item.__doc__[:80] if item.__doc__ else "",
                                            "type": "function" if inspect.isfunction(item) else "class"})
             except Exception:

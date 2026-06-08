@@ -6,7 +6,7 @@ FFmpeg 工具集 — 封装常用音视频操作
 GPU: NVIDIA (Driver 555.99, CUDA 12.5)
 
 用法:
-    from tools.ffmpeg_utils import screen_capture, probe_media, convert_format
+    from tools.utils.ffmpeg_utils import screen_capture, probe_media, convert_format
 """
 
 import subprocess

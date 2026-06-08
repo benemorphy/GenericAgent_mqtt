@@ -4,7 +4,7 @@
 记录每次 agent 执行的完整 DAG 链路，支持回溯/回归检测。
 
 用法:
-    from tools.lineage_tracer import lt
+    from tools.observability.lineage_tracer import lt
     lt.trace_turn(turn_id="t1", agent="main", action="code_run", context={}, result={})
     chain = lt.get_lineage("t1")
     regressions = lt.find_regressions(since_version=5)

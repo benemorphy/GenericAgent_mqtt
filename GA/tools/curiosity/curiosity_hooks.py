@@ -5,14 +5,14 @@ Curiosity Hooks — 感知工具的好奇心信号检测器
 "好奇心信号检测"，在工具返回时自动注册 CuriositySignal。
 
 用法:
-    from tools.curiosity_hooks import check_file_read_curiosity, check_web_scan_curiosity, check_code_run_curiosity
+    from tools.curiosity.curiosity_hooks import check_file_read_curiosity, check_web_scan_curiosity, check_code_run_curiosity
     signal = check_file_read_curiosity(path, content, dashboard.last_scan_time)
     if signal: dashboard.register_curiosity(signal)
 """
 
 import os
 from typing import Optional
-from tools.constraint_dashboard import CuriositySignal
+from tools.observability.constraint_dashboard import CuriositySignal
 
 # ── 文件读取好奇心检测 ──
 

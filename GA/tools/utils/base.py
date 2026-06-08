@@ -2,7 +2,7 @@
 工具契约规范 — Phase 1: 标准化接口 + 自动包装
 
 用法:
-    from tools.base import BaseTool, ToolResult
+    from tools.utils.base import BaseTool, ToolResult
 
     class MyTool(BaseTool):
         name = "my_tool"

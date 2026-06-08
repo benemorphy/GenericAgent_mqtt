@@ -25,7 +25,7 @@ _USE_CODEGRAPH = True  # 全局开关，设为 False 可强制使用静态数据
 def _get_cg_bridge():
     """懒加载桥接模块，避免循环依赖"""
     try:
-        from tools.ontology_codegraph_bridge import (
+        from tools.mcp.ontology_codegraph_bridge import (
             discover_entities, discover_relations,
             check_component_status, invalidate_cache as cg_invalidate,
             db_available

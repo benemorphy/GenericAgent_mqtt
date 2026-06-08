@@ -294,7 +294,7 @@ def run_practical_test():
     practice_dir = os.path.join(os.path.dirname(__file__), "..", "practice")
     hook_files = []
     if os.path.isdir(practice_dir):
-        from tools.file_search import search_files
+        from tools.utils.file_search import search_files
         hook_files = sorted(
             str(f) for f in search_files("*.py", root=practice_dir)
             if f.name != "__init__.py"

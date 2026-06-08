@@ -2,7 +2,7 @@
 Observability — 结构化日志 + Prometheus Metrics
 
 用法:
-    from tools.observability import metrics, setup_metrics_server
+    from tools.observability.observability import metrics, setup_metrics_server
     metrics.inc("mqtt_messages", {"type": "register"})
 """
 

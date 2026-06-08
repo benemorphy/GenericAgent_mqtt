@@ -7,7 +7,7 @@ MASC实时步骤检测器 — 运行时检测工具执行异常
 
 集成方式（在handler子类中）:
 ```python
-from tools.step_detector import StepDetector
+from tools.reflection.step_detector import StepDetector
 
 class MyHandler(BaseHandler):
     def __init__(self):

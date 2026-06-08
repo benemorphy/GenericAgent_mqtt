@@ -309,7 +309,7 @@ def handle_frontend_command(agent, query, exclude_pid=None):
 
 def install(cls):
     """Register /continue handler via slash_cmd_registry (replaces monkey-patch)."""
-    from tools.slash_cmd_registry import register, NOT_MINE
+    from tools.agent.slash_cmd_registry import register, NOT_MINE
 
     def handler(agent, raw_query, display_queue):
         if not (raw_query or '').startswith('/continue'):

@@ -276,7 +276,7 @@ def _get_inspiration_board():
     """获取灵感板单例（避免重复创建导致MQTT client_id冲突）"""
     global _inspiration_board
     if _inspiration_board is None:
-        from tools.inspiration_board import Board as _InspBoard
+        from tools.curiosity.inspiration_board import Board as _InspBoard
         _inspiration_board = _InspBoard(bbs_backend=True)
     return _inspiration_board
 
@@ -1063,7 +1063,7 @@ def handle_command(open_id, cmd, chat_id=None):
         else:
             _send_cmd_response(_todo_mgr.format_list())
     elif op == "/dream":
-        from tools.dream_engine import replay_memories, associate_random
+        from tools.reflection.dream_engine import replay_memories, associate_random
         import pymysql as _pm
         _db_pwd = os.environ.get('DB_PASSWORD', 'mariadb')
         _conn = _pm.connect(host='127.0.0.1', port=3306, user='root', password=_db_pwd, database='mqtt_bbs')

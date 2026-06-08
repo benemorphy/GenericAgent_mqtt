@@ -18,7 +18,7 @@ import difflib
 from pathlib import Path
 
 _GA_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-from tools.ga_utils import format_error, smart_format, scan_files
+from tools.utils.ga_utils import format_error, smart_format, scan_files
 
 # ---------------------------------------------------------------------------
 # Code execution
@@ -120,7 +120,7 @@ def ask_user(question, candidates=None):
 # Browser operations
 # ---------------------------------------------------------------------------
 
-from tools.browser_service import browser_service
+from tools.mcp.browser_service import browser_service
 import simphtml
 
 def web_scan(tabs_only=False, switch_tab_id=None, text_only=False, maxlen=35000):

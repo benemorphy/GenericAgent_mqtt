@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 # P4: Lineage 审计导入 (try/except 确保不阻塞)
 try:
-    from tools.lineage_tracer import lt as _lt
+    from tools.observability.lineage_tracer import lt as _lt
     _LINEAGE_AVAIL = True
 except Exception:
     _LINEAGE_AVAIL = False
@@ -27,7 +27,7 @@ class BaseHandler:
     def dispatch(self, tool_name, args, response, index=0, tool_num=1):
         # P1: Registry 优先查找
         try:
-            from tools.registry import TOOL as _TOOL
+            from tools.agent.registry import TOOL as _TOOL
             _reg_fn = _TOOL.get_function(tool_name)
             if _reg_fn:
                 args['_index'] = index; args['_tool_num'] = tool_num

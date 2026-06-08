@@ -60,7 +60,7 @@ class ReflectionEngine:
         py_dir = os.path.join(self.root, "Mqtt_bbs_server")
         if not os.path.isdir(py_dir):
             return found
-        from tools.file_search import search_files
+        from tools.utils.file_search import search_files
         for f in sorted(search_files("*.py", root=py_dir)):
             name = os.path.splitext(os.path.basename(f))[0]
             if name.startswith("_"):
@@ -79,7 +79,7 @@ class ReflectionEngine:
             os.path.join(self.root, "Mqtt_bbs", "tools", "Mqtt_bbs_rs"),
             os.path.join(self.root, "Mqtt_bbs", "tools", "board_service_rs"),
         ]
-        from tools.file_search import search_files
+        from tools.utils.file_search import search_files
         for rs_dir in rs_dirs:
             src = os.path.join(rs_dir, "src")
             if not os.path.isdir(src):

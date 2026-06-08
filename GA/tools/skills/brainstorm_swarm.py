@@ -168,7 +168,7 @@ def brainstorm(topic, n_agents=4, rounds=2, verbose=True):
     result = "\n".join(parts)
 
     try:
-        from tools.inspiration_board import Board
+        from tools.curiosity.inspiration_board import Board
         Board().add_idea(
             f"[Brainstorm] {topic[:40]}",
             f"{n_agents} agents x {rounds} rounds Round Robin",

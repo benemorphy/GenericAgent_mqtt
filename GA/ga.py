@@ -2,12 +2,12 @@ import sys
 import os
 import re
 import json
-from tools.ga_utils import log_memory_access, expand_file_refs, smart_format, consume_file, extract_robust_content
-from tools.prompt_utils import get_anchor_prompt
+from tools.utils.ga_utils import log_memory_access, expand_file_refs, smart_format, consume_file, extract_robust_content
+from tools.llm_providers.prompt_utils import get_anchor_prompt
 from tools.tool_definitions import code_run, ask_user, web_scan, web_execute_js, file_patch, file_read
-from tools.codegraph_mcp import codegraph_call, available_tools
-from tools.registry import TOOL
-from tools.lineage_tracer import lt
+from tools.mcp.codegraph_mcp import codegraph_call, available_tools
+from tools.agent.registry import TOOL
+from tools.observability.lineage_tracer import lt
 if sys.stdout is None: sys.stdout = open(os.devnull, "w")
 if sys.stderr is None: sys.stderr = open(os.devnull, "w")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -27,7 +27,7 @@ class GenericAgentHandler(BaseHandler):
         from tools.hooks_default import register_default_hooks
         register_default_hooks(self)
         # 约束仪表盘 — 执行中的预算状态感知
-        from tools.constraint_dashboard import ConstraintDashboard
+        from tools.observability.constraint_dashboard import ConstraintDashboard
         self._constraint_dashboard = ConstraintDashboard()
 
     def _get_abs_path(self, path):
@@ -67,7 +67,7 @@ class GenericAgentHandler(BaseHandler):
         next_prompt = get_anchor_prompt(self, skip=args.get('_index', 0) > 0)
         # 好奇心检测: 目录列举结果中的模式/异常
         if hasattr(self, '_constraint_dashboard'):
-            from tools.curiosity_hooks import check_code_run_curiosity, try_register_curiosity
+            from tools.curiosity.curiosity_hooks import check_code_run_curiosity, try_register_curiosity
             sig = check_code_run_curiosity(code_type, code, str(result))
             try_register_curiosity(self, sig)
         return StepOutcome(result, next_prompt=next_prompt)
@@ -96,7 +96,7 @@ class GenericAgentHandler(BaseHandler):
         next_prompt = "\n"
         # 好奇心检测: 扫描结果中的新tab/有趣页面
         if hasattr(self, '_constraint_dashboard'):
-            from tools.curiosity_hooks import check_web_scan_curiosity, try_register_curiosity
+            from tools.curiosity.curiosity_hooks import check_web_scan_curiosity, try_register_curiosity
             result_str = result if isinstance(result, str) else json.dumps(result, ensure_ascii=False, default=json_default)
             sig = check_web_scan_curiosity(tabs_only, result_str)
             try_register_curiosity(self, sig)
@@ -194,7 +194,7 @@ class GenericAgentHandler(BaseHandler):
             next_prompt += hook({'location': 'file_read', 'path': path}) or ""
         # 好奇心检测: 文件内容中的异常/模式
         if hasattr(self, '_constraint_dashboard'):
-            from tools.curiosity_hooks import check_file_read_curiosity, try_register_curiosity
+            from tools.curiosity.curiosity_hooks import check_file_read_curiosity, try_register_curiosity
             sig = check_file_read_curiosity(path, result)
             try_register_curiosity(self, sig)
         return StepOutcome(result, next_prompt=next_prompt)
@@ -351,7 +351,7 @@ class GenericAgentHandler(BaseHandler):
             hp = self._constraint_dashboard.high_priority_curiosities
             if hp and turn > 0 and turn % 6 == 0:
                 try:
-                    from tools.curiosity_board_client import CuriosityBoardClient
+                    from tools.curiosity.curiosity_board_client import CuriosityBoardClient
                     agent_id = getattr(self.parent, 'agent_id', self.parent.__class__.__name__)
                     bbs = CuriosityBoardClient(agent_id)
                     bbs.connect()

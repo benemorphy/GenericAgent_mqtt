@@ -101,7 +101,7 @@ def _phase1_define(ctx: dict):
 def _import_web_search():
     """Simple import of web search; return None if unavailable."""
     try:
-        from tools.metaso_search import metaso_search as fn
+        from tools.utils.metaso_search import metaso_search as fn
         return fn
     except Exception:
         return None

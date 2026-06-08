@@ -6,7 +6,7 @@ Constraint Dashboard — 约束状态感知系统。
 
 基于 CoStrict / INTENT 研究的 "budget awareness" 理念。
 用法:
-    from tools.constraint_dashboard import ConstraintDashboard, policy_constraint_dashboard
+    from tools.observability.constraint_dashboard import ConstraintDashboard, policy_constraint_dashboard
     # 在 handler 上初始化
     handler._constraint_dashboard = ConstraintDashboard()
     # 在 turn_end_callback 中更新

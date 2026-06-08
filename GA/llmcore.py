@@ -8,9 +8,9 @@ import urllib3
 import uuid
 from datetime import datetime
 import logging
-from tools.retry_utils import retry_stream
-from tools.config_service import ConfigService
-from tools.logger import log
+from tools.utils.retry_utils import retry_stream
+from tools.utils.config_service import ConfigService
+from tools.utils.logger import log
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _RESP_CACHE_KEY = str(uuid.uuid4())
 
@@ -42,7 +42,7 @@ def __getattr__(name):  # once guard in PEP 562
     if name == 'mykeys': return reload_mykeys()[0]
     raise AttributeError(f"module 'llmcore' has no attribute {name}")
 
-from tools.history_compressor import DefaultCompressor
+from tools.history.history_compressor import DefaultCompressor
 from tools.llm_providers.claude import _parse_claude_sse, _parse_claude_json
 from tools.llm_providers.openai import _parse_openai_sse, _parse_openai_json
 

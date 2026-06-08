@@ -14,5 +14,5 @@ ConfigService 根据 profile 名称加载对应文件。
   cp mykey.py profiles/internet.py
 
 切换 profile:
-  python -c "from tools.config_service import ConfigService; ConfigService.init('internet')"
+  python -c "from tools.utils.config_service import ConfigService; ConfigService.init('internet')"
 """

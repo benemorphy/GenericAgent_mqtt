@@ -264,7 +264,7 @@ class KnowledgeGraph:
         """从 CodeGraph 索引注入符号到知识图谱"""
         count = 0
         try:
-            from tools.codegraph_mcp import codegraph_call
+            from tools.mcp.codegraph_mcp import codegraph_call
             
             # 获取关键符号
             for query in ['class', 'def', 'route', 'app', 'main', 'config']:

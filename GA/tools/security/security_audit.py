@@ -2,7 +2,7 @@
 安全审计模块 — 检出推送/上传前扫描敏感信息
 
 用法:
-    from tools.security_audit import audit_files, SENSITIVE_PATTERNS
+    from tools.security.security_audit import audit_files, SENSITIVE_PATTERNS
     ok, report = audit_files()
     ok, report = audit_files(files=['path/to/file.py'])
 """

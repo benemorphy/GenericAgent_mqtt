@@ -4,7 +4,7 @@
 记录每次 agent 执行的完整轨迹到 SQLite，支持回放和搜索。
 
 用法:
-    from tools.tracer import tracer
+    from tools.observability.tracer import tracer
     tracer.record(turn_id="xxx", prompt="...", tool_calls=[...], results=[...], reward=0.8)
     turn = tracer.replay("xxx")
     results = tracer.search("file_read 失败")
@@ -164,7 +164,7 @@ class TurnTracer:
             return {}
         
         try:
-            from tools.codegraph_db import db_available, analyze_complexity, find_dead_imports
+            from tools.mcp.codegraph_db import db_available, analyze_complexity, find_dead_imports
         except ImportError:
             return {}
         

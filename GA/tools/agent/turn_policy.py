@@ -5,12 +5,12 @@ that receive (turn, _plan, next_prompt) and return "" or a string to append.
 
 Auto-activation: register_turn_policies(handler) is called by hooks_default's
 register_default_hooks(), which is called in ga.py __init__. For manual use:
-    from tools.turn_policy import register_turn_policies
+    from tools.agent.turn_policy import register_turn_policies
     register_turn_policies(handler)
 """
 
 
-from tools.constraint_dashboard import policy_constraint_dashboard
+from tools.observability.constraint_dashboard import policy_constraint_dashboard
 
 
 # ── Turn Policy Functions ──

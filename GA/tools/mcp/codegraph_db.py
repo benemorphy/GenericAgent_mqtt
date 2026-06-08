@@ -347,7 +347,7 @@ def db_available() -> bool:
 
 def _fallback_cli(tool_name: str, tool_args: dict, workspace: str) -> dict:
     """回退到 CLI 调用"""
-    from tools.codegraph_mcp import codegraph_call as cli_call
+    from tools.mcp.codegraph_mcp import codegraph_call as cli_call
     return cli_call(tool_name, tool_args, workspace)
 
 

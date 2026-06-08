@@ -89,7 +89,7 @@ def split_text(text, limit):
 
 def _restore_log_files():
     files = []
-    from tools.file_search import search_files
+    from tools.utils.file_search import search_files
     for pattern in RESTORE_GLOBS:
         files.extend(str(f) for f in search_files(pattern))
     return sorted(set(files))
@@ -397,7 +397,7 @@ def create_agent(verbose=False, inc_out=True):
     Returns:
         (agent, cfg) — agent 是 GeneraticAgent 实例, cfg 是 ConfigService 实例
     """
-    from tools.config_service import ConfigService
+    from tools.utils.config_service import ConfigService
     cfg = ConfigService.instance()
     agent = _GA()
     agent.verbose = verbose

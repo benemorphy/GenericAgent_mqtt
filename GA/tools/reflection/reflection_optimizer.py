@@ -4,7 +4,7 @@
 基于执行轨迹的反思式优化 - 分析得失 → 提取模式 → 生成改进建议。
 
 用法:
-    from tools.reflection_optimizer import optimizer
+    from tools.reflection.reflection_optimizer import optimizer
     reflection = optimizer.reflect_on_turn(turn)
     patterns = optimizer.extract_patterns(history)
     suggestion = optimizer.generate_improvement(pattern)
@@ -242,7 +242,7 @@ optimizer = ReflectionOptimizer()
 
 if __name__ == "__main__":
     # 测试
-    from tools.tracer import tracer
+    from tools.observability.tracer import tracer
     hist = tracer.recent(10)
     print(f"取到 {len(hist)} 条历史轨迹")
     

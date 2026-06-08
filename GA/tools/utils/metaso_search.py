@@ -4,7 +4,7 @@ Metaso 搜索引擎封装
 依赖: `pip install requests`（如未安装）
 
 用法:
-    from tools.metaso_search import metaso_search
+    from tools.utils.metaso_search import metaso_search
     results = metaso_search("你的搜索词", size=5)
     for r in results:
         print(r["title"], r["url"])
