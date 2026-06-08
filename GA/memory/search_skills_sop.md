@@ -6,6 +6,7 @@
 
 | 工具 | 方式 | 适用场景 |
 |------|------|---------|
+| **MemPalace 语义搜索** | `from memory.mempalace_bridge import semantic_search; semantic_search(query, n_results=5)` | **本地记忆语义搜索优先** — 语义向量模糊匹配记忆文件（2526抽屉/6房间），无需关键词精确匹配 |
 | **Metaso API** | `metaso_search(keyword, size=5)` | 技术文档/知识搜索，中文优先 |
 | **Local (es.exe)** | `from tools.file_search import es_search; es_search(pattern, max_results=10)` | 本地文件全盘搜索，~54ms，依赖 Everything 服务 |
 | **Bing 浏览器** | `web_execute_js` 打开 bing.com 搜索 | 备用搜索，无API密钥时 |
@@ -14,16 +15,21 @@
 
 ## 搜索策略（按优先级排序）
 
-1. **Metaso API 优先** — 有API key时，用 `metaso_search` 搜索
+1. **MemPalace 语义搜索优先** — 先查本地记忆语义搜索，能模糊匹配已知事实
+   - 参数: query, n_results=1-20
+   - 返回: source, room, cosine score, content preview
+   - 适用: 本地 SOP/知识检索，模糊查询已知事实
+
+2. **Metaso API 次选** — 有API key时，用 `metaso_search` 搜索
    - 参数: keyword, scope=(webpage/news/academic), size=1-20
    - 返回: title, url, snippet, score
    - 适用: 技术问题、文档查找、知识检索
 
-2. **skills.sh 搜索技能** — 查找可安装的 agent skill
+3. **skills.sh 搜索技能** — 查找可安装的 agent skill
    - `find-skills` skill: 帮助用户发现技能
    - 遍历 skills.sh 页面链接，关键词匹配
 
-3. **Bing 浏览器兜底** — 启用 CDP 浏览器后
+4. **Bing 浏览器兜底** — 启用 CDP 浏览器后
    - 打开 bing.com → 搜索关键词 → scan 结果
    - 适用于 Metaso 不返回结果时
 
@@ -38,11 +44,18 @@
 ## 典型搜索流程
 
 ```
-问题 → 提炼关键词 → 搜索 Metaso
-  ├─ 有结果 → 打开详情页核实 → 提取所需信息
-  └─ 无结果 → 改写关键词 → 再次搜索
-              └─ 仍无 → 换 Bing 浏览器 → 扫描结果
+问题 → 提炼关键词 → MemPalace 语义搜索（本地）
+  ├─ 有结果 → 打开文件核实 → 提取所需信息
+  └─ 无结果 → 换 Metaso 搜索
+              └─ 仍无 → Bing 浏览器兜底
 ```
+
+## MemPalace 使用注意
+
+- 语义搜索不依赖关键词精确匹配，适合模糊查询
+- 桥接模块: `from memory.mempalace_bridge import semantic_search`
+- Palace 状态: 2526 drawers, 6 rooms (l4_raw_sessions, general, inspirations, autonomous_operation_sop, learning_log, skill_search)
+- 首次查询可能因加载 ONNX 模型稍慢（~2s），后续查询 < 500ms
 
 ## Metaso 使用注意
 

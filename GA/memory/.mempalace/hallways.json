@@ -1,0 +1,1119 @@
+{
+  "schema_version": 1,
+  "hallways": [
+    {
+      "id": "hallway_memory_Agent_Beneh_78ee5013",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Beneh",
+      "co_occurrence_count": 178,
+      "rooms": [
+        "general",
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Beneh (co-occur in 178 drawers across 2 rooms: general, l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Board_f2720e26",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Board",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Board (co-occur in 3 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_BoardClient_32a618b5",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "BoardClient",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ BoardClient (co-occur in 3 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_BoardService_1414dadd",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "BoardService",
+      "co_occurrence_count": 12,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ BoardService (co-occur in 12 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Checking_7f996f65",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Checking",
+      "co_occurrence_count": 4,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Checking (co-occur in 4 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Chrome_96135190",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Chrome",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Chrome (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Connection_18eee4f3",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Connection",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Connection (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Ctrl_9f76a1a5",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Ctrl",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Ctrl (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Dee_e1d54970",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Dee",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Dee (co-occur in 3 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Docker_7fbaa9c7",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Docker",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Docker (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Dockerfile_239f2566",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Dockerfile",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Dockerfile (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_FlClash_f3deea7e",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "FlClash",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ FlClash (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Gateway_9cf5ba50",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Gateway",
+      "co_occurrence_count": 21,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Gateway (co-occur in 21 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_GenericAgent_6dff9c59",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "GenericAgent",
+      "co_occurrence_count": 41,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ GenericAgent (co-occur in 41 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Git_1d2550e6",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Git",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Git (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Instruct_7f71e410",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Instruct",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Instruct (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_LineNumber_cb499f06",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "LineNumber",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ LineNumber (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Loca_93d501b4",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Loca",
+      "co_occurrence_count": 6,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Loca (co-occur in 6 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_MainThread_3e31de0c",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "MainThread",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ MainThread (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_MariaDB_e4dff849",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "MariaDB",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ MariaDB (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Metaso_54212f1a",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Metaso",
+      "co_occurrence_count": 6,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Metaso (co-occur in 6 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Mode_064c175e",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Mode",
+      "co_occurrence_count": 99,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Mode (co-occur in 99 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Mori_96bd54ae",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Mori",
+      "co_occurrence_count": 6,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Mori (co-occur in 6 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Morit_2f6aa1b2",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Morit",
+      "co_occurrence_count": 18,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Morit (co-occur in 18 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Morith_f5f0000b",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Morith",
+      "co_occurrence_count": 43,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Morith (co-occur in 43 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Mosquitto_a6afb682",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Mosquitto",
+      "co_occurrence_count": 4,
+      "rooms": [
+        "general",
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Mosquitto (co-occur in 4 drawers across 2 rooms: general, l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_NapCat_47f1927e",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "NapCat",
+      "co_occurrence_count": 7,
+      "rooms": [
+        "general",
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ NapCat (co-occur in 7 drawers across 2 rooms: general, l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Node_2a0632cd",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Node",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Node (co-occur in 3 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Output_edf5a443",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Output",
+      "co_occurrence_count": 4,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Output (co-occur in 4 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Python_77b4e080",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Python",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Python (co-occur in 3 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Reading_da120440",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Reading",
+      "co_occurrence_count": 19,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Reading (co-occur in 19 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Rust_c97df8a4",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Rust",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Rust (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_ScriptRunContext_c6e50b5f",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "ScriptRunContext",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ ScriptRunContext (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Server_df6eb369",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Server",
+      "co_occurrence_count": 8,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Server (co-occur in 8 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Shell_01cef5fd",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Shell",
+      "co_occurrence_count": 4,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Shell (co-occur in 4 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Streamlit_a105cdcd",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Streamlit",
+      "co_occurrence_count": 4,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Streamlit (co-occur in 4 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_SyntaxError_e29a5577",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "SyntaxError",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ SyntaxError (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_Users_20ba9fdf",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "Users",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ Users (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_WebUI_71cc214f",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "WebUI",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "general",
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ WebUI (co-occur in 3 drawers across 2 rooms: general, l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Agent_WorkerAgent_082ca474",
+      "wing": "memory",
+      "entity_a": "Agent",
+      "entity_b": "WorkerAgent",
+      "co_occurrence_count": 4,
+      "rooms": [
+        "general",
+        "l4_raw_sessions"
+      ],
+      "label": "Agent ↔ WorkerAgent (co-occur in 4 drawers across 2 rooms: general, l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Associate_Morph_bee810f5",
+      "wing": "memory",
+      "entity_a": "Associate",
+      "entity_b": "Morph",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "general"
+      ],
+      "label": "Associate ↔ Morph (co-occur in 2 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Beneh_GenericAgent_45367655",
+      "wing": "memory",
+      "entity_a": "Beneh",
+      "entity_b": "GenericAgent",
+      "co_occurrence_count": 6,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Beneh ↔ GenericAgent (co-occur in 6 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Beneh_Mode_e80553c0",
+      "wing": "memory",
+      "entity_a": "Beneh",
+      "entity_b": "Mode",
+      "co_occurrence_count": 75,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Beneh ↔ Mode (co-occur in 75 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Beneh_Morith_36be46ef",
+      "wing": "memory",
+      "entity_a": "Beneh",
+      "entity_b": "Morith",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Beneh ↔ Morith (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_BoardService_Broker_45f3fafc",
+      "wing": "memory",
+      "entity_a": "BoardService",
+      "entity_b": "Broker",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "general"
+      ],
+      "label": "BoardService ↔ Broker (co-occur in 2 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_BoardService_MariaDB_01c9b705",
+      "wing": "memory",
+      "entity_a": "BoardService",
+      "entity_b": "MariaDB",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "general"
+      ],
+      "label": "BoardService ↔ MariaDB (co-occur in 2 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Broker_MariaDB_0f5faee6",
+      "wing": "memory",
+      "entity_a": "Broker",
+      "entity_b": "MariaDB",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "general"
+      ],
+      "label": "Broker ↔ MariaDB (co-occur in 2 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Broker_Mosquitto_a73f4a30",
+      "wing": "memory",
+      "entity_a": "Broker",
+      "entity_b": "Mosquitto",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "general",
+        "l4_raw_sessions"
+      ],
+      "label": "Broker ↔ Mosquitto (co-occur in 2 drawers across 2 rooms: general, l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Checking_Reading_d3f424db",
+      "wing": "memory",
+      "entity_a": "Checking",
+      "entity_b": "Reading",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Checking ↔ Reading (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Chronicle_Pulse_37477224",
+      "wing": "memory",
+      "entity_a": "Chronicle",
+      "entity_b": "Pulse",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "general",
+        "l4_raw_sessions"
+      ],
+      "label": "Chronicle ↔ Pulse (co-occur in 3 drawers across 2 rooms: general, l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_GenericAgent_Linux_a2179413",
+      "wing": "memory",
+      "entity_a": "GenericAgent",
+      "entity_b": "Linux",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "general"
+      ],
+      "label": "GenericAgent ↔ Linux (co-occur in 3 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_GenericAgent_NapCat_b6598e84",
+      "wing": "memory",
+      "entity_a": "GenericAgent",
+      "entity_b": "NapCat",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "general"
+      ],
+      "label": "GenericAgent ↔ NapCat (co-occur in 2 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_GenericAgent_Windows_6ce4878c",
+      "wing": "memory",
+      "entity_a": "GenericAgent",
+      "entity_b": "Windows",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "general"
+      ],
+      "label": "GenericAgent ↔ Windows (co-occur in 3 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Hive_Master_32d49c6c",
+      "wing": "memory",
+      "entity_a": "Hive",
+      "entity_b": "Master",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "general"
+      ],
+      "label": "Hive ↔ Master (co-occur in 3 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Linux_NapCat_dae39512",
+      "wing": "memory",
+      "entity_a": "Linux",
+      "entity_b": "NapCat",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "general"
+      ],
+      "label": "Linux ↔ NapCat (co-occur in 3 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Linux_Windows_069540ab",
+      "wing": "memory",
+      "entity_a": "Linux",
+      "entity_b": "Windows",
+      "co_occurrence_count": 4,
+      "rooms": [
+        "general"
+      ],
+      "label": "Linux ↔ Windows (co-occur in 4 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_MainThread_ScriptRunContext_4f6cbe6e",
+      "wing": "memory",
+      "entity_a": "MainThread",
+      "entity_b": "ScriptRunContext",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "MainThread ↔ ScriptRunContext (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Mori_Morith_12bf3720",
+      "wing": "memory",
+      "entity_a": "Mori",
+      "entity_b": "Morith",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Mori ↔ Morith (co-occur in 2 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Morit_Morith_a7eccfa2",
+      "wing": "memory",
+      "entity_a": "Morit",
+      "entity_b": "Morith",
+      "co_occurrence_count": 4,
+      "rooms": [
+        "l4_raw_sessions"
+      ],
+      "label": "Morit ↔ Morith (co-occur in 4 drawers across 1 room: l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Mosquitto_WorkerAgent_31ad9aa7",
+      "wing": "memory",
+      "entity_a": "Mosquitto",
+      "entity_b": "WorkerAgent",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "general"
+      ],
+      "label": "Mosquitto ↔ WorkerAgent (co-occur in 2 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_NapCat_Shell_837ab12f",
+      "wing": "memory",
+      "entity_a": "NapCat",
+      "entity_b": "Shell",
+      "co_occurrence_count": 6,
+      "rooms": [
+        "general",
+        "l4_raw_sessions"
+      ],
+      "label": "NapCat ↔ Shell (co-occur in 6 drawers across 2 rooms: general, l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_NapCat_WebUI_508e374d",
+      "wing": "memory",
+      "entity_a": "NapCat",
+      "entity_b": "WebUI",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "general",
+        "l4_raw_sessions"
+      ],
+      "label": "NapCat ↔ WebUI (co-occur in 2 drawers across 2 rooms: general, l4_raw_sessions)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_NapCat_Windows_45795105",
+      "wing": "memory",
+      "entity_a": "NapCat",
+      "entity_b": "Windows",
+      "co_occurrence_count": 3,
+      "rooms": [
+        "general"
+      ],
+      "label": "NapCat ↔ Windows (co-occur in 3 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_Python_WorkerAgent_9622b3d0",
+      "wing": "memory",
+      "entity_a": "Python",
+      "entity_b": "WorkerAgent",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "general"
+      ],
+      "label": "Python ↔ WorkerAgent (co-occur in 2 drawers across 1 room: general)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    },
+    {
+      "id": "hallway_memory_SearchResult_SkillIndex_a7be9d0c",
+      "wing": "memory",
+      "entity_a": "SearchResult",
+      "entity_b": "SkillIndex",
+      "co_occurrence_count": 2,
+      "rooms": [
+        "skill_search"
+      ],
+      "label": "SearchResult ↔ SkillIndex (co-occur in 2 drawers across 1 room: skill_search)",
+      "created_at": "2026-06-08T06:03:23.346520+00:00",
+      "created_by": "auto",
+      "strength": 1.0,
+      "stability": 1.0,
+      "last_activated": "2026-06-08T06:03:23.346520+00:00",
+      "access_count": 0
+    }
+  ]
+}

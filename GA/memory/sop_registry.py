@@ -84,11 +84,6 @@ SOP_REGISTRY: dict[str, dict] = {
         "path": "failure_driven_learning_sop.md",
         "category": "agent",
     },
-    "metacognition": {
-        "keywords": ["元认知", "meta", "反思", "学习日志", "策略"],
-        "path": "metacognition_sop.md",
-        "category": "agent",
-    },
     "spaced_repetition": {
         "keywords": ["复习", "间隔", "重复", "巩固", "spaced", "repetition"],
         "path": "spaced_repetition_sop.md",

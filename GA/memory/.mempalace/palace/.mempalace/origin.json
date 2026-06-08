@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "detected_at": "2026-06-08T07:59:40.887155+00:00",
+  "result": {
+    "likely_ai_dialogue": true,
+    "confidence": 0.4,
+    "primary_platform": null,
+    "user_name": null,
+    "agent_persona_names": [],
+    "evidence": [
+      "AI brand terms: 'MCP' (22x), 'LLM' (5x), 'Claude Code' (1x), 'Claude' (1x)",
+      "weak signal — applying default-stance (ai_dialogue=True, low confidence). Tier 2 LLM check recommended to confirm or override."
+    ]
+  }
+}
