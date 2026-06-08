@@ -19,17 +19,16 @@
 		reverse_proxy 127.0.0.1:8901
 	}
 
-	# MindFlow 课件引擎 — 直接代理（不剥离前缀，用于静态文件）
-	@courseware path /courseware*
-	handle @courseware {
-		reverse_proxy 127.0.0.1:9900
-	}
-
-	# MindFlow 课件泛域名路由 — 剥离 /coursewares 前缀
-	@coursewares path /coursewares* /coursewares/*
-	handle @coursewares {
-		uri strip_prefix /coursewares
-		reverse_proxy 127.0.0.1:9900
+	# MindFlow 课件引擎 — 合并路由（/courseware* 直接代理，/coursewares* 需 strip_prefix，/static/coursewares/* 直接代理）
+	@mindflow path /courseware* /courseware/* /coursewares* /coursewares/* /static/coursewares/*
+	handle @mindflow {
+		route {
+			@strip path /coursewares* /coursewares/*
+			handle @strip {
+				uri strip_prefix /coursewares
+			}
+			reverse_proxy 127.0.0.1:9900
+		}
 	}
 
 	# A-supply-analysis 供应链数据 — 端口 8765
@@ -37,12 +36,6 @@
 	handle @supply {
 		uri strip_prefix /supply
 		reverse_proxy 127.0.0.1:8765
-	}
-
-	# MindFlow 静态资源 — 直接代理到 9900
-	@mfstatic path /static/coursewares/*
-	handle @mfstatic {
-		reverse_proxy 127.0.0.1:9900
 	}
 
 	# BoardService RS Metrics — 健康检查 (9100)

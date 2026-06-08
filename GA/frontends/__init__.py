@@ -1,1 +1,8 @@
-# frontends package
+"""frontends package — 共享 sys.path 注入"""
+
+import sys
+from pathlib import Path
+
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))

@@ -40,13 +40,13 @@ mosquitto.passwd_tool = D:\tools\mosquitto\mosquitto_passwd.exe
 # 预置用户: feishu_bbs_bridge, test_user, board, dashboard, agent_gpt 等（密码见 keychain）
 # 修改密码后需重启mosquitto才能生效
 ## [GATEWAY]
-# Gateway (8000/8001) — Python FastAPI统一网关
-gateway.dir = D:\open_claw_agent\Beneh\GA\frontends\gateway
+# Web UI (8000/8001) — Python FastAPI Web 界面
+gateway.dir = D:\open_claw_agent\Beneh\GA\frontends\web_ui
 gateway.host = 0.0.0.0  # 默认绑定0.0.0.0，VPN接口10.24.242.176可访问
-gateway.start = python -m uvicorn frontends.gateway.main:app --host 0.0.0.0 --port 8001
+gateway.start = python -m uvicorn frontends.web_ui.main:app --host 0.0.0.0 --port 8001
 gateway.log = D:\open_claw_agent\Beneh\GA\temp\gateway_stderr.log
 gateway.auth = D:\open_claw_agent\Beneh\GA\frontends\bbs_browser\auth.py
-gateway.auth.router = D:\open_claw_agent\Beneh\GA\frontends\gateway\routers\auth.py
+gateway.auth.router = D:\open_claw_agent\Beneh\GA\frontends\web_ui\routers\auth.py
 # SMTP (126邮箱) 限流保护：send_email_smtp 用 daemon 线程+10s join() 
 # 防止 SSL 握手超时卡死整个注册请求（SSL handshake timeout ~11s+）
 gateway.smtp.protect = threading.Thread(daemon=True).start() + .join(timeout=10)
@@ -543,4 +543,9 @@ HB#1 @ 2026-06-08 17:15
 ## [HEARTBEAT]
 # heartbeat | hb1
 HB#1 @ 2026-06-08 17:15
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 21:03
 事件: ['[]', '[]', '[]', '[]', '[]']

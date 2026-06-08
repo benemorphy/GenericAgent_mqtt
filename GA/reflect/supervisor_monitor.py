@@ -76,7 +76,7 @@ def check():
             f'- 若 MariaDB 不可达: 执行 `Start-Service MariaDB`\n'
             f'- 若 Mosquitto 不可达: 执行 start_all.ps1 或手动启动 mosquitto\n'
             f'- 若 BoardService RS 不可达: 执行 start_all.ps1 中的 BoardService 启动步骤\n'
-            f'- 若 Gateway 不可达: 执行 `python -m frontends.gateway.main`\n\n'
+            f'- 若 Web UI 不可达: 执行 `python -m frontends.web_ui.main`\n\n'
             f'修复后确认所有服务可用。'
         )
 

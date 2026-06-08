@@ -1,14 +1,11 @@
 """Playground 路由 - 游戏化沙盒界面"""
-import sys
-from pathlib import Path
 
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(_PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PROJECT_ROOT))
+from pathlib import Path
 
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
-from frontends.bbs_browser.auth import require_user
+
+from frontends.auth import require_user
 from jinja2 import Environment, FileSystemLoader
 
 _TEMPLATES = Environment(loader=FileSystemLoader(
