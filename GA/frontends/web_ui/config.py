@@ -1,6 +1,6 @@
 """Web UI 配置 — 继承 bbs_browser 配置，扩展 MQTT 及上游服务地址"""
 
-from frontends.bbs_browser.config import *
+from services.bbs_data.config import *
 
 # MQTT Broker 配置（Dashboard 实时推送用）
 MQTT_HOST = os.environ.get("MQTT_HOST", "127.0.0.1")

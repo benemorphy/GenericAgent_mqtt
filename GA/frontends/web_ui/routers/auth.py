@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 
 from frontends.auth import optional_user
-from frontends.bbs_browser.auth import (
+from services.bbs_data.auth import (
     register_user, login_user,
     register_user_email, login_user_email,
     send_verify_code, check_verify,
@@ -119,7 +119,7 @@ def api_email_login(request: Request, email: str = Form(...), password: str = Fo
         if e.status_code == 403:
             # 从数据库读取 verify_token
             try:
-                from frontends.bbs_browser.auth import get_db
+                from services.bbs_data.auth import get_db
                 from pymysql.cursors import DictCursor
                 db = get_db()
                 cur = db.cursor(DictCursor)

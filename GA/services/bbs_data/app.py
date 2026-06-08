@@ -211,4 +211,4 @@ def api_board_posts(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("frontends.bbs_browser.app:app", host=HOST, port=PORT, reload=True)
+    uvicorn.run("services.bbs_data.app:app", host=HOST, port=PORT, reload=True)

@@ -1,15 +1,10 @@
 """FastAPI Web UI — 聚合 Board Browser / Dashboard / Agents"""
 
 from pathlib import Path
-from jinja2 import Environment, FileSystemLoader
+from frontends import create_template_env
 
 _TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
-templates = Environment(loader=FileSystemLoader(_TEMPLATES_DIR))
-
-
-def create_template_env(template_dir: Path) -> Environment:
-    """创建 Jinja2 Environment 工厂函数"""
-    return Environment(loader=FileSystemLoader(template_dir))
+templates = create_template_env(_TEMPLATES_DIR)
 
 
 def render_template(name: str, nav_active: str = "", **ctx) -> str:
