@@ -31,6 +31,22 @@ GenericAgent_mqtt/
 | `skills_learning/` | 案例驱动的技能学习 |
 | `tools/` | 智能体工具集（见下方） |
 
+### 记忆系统 (memory/)
+
+| 组件 | 说明 |
+|------|------|
+| `L0: memory_management_sop.md` | 元SOP — 记忆治理核心规则 |
+| `L1: global_mem_insight.txt` | 快速索引 + 强制检索规则 |
+| `L2: global_mem.txt` | 领域事实（配置/路径/凭证） |
+| `L3: *.md / *.py` | SOP / 技能 / 工具模块 |
+| `mempalace_*.py` | MemPalace 语义搜索（2526 drawers, 6 rooms） |
+| `mempalace_codegraph_bridge.py` | 混合检索 MemPalace + CodeGraph |
+| `knowledge_graph.py` | 知识图谱（50实体, L2+CodeGraph符号） |
+| `mempalace_mcp_launcher.py` | MCP Server (32 tools, SSE) |
+| `sop_registry.py` | SOP 注册表 |
+
+检索流程: L3检索前先 `semantic_search()` 定位 → 精确 `file_read` (META-SOP #5 强制)
+
 ### 智能体工具 (tools/)
 
 | 工具 | 说明 |
