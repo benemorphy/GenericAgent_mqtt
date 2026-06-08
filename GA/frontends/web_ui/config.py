@@ -1,4 +1,4 @@
-"""网关配置 — 继承 bbs_browser 配置，扩展 MQTT 配置"""
+"""Web UI 配置 — 继承 bbs_browser 配置，扩展 MQTT 及上游服务地址"""
 
 from frontends.bbs_browser.config import *
 
@@ -8,21 +8,6 @@ MQTT_PORT = int(os.environ.get("MQTT_PORT", "1883"))
 MQTT_USERNAME = os.environ.get("MQTT_USERNAME", "")
 MQTT_PASSWORD = os.environ.get("MQTT_PASSWORD", "")
 
-# md_server_rs 地址
+# 上游服务地址（Caddy 直接反代，仅 Dashboard 等内部使用需直接 URL）
 MD_SERVER_URL = os.environ.get("MD_SERVER_URL", "http://127.0.0.1:8899")
-
-# MindFlow 课件引擎地址
 MF_SERVER_URL = os.environ.get("MF_SERVER_URL", "http://127.0.0.1:9900")
-
-# mvivz 文件浏览器地址
-MDVIZ_SERVER_URL = os.environ.get("MDVIZ_SERVER_URL", "http://127.0.0.1:20000")
-
-# ── Email 认证配置 ──
-SMTP_HOST = os.environ.get("SMTP_HOST", "")
-SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
-SMTP_USER = os.environ.get("SMTP_USER", "")
-SMTP_PASS = os.environ.get("SMTP_PASS", "")
-SMTP_FROM = os.environ.get("SMTP_FROM", "noreply@example.com")
-
-# JWT 密钥（与 bbs_browser 共享，生产环境从环境变量读取）
-JWT_SECRET = os.environ.get("JWT_SECRET", "bbs-browser-dev-secret-change-in-production")

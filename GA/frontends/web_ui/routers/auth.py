@@ -11,18 +11,14 @@ from frontends.bbs_browser.auth import (
     send_verify_code, check_verify,
 )
 
-from jinja2 import Environment, FileSystemLoader
-
-_TEMPLATES = Environment(loader=FileSystemLoader(
-    Path(__file__).resolve().parent.parent / "templates"
-))
+from frontends.web_ui import templates as _T
 
 router = APIRouter()
 
 
 def _render(name: str, **ctx) -> str:
     """渲染模板，自动注入基础上下文"""
-    return _TEMPLATES.get_template(name).render(**ctx)
+    return _T.get_template(name).render(**ctx)
 
 
 @router.get("/login", response_class=HTMLResponse)
