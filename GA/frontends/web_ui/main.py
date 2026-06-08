@@ -1,39 +1,20 @@
 """
-FastAPI 统一网关 — 入口
+FastAPI Web UI — 入口
 
 聚合 Board Browser / Dashboard / Agents 到一个服务。
 共享 JWT 认证，路由区分，单端口 8000 部署。
 """
 
-import sys
-from pathlib import Path
-
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(_PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PROJECT_ROOT))
-
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
-from fastapi.staticfiles import StaticFiles
 
-from frontends.gateway.config import HOST, PORT
-from frontends.bbs_browser.auth import optional_user
+from frontends.web_ui.config import HOST, PORT
+from frontends.auth import optional_user
 
-# ── Jinja2 模板引擎 ──
-from jinja2 import Environment, FileSystemLoader
-_TEMPLATES = Environment(loader=FileSystemLoader(
-    Path(__file__).resolve().parent / "templates"
-))
-
-app = FastAPI(title="GenericAgent Gateway", docs_url="/api/docs")
-
-# ── 静态文件 ──
-static_dir = Path(__file__).resolve().parent / "static"
-if static_dir.is_dir():
-    app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+app = FastAPI(title="GenericAgent Web UI", docs_url="/api/docs")
 
 # ── 路由注册 ──
-from frontends.gateway.routers import auth, boards, agents, dashboard
+from frontends.web_ui.routers import auth, boards, agents, dashboard
 from frontends.playground.router import router as play_router
 
 app.include_router(auth.router)         # /login, /register, /api/login, /api/register
@@ -55,7 +36,7 @@ def root(request: Request):
 # ── 入口 ──
 if __name__ == "__main__":
     import uvicorn
-    print(f"  Gateway (internal): http://localhost:{PORT}/")
+    print(f"  Web UI (internal): http://localhost:{PORT}/")
     print(f"  Boards:  http://localhost:{PORT}/boards")
     print(f"  Agents:  http://localhost:{PORT}/agents")
-    uvicorn.run("frontends.gateway.main:app", host="127.0.0.1", port=8001, reload=False)
+    uvicorn.run("frontends.web_ui.main:app", host="127.0.0.1", port=8001, reload=False)

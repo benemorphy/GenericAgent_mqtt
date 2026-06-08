@@ -1,17 +1,12 @@
-"""网关认证路由 — 登录/注册页面 + API + JWT 验证"""
+"""Web UI 认证路由 — 登录/注册页面 + API + JWT 验证"""
 
-import sys
 from pathlib import Path
-
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-if str(_PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PROJECT_ROOT))
-
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 
+from frontends.auth import optional_user
 from frontends.bbs_browser.auth import (
-    optional_user, register_user, login_user,
+    register_user, login_user,
     register_user_email, login_user_email,
     send_verify_code, check_verify,
 )

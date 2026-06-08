@@ -120,7 +120,7 @@ ENTITIES = [
     Component("MariaDB", "service", "binary", "running",
               "127.0.0.1:3306", 6),
     Component("HTTP Gateway", "service", "python", "running",
-              "GA/frontends/gateway/", 12),
+              "GA/frontends/web_ui/", 12),
     Component("RmqtWebUI", "service", "rust", "running PID 3108",
               _resolve_tool_path("rmqtt_webui_rs/"), 3),
     Component("RmqtAuth", "service", "rust", "compiled",
@@ -373,7 +373,7 @@ CONSTRAINTS = [
         "HTTP Gateway 8000 端口必须监听",
         _ensure_gateway_port, "error",
         "Web UI 访问依赖 HTTP Gateway",
-        "cd GA/frontends/gateway && python main.py"
+        "cd GA/frontends/web_ui && uvicorn main:app"
     ),
     Constraint(
         "md_server_rs 必须运行",

@@ -65,7 +65,7 @@ def db_available() -> bool:
 _KNOWN_COMPONENTS = {
     "MQTT Broker":          {"path_patterns": ["mosquitto", "rmqtt"], "type": "service"},
     "BoardService":         {"path_patterns": ["board_service_rs", "Mqtt_bbs_server"], "type": "service"},
-    "HTTP Gateway":         {"path_patterns": ["gateway/main.py", "gateway"], "type": "gateway"},
+    "HTTP Gateway":         {"path_patterns": ["web_ui/main.py", "web_ui"], "type": "gateway"},
     "LLM Core":            {"path_patterns": ["llmcore.py"], "type": "library"},
     "Agent Main":          {"path_patterns": ["agentmain.py"], "type": "service"},
     "TMWebDriver":         {"path_patterns": ["TMWebDriver.py"], "type": "tool"},

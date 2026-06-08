@@ -1,16 +1,10 @@
 """板块浏览路由 — 复用 bbs_browser/database.py"""
 
-import os
-import sys
 from pathlib import Path
-
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-if str(_PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from fastapi import APIRouter, Request, Query, Depends
 from fastapi.responses import HTMLResponse
-from frontends.bbs_browser.auth import require_user
+from frontends.auth import require_user
 from frontends.bbs_browser.database import get_boards, get_board, query_posts, query_all_posts as search_all
 from jinja2 import Environment, FileSystemLoader
 
