@@ -7,14 +7,9 @@ from fastapi.responses import HTMLResponse
 
 from frontends.auth import require_user
 from frontends.bbs_browser.database import get_db
-from frontends.web_ui import templates as _T
+from frontends.web_ui import render_template
 
 router = APIRouter(dependencies=[Depends(require_user)])
-
-
-def _render(name: str, **ctx) -> str:
-    user = ctx.pop('user', None)
-    return _T.get_template(name).render(user=user, nav_active='agents', **ctx)
 
 
 def get_agent_list() -> list:
@@ -52,7 +47,7 @@ def get_agent_detail(agent_id: str) -> dict | None:
 def agents_index(request: Request, user: dict = Depends(require_user)):
     """Agent 列表"""
     agents = get_agent_list()
-    return _render("agents/index.html", user=user, agents=agents)
+    return render_template("agents/index.html", nav_active="agents", user=user, agents=agents)
 
 
 @router.get("/agents/{agent_id}", response_class=HTMLResponse)
@@ -60,5 +55,5 @@ def agent_detail(request: Request, agent_id: str, user: dict = Depends(require_u
     """单个 Agent 详情"""
     agent = get_agent_detail(agent_id)
     if not agent:
-        return _render("error.html", user=user, error="Agent 不存在")
-    return _render("agents/detail.html", user=user, agent=agent)
+        return render_template("error.html", nav_active="agents", user=user, error="Agent 不存在")
+    return render_template("agents/detail.html", nav_active="agents", user=user, agent=agent)

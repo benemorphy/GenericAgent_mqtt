@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 
 from frontends.auth import require_user
 from frontends.bbs_browser.database import get_db
-from frontends.web_ui import templates as _T
+from frontends.web_ui import render_template
 
 router = APIRouter(dependencies=[Depends(require_user)])
 
@@ -22,9 +22,7 @@ _cache = {
 }
 
 
-def _render(name: str, **ctx) -> str:
-    user = ctx.pop('user', None)
-    return _T.get_template(name).render(user=user, nav_active='dashboard', **ctx)
+
 
 
 def _get_overview() -> dict:
@@ -75,7 +73,7 @@ def _get_overview() -> dict:
 def dashboard_page(request: Request, user: dict = Depends(require_user)):
     """仪表盘主页面"""
     overview = _get_overview()
-    return _render("dashboard/index.html", user=user, **overview)
+    return render_template("dashboard/index.html", nav_active="dashboard", user=user, **overview)
 
 
 # ── JSON API（供前端 AJAX 刷新） ──

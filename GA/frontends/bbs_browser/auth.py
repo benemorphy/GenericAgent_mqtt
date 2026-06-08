@@ -1,7 +1,8 @@
-"""BBS Board Browser — 用户认证模块"""
+"""BBS Board Browser — 用户认证模块
 
-# 向后兼容：web_ui 等模块从 frontends.auth 导入 FastAPI 依赖
-from frontends.auth import require_user, optional_user, decode_jwt
+认证依赖（require_user, optional_user, decode_jwt）已统一移至 frontends/auth.py，
+消费者请从 frontends.auth 直接导入。
+"""
 
 import time
 import hashlib
