@@ -51,6 +51,8 @@ gateway.auth.router = D:\open_claw_agent\Beneh\GA\frontends\gateway\routers\auth
 # 防止 SSL 握手超时卡死整个注册请求（SSL handshake timeout ~11s+）
 gateway.smtp.protect = threading.Thread(daemon=True).start() + .join(timeout=10)
 gateway.smtp.timeout = 8  # SMTP内部timeout
+# MD_SERVER_URL 默认指向 8899 (config.py 唯一定义，与 md_server_rs 实际运行端口一致)
+gateway.md_server_url = http://127.0.0.1:8899
 
 ## [CADDY]
 # Caddy v2.11.3 反向代理 (端口8000)
@@ -58,11 +60,16 @@ caddy.exe = D:\tools\caddy\caddy.exe
 caddy.file = D:\open_claw_agent\Beneh\GA\Caddyfile
 caddy.start = D:\tools\caddy\caddy.exe run --config D:\open_claw_agent\Beneh\GA\Caddyfile
 caddy.port = 8000
-caddy.routes = 8001(FastAPI) | 8900(rmqtt Web UI) | 9900(MindFlow) | 20100(md_server_rs) | 8765(supply)
-# Caddyfile 配置了 5 条反代路径:
-#   /md_server* → 127.0.0.1:8001, /docs* → :20100, /mqtt* → :8900
-#   /courseware* → :9900, /supply* → :8765, 其余 → :8001
-# 启动: start_all.ps1 中 section 7b 处理，start_all.bat 委托调用
+caddy.routes = 8001(FastAPI) | 8899(md_server_rs) | 8900(rmqtt Web UI) | 9900(MindFlow) | 8765(supply)
+# Caddyfile 配置了 7 条反代路径:
+#   /md_server* → :8001(FastAPI走链接重写), /docs* → :8899(直连md_server_rs, strip /docs)
+#   /mdviz* → :8001, /mqtt* → :8900, /courseware* → :9900
+#   /coursewares* → :9900(strip /coursewares), /supply* → :8765(strip /supply)
+#   其余 → :8001
+#   /static/coursewares/* → :9900(MindFlow静态资源)
+# md_server_rs (8899) 通过 base_path=/docs 参数使导航链接自带 /docs/ 前缀
+# md_server_rs 源码: D:\open_claw_agent\GA_tools\md_server_rs\src\main.rs (裸TCP, 非Beneh/)
+# 启动: start_all.ps1 section 5 启动, 传参: 8899 <docsDir> /docs
 
 ## [MQTT_SERVICE_CHAIN]
 # 服务启动顺序 (start_all.ps1):
@@ -496,4 +503,44 @@ HB#1 @ 2026-06-08 14:35
 ## [HEARTBEAT]
 # heartbeat | hb1
 HB#1 @ 2026-06-08 14:35
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 16:38
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 16:38
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 16:43
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 16:43
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 16:46
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 16:46
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 17:15
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 17:15
 事件: ['[]', '[]', '[]', '[]', '[]']

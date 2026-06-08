@@ -1,57 +1,59 @@
 :8000 {
-    # 反向代理到 FastAPI 后端 — md_server 需经 FastAPI 做 HTML 链接重写
-    @mdserver path /md_server* /md_server/*
-    handle @mdserver {
-        reverse_proxy 127.0.0.1:8001
-    }
+	# 反向代理到 md_server_rs (文档, 8899) — md_server_rs 原生生成 /docs/ 前缀链接
+	@docs path /docs* /docs/*
+	handle @docs {
+		uri strip_prefix /docs
+		reverse_proxy 127.0.0.1:8899
+	}
 
-    # 反向代理到 md_server_rs (文档, 20100)
-    @docs path /docs* /docs/*
-    handle @docs {
-        uri strip_prefix /docs
-        reverse_proxy 127.0.0.1:20100
-    }
+	# MQTT Web UI — Rust 面板，取代 Python Streamlit dashboard
+	@mqtt path /mqtt* /mqtt/*
+	handle @mqtt {
+		reverse_proxy 127.0.0.1:8900
+	}
 
-    # 反向代理到 mvivz — 需经 FastAPI 做 HTML 链接重写
-    @mdviz path /mdviz* /mdviz/*
-    handle @mdviz {
-        reverse_proxy 127.0.0.1:8001
-    }
+	# simphtml_rs — HTML 简化引擎 (API, 8901)
+	@simphtml path /simphtml* /simphtml/*
+	handle @simphtml {
+		uri strip_prefix /simphtml
+		reverse_proxy 127.0.0.1:8901
+	}
 
-    # MQTT Web UI — Rust 面板，取代 Python Streamlit dashboard
-    @mqtt path /mqtt* /mqtt/*
-    handle @mqtt {
-        reverse_proxy 127.0.0.1:8900
-    }
+	# MindFlow 课件引擎 — 直接代理（不剥离前缀，用于静态文件）
+	@courseware path /courseware*
+	handle @courseware {
+		reverse_proxy 127.0.0.1:9900
+	}
 
-    # MindFlow 课件引擎 — 直接代理（不剥离前缀，用于静态文件）
-    @courseware path /courseware*
-    handle @courseware {
-        reverse_proxy 127.0.0.1:9900
-    }
+	# MindFlow 课件泛域名路由 — 剥离 /coursewares 前缀
+	@coursewares path /coursewares* /coursewares/*
+	handle @coursewares {
+		uri strip_prefix /coursewares
+		reverse_proxy 127.0.0.1:9900
+	}
 
-    # MindFlow 课件泛域名路由 — 剥离 /coursewares 前缀
-    @coursewares path /coursewares* /coursewares/*
-    handle @coursewares {
-        uri strip_prefix /coursewares
-        reverse_proxy 127.0.0.1:9900
-    }
+	# A-supply-analysis 供应链数据 — 端口 8765
+	@supply path /supply* /supply/*
+	handle @supply {
+		uri strip_prefix /supply
+		reverse_proxy 127.0.0.1:8765
+	}
 
-    # A-supply-analysis 供应链数据 — 端口 8765
-    @supply path /supply* /supply/*
-    handle @supply {
-        uri strip_prefix /supply
-        reverse_proxy 127.0.0.1:8765
-    }
+	# MindFlow 静态资源 — 直接代理到 9900
+	@mfstatic path /static/coursewares/*
+	handle @mfstatic {
+		reverse_proxy 127.0.0.1:9900
+	}
 
-    # MindFlow 静态资源 — 直接代理到 9900
-    @mfstatic path /static/coursewares/*
-    handle @mfstatic {
-        reverse_proxy 127.0.0.1:9900
-    }
+	# BoardService RS Metrics — 健康检查 (9100)
+	@boardmetrics path /board-metrics* /board-metrics/*
+	handle @boardmetrics {
+		uri strip_prefix /board-metrics
+		reverse_proxy 127.0.0.1:9100
+	}
 
-    # 其余所有请求转发到 FastAPI 后端
-    handle {
-        reverse_proxy 127.0.0.1:8001
-    }
+	# 其余所有请求转发到 FastAPI 后端
+	handle {
+		reverse_proxy 127.0.0.1:8001
+	}
 }

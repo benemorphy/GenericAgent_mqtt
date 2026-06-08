@@ -17,9 +17,6 @@ MF_SERVER_URL = os.environ.get("MF_SERVER_URL", "http://127.0.0.1:9900")
 # mvivz 文件浏览器地址
 MDVIZ_SERVER_URL = os.environ.get("MDVIZ_SERVER_URL", "http://127.0.0.1:20000")
 
-# md_server_rs Markdown 文档浏览地址
-MD_SERVER_URL = os.environ.get("MD_SERVER_URL", "http://127.0.0.1:20100")
-
 # ── Email 认证配置 ──
 SMTP_HOST = os.environ.get("SMTP_HOST", "")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))

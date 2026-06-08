@@ -3,6 +3,8 @@ param([switch]$NoGateway)
 
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = (Get-Item $root).Parent.FullName
+$grandParent = (Get-Item $projectRoot).Parent.FullName
+$grandgrandParent = (Get-Item $grandParent).Parent.FullName
 $gaToolsRoot = Join-Path (Get-Item $projectRoot).Parent.FullName 'GA_tools'
 Set-Location $root
 $ErrorActionPreference = 'SilentlyContinue'
@@ -77,9 +79,10 @@ if (Test-Path $exe) {
 else { Write-Host '[!] mqtt_webui_rs debug未编译，跳过' -Fore Yellow }
 
 # 5. md_server_rs (8899)
-# Usage: md_server_rs [port] [root_dir]
+# Usage: md_server_rs [port] [root_dir] [base_path]
 #   port:     默认 8899
 #   root_dir: 默认 ./docs (相对 CWD), 支持绝对/相对路径
+#   base_path: URL 前缀如 /docs，让导航链接带上该前缀 (default: "")
 $p = Get-NetTCPConnection -LocalPort 8899 -ErrorAction SilentlyContinue
 if ($p) {
     Write-Host '[..] MD Server (8899) 存在，重启以刷新目录...' -Fore Yellow
@@ -92,8 +95,8 @@ if (-not (Test-Path $exe)) {
 }
 if (Test-Path $exe) {
     # 服务项目根目录 (Mqtt_bbs/docs/ 下文档通过相对路径访问)
-    $docsDir = $projectRoot
-    Start-Process $exe -ArgumentList @('8899', $docsDir) -WindowStyle Hidden
+    $docsDir = $grandgrandParent
+    Start-Process $exe -ArgumentList @('8899', $docsDir, '/docs') -WindowStyle Hidden
     Start-Sleep 2
     if (Get-NetTCPConnection -LocalPort 8899 -ErrorAction SilentlyContinue) {
         Write-Host "[OK] MD Server 已启动 (8899) 服务: $docsDir" -Fore Green
