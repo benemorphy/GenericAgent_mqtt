@@ -1,0 +1,30 @@
+wing: memory
+rooms:
+- name: autonomous_operation_sop
+  description: Files from autonomous_operation_sop/
+  keywords:
+  - autonomous_operation_sop
+  - autonomous_operation_sop
+- name: inspirations
+  description: Files from inspirations/
+  keywords:
+  - inspirations
+  - inspirations
+- name: l4_raw_sessions
+  description: Files from L4_raw_sessions/
+  keywords:
+  - l4_raw_sessions
+  - l4_raw_sessions
+- name: learning_log
+  description: Files from learning_log/
+  keywords:
+  - learning_log
+  - learning_log
+- name: skill_search
+  description: Files from skill_search/
+  keywords:
+  - skill_search
+  - skill_search
+- name: general
+  description: Files that don't fit other rooms
+  keywords: []

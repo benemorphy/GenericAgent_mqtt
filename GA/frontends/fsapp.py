@@ -963,7 +963,6 @@ def handle_command(open_id, cmd, chat_id=None):
     elif op == "/remind":
         sub = parts[1] if len(parts) > 1 else ""
         if sub == "add" and len(parts) >= 4:
-        if sub == "add" and len(parts) >= 4:
             raw = " ".join(parts[2:])
             r = _reminder.add(raw, open_id=open_id)
             if r:
@@ -1020,28 +1019,6 @@ def handle_command(open_id, cmd, chat_id=None):
                 threading.Thread(target=_wait_and_notify, args=(tid, chat_id, open_id), daemon=True).start()
             except Exception as e:
                 _send_cmd_response(f"任务发布失败: {e}")
-                    try:
-                        import time
-                        for _ in range(30):
-                            time.sleep(0.5)
-                            rows = _query_db_output(tid)
-                            if rows: break
-                        if not rows:
-                            try: result = board.wait_task(tid, timeout=5)
-                            except: result = None
-                        else:
-                            result = json.loads(rows[0][0]) if rows else None
-                        msg = f"✅ 任务完成 ({tid}): {json.dumps(result, ensure_ascii=False)[:300]}" if result else f"⏱️ 任务 {tid} 超时"
-                        if chat_id: send_message(chat_id, msg, receive_id_type="chat_id")
-                        else: send_message(open_id, msg)
-                    except Exception as e:
-                        err_msg = f"❌ 任务 {tid} 异常: {e}"
-                        if chat_id: send_message(chat_id, err_msg, receive_id_type="chat_id")
-                        else: send_message(open_id, err_msg)
-                import threading
-                threading.Thread(target=_wait_and_notify, args=(tid, chat_id, open_id), daemon=True).start()
-            except Exception as e:
-                _send_cmd_response(f"❌ 任务发布失败: {e}")
     elif op == "/hitl":
         global _todo_mgr
         if len(parts) >= 3 and parts[1] == "approve":
@@ -1174,6 +1151,27 @@ def handle_command(open_id, cmd, chat_id=None):
             _send_cmd_response("未知 BBS 操作，支持: post / subscribe / unsubscribe")
     else:
         _send_cmd_response(f"未知命令: {cmd}")
+
+
+def _wait_and_notify(tid, chat_id, open_id):
+    try:
+        import time
+        for _ in range(30):
+            time.sleep(0.5)
+            rows = _query_db_output(tid)
+            if rows: break
+        if not rows:
+            try: result = board.wait_task(tid, timeout=5)
+            except: result = None
+        else:
+            result = json.loads(rows[0][0]) if rows else None
+        msg = f"任务完成 ({tid}): {json.dumps(result, ensure_ascii=False)[:300]}" if result else f"任务 {tid} 超时"
+        if chat_id: send_message(chat_id, msg, receive_id_type="chat_id")
+        else: send_message(open_id, msg)
+    except Exception as e:
+        err_msg = f"任务 {tid} 异常: {e}"
+        if chat_id: send_message(chat_id, err_msg, receive_id_type="chat_id")
+        else: send_message(open_id, err_msg)
 
 
 def main():

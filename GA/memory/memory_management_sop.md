@@ -20,6 +20,11 @@ cc_keywords: ["记忆管理", "META-SOP", "ACTION-VERIFIED", "记忆规则"]
     *   **示例**：当前时间戳、临时 Session ID、正在运行的 PID、某个具体绝对路径、连接的设备信息
 4.  **最小充分指针 (Minimum Sufficient Pointer)**
     *   上层只留能定位下层的最短标识，多一词即冗余。
+5.  **MemPalace 优先检索 (MemPalace-First Retrieval)**
+    *   **定义**：在 L3 检索前，必须先调用 `from memory.mempalace_bridge import semantic_search` 进行语义搜索定位，再根据结果精确 `file_read`。
+    *   **禁止**：禁止无引导的猜测路径遍历或全量扫描文件目录来找 L3 记忆文件。
+    *   **例外**：已知精确路径、文件名或 SOP 名时，可直接 `file_read`。
+    *   **理由**：Palace 已索引 2526  drawers / 6 rooms，语义搜索 < 500ms，远快于目录遍历。
 ---
 ## 记忆层级架构
 ```

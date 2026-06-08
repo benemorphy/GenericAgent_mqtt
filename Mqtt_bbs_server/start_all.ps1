@@ -55,16 +55,16 @@ else {
     else { Write-Host '[!] simphtml_rs 未编译，跳过' -Fore Yellow }
 }
 
-# 4. rmqtt_webui_rs (8900) - 强制重启以使用正确的 MQTT 凭据
+# 4. mqtt_webui_rs (8900) - 强制重启以使用正确的 MQTT 凭据
 $p = Get-NetTCPConnection -LocalPort 8900 -ErrorAction SilentlyContinue
 if ($p) {
     Write-Host '[..] rmqtt Web UI (8900) 存在，重启以应用dashboard凭据...' -Fore Yellow
-    $old = Get-Process -Name "rmqtt_webui_rs" -ErrorAction SilentlyContinue
+    $old = Get-Process -Name "mqtt_webui_rs" -ErrorAction SilentlyContinue
     if ($old) { Stop-Process -Id $old.Id -Force; Start-Sleep 2 }
 }
-$exe = Join-Path $root 'tools\rmqtt_webui_rs\target\release\rmqtt_webui_rs.exe'
+$exe = Join-Path $root 'tools\mqtt_webui_rs\target\release\mqtt_webui_rs.exe'
 if (-not (Test-Path $exe)) {
-    $exe = Join-Path $root 'tools\rmqtt_webui_rs\target\debug\rmqtt_webui_rs.exe'
+    $exe = Join-Path $root 'tools\mqtt_webui_rs\target\debug\mqtt_webui_rs.exe'
 }
 if (Test-Path $exe) {
     $env:MQTT_USERNAME = 'dashboard'
@@ -74,7 +74,7 @@ if (Test-Path $exe) {
     try { $null = Get-NetTCPConnection -LocalPort 8900 -ErrorAction Stop; Write-Host '[OK] rmqtt Web UI 已启动 (8900)' -Fore Green }
     catch { Write-Host '[!] rmqtt Web UI 启动失败 (8900 端口未监听)' -Fore Red }
 }
-else { Write-Host '[!] rmqtt_webui_rs debug未编译，跳过' -Fore Yellow }
+else { Write-Host '[!] mqtt_webui_rs debug未编译，跳过' -Fore Yellow }
 
 # 5. md_server_rs (8899)
 # Usage: md_server_rs [port] [root_dir]
@@ -139,12 +139,12 @@ if (-not $sv) {
     Write-Host '[OK] Supervisor Monitor 已启动' -Fore Green
 } else { Write-Host '[OK] Supervisor Monitor 已在运行' -Fore Green }
 
-# 7. Gateway (8000) - 强制重启以使用正确的 MQTT 凭据
+# 7. FastAPI Gateway (8001) + Caddy 反代 (8000)
 if (-not $NoGateway) {
-    $p = Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue
+    # 7a. FastAPI 后端 (8001)
+    $p = Get-NetTCPConnection -LocalPort 8001 -ErrorAction SilentlyContinue
     if ($p) {
-        Write-Host '[..] Gateway (8000) 旧实例存在，重启以应用MQTT凭据...' -Fore Yellow
-        # 通过端口找到旧Gateway进程并杀掉
+        Write-Host '[..] FastAPI Gateway (8001) 旧实例存在，重启以应用MQTT凭据...' -Fore Yellow
         $oldPid = $p.OwningProcess
         Stop-Process -Id $oldPid -Force -ErrorAction SilentlyContinue
         Start-Sleep 2
@@ -152,8 +152,25 @@ if (-not $NoGateway) {
     $py = Join-Path $projectRoot '.venv\Scripts\python.exe'
     Start-Process $py -ArgumentList '-m frontends.gateway.main' -WorkingDirectory (Join-Path $projectRoot 'GA') -WindowStyle Hidden
     Start-Sleep 5
-    try { $r = Invoke-WebRequest -Uri 'http://127.0.0.1:8000/login' -UseBasicParsing -TimeoutSec 3; Write-Host '[OK] Gateway 已启动 (http://localhost:8000)' -Fore Green }
-    catch { Write-Host '[!] Gateway 启动可能失败，请检查' -Fore Red }
+    try { $r = Invoke-WebRequest -Uri 'http://127.0.0.1:8001/login' -UseBasicParsing -TimeoutSec 3; Write-Host '[OK] FastAPI Gateway 已启动 (8001)' -Fore Green }
+    catch { Write-Host '[!] FastAPI Gateway 启动可能失败，请检查 (8001)' -Fore Red }
+
+    # 7b. Caddy 反代 (8000) — 如 FastAPI 启动失败仍尝试启动 Caddy
+    $caddyExe = 'D:\tools\caddy\caddy.exe'
+    $caddyfile = Join-Path $projectRoot 'GA\Caddyfile'
+    $caddyProc = Get-Process -Name "caddy" -ErrorAction SilentlyContinue
+    if (-not $caddyProc) {
+        if ((Test-Path $caddyExe) -and (Test-Path $caddyfile)) {
+            Start-Process $caddyExe -ArgumentList "run --config ""$caddyfile""" -WindowStyle Hidden
+            Start-Sleep 3
+            try { $null = Get-NetTCPConnection -LocalPort 8000 -ErrorAction Stop; Write-Host '[OK] Caddy 已启动 (:8000)' -Fore Green }
+            catch { Write-Host '[!] Caddy 启动可能失败 (8000 端口未监听)' -Fore Red }
+        } else {
+            Write-Host '[!] Caddy 可执行文件或 Caddyfile 未找到，跳过' -Fore Yellow
+        }
+    } else {
+        Write-Host "[OK] Caddy (8000) PID=$($caddyProc.Id) 已在运行" -Fore Green
+    }
 }
 
 # 8. Default WorkerAgent
@@ -167,36 +184,79 @@ if (Test-Path $workerScript) {
     Write-Host '[!] examples\worker_agent.py 未找到，跳过 WorkerAgent' -Fore Yellow
 }
 
-# 10. Everything 全盘搜索服务 (es.exe)
+# 10. Everything 全盘搜索服务 (es.exe / server 模式)
 $evSvc = Get-Service -Name Everything -ErrorAction SilentlyContinue
-if ($evSvc -and $evSvc.Status -eq 'Running') {
-    Write-Host '[OK] Everything (全盘搜索) 已在运行' -Fore Green
-} else {
-    Write-Host '[..] Everything 未运行，尝试安装服务...' -Fore Yellow
-    # 以管理员身份运行：
-    & "C:\Program Files\Everything\Everything.exe" -install-service
-    Start-Service Everything
-    Start-Sleep 2
-    if ((Get-Service -Name Everything -ErrorAction SilentlyContinue).Status -eq 'Running') {
-        Write-Host '[OK] Everything 服务已安装并启动' -Fore Green
+if ($evSvc) {
+    if ($evSvc.Status -eq 'Running') {
+        Write-Host "[OK] Everything 服务 ($($evSvc.Status), $($evSvc.StartType)) 已在运行" -Fore Green
     } else {
-        Write-Host '[!] Everything 安装失败，请手动以管理员运行安装' -Fore Red
+        Write-Host "[..] Everything 服务已安装但未运行，正在启动..." -Fore Yellow
+        Start-Service Everything -ErrorAction SilentlyContinue
+        Start-Sleep 2
+        $evSvc = Get-Service -Name Everything -ErrorAction SilentlyContinue
+        if ($evSvc.Status -eq 'Running') {
+            Write-Host '[OK] Everything 服务已启动' -Fore Green
+        } else {
+            Write-Host '[!] Everything 服务启动失败，尝试重新安装...' -Fore Red
+            & "C:\Program Files\Everything\Everything.exe" -install-service
+            Start-Sleep 2
+            Start-Service Everything -ErrorAction SilentlyContinue
+        }
     }
+    # 设为自动启动
+    if ($evSvc.StartType -ne 'Automatic') {
+        try {
+            Set-Service -Name Everything -StartupType Automatic -ErrorAction Stop
+            Write-Host '[OK] Everything 服务已设为自动启动' -Fore Green
+        } catch {
+            Write-Host '[!] 设置 Everything 自动启动失败（需要管理员权限）' -Fore Yellow
+        }
+    }
+} else {
+    Write-Host '[..] Everything 服务未安装，正在安装...' -Fore Yellow
+    try {
+        Start-Process -FilePath "C:\Program Files\Everything\Everything.exe" -ArgumentList "-install-service" -Verb RunAs -Wait -ErrorAction Stop
+        Start-Sleep 3
+        Start-Service Everything -ErrorAction SilentlyContinue
+        Set-Service -Name Everything -StartupType Automatic -ErrorAction SilentlyContinue
+        if ((Get-Service -Name Everything -ErrorAction SilentlyContinue).Status -eq 'Running') {
+            Write-Host '[OK] Everything 服务已安装并启动 (自动启动)' -Fore Green
+        } else {
+            Write-Host '[!] Everything 安装失败，请手动以管理员运行安装' -Fore Red
+        }
+    } catch {
+        Write-Host '[!] Everything 安装需要管理员权限，请手动安装:' -Fore Yellow
+        Write-Host '    "C:\Program Files\Everything\Everything.exe" -install-service' -Fore Cyan
+    }
+}
+
+# 11. MemPalace MCP Server (语义搜索+知识图谱)
+$mcp = Get-Process -Name "mempalace-mcp" -ErrorAction SilentlyContinue
+if ($mcp) {
+    Write-Host "[OK] MemPalace MCP Server (PID=$($mcp.Id)) 已在运行" -Fore Green
+} else {
+    & $py (Join-Path (Join-Path $projectRoot 'GA') 'memory\mempalace_mcp_launcher.py') start
+    Start-Sleep 3
+    $mcp = Get-Process -Name "mempalace-mcp" -ErrorAction SilentlyContinue
+    if ($mcp) { Write-Host '[OK] MemPalace MCP Server 已启动' -Fore Green }
+    else { Write-Host '[!] MemPalace MCP Server 启动可能失败' -Fore Red }
 }
 
 Write-Host ''
 Write-Host '========================================' -Fore Cyan
-Write-Host '  Service    Port    Status' -Fore Cyan
-Write-Host '  --------   ----    ------' -Fore Cyan
+Write-Host '  Service         Port    Status' -Fore Cyan
+Write-Host '  --------         ----    ------' -Fore Cyan
 @(
-  @{n='Gateway';       p=8000;  u='http://localhost:8000'},
+  @{n='Caddy (Web)';   p=8000;  u='http://localhost:8000'},
+  @{n='FastAPI (后端)'; p=8001;  u='http://localhost:8001'},
   @{n='Mosquitto';     p=1883;  u='mqtt://127.0.0.1:1883'},
   @{n='MariaDB';      p=3306;  u='mysql://127.0.0.1:3306'},
   @{n='simphtml_rs';  p=8901;  u='http://localhost:8901'},
   @{n='rmqtt Web UI'; p=8900;  u='http://localhost:8900'},
   @{n='MD Server';    p=8899;  u='http://localhost:8899'},
   @{n='BoardService'; p='---'; u='MQTT BBS'; chk='board_service_rs'},
-  @{n='Everything';   p='---'; u='全盘搜索'; chk='Everything'}
+  @{n='Everything';   p='---'; u='全盘搜索(服务)'; chk='Everything'},
+  @{n='MemPalace MCP';p='---'; u='MCP Server'; chk='mempalace-mcp'}
 ) | ForEach-Object {
   $s = if ($_.chk) { try { if (Get-Process -Name $_.chk -ErrorAction Stop) { 'RUN' } else { 'OFF' } } catch { 'OFF' } } elseif ($_.p -eq '---') { '---' } else { try { $t = Get-NetTCPConnection -LocalPort $_.p -ErrorAction Stop; if ($t.State -eq 'Listen') { 'RUN' } else { '???' } } catch { 'OFF' } };
   $c = if ($s -eq 'RUN') { 'Green' } elseif ($s -eq 'OFF') { 'Red' } else { 'Yellow' };
@@ -230,10 +290,18 @@ Stop-Process -Name "Everything" -Force -ErrorAction SilentlyContinue
 # 关 MD Server
 Stop-Process -Name "md_server_rs" -Force -ErrorAction SilentlyContinue
 
-# 关 rmqtt_webui_rs
-Stop-Process -Name "rmqtt_webui_rs" -Force -ErrorAction SilentlyContinue
+# 关 mqtt_webui_rs
+Stop-Process -Name "mqtt_webui_rs" -Force -ErrorAction SilentlyContinue
 
 # 关 simphtml_rs
 Stop-Process -Name "simphtml_rs" -Force -ErrorAction SilentlyContinue
+
+# 关 MemPalace MCP Server
+$mcpLauncher = Join-Path (Join-Path $projectRoot 'GA') 'memory\mempalace_mcp_launcher.py'
+& $py $mcpLauncher stop 2>$null
+Stop-Process -Name "mempalace-mcp" -Force -ErrorAction SilentlyContinue
+
+# 关 Caddy
+Stop-Process -Name "caddy" -Force -ErrorAction SilentlyContinue
 
 Write-Host '[OK] 所有服务已关闭' -Fore Green

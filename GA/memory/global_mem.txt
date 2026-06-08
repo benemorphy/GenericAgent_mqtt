@@ -52,6 +52,18 @@ gateway.auth.router = D:\open_claw_agent\Beneh\GA\frontends\gateway\routers\auth
 gateway.smtp.protect = threading.Thread(daemon=True).start() + .join(timeout=10)
 gateway.smtp.timeout = 8  # SMTP内部timeout
 
+## [CADDY]
+# Caddy v2.11.3 反向代理 (端口8000)
+caddy.exe = D:\tools\caddy\caddy.exe
+caddy.file = D:\open_claw_agent\Beneh\GA\Caddyfile
+caddy.start = D:\tools\caddy\caddy.exe run --config D:\open_claw_agent\Beneh\GA\Caddyfile
+caddy.port = 8000
+caddy.routes = 8001(FastAPI) | 8900(rmqtt Web UI) | 9900(MindFlow) | 20100(md_server_rs) | 8765(supply)
+# Caddyfile 配置了 5 条反代路径:
+#   /md_server* → 127.0.0.1:8001, /docs* → :20100, /mqtt* → :8900
+#   /courseware* → :9900, /supply* → :8765, 其余 → :8001
+# 启动: start_all.ps1 中 section 7b 处理，start_all.bat 委托调用
+
 ## [MQTT_SERVICE_CHAIN]
 # 服务启动顺序 (start_all.ps1):
 #   1. MariaDB (3306) — 数据库
@@ -339,4 +351,149 @@ HB#1 @ 2026-06-05 14:57
 ## [HEARTBEAT]
 # heartbeat | hb1
 HB#1 @ 2026-06-05 14:57
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 08:28
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 08:36
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 08:43
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 08:43
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 08:51
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 08:51
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 09:04
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 09:04
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 09:12
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 09:12
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 09:26
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 09:26
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 09:33
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 10:19
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 10:31
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 11:18
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 11:23
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 11:23
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 13:39
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 13:40
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 13:41
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 13:47
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 13:47
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 14:15
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 14:15
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 14:22
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 14:22
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 14:35
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-08 14:35
 事件: ['[]', '[]', '[]', '[]', '[]']

@@ -32,15 +32,15 @@
     "last": "2026-06-02"
   },
   "memory_management_sop.md": {
-    "count": 28,
-    "last": "2026-06-05"
+    "count": 37,
+    "last": "2026-06-08"
   },
   "global_mem_insight.txt": {
-    "count": 107,
-    "last": "2026-06-06"
+    "count": 116,
+    "last": "2026-06-08"
   },
   "global_mem.txt": {
-    "count": 116,
+    "count": 119,
     "last": "2026-06-08"
   },
   "skills_learning_sop.md": {
@@ -72,8 +72,8 @@
     "last": "2026-05-20"
   },
   "search_skills_sop.md": {
-    "count": 4,
-    "last": "2026-06-04"
+    "count": 5,
+    "last": "2026-06-08"
   },
   "plan_sop": {
     "count": 1,
@@ -192,12 +192,12 @@
     "last": "2026-05-21"
   },
   "feishu_connect_sop.md": {
-    "count": 18,
-    "last": "2026-06-05"
+    "count": 22,
+    "last": "2026-06-08"
   },
   "git_push_sop.md": {
-    "count": 42,
-    "last": "2026-06-05"
+    "count": 43,
+    "last": "2026-06-08"
   },
   "active.json": {
     "count": 4,
@@ -260,8 +260,8 @@
     "last": "2026-05-21"
   },
   "metacognition_sop.md": {
-    "count": 7,
-    "last": "2026-06-05"
+    "count": 8,
+    "last": "2026-06-08"
   },
   "verify_sop.md": {
     "count": 3,
@@ -292,7 +292,7 @@
     "last": "2026-05-22"
   },
   "goal_mode_sop.md": {
-    "count": 16,
+    "count": 20,
     "last": "2026-06-08"
   },
   "RUST_ENV": {
@@ -308,8 +308,8 @@
     "last": "2026-05-29"
   },
   "meridian_ontology.md": {
-    "count": 13,
-    "last": "2026-05-31"
+    "count": 14,
+    "last": "2026-06-08"
   },
   "meridians_perspective_on_ontology.md": {
     "count": 3,
@@ -348,8 +348,8 @@
     "last": "2026-06-06"
   },
   "ontology_model_evolution.md": {
-    "count": 7,
-    "last": "2026-05-31"
+    "count": 9,
+    "last": "2026-06-08"
   },
   "ga_mqtt_bbs_scenarios.md": {
     "count": 4,
@@ -364,20 +364,20 @@
     "last": "2026-05-29"
   },
   "all_histories.txt": {
-    "count": 1,
-    "last": "2026-05-29"
+    "count": 2,
+    "last": "2026-06-08"
   },
   "mqtt_service_chain.md": {
     "count": 1,
     "last": "2026-05-29"
   },
   "goal_hive_sop.md": {
-    "count": 12,
-    "last": "2026-06-02"
+    "count": 16,
+    "last": "2026-06-08"
   },
   "goal_hive_master_duty.md": {
-    "count": 8,
-    "last": "2026-06-02"
+    "count": 11,
+    "last": "2026-06-08"
   },
   "research_synthesis_sop.md": {
     "count": 4,
@@ -388,8 +388,8 @@
     "last": "2026-05-29"
   },
   "enterprise_social_governance_ontology.md": {
-    "count": 2,
-    "last": "2026-06-04"
+    "count": 3,
+    "last": "2026-06-08"
   },
   "skill_template_sop.md": {
     "count": 1,
@@ -408,8 +408,8 @@
     "last": "2026-06-01"
   },
   "sop_registry.py": {
-    "count": 6,
-    "last": "2026-06-01"
+    "count": 7,
+    "last": "2026-06-08"
   },
   "review_sop.md": {
     "count": 1,
@@ -452,8 +452,8 @@
     "last": "2026-06-04"
   },
   "codegraph_first_sop.md": {
-    "count": 2,
-    "last": "2026-06-05"
+    "count": 3,
+    "last": "2026-06-08"
   },
   "heartbeat_memory.py": {
     "count": 2,
@@ -480,6 +480,50 @@
     "last": "2026-06-08"
   },
   "codegraph_ontology_bridge_sop.md": {
+    "count": 2,
+    "last": "2026-06-08"
+  },
+  "goal_nexus": {
+    "count": 1,
+    "last": "2026-06-08"
+  },
+  "goal_nexus.md": {
+    "count": 1,
+    "last": "2026-06-08"
+  },
+  "goal_sentinel_prism_sop.md": {
+    "count": 1,
+    "last": "2026-06-08"
+  },
+  "mempalace_usage_sop.md": {
+    "count": 7,
+    "last": "2026-06-08"
+  },
+  "mempalace_bridge": {
+    "count": 1,
+    "last": "2026-06-08"
+  },
+  "mempalace_bridge.py": {
+    "count": 4,
+    "last": "2026-06-08"
+  },
+  "mempalace_integration_plan.md": {
+    "count": 3,
+    "last": "2026-06-08"
+  },
+  "mempalace_mcp_launcher.py": {
+    "count": 1,
+    "last": "2026-06-08"
+  },
+  "mempalace.yaml": {
+    "count": 1,
+    "last": "2026-06-08"
+  },
+  "knowledge_graph.py": {
+    "count": 4,
+    "last": "2026-06-08"
+  },
+  "ontology_model_evolution.py": {
     "count": 1,
     "last": "2026-06-08"
   }

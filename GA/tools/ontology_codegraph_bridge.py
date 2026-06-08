@@ -22,7 +22,7 @@ from typing import Optional
 from dataclasses import dataclass, field, asdict
 
 _GA_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_CG_DB_PATH = os.path.join(os.path.dirname(_GA_ROOT), ".codegraph", "codegraph.db")
+_CG_DB_PATH = os.path.join(_GA_ROOT, ".codegraph", "codegraph.db")
 
 # ── 缓存 ──────────────────────────────────────────────────
 _cache = {}  # {key: (timestamp, data)}
