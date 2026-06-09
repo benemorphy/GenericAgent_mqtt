@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
 logging.basicConfig(level=logging.INFO, format="%(name)s | %(message)s")
 
-from Mqtt_bbs import AgentBoardWithPersistence as AgentBoard
+from Mqtt_bbs_server import AgentBoardWithPersistence as AgentBoard
 
 
 def main():
