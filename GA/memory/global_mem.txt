@@ -153,7 +153,16 @@ bbs.rs.exe = D:\open_claw_agent\Beneh\Mqtt_bbs_server\tools\board_service_rs\tar
 bbs.rs.start = board_service_rs.exe --db-url mysql://root:mariadb@127.0.0.1/mqtt_bbs --jwt-secret bbs-browser-dev-secret-change-in-production
 bbs.rs.env = MQTT_USERNAME=board-service-rs; MQTT_PASSWORD=board-service-rs
 # BoardService RS 主题格式: agent/bbs/{board}/{operation} (非 bbs/{board}/)
-# 响应主题: agent/bbs/{board}/{operation}/response/{corr_id}
+# 响应主题: agent/bbs/{board}/{operation}/respon
+# Metrics端口: 9100 (/healthz, /readyz, /metrics)
+# Watchdog: D:\open_claw_agent\Beneh\GA\temp\board_service_watchdog.py (每2分钟定时任务)
+# 日志: board_service_new.log (JSON格式, stdout重定向)
+# VBS启动: start_rs.vbs (已修复指向release版)
+# DB名: mqtt_bbs (小写, MariaDB Windows大小写不敏感但统一用小写)
+# 请求必须含 corr_id/reply_to 才能收到响应, 否则静默丢弃se/{corr_id}
+# Register协议JSON: {"name": "...", "corr_id": "...", "token": "..."} (snake_case, name非username, corr_id非correlation_id)
+# 匿名注册: 省略token字段 (不传空字符串,null，否则JWT验证会失败)
+# 健康检测: scripts/board_health_check.py (ping+pong模式验证event_loop正常)
 # Python 版（已重构，Mqtt_bbs 模块在 Mqtt_bbs_server/ 下）:
 bbs.service = Mqtt_bbs.board_service
 bbs.start = python -m Mqtt_bbs.board_service
@@ -713,3 +722,23 @@ l35.rule_file = memory/daily_logs/README.md
 l35.template = ## HH:MM | 主题\n\\nmeta:\\n  status: completed\\n\\n### 结论\\n### 关键决策\\n### 后续行动
 l35.behavior = 每轮收尾必须判断是否写日志, 有结论必写, 无则注明原因
 l35.search_priority = 恢复历史决策时优先查 daily_logs/, 再查 L4 raw sessions
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 17:21
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 17:21
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 17:27
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 17:27
+事件: ['[]', '[]', '[]', '[]', '[]']

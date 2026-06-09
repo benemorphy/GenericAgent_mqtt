@@ -39,7 +39,7 @@ def register_page(request: Request):
     return _render("register.html", error="", user=None)
 
 
-@router.post("/api/register")
+@router.post("/api/register", response_class=HTMLResponse)
 def api_register(
     request: Request,
     username: str = Form(...),
@@ -55,7 +55,7 @@ def api_register(
     return RedirectResponse(url="/login?registered=1", status_code=302)
 
 
-@router.post("/api/login")
+@router.post("/api/login", response_class=HTMLResponse)
 def api_login(request: Request, username: str = Form(...), password: str = Form(...)):
     """登录 API → 设置 JWT cookie"""
     result = login_user(username, password)
@@ -82,7 +82,7 @@ def api_logout():
 # Email 认证 V2 API（基于 users 表）
 # ═══════════════════════════════════════════
 
-@router.post("/api/email/register")
+@router.post("/api/email/register", response_class=HTMLResponse)
 def api_email_register(
     request: Request,
     email: str = Form(...),
@@ -109,7 +109,7 @@ def api_email_register(
     )
 
 
-@router.post("/api/email/login")
+@router.post("/api/email/login", response_class=HTMLResponse)
 def api_email_login(request: Request, email: str = Form(...), password: str = Form(...)):
     """Email 登录 API → 设置 JWT cookie（兼容现有前端）"""
     try:

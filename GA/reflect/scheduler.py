@@ -103,6 +103,10 @@ def check():
         # weekday任务：周末跳过
         if repeat == 'weekday' and now.weekday() >= 5: continue
         
+        # weekday过滤：指定星期几才触发 (0=Mon, 4=Fri, 6=Sun)
+        weekday = task.get('weekday')
+        if weekday is not None and now.weekday() != weekday: continue
+        
         # 还没到schedule时间就跳过
         if now.hour < h or (now.hour == h and now.minute < m): continue
         

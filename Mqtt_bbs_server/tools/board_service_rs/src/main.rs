@@ -43,6 +43,19 @@ async fn main() -> anyhow::Result<()> {
         .json()  // P1-B: JSON 结构化日志
         .init();
     
+    // 注册 panic hook — 任何 panic 都会先写入日志再退出
+    let orig_hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |panic_info| {
+        tracing::error!(
+            target: "panic",
+            "BoardService RS PANIC: {}",
+            panic_info.to_string()
+        );
+        // 也输出到 stderr (万一 tracing 没刷盘)
+        eprintln!("FATAL: BoardService RS PANIC: {}", panic_info);
+        orig_hook(panic_info);
+    }));
+    
     tracing::info!("BoardService RS 启动 (agent_id={})", config.agent_id);
     
     // 初始化数据库连接池
