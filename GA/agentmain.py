@@ -85,16 +85,7 @@ class GenericAgent:
                     else: llm_sessions[i] = ToolClient(mixin)
                 except Exception as e: print(f'\n\n\n[ERROR] Failed to init MixinSession with cfg {s["mixin_cfg"]}: {e}!!!\n\n')
         self.llmclients = llm_sessions
-        # -- 自动注入豆包（本地CDP） --
-        _doubao_exe = r"C:\Users\user\AppData\Local\Doubao\Application\app\Doubao.exe"
-        _has_doubao = any('Doubao' in (getattr(c, 'name', '') or getattr(getattr(c, 'backend', None), 'name', '')) for c in self.llmclients)
-        if not _has_doubao and os.path.isfile(_doubao_exe):
-            try:
-                from tools.llm_providers import ProviderRegistry
-                _d = ProviderRegistry.create('doubao_backend', {})
-                self.llmclients.append(ToolClient(_d))
-            except Exception:
-                pass  # doubao 不可用时不阻塞
+        # -- 自动注入豆包（本地CDP）-- [已移除]
         self.llmclient = self.llmclients[self.llm_no%len(self.llmclients)]
         if oldhistory: self.llmclient.backend.history = oldhistory
     

@@ -5,6 +5,11 @@ rooms:
   keywords:
   - autonomous_operation_sop
   - autonomous_operation_sop
+- name: daily_logs
+  description: Files from daily_logs/
+  keywords:
+  - daily_logs
+  - daily_logs
 - name: inspirations
   description: Files from inspirations/
   keywords:
