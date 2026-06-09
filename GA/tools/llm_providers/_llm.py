@@ -23,7 +23,7 @@ class DiagnosisLLM:
         if not enabled:
             return
         try:
-            from GA.tools.llm_provider_factory import get_llm
+            from tools.llm_provider_factory import get_llm
             api_key = os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("LLM_API_KEY", "")
             self._llm = get_llm(provider="deepseek", api_key=api_key)
             self.available = True

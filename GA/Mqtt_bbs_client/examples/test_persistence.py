@@ -16,8 +16,8 @@ logging.basicConfig(level=logging.INFO, format="%(name)s | %(message)s")
 import logging
 log = logging.getLogger("test_persist")
 
-from Mqtt_bbs import BBSClient
-from Mqtt_bbs.persistence import BBSClientWithPersistence, MariaDBConn
+from Mqtt_bbs_client import BBSClient
+from Mqtt_bbs_server.persistence import BBSClientWithPersistence, MariaDBConn
 
 db = MariaDBConn()
 agent_id = f"persist_test_{os.urandom(2).hex()}"
