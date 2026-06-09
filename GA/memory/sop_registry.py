@@ -219,6 +219,11 @@ SOP_REGISTRY: dict[str, dict] = {
         "path": "morphling_sop.md",
         "category": "methodology",
     },
+    "gbrain_integration": {
+        "keywords": ["gbrain", "知识库", "大脑", "知识检索", "brain", "知识图谱", "推理"],
+        "path": "gbrain_integration_sop.md",
+        "category": "integration",
+    },
 }
 
 

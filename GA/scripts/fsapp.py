@@ -690,16 +690,17 @@ def _fmt_tool_call(tc):
 
 
 def _build_step_detail(resp, tool_calls):
-    """从 LLM response + tool_calls 组装单步展开详情（纯函数）。"""
+    """从 LLM response + tool_calls 组装单步展开详情（纯函数）。
+    output-first: Output 放在首位，确保卡片展开时主要内容最先可见。"""
     parts = []
+    content = _display_text((getattr(resp, 'content', '') or '')).strip() if resp else ''
+    if content and content != '...':
+        parts.append(f"### 📝 Output\n{content}")
     thinking = (getattr(resp, 'thinking', '') or '').strip() if resp else ''
     if thinking:
         parts.append(f"### 💭 Thinking\n{thinking}")
     if tool_calls:
         parts.append("### 🛠 Tool Calls\n" + "\n".join(_fmt_tool_call(tc) for tc in tool_calls))
-    content = _display_text((getattr(resp, 'content', '') or '')).strip() if resp else ''
-    if content and content != '...':
-        parts.append(f"### 📝 Output\n{content}")
     return "\n\n".join(parts)
 
 
@@ -730,9 +731,9 @@ class _TaskCard:
         }
 
     def _build(self):
-        # 用最新 step summary 或 final output 做头部，而不是状态
-        topic = self.final[:60] if self.final else (
-            self.steps[-1][0][:60] if self.steps else self.status
+        # output-first: 头部始终显示最新 topic (final output 或最新 step summary)，而非状态
+        topic = self.final[:120] if self.final else (
+            self.steps[-1][0][:120] if self.steps else self.status
         )
         header = f"**{topic}**"
         if self.page_no > 1:
