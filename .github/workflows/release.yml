@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install build
+        run: pip install build
+
+      - name: Build package
+        run: python -m build
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## ${{ github.ref_name }}
+
+            See [CHANGELOG](https://github.com/benemorphy/GenericAgent_mqtt/commits/${{ github.ref_name }}) for details.
+
+            ### Installation
+            ```bash
+            pip install genericagent
+            ```
+          generate_release_notes: true
+          files: dist/*
+          draft: false
+          prerelease: false

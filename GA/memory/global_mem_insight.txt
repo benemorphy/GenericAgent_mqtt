@@ -3,7 +3,7 @@ Read L2 or ls ../memory/ for L3 when needed
 L0(META-SOP): memory_management_sop
 L2: Vision/OCR | RMQTT(broker启动) | MOSQUITTO(broker运行) | GATEWAY(网关8000/8001) | MQTT_BBS(BoardService) | FEISHU(飞书Bot) | MQTT_SERVICE_CHAIN(8服务拓扑) | QQ_BOT(NapCat) | MQTT_STRESS(扩展压测) | LLM_PROVIDER_FACTORY(Provider工厂) | DOUBAO_CDP(豆包搜索) | RUST_ENV(Rust MSVC) | FILE_SEARCH(es.exe已配) | ONTOLOGY_CODEGRAPH_BRIDGE(本体自动发现) | MINDFLOW(课件引擎9900/MariaDB/注册表管线) | GBRAIN_INTEGRATION(gbrain MCP层+Skill层集成)
 L3: memory_cleanup_sop | skill_search | skills_learning_sop(案例驱动) | failure_driven_learning_sop | clipboard_ocr | vision_api | gui_vision | adb_ui | keychain | ljqCtrl_sop | metaso_search | ocr_utils | procmem_scanner | ui_detect | subagent | web_setup_sop | plan_sop | ga_mqtt_bbs_scenarios | water_env_monitoring_scenarios | supervisor_sop(系统健康监控) | doubao_cdp_usage(豆包CDP搜索) | **codegraph_first_sop(代码工作先CG)** | **mempalace_bridge(语义搜索优先)** | **knowledge_graph(知识图谱)** | **mempalace_mcp_launcher(MCP Server)** | **mempalace_integration_sop(集成总SOP) | **mempalace_codegraph_bridge(混合检索Mem+CG)**** | gbrain_integration_sop(gbrain MCP/Skill集成)
-| tmwebdriver_sop | autonomous_operation_sop | scheduled_task_sop | vision_sop
+| tmwebdriver_sop | knowgt_sop(GitHub热榜) | autonomous_operation_sop | scheduled_task_sop | vision_sop
 | md_server_rs_mod_sop(代码高亮)
 | git_push_sop(Git审计推送) | feishu_connect_sop(飞书Bot) | push_cleanup_sop
 | agent_dreaming_sop | dream_engine(梦境引擎) | board_stress_sop(BBS压测) | board_service_diag_sop(BBS静默故障) | spaced_repetition_sop(间隔复习) | sqlite_to_mariadb_sop(DB迁移)
@@ -20,6 +20,7 @@ L3: memory_cleanup_sop | skill_search | skills_learning_sop(案例驱动) | fail
 | first_pass_prd_sop(Uber PRD计划技能)
 
 # MindFlow 课件技能: scripts/generate_courseware.py | cell_diagram.py (手绘细胞SVG) | mermaid_prerender.py
+L3.5: daily_logs(Daily Decision Logs: daily_logs/README.md, 位于L3与L4之间的reviewed日志层, 每轮结束判断是否写日志)
 L4: L4_raw_sessions/ historical sessions
 跨学科知识: meridian_ontology(经脉论与本体论:本体论→经脉论对应映射+推理规则) | meridians_perspective_on_ontology(经脉论→本体论:反向审视+七大挑战) | ontology_model_evolution(技术+哲学+经脉论三合一:本体论进化的四维光谱) | enterprise_social_governance_ontology(企业社会治理与本体论:义务时变图/双温度场/病点子图/多Agent脑暴) | ai_creation_emergence_brainstorm(AI超纲输出场景:创造者悖论/认知鸿沟/涌现主题) | ai_creation_scenarios(7场景叙事实现:创造者悖论/认知边界/他者之思/解释学困境/层级跃迁/反馈螺旋/身份重构) | ai_creation_scenarios_deep(创作准备:正文片段/角色关系/世界观/矛盾演化/真伪悬疑) | ai_creation_brainstorm_per_scene(7场景独立多Agent脑暴:35视角向各自元问题深挖) | ai_creation_resonance_map(暗中共振图谱:6层共振+1个最大共振) | ORACLE_ONTOLOGY(甲骨文本体: knowledge/oracle_ontology/, TTL+rdflib, 四层模型:Glyph→Grapheme→Sense+Component, 10个基础字, query.py查接口)
 
