@@ -153,7 +153,7 @@ if (-not $NoGateway) {
         Start-Sleep 2
     }
     $py = Join-Path $projectRoot '.venv\Scripts\python.exe'
-    Start-Process $py -ArgumentList '-m frontends.gateway.main' -WorkingDirectory (Join-Path $projectRoot 'GA') -WindowStyle Hidden
+    Start-Process $py -ArgumentList '-m frontends.web_ui.main' -WorkingDirectory (Join-Path $projectRoot 'GA') -WindowStyle Hidden
     Start-Sleep 5
     try { $r = Invoke-WebRequest -Uri 'http://127.0.0.1:8001/login' -UseBasicParsing -TimeoutSec 3; Write-Host '[OK] FastAPI Gateway 已启动 (8001)' -Fore Green }
     catch { Write-Host '[!] FastAPI Gateway 启动可能失败，请检查 (8001)' -Fore Red }
