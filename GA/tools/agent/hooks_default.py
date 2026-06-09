@@ -46,6 +46,18 @@ def sph_master_intervention(handler, context):
     return ""
 
 
+def sph_gbrain_available(handler, context):
+    """告知 Agent 有 gbrain 知识库可用"""
+    if context.get('location') == 'system_prompt':
+        return """你有 gbrain 知识库可用。它提供以下能力:
+  - gbrain_query(query)     → 合成问答，返回带来源引用的答案
+  - gbrain_search(query)    → 搜索知识库，返回匹配页面列表
+  - gbrain_think(prompt)    → 链式推理，深度分析问题
+  - gbrain_graph_query(slug) → 知识图谱遍历，查看实体关系
+当需要查阅项目知识、历史记录、做综合推理时优先使用 gbrain。"""
+    return ""
+
+
 def register_default_hooks(handler):
     """Register all default hooks onto a GenericAgentHandler instance.
     Sets up _turn_policies (via tools.turn_policy), _system_prompt_hooks, 
@@ -60,5 +72,6 @@ def register_default_hooks(handler):
         partial(sph_memory_sop, handler),
         partial(sph_summary_enforcer, handler),
         partial(sph_master_intervention, handler),
+        partial(sph_gbrain_available, handler),
     ]
     register_default_plan_validators(handler)

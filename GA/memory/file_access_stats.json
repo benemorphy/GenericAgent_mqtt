@@ -504,8 +504,8 @@
     "last": "2026-06-08"
   },
   "mempalace_bridge.py": {
-    "count": 4,
-    "last": "2026-06-08"
+    "count": 5,
+    "last": "2026-06-09"
   },
   "mempalace_integration_plan.md": {
     "count": 3,
@@ -520,11 +520,15 @@
     "last": "2026-06-08"
   },
   "knowledge_graph.py": {
-    "count": 4,
-    "last": "2026-06-08"
+    "count": 5,
+    "last": "2026-06-09"
   },
   "ontology_model_evolution.py": {
     "count": 1,
     "last": "2026-06-08"
+  },
+  "mempalace_codegraph_bridge.py": {
+    "count": 1,
+    "last": "2026-06-09"
   }
 }
