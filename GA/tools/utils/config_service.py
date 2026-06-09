@@ -85,15 +85,15 @@ class ConfigService:
         """确定 mykey.py 路径和修改时间"""
         # 优先 profile
         if self._profile:
-            script_dir = os.path.dirname(os.path.abspath(__file__))  # GA/tools/
-            ga_dir = os.path.dirname(script_dir)  # GA/
+            script_dir = os.path.dirname(os.path.abspath(__file__))  # GA/tools/utils/
+            ga_dir = os.path.dirname(os.path.dirname(script_dir))  # GA/
             profile_path = os.path.join(ga_dir, 'profiles', f'{self._profile}.py')
             if os.path.isfile(profile_path):
                 return profile_path, os.path.getmtime(profile_path)
 
         # 默认 mykey.py (在 GA/ 下)
-        script_dir = os.path.dirname(os.path.abspath(__file__))  # GA/tools/
-        ga_dir = os.path.dirname(script_dir)  # GA/
+        script_dir = os.path.dirname(os.path.abspath(__file__))  # GA/tools/utils/
+        ga_dir = os.path.dirname(os.path.dirname(script_dir))  # GA/
         default_path = os.path.join(ga_dir, 'mykey.py')
         if os.path.isfile(default_path):
             return default_path, os.path.getmtime(default_path)

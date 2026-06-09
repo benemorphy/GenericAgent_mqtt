@@ -20,9 +20,9 @@ import re
 import threading
 import queue
 from agentmain import GeneraticAgent
-from continue_cmd import handle_frontend_command, reset_conversation, list_sessions, extract_ui_messages
-from btw_cmd import handle_frontend_command as btw_handle_frontend
-from export_cmd import last_assistant_text, export_to_temp, wrap_for_clipboard
+from scripts.continue_cmd import handle_frontend_command, reset_conversation, list_sessions, extract_ui_messages
+from scripts.btw_cmd import handle_frontend_command as btw_handle_frontend
+from frontends.export_cmd import last_assistant_text, export_to_temp, wrap_for_clipboard
 
 st.set_page_config(page_title="Cowork", layout="wide")
 
