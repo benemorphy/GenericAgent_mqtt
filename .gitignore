@@ -26,6 +26,7 @@ temp/
 tmp/
 *.log
 **log.*
+!GA/tools/l35_log.py
 model_responses.txt
 auth.json
 
