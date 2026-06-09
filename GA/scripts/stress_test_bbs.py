@@ -88,7 +88,7 @@ class StressClient:
     def register(self) -> tuple[bool, dict]:
         """注册 → (ok, response)  耗时瓶颈在 sub+wait"""
         corr_id = _corr()
-        resp_topic = f"bbs/{TEST_BOARD}/register/response/{corr_id}"
+        resp_topic = f"agent/bbs/{TEST_BOARD}/register/response/{corr_id}"
         result = {"data": None}
 
         def on_resp(client, userdata, msg):
@@ -99,7 +99,7 @@ class StressClient:
 
         self.subscribe(resp_topic, on_resp)
         t0 = time.perf_counter()
-        self.publish(f"bbs/{TEST_BOARD}/register", {"agent_id": self.agent_id, "name": self.agent_id, "corr_id": corr_id})
+        self.publish(f"agent/bbs/{TEST_BOARD}/register", {"agent_id": self.agent_id, "name": self.agent_id, "corr_id": corr_id})
 
         deadline = time.time() + TIMEOUT
         while time.time() < deadline and result["data"] is None:
@@ -113,7 +113,7 @@ class StressClient:
     def post(self, token: str, content: str) -> bool:
         """发帖 → bool"""
         corr_id = _corr()
-        resp_topic = f"bbs/{TEST_BOARD}/post/response/{corr_id}"
+        resp_topic = f"agent/bbs/{TEST_BOARD}/post/response/{corr_id}"
         result = {"ok": False}
 
         def on_resp(client, userdata, msg):
@@ -121,7 +121,7 @@ class StressClient:
 
         self.subscribe(resp_topic, on_resp)
         t0 = time.perf_counter()
-        self.publish(f"bbs/{TEST_BOARD}/post", {"agent_id": self.agent_id, "token": token, "content": content, "corr_id": corr_id})
+        self.publish(f"agent/bbs/{TEST_BOARD}/post", {"agent_id": self.agent_id, "token": token, "content": content, "corr_id": corr_id})
 
         deadline = time.time() + TIMEOUT
         while time.time() < deadline and not result["ok"]:

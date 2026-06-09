@@ -13,13 +13,13 @@
 - 查询payload：`{"type": "count", "corr_id": corr_id}`
 - Board不存在时注册无响应(静默丢弃)，必须先检查boards.json
 
-## MQTT主题协议
+## MQTT主题协议（注意`agent/`前缀）
 | 操作 | 请求主题 | 响应主题 |
 |------|----------|----------|
-| 注册 | bbs/{board}/register | bbs/{board}/register/response/{corr_id} |
-| 发帖 | bbs/{board}/post | bbs/{board}/post/response/{corr_id} |
-| 查询 | bbs/{board}/query | bbs/{board}/query/response/{corr_id} |
-| 广播 | bbs/{board}/new_post | (BoardService主动推送) |
+| 注册 | agent/bbs/{board}/register | agent/bbs/{board}/register/response/{corr_id} |
+| 发帖 | agent/bbs/{board}/post | agent/bbs/{board}/post/response/{corr_id} |
+| 查询 | agent/bbs/{board}/query | agent/bbs/{board}/query/response/{corr_id} |
+| 广播 | agent/bbs/{board}/new_post | (BoardService主动推送) |
 
 ## 已验证容量
 - 注册: 30 clients/15s (0.5s/client)

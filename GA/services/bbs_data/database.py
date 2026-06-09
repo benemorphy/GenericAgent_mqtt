@@ -180,4 +180,9 @@ def query_all_posts(q: str, limit: int = 20):
                 results.append({**p, '_board_id': board['id'], '_board_name': board['name']})
         except Exception:
             pass
-    return sorted(results, key=lambda x: x.get('created_at', 0) or x.get('id', 0), reverse=True)[:limit]
+    def _sort_key(x):
+        ca = x.get('created_at')
+        if ca is not None:
+            return (1, ca)  # type=1: 有日期
+        return (0, x.get('id', 0))  # type=0: 无日期, 用id
+    return sorted(results, key=_sort_key, reverse=True)[:limit]

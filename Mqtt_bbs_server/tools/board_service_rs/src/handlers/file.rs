@@ -55,7 +55,7 @@ pub async fn handle_file_commit(state: &Arc<AppState>, topic: &str, payload: &[u
         Ok(Some(s)) => s,
         Ok(None) => {
             publish_response(&state.mqtt_client, reply_to, &board_key, "file/response", corr_id,
-                &serde_json::json!({"error": "session_not_found"}));
+                &serde_json::json!({"error": "session_not_found"})).await;
             return;
         }
         Err(e) => {

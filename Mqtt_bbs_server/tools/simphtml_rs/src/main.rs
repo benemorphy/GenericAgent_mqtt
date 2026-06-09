@@ -56,7 +56,14 @@ fn handle(mut stream: TcpStream, dmax: usize) {
         let _ = stream.write_all(b"HTTP/1.0 200 OK\r\nContent-Length:10\r\n\r\nsimphtml_rs");
         return;
     }
-    if parts[0] != "POST" { let _ = stream.write_all(b"HTTP/1.0 405\r\n\r\n"); return; }
+    if parts[0] != "POST" && parts[0] != "GET" { let _ = stream.write_all(b"HTTP/1.0 405\r\n\r\n"); return; }
+    // GET / 返回状态信息（替代405）
+    if parts[0] == "GET" {
+        let info = "simphtml_rs: use POST with HTML body, or GET ?html=...";
+        let resp = format!("HTTP/1.0 200 OK\r\nContent-Type:text/plain;charset=utf-8\r\nAccess-Control-Allow-Origin:*\r\nContent-Length:{}\r\n\r\n{}", info.len(), info);
+        let _ = stream.write_all(resp.as_bytes());
+        return;
+    }
     let mc: usize = if path.contains("max_chars=") {
         path.split("max_chars=").nth(1).and_then(|s| s.split('&').next()).and_then(|s| s.parse().ok()).unwrap_or(dmax)
     } else { dmax };

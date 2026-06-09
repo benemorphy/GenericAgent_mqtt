@@ -4,11 +4,11 @@
     "last": "2026-06-09"
   },
   "goal_mode_sop.md": {
-    "count": 4,
+    "count": 6,
     "last": "2026-06-09"
   },
   "git_push_sop.md": {
-    "count": 4,
+    "count": 5,
     "last": "2026-06-09"
   },
   "keychain.py": {
@@ -16,7 +16,7 @@
     "last": "2026-06-09"
   },
   "board_service_diag_sop.md": {
-    "count": 1,
+    "count": 6,
     "last": "2026-06-09"
   },
   "global_mem_insight.txt": {
@@ -36,11 +36,11 @@
     "last": "2026-06-09"
   },
   "memory_management_sop.md": {
-    "count": 3,
+    "count": 5,
     "last": "2026-06-09"
   },
   "global_mem.txt": {
-    "count": 3,
+    "count": 12,
     "last": "2026-06-09"
   },
   "gbrain_integration_sop.md": {
@@ -88,6 +88,34 @@
     "last": "2026-06-09"
   },
   "2026-06-09.md": {
+    "count": 11,
+    "last": "2026-06-09"
+  },
+  "supervisor_sop.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "knowgt_sop.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "mqtt_persistence_analysis": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "ga_mqtt_bbs_scenarios.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "README.md": {
+    "count": 2,
+    "last": "2026-06-09"
+  },
+  "scheduled_task_sop.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "board_stress_sop.md": {
     "count": 2,
     "last": "2026-06-09"
   }

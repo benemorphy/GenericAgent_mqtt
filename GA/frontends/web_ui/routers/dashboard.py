@@ -5,7 +5,8 @@ import threading
 from pathlib import Path
 
 from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.encoders import jsonable_encoder
 
 from frontends.auth import require_user
 from services.bbs_data.database import get_db
@@ -81,7 +82,7 @@ def dashboard_page(request: Request, user: dict = Depends(require_user)):
 @router.get("/api/dashboard/overview")
 def api_dashboard_overview(user: dict = Depends(require_user)):
     """总览数据 JSON"""
-    return _get_overview()
+    return JSONResponse(content=jsonable_encoder(_get_overview()))
 
 
 @router.get("/api/dashboard/agents")
@@ -95,7 +96,7 @@ def api_dashboard_agents(user: dict = Depends(require_user)):
     """)
     agents = cur.fetchall()
     db.close()
-    return {"agents": agents}
+    return JSONResponse(content=jsonable_encoder({"agents": agents}))
 
 
 @router.get("/api/dashboard/posts")
@@ -115,7 +116,7 @@ def api_dashboard_posts(board: str = "", limit: int = 20, user: dict = Depends(r
         """, (limit,))
     posts = cur.fetchall()
     db.close()
-    return {"posts": posts}
+    return JSONResponse(content=jsonable_encoder({"posts": posts}))
 
 
 # ── WebSocket 实时推送 ──

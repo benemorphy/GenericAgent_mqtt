@@ -162,8 +162,70 @@ def web_execute_js(script, switch_tab_id=None, no_monitor=False):
             return {"status": "error", "msg": err}
         if len(browser_service.get_all_sessions()) == 0: return {"status": "error", "msg": "没有可用的浏览器标签页"}
         if switch_tab_id: browser_service.default_session_id = switch_tab_id
-        result = simphtml.execute_js_rich(script, browser_service.driver, no_monitor=no_monitor)
-        return result
+        driver = browser_service.driver
+        last_html = None
+        if not no_monitor:
+            try:
+                last_html = simphtml.get_html(driver, cutlist=False, extra_js=simphtml.temp_monitor_js, maxchars=9999999)
+            except Exception:
+                pass
+        result = None
+        error_msg = None
+        reloaded = False
+        newTabs = []
+        try:
+            before_sids = set(driver.get_session_dict().keys())
+            response = driver.execute_js(script)
+            result = response['data'] if isinstance(response, dict) and 'data' in response else response.get('result') if isinstance(response, dict) else response
+            if isinstance(response, dict) and response.get('closed', 0) == 1:
+                reloaded = True
+            time.sleep(1)
+        except Exception as e:
+            error = e.args[0] if e.args else str(e)
+            if isinstance(error, dict):
+                error.pop('stack', None)
+            error_msg = str(error)
+        rr = {"status": "failed" if error_msg else "success", "js_return": result, "tab_id": getattr(driver, 'default_session_id', None)}
+        if reloaded:
+            rr['reloaded'] = reloaded
+        if isinstance(response, dict) and response.get('newTabs'):
+            rr['newTabs'] = response['newTabs']
+        else:
+            try:
+                after = driver.get_session_dict()
+                before = before_sids if not error_msg else set()
+                new_sids = {k: v for k, v in after.items() if k not in before}
+                if new_sids:
+                    rr['newTabs'] = [{'id': k, 'url': v} for k, v in new_sids.items()]
+                    rr['suggestion'] = "页面已刷新，以上新标签页在执行期间连接。"
+            except Exception:
+                pass
+        if error_msg:
+            rr['error'] = error_msg
+        if no_monitor:
+            return rr
+        if not reloaded:
+            try:
+                rr['transients'] = simphtml.get_temp_texts(driver)
+            except Exception:
+                rr['transients'] = []
+        if not reloaded and len(newTabs) == 0:
+            try:
+                current_html = simphtml.get_html(driver, cutlist=False, maxchars=9999999)
+                if last_html is not None:
+                    diff_data = simphtml.find_changed_elements(last_html, current_html)
+                    change_count = diff_data.get('changed', 0)
+                    top_change = diff_data.get('top_change', '')
+                    diff_summary = f"DOM变化量: {change_count}"
+                    if top_change:
+                        diff_summary += f"\n最显著变化:\n{top_change}"
+                    if change_count == 0 and not rr.get('transients', []) and len(newTabs) == 0:
+                        diff_summary += " (页面无变化)"
+                        rr['suggestion'] = "页面无明显变化"
+                    rr['diff'] = diff_summary
+            except Exception:
+                rr['diff'] = "页面变化监控不可用"
+        return rr
     except Exception as e: return {"status": "error", "msg": format_error(e)}
 
 

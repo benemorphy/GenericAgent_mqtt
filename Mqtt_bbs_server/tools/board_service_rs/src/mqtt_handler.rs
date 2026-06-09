@@ -45,11 +45,21 @@ pub async fn heartbeat_loop(state: Arc<AppState>) {
     }
 }
 
-/// MQTT 事件循环 — 主题分发
+/// MQTT 事件循环 — 主题分发 (含超时保护防止静默挂死)
 pub async fn event_loop(state: Arc<AppState>, mut event_loop: rumqttc::EventLoop) -> anyhow::Result<()> {
+    let mut idle_since = std::time::Instant::now();
+    const POLL_TIMEOUT_SECS: u64 = 60;
+    const MAX_IDLE_SECS: u64 = 120; // 2分钟无有效消息则触发重启 (watchdog每2分钟检查一次)
+
     loop {
-        match event_loop.poll().await {
-            Ok(Event::Incoming(Incoming::Publish(publish))) => {
+        let poll_result = tokio::time::timeout(
+            std::time::Duration::from_secs(POLL_TIMEOUT_SECS),
+            event_loop.poll()
+        ).await;
+
+        match poll_result {
+            Ok(Ok(Event::Incoming(Incoming::Publish(publish)))) => {
+                idle_since = std::time::Instant::now(); // 重置空闲计时
                 let topic = publish.topic.clone();
                 let payload = publish.payload.to_vec();
                 let topic_str = topic.as_str();
@@ -63,15 +73,31 @@ pub async fn event_loop(state: Arc<AppState>, mut event_loop: rumqttc::EventLoop
                     handlers::capability::handle_cap_query(&state, &payload).await;
                 }
             }
-            Ok(Event::Incoming(Incoming::ConnAck(_))) => {
+            Ok(Ok(Event::Incoming(Incoming::ConnAck(_)))) => {
+                idle_since = std::time::Instant::now();
                 tracing::info!("MQTT 连接成功");
             }
-            Ok(Event::Outgoing(_)) => {}
-            Err(e) => {
+            Ok(Ok(Event::Outgoing(_))) => {}
+            Ok(Err(e)) => {
                 tracing::warn!("MQTT 事件循环错误: {}", e);
                 tokio::time::sleep(std::time::Duration::from_secs(1)).await;
             }
-            _ => {}
+            Ok(_) => {}
+            Err(_elapsed) => {
+                // poll() 超时 — 可能 event_loop 挂死
+                tracing::warn!(
+                    "MQTT poll() 超时 ({}s)，触发空闲检查 (idle={}s)",
+                    POLL_TIMEOUT_SECS,
+                    idle_since.elapsed().as_secs()
+                );
+                if idle_since.elapsed().as_secs() > MAX_IDLE_SECS {
+                    tracing::error!(
+                        "event_loop 空闲超过 {}s，主动退出以触发重启",
+                        MAX_IDLE_SECS
+                    );
+                    return Err(anyhow::anyhow!("event_loop idle timeout"));
+                }
+            }
         }
     }
 }
