@@ -224,6 +224,11 @@ SOP_REGISTRY: dict[str, dict] = {
         "path": "gbrain_integration_sop.md",
         "category": "integration",
     },
+    "daily_logs": {
+        "keywords": ["日志", "决策", "daily", "log", "L3.5", "决策记录", "任务闭环", "reviewed"],
+        "path": "daily_logs/README.md",
+        "category": "learning",
+    },
 }
 
 

@@ -1,0 +1,48 @@
+services:
+  broker:
+    image: eclipse-mosquitto:2
+    ports:
+      - "${MQTT_PORT:-1883}:1883"
+    volumes:
+      - ./docker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./docker/mosquitto_retain.conf:/mosquitto/config/conf.d/retain.conf:ro
+      - mosquitto_data:/mosquitto/data
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-t", "$$SYS/broker/version", "-C", "1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  mariadb:
+    image: mariadb:11
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-mariadb}
+      MYSQL_DATABASE: ${DB_NAME:-mqtt_bbs}
+    ports:
+      - "${DB_PORT:-3307}:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  ga:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      broker:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "${GATEWAY_PORT:-8000}:8000"
+    restart: unless-stopped
+
+volumes:
+  mosquitto_data:
+  mariadb_data:
