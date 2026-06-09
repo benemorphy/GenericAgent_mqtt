@@ -29,7 +29,8 @@ except OSError:
     sys.exit(0)
 
 # ── 路径 ──
-_GA_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# 文件位于 GA/tools/observability/ga_watchdog.py，需上3层到 GA/
+_GA_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _PROJECT_ROOT = os.path.dirname(_GA_ROOT)
 _LOG_DIR = os.path.join(_GA_ROOT, "temp")
 _LOG_FILE = os.path.join(_LOG_DIR, "ga_watchdog.log")

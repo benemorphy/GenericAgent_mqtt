@@ -341,6 +341,16 @@ HB#1 @ 2026-06-05 13:18
 # 关闭: ontology_model.py 中 _USE_CODEGRAPH = False
 # DB: D:\open_claw_agent\Beneh\.codegraph\codegraph.db (5746节点/11366边/276文件)
 
+## [GBRAIN_INTEGRATION]
+# gbrain (garrytan/gbrain) — 本地知识大脑集成
+gbrain.repo = D:/open_claw_agent/gbrain
+gbrain.cli = bun run src/cli.ts
+gbrain.api_key = memory.keychain.keys.deepseek_api_key.use()
+# MCP层: tools/mcp/gbrain_mcp.py — 10个工具(query/search/think/graph-query/get/put/list/list-skills/init/status)
+# Skill层: tools/skills/gbrain_skill.py — 4个@TOOL注册(query_agent/search_agent/think_agent/graph_agent)
+# SOP: memory/gbrain_integration_sop.md (已推送sophub id: 6a27b82880d0200502e43ae1)
+# 前提: bun已安装, gbrain仓库已clone, DeepSeek API Key已配置
+
 ## [MINDFLOW]
 # MindFlow AI课件引擎 — D:\open_claw_agent\MindFlow
 # MariaDB: 127.0.0.1:3306, user=root, password=mariadb, db=mindflow, 服务=RUNNING
@@ -674,3 +684,43 @@ HB#18 @ 2026-06-09 10:07
 # heartbeat | hb19
 HB#19 @ 2026-06-09 10:08
 事件: ['[]', '[]', "['success']", "['success']", '不需要']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 10:14
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 14:43
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 14:47
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 14:47
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 15:22
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 15:22
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 15:27
+事件: ['[]', '[]', '[]', '[]', '[]']
+
+## [HEARTBEAT]
+# heartbeat | hb1
+HB#1 @ 2026-06-09 15:27
+事件: ['[]', '[]', '[]', '[]', '[]']

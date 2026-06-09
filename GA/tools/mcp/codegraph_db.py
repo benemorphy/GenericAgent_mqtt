@@ -12,7 +12,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
-_GA_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_GA_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _DB_PATH = os.path.join(os.path.dirname(_GA_ROOT), '.codegraph', 'codegraph.db')
 _CODEGRAPH_CLI = shutil.which('codegraph')
 

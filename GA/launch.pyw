@@ -14,6 +14,7 @@ WINDOW_WIDTH, WINDOW_HEIGHT, RIGHT_PADDING, TOP_PADDING = 600, 900, 0, 100
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 frontends_dir = os.path.join(script_dir, "frontends")
+scripts_dir = os.path.join(script_dir, "scripts")
 
 def find_free_port(lo=18501, hi=18599):
     ports = list(range(lo, hi+1)); random.shuffle(ports)
@@ -121,7 +122,7 @@ if __name__ == '__main__':
     else: print('[Launch] QQ Bot not enabled (use --qq to start)')
 
     if args.feishu:
-        fsproc = subprocess.Popen([sys.executable, os.path.join(frontends_dir, "fsapp.py")], creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
+        fsproc = subprocess.Popen([sys.executable, os.path.join(scripts_dir, "fsapp.py")], creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
         atexit.register(fsproc.kill)
         print('[Launch] Feishu Bot starting (background)...')
     else: print('[Launch] Feishu Bot not enabled (use --feishu to start)')
