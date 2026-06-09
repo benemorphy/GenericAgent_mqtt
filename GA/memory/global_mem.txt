@@ -724,3 +724,12 @@ HB#1 @ 2026-06-09 15:27
 # heartbeat | hb1
 HB#1 @ 2026-06-09 15:27
 事件: ['[]', '[]', '[]', '[]', '[]']
+
+
+## [L35]
+# L3.5 Daily Decision Logs — 默认记忆层级
+l35.dir = memory/daily_logs/
+l35.rule_file = memory/daily_logs/README.md
+l35.template = ## HH:MM | 主题\n\\nmeta:\\n  status: completed\\n\\n### 结论\\n### 关键决策\\n### 后续行动
+l35.behavior = 每轮收尾必须判断是否写日志, 有结论必写, 无则注明原因
+l35.search_priority = 恢复历史决策时优先查 daily_logs/, 再查 L4 raw sessions

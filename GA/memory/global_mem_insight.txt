@@ -45,3 +45,4 @@ Mobile: adb_ui.py
 12. BoardService静默故障: 进程活着+TCP连1883+心跳还在 ≠ MQTT正常, 可能event_loop卡死(主poll不处理消息,心跳独立task不受影响); 诊断SOP见 board_service_diag_sop
 13. MemPalace优先检索: 在文件读取前先 from memory.mempalace_bridge import semantic_search 做语义搜索定位, 再精确 file_read; 已知精确路径/SOP名可跳过
 14. L3检索前强制语义搜索: 在调用 file_read 读取任何 L3 SOP 文件前，必须先执行 from memory.mempalace_bridge import semantic_search; r = semantic_search("<关键词>") 定位精确路径。如果结果中 cosine > 0.35 的条目，优先使用。已知精确路径可跳过。
+15. L3.5日志默认: 每轮任务收尾时必须显式判断是否需要写L3.5日志(memory/daily_logs/YYYY-MM-DD.md)。已有结论/决策/变更/坑点必须写，无结论时注明"本轮无日志"原因。历史决策恢复时优先查daily_logs/。

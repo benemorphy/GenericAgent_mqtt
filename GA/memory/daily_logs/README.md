@@ -1,3 +1,8 @@
+# L3.5 Daily Decision Logs — 默认记忆层级
+
+> **默认行为**：每轮任务收尾时，Agent 必须显式判断是否需要写 L3.5 日志。
+> 这是 GA Agent 的默认记忆层级（Rule #15），位于 L3 SOP/工具层 与 L4 原始会话层 之间。
+
 # L3.5 Daily Decision Logs
 
 > 位于 L3 SOP/工具层 与 L4 原始会话层 之间的 reviewed 日志层。
