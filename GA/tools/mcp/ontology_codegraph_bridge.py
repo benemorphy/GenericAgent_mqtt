@@ -79,7 +79,7 @@ _KNOWN_COMPONENTS = {
     "Persistence":         {"path_patterns": ["persistence.py","Mqtt_bbs_server/persistence"], "type": "library"},
     "Mermaid Prerender":   {"path_patterns": ["mermaid_prerender.py"], "type": "tool"},
     "Courseware Pipeline": {"path_patterns": ["generate_courseware.py", "cell_diagram.py"], "type": "tool"},
-    "CDP Search":          {"path_patterns": ["doubao_cdp","cdp_search"], "type": "tool"},
+    "CDP Search":          {"path_patterns": ["cdp_search"], "type": "tool"},
     "Goal Hive":           {"path_patterns": ["goal_hive","goal_mode","goal_nexus"], "type": "service"},
     "Rust MQTT Client":    {"path_patterns": ["mqtt_client_rs"], "type": "library"},
     "Inspiration Board":   {"path_patterns": ["inspiration_board.py"], "type": "tool"},
