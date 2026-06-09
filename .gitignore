@@ -49,8 +49,8 @@ memory/*.zip
 # Tests — only ignore __pycache__
 tests/__pycache__/
 
-# Config
-config/
+# Config — track docker configs, ignore sync tool
+config/sync.ffs_db
 
 # Skills learning — track metadata, ignore practice data
 skills_learning/
@@ -115,3 +115,9 @@ boards_response.html
 *.pyc
 
 .doubao_user_data/
+
+# Ruff linter cache
+.ruff_cache/
+
+# PyTest cache
+.pytest_cache/
