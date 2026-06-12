@@ -180,6 +180,7 @@ def agent_backend_stream(prompt=None):
     # content on the next chunk (raw_resp is cumulative).
     response = re.sub(r'\**LLM Running \(Turn \d+\) \.\.\.\**\s*$',
                       '', st.session_state.get('partial_response', '')).rstrip()
+    normal_done = False  # track whether task completed normally
     try:
         while True:
             try: item = dq.get(timeout=1)
@@ -191,11 +192,14 @@ def agent_backend_stream(prompt=None):
                 st.session_state.partial_response = response
                 yield response
             if 'done' in item:
+                normal_done = True
                 st.session_state.display_queue = None
                 st.session_state.partial_response = ''
                 yield item['done']; break
     finally:
-        agent.abort()
+        if not normal_done:
+            # Only abort on interruption/error, not on normal task completion
+            agent.abort()
         try:
             st.session_state.display_queue = None
             st.session_state.partial_response = ''
@@ -206,19 +210,20 @@ def agent_backend_stream(prompt=None):
 def render_main_stream(prompt=None):
     """Render the assistant bubble for the main task (new or resumed). Saves final to messages."""
     with st.chat_message("assistant"):
-        frozen = 0; live = st.empty(); response = ''
         CURSOR = ' ▌'
+        live = st.empty()
+        response = ''
         for response in agent_backend_stream(prompt):
             segs = fold_turns(response)
-            n_done = max(0, len(segs) - 1)
-            while frozen < n_done:
-                with live.container(): render_segments([segs[frozen]])
-                live = st.empty(); frozen += 1
-            with live.container(): render_segments([segs[-1]], suffix=CURSOR)   # live 区域
+            # Re-render all completed segments in one container to avoid orphaned stale elements
+            with live.container():
+                render_segments(segs[:-1] if len(segs) > 1 else [], suffix='')
+                if segs:
+                    render_segments([segs[-1]], suffix=CURSOR)
+        # Final render without cursor
         segs = fold_turns(response)
-        for i in range(frozen, len(segs)):
-            with live.container(): render_segments([segs[i]])
-            if i < len(segs) - 1: live = st.empty()
+        with live.container():
+            render_segments(segs, suffix='')
     if response:
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.session_state.last_reply_time = int(time.time())
