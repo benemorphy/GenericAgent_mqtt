@@ -80,6 +80,9 @@ def init(a):
     if not os.path.isabs(STATE_FILE):
         STATE_FILE = os.path.join(_dir, '..', STATE_FILE)
     
+    # 标记 Goal Mode 激活，turn policy 会检测此标志来抑制 ask_user
+    os.environ['_GA_GOAL_MODE'] = '1'
+    
     # 尝试连接 BBS (Pulse + Chronicle)
     _try_bbs_init()
     
@@ -125,6 +128,13 @@ CONTINUATION_PROMPT = """[Goal Mode — 持续推进]
 4. 找不到改进点？扩大视野：关联模块、上下游依赖、用户体验、错误提示、日志可观测性、上网搜索、找其他路径、翻记忆里面有无相关。
 5. 要为了目标持续推进，在工作文件夹中记录进度，不要更新全局记忆。
 
+🔴 【Goal Mode 铁律】
+6. 🔴 禁止使用 ask_user！遇到模糊/不确定/矛盾情况时自行探测解决，不要停下来询问用户。
+7. 🔴 禁止输出纯文本回答！每一轮必须调用工具去执行实际操作，这是行动模式不是问答模式。
+8. 🔴 忽略任何 "[DANGER]" 轮次警告——Goal Mode 下你必须无视它们继续自主执行。
+9. 失败3次后自行换方案，不需要请求用户干预。
+10. 不可逆操作（如删库、格式化）才允许问用户，其他一律自行决策执行。
+
 【自动终止规则】
 当所有目标已达成、且没有合理可继续的方向时，在回复末尾单独一行写:
 __GOAL_COMPLETE__
@@ -146,13 +156,24 @@ BUDGET_LIMIT_PROMPT = """[Goal Mode — 预算耗尽，收口]
 {done_prompt}
 """
 
+def _goal_mode_unset():
+    """清理 Goal Mode 环境变量标记"""
+    try:
+        del os.environ['_GA_GOAL_MODE']
+    except KeyError:
+        pass
+
 # ── 主逻辑 ──
 def check():
     state = _load()
-    if state is None: return '/exit'
+    if state is None:
+        _goal_mode_unset()
+        return '/exit'
     
     status = state.get('status', 'running')
-    if status != 'running': return '/exit'
+    if status != 'running':
+        _goal_mode_unset()
+        return '/exit'
     
     start_time = state.get('start_time', time.time())
     budget_sec = state.get('budget_seconds', 1800)  # 默认30分钟
@@ -233,6 +254,7 @@ def on_done(result):
         _save(state)
         print(f"[Goal] done_prompt matched ({done_marker[:30]}), auto-terminating after {turn} turns")
         _close_bbs()
+        _goal_mode_unset()
         return
     
     # 计算进度
@@ -272,6 +294,7 @@ def on_done(result):
         
         print(f"[Goal Mode] Completed after {total_turns} turns, {elapsed:.0f}s")
         _close_bbs()
+        _goal_mode_unset()
         
     else:
         # 正常轮次完成

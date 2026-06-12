@@ -15,8 +15,15 @@ from tools.observability.constraint_dashboard import policy_constraint_dashboard
 
 # ── Turn Policy Functions ──
 
+def _is_goal_mode():
+    """Check if Goal Mode is active (set by reflect/goal_mode.py init())"""
+    import os
+    return os.environ.get('_GA_GOAL_MODE', '') == '1'
+
 def policy_danger_ask_user(turn, _plan, next_prompt):
     """每75轮强制ask_user（非plan模式）"""
+    if _is_goal_mode():
+        return ""  # Goal Mode: never ask_user, keep pushing autonomously
     if turn % 75 == 0 and (not _plan):
         return (
             "\n\n[DANGER] 已连续执行第 {turn} 轮。"
@@ -28,6 +35,14 @@ def policy_danger_ask_user(turn, _plan, next_prompt):
 def policy_danger_retry(turn, _plan, next_prompt):
     """每7轮禁止无效重试"""
     if turn % 7 == 0:
+        if _is_goal_mode():
+            return (
+                "\n\n[DANGER] 已连续执行第 {turn} 轮。禁止无效重试。"
+                "若无有效进展，必须切换策略：1. 探测物理边界 "
+                "2. 自行探索新方案 3. 扩大视野找其他路径。"
+                "禁止使用 ask_user，Goal Mode 下必须自主解决。"
+                "如有需要，可调用 update_working_checkpoint 保存关键上下文。"
+            )
         return (
             "\n\n[DANGER] 已连续执行第 {turn} 轮。禁止无效重试。"
             "若无有效进展，必须切换策略：1. 探测物理边界 "
@@ -53,6 +68,11 @@ def policy_plan_limit(turn, _plan, next_prompt):
             "确认当前步骤，回复开头引用：当前步骤：...\n\n"
         )
     if _plan and turn >= 120:
+        if _is_goal_mode():
+            return (
+                "\n\n[DANGER] Plan模式已运行 120+ 轮，已达上限。"
+                "Goal Mode: 禁止 ask_user，自行决定是否重置plan或换方向继续。"
+            )
         return (
             "\n\n[DANGER] Plan模式已运行 {turn} 轮，已达上限。"
             "必须 ask_user 汇报进度并确认是否继续。"
