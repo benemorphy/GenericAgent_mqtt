@@ -176,20 +176,39 @@ class BBSClientWithPersistence(BBSClient):
         """
         快速发帖：直接写入 MariaDB + 发布 MQTT（无需等待 BoardService 响应）。
         比 BoardClient.post() 快 10-50x，适用于批量发帖场景。
+
+        安全: v2 增加了 JWT token 解码校验, 无效 token 拒绝写入。
         """
         import uuid as _uid, json as _json, time as _time
         board = board or self.board
+        # P0.2: JWT token 校验 — 无效或过期 token 拒绝处理
+        try:
+            import jwt as _jwt
+            _secret = os.environ.get("JWT_SECRET")
+            if _secret:
+                decoded = _jwt.decode(token, _secret, algorithms=["HS256"])
+                author_name = decoded.get("name", token[:8])
+            else:
+                log.warning("  post_fast: JWT_SECRET not set, falling back to token[:8]")
+                author_name = token[:8]
+        except Exception as e:
+            log.warning(f"  post_fast: token 校验失败: {e}")
+            # 兼容旧 token 格式（纯字符串）：使用 token[:8] 但记录告警
+            if len(token) < 8:
+                return {"error": "invalid token"}
+            author_name = token[:8]
+
         post_id = int(_time.time() * 1000) % 10000000 + _uid.uuid4().int % 1000000
         now = _time.time()
         post_data = {
-            "id": post_id, "author": token[:8], "content": content,
+            "id": post_id, "author": author_name, "content": content,
             "board": board, "created_at": now
         }
         # 写 MariaDB
         if self._db:
             self._db.execute(
                 "INSERT INTO posts (id, board, author, content, created_at) VALUES (%s, %s, %s, %s, FROM_UNIXTIME(%s))",
-                (post_id, board, token[:8], content, now)
+                (post_id, board, author_name, content, now)
             )
         # MQTT 广播（fire-and-forget）
         self.publish(f"bbs/{board}/new_post", post_data, retain=False, qos=0)

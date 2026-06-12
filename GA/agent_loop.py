@@ -1,6 +1,7 @@
 import json
 import re
 import os
+import logging
 from dataclasses import dataclass
 from typing import Any, Optional
 
@@ -10,6 +11,24 @@ try:
     _LINEAGE_AVAIL = True
 except Exception:
     _LINEAGE_AVAIL = False
+
+# ── SquillaRouter 集成 ──────────────────────────────────
+_ROUTER_ENABLED = False  # 可通过环境变量 SQUILLA_ROUTER=1 开启
+_ROUTER = None
+
+def _init_router():
+    global _ROUTER, _ROUTER_ENABLED
+    if _ROUTER is not None:
+        return
+    try:
+        from squilla_router import CascadeRouter, get_router
+        _ROUTER = get_router()
+        _ROUTER_ENABLED = os.environ.get("SQUILLA_ROUTER", "").lower() in ("1", "true", "yes")
+        if _ROUTER_ENABLED:
+            logging.getLogger(__name__).info("[Router] SquillaRouter enabled")
+    except ImportError as e:
+        logging.getLogger(__name__).debug(f"[Router] squilla_router not available: {e}")
+        _ROUTER = None
 @dataclass
 class StepOutcome:
     data: Any
@@ -78,17 +97,54 @@ def get_pretty_json(data):
         data = data.copy(); data["script"] = data["script"].replace("; ", ";\n  ")
     return json.dumps(data, indent=2, ensure_ascii=False).replace('\\n', '\n')
 
-def agent_runner_loop(client, system_prompt, user_input, handler, tools_schema, max_turns=40, verbose=True, initial_user_content=None):
+def agent_runner_loop(client, system_prompt, user_input, handler, tools_schema, max_turns=40, verbose=True, initial_user_content=None, yield_info=False):
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": initial_user_content if initial_user_content is not None else user_input}
     ]
     turn = 0;  handler.max_turns = max_turns
+    _init_router()
     while turn < handler.max_turns:
         turn += 1; turnstr = f'LLM Running (Turn {turn}) ...'
         if handler.parent.task_dir: turnstr = f'Turn {turn} ...'
         if verbose: turnstr = f'**{turnstr}**'
+        if yield_info: yield {'turn': turn}
         yield f"\n\n{turnstr}\n\n"
+
+        # ── SquillaRouter: 每轮自动路由决策 ──────────────────
+        if _ROUTER_ENABLED and _ROUTER is not None:
+            try:
+                # 提取本轮文本做路由
+                curr_text = ""
+                for m in reversed(messages):
+                    if isinstance(m.get('content'), str):
+                        curr_text = m['content']
+                        break
+                    elif isinstance(m.get('content'), list):
+                        for block in m['content']:
+                            if isinstance(block, dict) and block.get('type') == 'text':
+                                curr_text = block.get('text', '')
+                                break
+                        if curr_text:
+                            break
+                decision = _ROUTER.decide(
+                    current_text=curr_text,
+                    history_texts=[str(m.get('content',''))[:200] for m in messages[-6:-1]],
+                )
+                # 如果路由推荐的模型与当前不同，切换模型
+                if decision.model != client.model:
+                    old_model = client.model
+                    client.switch_model(decision.model, decision.tier)
+                    if verbose:
+                        latency = f"{decision.latency_ms:.0f}" if decision.latency_ms else "?"
+                        yield f"[Router] {old_model} -> {decision.model} (tier={decision.tier}, traj={decision.trajectory}, {latency}ms)\n\n"
+                else:
+                    # 埋点: 路由决策但无需切换
+                    if verbose:
+                        yield f"[Router] keep {client.model} (tier={decision.tier}, traj={decision.trajectory})\n\n"
+            except Exception as e:
+                logging.getLogger(__name__).warning(f"[Router] decision error: {e}")
+
         if turn%10 == 0: client.last_tools = ''  # 每10轮重置一次工具描述，避免上下文过大导致的模型性能下降
         response_gen = client.chat(messages=messages, tools=tools_schema)
         if verbose:

@@ -10,6 +10,7 @@ import time
 import os
 import threading
 import signal
+import http.server as _hs
 import pymysql
 
 from Mqtt_bbs_client.client import BBSClient
@@ -18,6 +19,8 @@ from .board_config import BOARDS_FILE, DEFAULT_BOARDS, TOPIC_BBS, log
 from .board_db import CapabilityRegistry, MariaDBWrapper
 from .board_handlers import BoardHandlers
 from .plugin_manager import PluginManager
+from .rate_limiter import RateLimiter
+from .audit_log import AuditLogger
 
 
 class BoardService:
@@ -48,6 +51,29 @@ class BoardService:
         self._healthcheck_enabled = os.environ.get("GATEWAY_HEALTHCHECK", "true").lower() == "true"
         self._start_time = time.time()
         self._subscribed_boards = set()
+        self._http_server = None
+
+        # Phase2: Rate limiter (configurable from env)
+        rate_limits = {
+            f"{TOPIC_BBS}/+/register": int(os.environ.get("RATE_LIMIT_REGISTER", "5")),
+            f"{TOPIC_BBS}/+/post": int(os.environ.get("RATE_LIMIT_POST", "30")),
+            f"{TOPIC_BBS}/+/query": int(os.environ.get("RATE_LIMIT_QUERY", "20")),
+        }
+        self._rate_limiter = RateLimiter(
+            max_per_sec=int(os.environ.get("RATE_LIMIT_GLOBAL", "50")),
+            burst=int(os.environ.get("RATE_LIMIT_BURST", "100")),
+            enabled=os.environ.get("RATE_LIMIT_ENABLED", "true").lower() == "true",
+            topic_limits=rate_limits,
+        )
+
+        # Phase2: Structured audit logger
+        self._audit_logger = AuditLogger(
+            mqtt_client=self._client,
+            log_topic=cfg.AUDIT_LOG_TOPIC,
+            file_path=os.environ.get("AUDIT_LOG_FILE", ""),
+            enabled=cfg.AUDIT_LOG_ENABLED,
+        )
+
         # Handlers composition
         self._handlers = BoardHandlers(self)
 
@@ -146,6 +172,40 @@ class BoardService:
             self._dbs.add(board_key)
             log.info(f"  MariaDB ready: board={board_key}")
 
+    # ── Health Check HTTP Server (Phase2) ──
+
+    def _start_healthcheck_http(self):
+        """Start threaded HTTP /healthz + /readyz on port 9100"""
+        health_port = int(os.environ.get("HEALTHCHECK_PORT", "9100"))
+
+        class _HC(_hs.BaseHTTPRequestHandler):
+            def log_message(self, *a): pass
+            def _json(self, code, data):
+                self.send_response(code)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(data).encode())
+            def do_GET(self):
+                svc = self.server._svc
+                if self.path == "/healthz":
+                    uptime = time.time() - svc._start_time
+                    self._json(200, {"status": "ok" if svc._running else "shutdown",
+                                     "uptime_sec": round(uptime, 1), "boards": len(svc._boards)})
+                elif self.path == "/readyz":
+                    ready = svc._running and svc._client and svc._client.is_connected
+                    self._json(200 if ready else 503,
+                               {"ready": ready, "running": svc._running,
+                                "mqtt_connected": svc._client.is_connected if svc._client else False})
+                else:
+                    self._json(404, {"error": "not found"})
+
+        server = _hs.HTTPServer(("127.0.0.1", health_port), _HC)
+        server._svc = self
+        self._http_server = server
+        t = threading.Thread(target=server.serve_forever, daemon=True, name="hc-http")
+        t.start()
+        log.info(f"  HealthCheck HTTP started: 127.0.0.1:{health_port}/healthz")
+
     # ── Lifecycle ──
 
     def start(self):
@@ -181,6 +241,10 @@ class BoardService:
 
             signal.signal(signal.SIGTERM, lambda *a: self.stop())
 
+            # Phase2: HTTP health check endpoint (threaded)
+            if self._healthcheck_enabled:
+                self._start_healthcheck_http()
+
             if self._healthcheck_enabled:
                 self._client.subscribe("system/healthcheck", self._handlers.on_healthcheck)
                 self._client.subscribe("system/healthcheck/liveness", self._handlers.on_hc_liveness)
@@ -200,6 +264,13 @@ class BoardService:
 
     def stop(self):
         self._running = False
+        # Phase2: 关闭健康检查HTTP服务
+        if self._http_server:
+            try:
+                self._http_server.shutdown()
+            except Exception:
+                pass
+            self._http_server = None
         for name in list(self._plugin_mgr.list_plugins()):
             self._plugin_mgr.unload(name["name"])
         self._registry.stop()

@@ -83,11 +83,14 @@ class GenericAgent:
                     mixin = MixinSession(llm_sessions, s['mixin_cfg'])
                     if isinstance(mixin._sessions[0], (NativeClaudeSession, NativeOAISession)): llm_sessions[i] = NativeToolClient(mixin)
                     else: llm_sessions[i] = ToolClient(mixin)
-                except Exception as e: print(f'\n\n\n[ERROR] Failed to init MixinSession with cfg {s["mixin_cfg"]}: {e}!!!\n\n')
+                except Exception as e: print(f'\n\n\n[ERROR] Failed to init MixinSession with cfg {s["mixin_cfg"]}: {e}!!!\n\n'); llm_sessions[i] = None
+        llm_sessions = [s for s in llm_sessions if s is not None]
         self.llmclients = llm_sessions
-        # -- 自动注入豆包（本地CDP）-- [已移除]
-        self.llmclient = self.llmclients[self.llm_no%len(self.llmclients)]
-        if oldhistory: self.llmclient.backend.history = oldhistory
+        if not self.llmclients:
+            self.llmclient = None
+        else:
+            self.llmclient = self.llmclients[self.llm_no%len(self.llmclients)]
+        if oldhistory and self.llmclient: self.llmclient.backend.history = oldhistory
     
     def next_llm(self, n=-1):
         self.load_llm_sessions()

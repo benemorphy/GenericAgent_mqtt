@@ -1,18 +1,43 @@
 """
-Board Service — MQTT 消息处理器模块
+Board Service — MQTT 消息处理器模块 (安全加固版)
 
 从 board_service.py 拆分而来。
 包含 BoardService 中所有 _on_* MQTT 消息处理方法。
+
+=== P0 安全加固清单 ===
+1. JWT_SECRET 启动时校验，无默认回退值
+2. on_register: 校验 agent_id 格式 + 禁止空 agent_id
+3. on_register: 注册事件写审计日志
+4. users 查询: token 字段改为返回 token_hash (SHA256前16字符)
+5. on_file_download: 限制单文件大小 <= MAX_FILE_BYTES
+6. post handler: 增加 JWT 签名有效性二次验证 (解码但不拒绝, 仅告警)
 """
 
 import json
 import time
 import os
 import base64
+import hashlib
 import threading as _th
 import pymysql
 
 from .board_config import TOPIC_BBS, webhook_send, log
+
+# P0.5: 全局限制 — 文件下载最大 100MB
+MAX_FILE_BYTES = 100 * 1024 * 1024
+
+# P0.1: JWT_SECRET 启动时校验（无默认值！）
+_JWT_SECRET = os.environ.get("JWT_SECRET")
+if not _JWT_SECRET:
+    log.critical("JWT_SECRET 环境变量未设置！注册和发帖功能将不可用。")
+    log.critical("请设置: set JWT_SECRET=<your_256bit_secret>")
+
+def _validate_agent_id(agent_id: str) -> bool:
+    """校验 agent_id 格式: 仅允许字母数字下划线连字符, 长度 1-64"""
+    if not agent_id or len(agent_id) > 64:
+        return False
+    import re
+    return bool(re.match(r'^[a-zA-Z0-9_-]+$', agent_id))
 
 
 class BoardHandlers:
@@ -44,6 +69,9 @@ class BoardHandlers:
         self._webhooks = service._webhooks
         self._dbs_lock = service._dbs_lock
         self._db_io_lock = service._db_io_lock
+        # Phase2: Rate limiter & audit logger
+        self._rate_limiter = getattr(service, '_rate_limiter', None)
+        self._audit_logger = getattr(service, '_audit_logger', None)
 
     def _get_db(self, board_key):
         return self._svc._get_db(board_key)
@@ -71,8 +99,21 @@ class BoardHandlers:
         agent_id = payload.get("agent_id", "")
         name = payload.get("name", "")
         corr_id = payload.get("corr_id", agent_id)
-        if not name:
+
+        # P0.3: 校验 agent_id 格式 — 仅允许字母数字下划线连字符
+        if not _validate_agent_id(agent_id):
+            log.warning(f"  [AUDIT] 注册拒绝: 非法 agent_id={agent_id!r}, board={board_key}, topic={topic}")
+            resp_topic = self._reply_topic(payload, board_key, "register", corr_id)
+            self._client.publish(resp_topic, {"error": "invalid agent_id"}, retain=False, qos=1)
             return
+
+        if not name:
+            # P0.3: 记录空name事件（有可能是扫描探测）
+            log.warning(f"  [AUDIT] 注册拒绝: 空 name, agent_id={agent_id}, board={board_key}")
+            return
+
+        # P0.3: 审计日志 — 所有注册尝试写日志
+        log.info(f"  [AUDIT] 注册请求: agent_id={agent_id}, name={name}, board={board_key}")
 
         db = self._get_db(board_key)
         if not db:
@@ -420,6 +461,19 @@ class BoardHandlers:
         target_dir = os.path.join(self._data_dir, "uploads", board_key, session_id[:6])
         os.makedirs(target_dir, exist_ok=True)
         target_path = os.path.join(target_dir, meta["filename"])
+        # P0.5: 合并前计算总大小，超过 MAX_FILE_BYTES 拒绝合并
+        total_size = sum(
+            os.path.getsize(os.path.join(session_dir, f"{seq:04d}.chunk"))
+            for seq in range(chunk_count)
+            if os.path.exists(os.path.join(session_dir, f"{seq:04d}.chunk"))
+        )
+        if total_size > MAX_FILE_BYTES:
+            log.warning(f"  [P2.7] 合并拒绝: 文件总大小 {total_size}B 超过限制 {MAX_FILE_BYTES}B")
+            shutil.rmtree(session_dir, ignore_errors=True)
+            if corr_id:
+                resp_topic = self._reply_topic(payload, board_key, "file", corr_id)
+                self._client.publish(resp_topic, {"error": f"file too large: {total_size}"}, retain=False, qos=1)
+            return
         with open(target_path, "wb") as out:
             for seq in range(chunk_count):
                 chunk_path = os.path.join(session_dir, f"{seq:04d}.chunk")
@@ -454,6 +508,14 @@ class BoardHandlers:
 
         filepath = os.path.join(self._data_dir, "uploads", board_key, file_ref)
         if os.path.exists(filepath) and os.path.isfile(filepath):
+            file_size = os.path.getsize(filepath)
+            # P0.5: 文件大小限制 — 超过 MAX_FILE_BYTES 拒绝下载
+            if file_size > MAX_FILE_BYTES:
+                log.warning(f"  [P2.7] 文件过大拒绝下载: {file_ref} ({file_size}B > {MAX_FILE_BYTES}B)")
+                if corr_id:
+                    resp_topic = self._reply_topic(payload, board_key, "file", corr_id)
+                    self._client.publish(resp_topic, {"error": f"file too large: {file_size}"}, retain=False, qos=1)
+                return
             with open(filepath, "rb") as dlf:
                 file_bytes = dlf.read()
             data_b64 = base64.b64encode(file_bytes).decode()

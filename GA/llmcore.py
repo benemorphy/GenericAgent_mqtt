@@ -8,11 +8,62 @@ import urllib3
 import uuid
 from datetime import datetime
 import logging
+import hashlib
 from tools.utils.retry_utils import retry_stream
 from tools.utils.config_service import ConfigService
 from tools.utils.logger import log
+
+# ── Cache 集成 (仅保留语义缓存, 已移除 llm_cache_rs) ──
+from tools.semantic_cache import get_semantic_cache
+
+_SEMANTIC_CACHE = None
+
+def _ensure_cache():
+    """懒初始化语义缓存"""
+    global _SEMANTIC_CACHE
+    if _SEMANTIC_CACHE is None:
+        try:
+            _SEMANTIC_CACHE = get_semantic_cache()
+        except Exception as e:
+            log.debug("semantic_cache init failed: %s", e)
+
+def _try_cache(messages, model, system):
+    """尝试缓存查找，返回 (chunks, content_blocks) 或 None (已移除 llm_cache_rs)"""
+    _ensure_cache()
+    if _SEMANTIC_CACHE is not None:
+        try:
+            result = _SEMANTIC_CACHE.lookup(messages, system=system, model=model)
+            if result is not None:
+                chunks, sim = result
+                log.info("CACHE HIT [semantic] sim=%.3f model=%s", sim, model)
+                chunks = list(chunks)
+                full_text = "".join(chunks) if chunks else ""
+                content_blocks = [{"type": "text", "text": full_text}] if full_text else []
+                return chunks, content_blocks
+        except Exception as e:
+            log.debug("semantic_cache lookup failed: %s", e)
+    return None
+
+def _store_cache(messages, model, system, chunks, content_blocks):
+    """存储响应到语义缓存 (已移除 llm_cache_rs)"""
+    _ensure_cache()
+    if _SEMANTIC_CACHE is not None:
+        try:
+            _SEMANTIC_CACHE.store(messages, system, model, tuple(chunks))
+        except Exception as e:
+            log.debug("semantic_cache store failed: %s", e)
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-_RESP_CACHE_KEY = str(uuid.uuid4())
+def _make_prompt_cache_key(sess):
+    """生成 session-aware 的 prompt cache key，替代全局静态 UUID。
+
+    用 session 身份 + model + system prompt 做 hash，使得：
+    - 同一 session 内重复调用相同 prompt 结构 → 可击中服务端缓存
+    - 不同 session/模型 → 不同 key，无串扰
+    """
+    key_parts = [str(sess.api_base), sess.model, sess.system or ""]
+    return hashlib.sha256("||".join(key_parts).encode()).hexdigest()[:24]
+
 
 def _load_mykeys():
     """加载配置（向后兼容，内部委托给 ConfigService）
@@ -117,16 +168,14 @@ def _record_usage(usage, api_mode):
     if api_mode == 'responses':
         cached = (usage.get("input_tokens_details") or {}).get("cached_tokens", 0)
         inp = usage.get("input_tokens", 0)
-        log.debug('Cache: input=%d cached=%d', inp, cached)
+        log.info('CacheSrv: api=%s input=%d cached=%d', api_mode, inp, cached)
     elif api_mode == 'chat_completions':
         cached = (usage.get("prompt_tokens_details") or {}).get("cached_tokens", 0)
         inp = usage.get("prompt_tokens", 0)
-        log.debug('Cache: input=%d cached=%d', inp, cached)
+        log.info('CacheSrv: api=%s input=%d cached=%d', api_mode, inp, cached)
     elif api_mode == 'messages':
         ci, cr, inp = usage.get("cache_creation_input_tokens", 0), usage.get("cache_read_input_tokens", 0), usage.get("input_tokens", 0)
-        log.debug('Cache: input=%d creation=%d read=%d', inp, ci, cr)
-    
-    return
+        log.info('CacheSrv: api=%s input=%d creation=%d read=%d', api_mode, inp, ci, cr)
 
 def _stamp_oai_cache_markers(messages, model):
     """Add cache_control to last 2 user messages for Anthropic models via OAI-compatible relay."""
@@ -141,11 +190,33 @@ def _stamp_oai_cache_markers(messages, model):
             c = list(c); c[-1] = dict(c[-1], cache_control={'type': 'ephemeral'})
             messages[idx] = {**messages[idx], 'content': c}
 
+_CACHE_HEADERS = ['x-cache-hit', 'cf-cache-status', 'x-amzn-cache', 'x-sifive-cache', 'x-r2-cache',
+                  'x-amzn-request-id', 'x-request-id', 'x-kuberay-request-id']
+_RATELIMIT_HEADERS = ['x-ratelimit-remaining-requests', 'x-ratelimit-remaining-tokens', 'x-ratelimit-limit-requests']
+
+
+def _log_response_headers(resp):
+    entries = []
+    for h in _CACHE_HEADERS + _RATELIMIT_HEADERS:
+        v = resp.headers.get(h)
+        if v is not None:
+            entries.append(f"{h}={v}")
+    elapsed = resp.elapsed.total_seconds()
+    if entries:
+        log.info('CacheRate: %s | HTTP %d | %.3fs | %s',
+                 resp.request.method, resp.status_code, elapsed, ' '.join(entries))
+    else:
+        log.info('CacheRate: %s | HTTP %d | %.3fs | (no cache headers)',
+                 resp.request.method, resp.status_code, elapsed)
+
+
 def _raw_api_post(sess, url, headers, payload, parse_fn):
     """纯粹的 API POST 请求，无重试逻辑（重试由 @retry_stream 装饰器处理）"""
     streamed = False
     with requests.post(url, headers=headers, json=payload, stream=sess.stream,
                        timeout=(sess.connect_timeout, sess.read_timeout), proxies=sess.proxies, verify=sess.verify) as r:
+        # 记录缓存&限流相关 HTTP 响应头
+        _log_response_headers(r)
         if r.status_code >= 400:
             try: body = r.text.strip()[:500]
             except Exception: body = ""
@@ -174,7 +245,7 @@ def _openai_stream(sess, messages):
     if api_mode == "responses":
         url = auto_make_url(sess.api_base, "responses")
         payload = {"model": model, "input": _to_responses_input(messages), "stream": sess.stream, 
-                   "prompt_cache_key": _RESP_CACHE_KEY, "instructions": sess.system or "You are an Omnipotent Executor."}
+                   "prompt_cache_key": _make_prompt_cache_key(sess), "instructions": sess.system or "You are an Omnipotent Executor."}
         if sess.reasoning_effort: payload["reasoning"] = {"effort": sess.reasoning_effort}
         if sess.max_tokens: payload["max_output_tokens"] = sess.max_tokens
     else:
@@ -190,7 +261,24 @@ def _openai_stream(sess, messages):
     if tools: payload["tools"] = _prepare_oai_tools(tools, api_mode)
     if sess.service_tier: payload["service_tier"] = sess.service_tier
     parse_fn = (lambda r: _parse_openai_sse(r.iter_lines(), record_usage=_record_usage, api_mode=api_mode)) if sess.stream else (lambda r: _parse_openai_json(r.json(), record_usage=_record_usage, api_mode=api_mode))
-    return (yield from _raw_api_post(sess, url, headers, payload, parse_fn))
+    # LLM Cache lookup
+    cached = _try_cache(messages, model, getattr(sess, 'system', None))
+    if cached is not None:
+        for c in cached[0]:
+            yield c
+        return cached[1]
+    # Cache miss: real API call
+    gen = _raw_api_post(sess, url, headers, payload, parse_fn)
+    collected = []
+    try:
+        while True:
+            chunk = next(gen)
+            collected.append(chunk)
+            yield chunk
+    except StopIteration as e:
+        content_blocks = e.value or []
+        _store_cache(messages, model, getattr(sess, 'system', None), collected, content_blocks)
+        return content_blocks
         
 def _prepare_oai_tools(tools, api_mode="chat_completions"):
     if api_mode == "responses":
@@ -321,6 +409,7 @@ class BaseSession:
         self.api_mode = 'responses' if mode in ('responses', 'response') else 'chat_completions'
         self.temperature = cfg.get('temperature', 1)
         self.max_tokens = cfg.get('max_tokens')
+        self._tier = cfg.get('tier', 'c1')  # SquillaRouter tier
     def _apply_claude_thinking(self, payload):
         if self.thinking_type:
             thinking = {"type": self.thinking_type}
@@ -385,13 +474,54 @@ def _ensure_thinking_blocks(messages, model):
         if self.system: payload["system"] = [{"type": "text", "text": self.system, "cache_control": {"type": "persistent"}}]
         url = auto_make_url(self.api_base, "messages")
         parse_fn = (lambda r: _parse_claude_sse(r.iter_lines(), _record_usage)) if self.stream else (lambda r: _parse_claude_json(r.json(), _record_usage))
-        return (yield from _raw_api_post(self, url, headers, payload, parse_fn))
+        # LLM Cache lookup for base Claude session
+        cached = _try_cache(messages, self.model, getattr(self, 'system', None))
+        if cached is not None:
+            for c in cached[0]:
+                yield c
+            return cached[1]
+        gen = _raw_api_post(self, url, headers, payload, parse_fn)
+        collected = []
+        try:
+            while True:
+                chunk = next(gen)
+                collected.append(chunk)
+                yield chunk
+        except StopIteration as e:
+            content_blocks = e.value or []
+            _store_cache(messages, self.model, getattr(self, 'system', None), collected, content_blocks)
+            return content_blocks
     def make_messages(self, raw_list):
         msgs = _drop_unsigned_thinking([{"role": m['role'], "content": list(m['content'])} for m in raw_list])
         user_idxs = [i for i, m in enumerate(msgs) if m['role'] == 'user']
         for idx in user_idxs[-2:]:
             msgs[idx]["content"][-1] = dict(msgs[idx]["content"][-1], cache_control={"type": "ephemeral"})
         return msgs
+
+    def switch_model(self, model_name: str, tier: str = "c1"):
+        """热切换模型 (SquillaRouter 集成用)"""
+        old = self.model
+        self.model = model_name
+        self._tier = tier
+        from importlib import import_module
+        parts = type(self).__module__.split('.')
+        mod_name = parts[0] if len(parts) == 1 else '.'.join(parts[:-1])
+        mod = import_module(mod_name)
+        cfg = mod.get_model_config(tier) if hasattr(mod, 'get_model_config') else None
+        if cfg and 'apibase' in cfg:
+            self.api_base = cfg['apibase'].rstrip('/')
+        import logging
+        logging.getLogger(__name__).info(f"[Router] BaseSession switch: {old} -> {model_name} (tier={tier})")
+
+    def switch_tier(self, tier):
+        """按 tier 切换模型配置 (SquillaRouter 集成)"""
+        try:
+            from squilla_router.config import get_model_config
+            cfg = get_model_config(tier)
+            if cfg and "model" in cfg:
+                self.switch_model(cfg["model"], tier)
+        except ImportError:
+            pass
 
 
 def _fix_messages(messages):
@@ -456,7 +586,23 @@ class NativeClaudeSession(BaseSession):
             messages[idx]["content"][-1] = dict(messages[idx]["content"][-1], cache_control={"type": "ephemeral"})
         url = auto_make_url(self.api_base, "messages") + '?beta=true'
         parse_fn = (lambda r: _parse_claude_sse(r.iter_lines(), _record_usage)) if self.stream else (lambda r: _parse_claude_json(r.json(), _record_usage))
-        return (yield from _raw_api_post(self, url, headers, payload, parse_fn))
+        # LLM Cache lookup for Native Claude session
+        cached = _try_cache(messages, model, getattr(self, 'system', None))
+        if cached is not None:
+            for c in cached[0]:
+                yield c
+            return cached[1]
+        gen = _raw_api_post(self, url, headers, payload, parse_fn)
+        collected = []
+        try:
+            while True:
+                chunk = next(gen)
+                collected.append(chunk)
+                yield chunk
+        except StopIteration as e:
+            content_blocks = e.value or []
+            _store_cache(messages, model, getattr(self, 'system', None), collected, content_blocks)
+            return content_blocks
 
     def ask(self, msg):
         assert type(msg) is dict
@@ -653,8 +799,10 @@ def _parse_text_tool_calls(content):
 
 def _ensure_text_block(blocks):
     """If response has thinking but no text block, inject a synthetic summary from thinking's first line."""
-    if any(b.get("type") == "text" for b in blocks): return None
-    th = next((b.get("thinking", "") for b in blocks if b.get("type") == "thinking"), "")
+    # Filter to only dict blocks (defensive: cache path may inject strings)
+    dict_blocks = [b for b in blocks if isinstance(b, dict)]
+    if any(b.get("type") == "text" for b in dict_blocks): return None
+    th = next((b.get("thinking", "") for b in dict_blocks if b.get("type") == "thinking"), "")
     if not th: return None
     line = th.strip().split('\n', 1)[0]
     txt = "<summary>" + (line[:60] + '...' if len(line) > 60 else line) + "</summary>"
@@ -720,7 +868,23 @@ class ClaudeSession(BaseSession):
         if self.system: payload["system"] = [{"type": "text", "text": self.system, "cache_control": {"type": "persistent"}}]
         url = auto_make_url(self.api_base, "messages")
         parse_fn = (lambda r: _parse_claude_sse(r.iter_lines(), _record_usage)) if self.stream else (lambda r: _parse_claude_json(r.json(), _record_usage))
-        return (yield from _raw_api_post(self, url, headers, payload, parse_fn))
+        # LLM Cache lookup for Claude session
+        cached = _try_cache(messages, self.model, getattr(self, 'system', None))
+        if cached is not None:
+            for c in cached[0]:
+                yield c
+            return cached[1]
+        gen = _raw_api_post(self, url, headers, payload, parse_fn)
+        collected = []
+        try:
+            while True:
+                chunk = next(gen)
+                collected.append(chunk)
+                yield chunk
+        except StopIteration as e:
+            content_blocks = e.value or []
+            _store_cache(messages, self.model, getattr(self, 'system', None), collected, content_blocks)
+            return content_blocks
     def make_messages(self, raw_list):
         msgs = _drop_unsigned_thinking([{"role": m['role'], "content": list(m['content'])} for m in raw_list])
         user_idxs = [i for i, m in enumerate(msgs) if m['role'] == 'user']
@@ -789,7 +953,7 @@ class MixinSession:
         for attempt in range(self._retries + 1):
             idx = (base + attempt) % n
             gen = self._orig_raw_asks[idx](*args, **kwargs)
-            log.info('MixinSession using session (%s)', self._sessions[idx].name)
+            print(f'[MixinSession] Using session ({self._sessions[idx].name})')
             last_chunk, return_val, yielded = None, [], False
             try:
                 while True:
@@ -803,7 +967,6 @@ class MixinSession:
                 elif isinstance(last_chunk, str) and '[!!! 流异常中断' in last_chunk and n > 1:
                     self._cur_idx = (idx + 1) % n; self._switched_at = time.time()
                     print(f'[MixinSession] Partial failure, next call → s{self._cur_idx} ({self._sessions[self._cur_idx].name})')
-                    log.warning('MixinSession partial failure, next call -> s%d (%s)', self._cur_idx, self._sessions[self._cur_idx].name)
                 return return_val
             if attempt >= self._retries:
                 yield last_chunk; return return_val
@@ -812,11 +975,9 @@ class MixinSession:
                 rnd = (attempt + 1) // n
                 delay = min(30, self._base_delay * (1.5 ** rnd))
                 print(f'[MixinSession] {last_chunk[:80]}, round {rnd} exhausted, retry in {delay:.1f}s')
-                log.warning('MixinSession %s..., round %d exhausted, retry in %.1fs', last_chunk[:80], rnd, delay)
                 time.sleep(delay)
             else:
                 print(f'[MixinSession] {last_chunk[:80]}, retry {attempt+1}/{self._retries} (s{idx}→s{nxt})')
-                log.warning('MixinSession %s..., retry %d/%d (s%d->s%d)', last_chunk[:80], attempt+1, self._retries, idx, nxt)
 
 THINKING_PROMPT_ZH = """
 ### 行动规范（持续有效）
@@ -878,6 +1039,24 @@ class NativeToolClient:
         if resp: _write_llm_log('Response', resp.raw, self.log_path)
         if resp and hasattr(resp, 'tool_calls') and resp.tool_calls: self._pending_tool_ids = [tc.id for tc in resp.tool_calls]
         return resp
+
+    @property
+    def model(self):
+        """当前使用的模型名（代理到后端session）"""
+        return getattr(self.backend, 'model', '')
+
+    def switch_model(self, model_name: str, tier: str = "c1"):
+        """热切换模型 (SquillaRouter 集成用)"""
+        old = self.model
+        self.backend.model = model_name
+        self.backend._tier = tier
+        import logging
+        logging.getLogger(__name__).info(f"[Router] NativeToolClient switch: {old} -> {model_name} (tier={tier})")
+
+    def switch_tier(self, tier):
+        """代理到 backend.switch_tier (SquillaRouter 集成)"""
+        if hasattr(self.backend, 'switch_tier'):
+            self.backend.switch_tier(tier)
 
 def resolve_session(cfg_name):
     """Create LLM session by config name. Delegates to ProviderRegistry.
