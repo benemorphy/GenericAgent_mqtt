@@ -174,8 +174,20 @@ def bbs_chronicle(action: str = "query", **kwargs):
     return [] if action == 'query' else None
 
 def bbs_close():
-    """关闭 BBS 连接"""
+    """关闭 BBS 连接，并清理 retain 消息防止残留"""
     global _bbs, _bbs_client, _enabled
+
+    # ── 清理 MQTT retain 消息 ──
+    if _bbs_client and _pulse_board and _chronicle_board:
+        try:
+            topic_pulse = f"bbs/{_pulse_board}/post"
+            topic_chronicle = f"bbs/{_chronicle_board}/post"
+            _bbs_client.publish(topic_pulse, None, qos=0, retain=True)
+            _bbs_client.publish(topic_chronicle, None, qos=0, retain=True)
+            log.info(f"[GoalBBS] Retained messages cleared: {topic_pulse}, {topic_chronicle}")
+        except Exception as e:
+            log.warning(f"[GoalBBS] Failed to clear retained messages: {e}")
+
     if _bbs_client:
         try:
             _bbs_client.disconnect()

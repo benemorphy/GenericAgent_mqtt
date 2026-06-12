@@ -167,11 +167,13 @@ def _goal_mode_unset():
 def check():
     state = _load()
     if state is None:
+        _close_bbs()          # 清理 MQTT retain 消息
         _goal_mode_unset()
         return '/exit'
     
     status = state.get('status', 'running')
     if status != 'running':
+        _close_bbs()          # 清理 MQTT retain 消息
         _goal_mode_unset()
         return '/exit'
     

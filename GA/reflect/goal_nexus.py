@@ -80,15 +80,18 @@ def check():
     """Nexus check — 继承 goal_mode 的 check 逻辑，增加人类决策等待检测"""
     state = _load()
     if state is None:
+        _close_bbs()          # 清理 MQTT retain 消息
         return '/exit'
     
     status = state.get('status', 'running')
     
     # 非 running 状态处理
     if status == 'done' or status == 'done_budget':
+        _close_bbs()          # 清理 MQTT retain 消息
         return '/exit'
     
     if status == 'wrapping_up':
+        _close_bbs()          # 清理 MQTT retain 消息
         return '/exit'
     
     # --- waiting_human: 非阻塞等待人类决策 ---
@@ -538,11 +541,28 @@ def _on_nexus_response(topic, payload):
 
 
 def _close_bbs():
+    """关闭 Nexus BBS 连接，并清理 retain 消息防止残留"""
     bbs = _nexus.get("bbs")
     if bbs:
-        bbs.loop_stop()
-        bbs.disconnect()
+        try:
+            # 清理 nexus 特有的 retain 消息
+            bbs.publish("bbs/goal_nexus/review", None, qos=0, retain=True)
+            bbs.publish("bbs/goal_nexus/response", None, qos=0, retain=True)
+        except Exception:
+            pass
+        try:
+            bbs.loop_stop()
+            bbs.disconnect()
+        except Exception:
+            pass
     _nexus["bbs"] = None
+
+    # 也调用 goal_bbs 的关闭（清理 pulse/chronicle retain）
+    try:
+        from reflect.goal_bbs import bbs_close
+        bbs_close()
+    except Exception:
+        pass
 
 
 def _send_pulse(msg_type, **kwargs):
