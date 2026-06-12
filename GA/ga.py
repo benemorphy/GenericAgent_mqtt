@@ -206,15 +206,28 @@ class GenericAgentHandler(BaseHandler):
     
     @TOOL.register()
     def do_update_working_checkpoint(self, args, response):
-        '''为整个任务设定后续需要临时记忆的重点。'''
+        '''为整个任务设定后续需要临时记忆的重点。
+        P0增强: 支持 5W2H 任务本体结构化输入 (Gliding Horse 设计理念)。'''
         key_info = args.get("key_info", "")
         related_sop = args.get("related_sop", "")
         if "key_info" in args: self.working['key_info'] = key_info
         if "related_sop" in args: self.working['related_sop'] = related_sop
+
+        # ── P0: 5W2H 任务本体 ──
+        five_w2h = args.get("five_w2h")
+        if five_w2h:
+            if isinstance(five_w2h, str):
+                # 尝试解析 JSON 字符串为 dict
+                import json
+                try:
+                    five_w2h = json.loads(five_w2h)
+                except (json.JSONDecodeError, TypeError):
+                    pass  # 保持原字符串
+            self.working['five_w2h'] = five_w2h
+
         self.working['passed_sessions'] = 0
-        yield "[Info] Updated key_info and related_sop.\n"
+        yield "[Info] Updated key_info, related_sop" + (" and 5W2H." if five_w2h else ".\n")
         next_prompt = get_anchor_prompt(self, skip=args.get('_index', 0) > 0)
-        #next_prompt += '\n[SYSTEM TIPS] 此函数一般在任务开始或中间时调用，如果任务已成功完成应该是start_long_term_update用于结算长期记忆。\n'
         return StepOutcome({"result": "working key_info updated"}, next_prompt=next_prompt)
 
     def _retry_or_exit(self, prompt):
@@ -245,6 +258,42 @@ class GenericAgentHandler(BaseHandler):
             if outcome is not None:
                 return outcome
             
+        # 1.5 检测"工具不可用/卡住"的循环模式 — 自动切换策略
+        stuck_patterns = [
+            r'(?:web_search|搜索|查找|search).{0,20}(?:不可用|不能用|不存在|无法|not\s*.?available|cannot?\s*find)',
+            r'(?:not\s*.?available|cannot?\s*find|找不到|无法|没有).{0,20}(?:tool|工具|搜索|search)',
+            r'(?:我无法|我不能|没有办法|没法).{0,20}(?:搜索|查找|执行|完成)',
+            r'让我查找可用的\w+工具',
+        ]
+        content_lower = content.lower()
+        is_stuck = False
+        for pattern in stuck_patterns:
+            if re.search(pattern, content_lower):
+                is_stuck = True
+                break
+        if is_stuck:
+            from tools.agent.registry import TOOL
+            tool_list = sorted([t for t in TOOL.list_functions() if t not in ('no_tool',)])
+            # 清空语义缓存 — 防止循环命中同一卡住响应
+            try:
+                from tools.semantic_cache import get_semantic_cache
+                sem_cache = get_semantic_cache()
+                sem_cache.entries.clear()
+                sem_cache.hits = 0
+                sem_cache.misses = 0
+            except Exception:
+                pass
+            yield "[Info] Detected stuck pattern: tool unavailable. Switching strategy with available tools.\n"
+            next_prompt = (
+                "[System] 检测到你在上一轮中认为某个工具不可用并停住了。\n"
+                "请在以下实际可用的工具中选择并重新尝试：\n"
+                f"{', '.join(tool_list)}\n"
+                "如果需要进行网络搜索，请使用 metaso_search 工具。\n"
+                "如果需要进行文件操作，请使用 file_read/file_write/file_patch。\n"
+                "请不要重复说工具不可用，直接选择并调用一个可用工具。"
+            )
+            return StepOutcome({}, next_prompt=next_prompt)
+            
         # 2. 检测"包含较大代码块但未调用工具"的情况
         # 关键特征：恰好1个大代码块 + 代码块直接结尾（后面只有空白）
         code_block_pattern = r"```[a-zA-Z0-9_]*\n[\s\S]{50,}?```"
@@ -268,6 +317,79 @@ class GenericAgentHandler(BaseHandler):
                     )
                     return StepOutcome({}, next_prompt=next_prompt)
                 
+        # 3. 检测"任务进行中" — 不应停，自动继续
+        # LLM在Deep Research/多步骤任务中常输出"让我查看结果""搜索已提交"等过程描述而不调工具
+        clean_text = re.sub(r"<thinking>[\s\S]*?</thinking>", "", content, flags=re.IGNORECASE)
+        clean_text = re.sub(r"<summary>[\s\S]*?</summary>", "", clean_text, flags=re.IGNORECASE)
+        clean_text = clean_text.strip()
+        is_mid_task = False
+        if clean_text:
+            # 放宽条件：取消300字限制，即使长文本也可能是过程描述
+            mid_task_indicators = [
+                r'让我', r'现在(开始|进行|执行|搜索|查看|需要)', r'正在',
+                r'已(提交|打开|完成|开始|执行|搜索|查到|提取|读取)',
+                r'准备(使用|打开|进行|调用|搜索)',
+                r'接下来', r'继续',
+                r'查看(结果|页面|搜索|返回)',
+                r'等待(结果|响应|页面|加载)',
+                r'submitted|searching|fetching|loading|waiting|preparing',
+                r'搜索\S{0,10}结果', r'查询\S{0,10}结果',
+                r'发现(了|到)', r'找到(了|以下)',
+                r'从.*中(提取|获取|读取|搜索)',
+                r'以下(是|为)(我|本次|初步)',
+                r'我(打算|计划|需要|想|将)',
+                r'先(读取|搜索|查看|检查|尝试)',
+                r'再(读取|搜索|查看|检查|尝试)',
+                r'然后', r'后续', r'下一步',
+                r'进一步', r'深入(研究|搜索|分析)',
+                # English mid-task indicators — prevent false "Final response" on active tasks
+                r'\bLet me\b', r"\bI'll\b", r'\bI will\b',
+                r'\b(?:need to|going to|gonna)\b',
+                r'\b(?:check|read|look into|find out|see if|verify|examine|inspect)\b',
+                r'\b(?:first|then|next|after that|finally)\b',
+                r'\b(?:continue|proceed|further)\b',
+            ]
+            for pat in mid_task_indicators:
+                if re.search(pat, clean_text, re.IGNORECASE):
+                    is_mid_task = True
+                    break
+            # 早期轮次（turn<3）且无明显完成信号 → 自动继续
+            if not is_mid_task and self.current_turn < 3:
+                is_mid_task = True
+        if is_mid_task:
+            yield "[Info] Mid-task commentary detected. Continuing with next step.\n"
+            next_prompt = "[System] 继续执行下一阶段。如果正在进行多步骤研究，请继续调用工具完成后续工作。"
+            if self.current_turn < 3:
+                next_prompt = "[System] 任务还在早期阶段（前3轮），请继续执行。不要过早结束，需要收集更多资料并进行深入分析。如果当前信息不足以完成回答，请继续搜索和研究。"
+            return StepOutcome(response, next_prompt=next_prompt)
+        
+        # 4. 检查是否有明确的完成信号 — 只有明确表示完成才退出
+        completion_signals = [
+            r'综上(所述|所诉)', r'总而言之', r'总(结|之)',
+            r'最终(结果|回答|结论)',
+            r'任务已完成', r'已完成\S{0,10}任务', 
+            r'以上(是|为).{0,30}(结果|回答|总结|报告)',
+            r'希望(以上|这些).{0,10}(有|能)(帮助|用|参考)',
+            r'以上就是', r'以上就是我',
+            r'本次(研究|分析|任务).{0,10}(完成|结束|到此)',
+            r'报告完毕',
+        ]
+        has_completion = False
+        for pat in completion_signals:
+            if re.search(pat, clean_text, re.IGNORECASE):
+                has_completion = True
+                break
+        
+        if not has_completion and self.current_turn < 5:
+            # 前5轮且无明确完成信号 → 继续执行，不退出
+            yield "[Info] Early turn without clear completion signal. Continuing.\n"
+            return StepOutcome(response, next_prompt="[System] 请继续你的研究工作，不要停止。如果还需要搜索/读取更多资料，请调用对应工具。如果已有足够信息，请给出完整、深入的最终报告并明确标注完成。")
+        
+        if not has_completion:
+            # 无明确完成信号 → 不应静默退出，自动推一步让模型自行判断
+            yield "[Info] No clear completion signal. Giving one more turn to confirm.\n"
+            return StepOutcome(response, next_prompt="[System] 你的上一轮回复中没有明确的完成信号（如\"任务已完成\"\"综上所述\"等）。如果你认为任务确实完成了，请明确输出完成总结并标注完成；如果还没完成，请继续调用工具推进工作。")
+        
         yield "[Info] Final response to user.\n"
         return StepOutcome(response, next_prompt=None)
     
