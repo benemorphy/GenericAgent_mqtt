@@ -1,3 +1,6 @@
+memory/.knowledge_graph.db
+memory/.mempalace/
+memory/L4_raw_sessions/
 # GA project .gitignore
 mykey.py
 .env
