@@ -1,0 +1,7 @@
+{
+  "schedule": "17:40",
+  "repeat": "daily",
+  "enabled": true,
+  "max_delay_hours": 4,
+  "prompt": "执行当日工作总结：1) 检查今日所有会话记录(L4_raw_sessions/)、代码变更(git log --since=00:00)、sche_tasks/done/执行报告 2) 汇总已完成/进行中/待办任务 3) 追加一条L3.5日志条目到 memory/daily_logs/{YYYY-MM-DD}.md，格式：时间戳|主题|meta块(type/daily_summary/tags/[daily,summary]/status/completed) + 结论 + 关键决策 + 后续行动 + 候选升级 4) 同时写入自动生成的报告路径。注意：追加到日志文件末尾，不要覆盖已有内容。"
+}

@@ -1,157 +1,136 @@
-# GenericAgent_mqtt
+# GenericAgent (GA)
 
-基于 [GenericAgent](https://github.com/lsdefine/GenericAgent)（MIT License）的衍生分支。
-核心改动：以 MQTT 消息总线替换原文件式 Agent 通信，实现分布式跨机器实时协作。
-
----
-
-## 项目结构（三大模块）
-
-```
-GenericAgent_mqtt/
-├── Part 1: 智能体核心        ← 你日常交互的部分
-├── Part 2: MQTT 基础设施     ← 放 VPS 上运行的服务
-└── Part 3: GA_tools          ← 独立查看/格式转换工具
-```
-
----
-
-## Part 1: 智能体核心
-
-与上游 GenericAgent 一脉相承的智能体系统，新增 MQTT 通信能力。
-
-| 组件 | 说明 |
-|------|------|
-| `agentmain.py` / `ga.py` | 主入口，`ga agent` / `ga gui` / `ga web` |
-| `ga_cli/` | CLI 命令集合 |
-| `llmcore.py` | LLM 核心：多 Provider 工厂、Mixin Session、工具调用 |
-| `frontends/` | 前端：飞书 Bot / Telegram / Web Gateway |
-| `memory/` | 记忆系统：SOP / 技能 / 工作记忆 |
-| `agents/` | WorkerAgent 实现 |
-| `skills_learning/` | 案例驱动的技能学习 |
-| `tools/` | 智能体工具集（见下方） |
-
-### 记忆系统 (memory/)
-
-| 组件 | 说明 |
-|------|------|
-| `L0: memory_management_sop.md` | 元SOP — 记忆治理核心规则 |
-| `L1: global_mem_insight.txt` | 快速索引 + 强制检索规则 |
-| `L2: global_mem.txt` | 领域事实（配置/路径/凭证） |
-| `L3: *.md / *.py` | SOP / 技能 / 工具模块 |
-| `mempalace_*.py` | MemPalace 语义搜索（2526 drawers, 6 rooms） |
-| `mempalace_codegraph_bridge.py` | 混合检索 MemPalace + CodeGraph |
-| `knowledge_graph.py` | 知识图谱（50实体, L2+CodeGraph符号） |
-| `mempalace_mcp_launcher.py` | MCP Server (32 tools, SSE) |
-| `sop_registry.py` | SOP 注册表 |
-
-检索流程: L3检索前先 `semantic_search()` 定位 → 精确 `file_read` (META-SOP #5 强制)
-
-### 智能体工具 (tools/)
-
-| 工具 | 说明 |
-|------|------|
-| `dream_engine.py` | Agent Dreaming：记忆消化与跨域联想 |
-| `reflection_engine.py` | 任务后反思与技能提取 |
-| `brainstorm_swarm.py` | 脑暴集群：Round Robin + Delphi 多Agent创意生成 |
-| `curiosity_engine.py` | 好奇引擎：主动探测式学习与信号检测 |
-| `inspiration_board.py` | 灵感板 — MQTT 驱动的创意协作 |
-| `gui_vision.py` | GUI 视觉感知与 OCR |
-| `feishu_reminder.py` | 飞书Bot集成：定时提醒与群聊交互 |
-| `file_search.py` | 文件搜索（pathlib + Everything SDK）|
-| `security_audit.py` | 推送前安全审计 |
-| `llm_providers/` | LLM Provider 工厂：多模型统一接口 |
-| `simphtml_rs/` | Rust HTML 简化引擎 |
-
----
-
-## Part 2: MQTT 基础设施（VPS 部署）
-
-独立通信层服务，设计用于 VPS 部署。
-
-| 组件 | 说明 | 部署方式 |
-|------|------|----------|
-| `Mqtt_bbs_server/` | BoardService + Persistence + Scheduler + DAG | `python -m Mqtt_bbs_server.board_service` |
-| `Mqtt_bbs_client/` | BBSClient + Plugin + Registry + Types | `pip install -e ./Mqtt_bbs_client` |
-| `Mqtt_bbs_server/tools/board_service_rs/` | Rust 高性能 BoardService | 独立二进制 |
-| `Mqtt_bbs_server/tools/mqtt_bbs_rs/` | Rust MQTT BBS 组件 | 独立二进制 |
-| `Mqtt_bbs_server/tools/rmqtt_webui_rs/` | Rust MQTT Broker Web 仪表盘 | 独立二进制 |
-| `Mqtt_bbs_server/tools/rmqtt_auth_rs/` | Rust MQTT 认证扩展 | 独立二进制 |
-| `docker/` / `Dockerfile.*` | Docker 部署 | `docker-compose up` |
-
-### MQTT BBS 主题协议
-
-| 类别 | 主题 | 说明 |
-|------|------|------|
-| Board | `v2/board/{name}/register\|post\|query` | Agent 注册/发布/查询 |
-| Task | `v2/task/{id}/input\|output\|status` | 任务分发与状态 |
-| State | `v2/state/{ns}/{key}` | 共享状态（CAS 乐观锁）|
-| 响应槽 | `v2/agent/{id}/rpc/res/#` | 预订阅 RPC 响应 |
-
-### 快速部署
-
-```bash
-# 1. 启动 MQTT Broker
-rmqtt start
-
-# 2. 启动 BoardService（Python）
-python -m Mqtt_bbs_server.board_service
-
-# 3. 或使用 Rust 版（高性能）
-cd Mqtt_bbs_server/tools/board_service_rs && cargo run --release
-```
-
----
-
-## Part 3: GA_tools（独立工具集）
-
-与智能体无关的独立查看/格式转换工具。
-
-| 工具 | 说明 |
-|------|------|
-| `md_to_ppt_pipeline.py` | Markdown → PPT 转换管道 |
-| `echart_ppt_pipeline.py` | ECharts HTML预览 → pyecharts → PPT |
-| `html_slides.py` | HTML 幻灯片生成 |
-| `md_server_rs/` | Rust 高性能 Markdown 文档服务器 |
-| `patch_echarts.py` | Chart.js 替换为 ECharts |
-| `benchmark.py` | 性能基准测试 |
-| `file_sync_agent.py` | 文件同步工具 |
-
----
-
-## 与上游对比
-
-| 维度 | GenericAgent (上游) | GenericAgent_mqtt |
-|------|--------------------|-------------------|
-| Agent 通信 | 文件读写 + 轮询 | MQTT Pub/Sub + 实时推 |
-| 机器边界 | 单机 | 跨机 via Broker |
-| 实时性 | 秒级 | 毫秒级 |
-| 并发度 | 1:1 | N:M 任意并发 |
-| 共享状态 | 无 | WhiteboardKV（CAS 乐观锁）|
-| 能力发现 | 无 | CapabilityRegistry |
-| 任务分发 | 文件目录约定 | Board + DAG Workflow |
-
----
+基于 MQTT 通信的多 Agent 基础设施，含 BBS 看板服务、飞书机器人集成、自主运行能力，以及 **人机协作决策模式（Goal Nexus）**。
 
 ## 快速开始
 
 ```bash
-git clone https://github.com/benemorphy/GenericAgent_mqtt.git
-cd GenericAgent_mqtt && pip install -e .
-# 配置环境变量（优先）或 mykey.py
-set DEEPSEEK_API_KEY=sk-xxx
-ga agent    # 交互式 Agent
+pip install -r requirements.txt
+
+# 配置环境变量（复制并填写）
+cp .env.example .env
+
+# 运行 agent
+python agentmain.py --task "你的任务描述"
 ```
 
-启用 MQTT 模式：
+## 核心架构
+
+- **agentmain.py**: 主入口（CLI + agent 循环）
+- **ga.py**: GeneraticAgentHandler — 核心 Agent 逻辑
+- **llmcore.py**: LLM Provider 抽象层（Claude, OpenAI, DeepSeek）
+- **tools/**: 工具定义、MCP 封装、工具函数、安全、日志
+- **agents/**: 多 Agent 编排（langgraph）
+- **frontends/**: 用户界面桥接层（FastAPI Web UI 8001, 飞书, Telegram, QQ, 微信）
+- **Mqtt_bbs_server/**: MQTT BBS 看板服务（分布式 Agent 协调）
+- **reflect/**: 反射循环模块 — 自主执行模式，含 MQTT 脉冲/编年史
+  - `goal_mode.py` — Goal Mode: 持续自驱执行直到预算耗尽
+  - `goal_bbs.py` — Goal Pulse + Chronicle: 通过 MQTT BBS 实时广播状态
+  - `goal_nexus.py` — Goal Nexus: 人机协作决策模式
+  - `goal_prism.py` — Goal Prism: 复杂决策的多视角分析
+  - `goal_sentinel.py` — Goal Sentinel: 监控守卫循环
+- **memory/**: SOP 文档和知识库
+
+## 配置
+
+复制 `.env.example` 为 `.env` 并配置：
+
+| 变量 | 说明 | 必填 |
+|------|------|------|
+| `ANTHROPIC_API_KEY` | Claude API 密钥 | 是（或 LLM_API_KEY）|
+| `MQTT_HOST` | MQTT Broker 地址 | 是（默认 127.0.0.1）|
+| `JWT_SECRET` | 64 位随机密钥用于认证 | 是（生产环境）|
+| `GITHUB_TOKEN` | GitHub 个人访问令牌 | Git 操作 |
+
+## 项目结构
+
+```
+├── agentmain.py              # 主入口（CLI / reflect / MQTT）
+├── ga.py                     # GeneraticAgent — 核心 Agent 循环
+├── llmcore.py                # LLM Provider 抽象层
+├── reflect/                  # 反射循环模块
+│   ├── goal_mode.py          #   Goal Mode: 持续自驱执行
+│   ├── goal_nexus.py         #   Goal Nexus: 人机协作（飞书卡片）
+│   ├── goal_prism.py         #   Goal Prism: 多视角分析
+│   ├── goal_sentinel.py      #   Goal Sentinel: 监控守卫
+│   ├── goal_bbs.py           #   Goal Pulse + Chronicle (MQTT BBS)
+│   ├── autonomous.py         #   自主运行模式
+│   └── scheduler.py          #   定时任务执行器
+├── frontends/                # 用户界面桥接层
+│   ├── web_ui/               #   FastAPI Web 管理面板 (port 8001)
+│   │   └── main.py           #   入口: `-m frontends.web_ui.main`
+│   ├── fsapp.py              #   飞书机器人（消息 + 交互卡片）
+│   ├── tgapp.py              #   Telegram 机器人
+│   ├── qqapp.py              #   QQ 机器人
+│   └── stapp.py              #   Streamlit 界面
+├── tools/                    # 工具定义和 MCP 封装
+│   ├── mcp/                  #   MCP 工具封装
+│   │   ├── gbrain_mcp.py     #   gbrain 本地知识库检索 (CLI 封装)
+│   │   ├── codegraph_mcp.py  #   CodeGraph 代码分析
+│   │   └── browser_service.py#   浏览器自动化
+│   ├── skills/               #   技能注册
+│   ├── utils/                #   工具函数
+│   └── ...                   #   其他模块
+├── memory/                   # SOP、知识库、操作指南
+├── tests/                    # 测试套件
+├── scripts/                  # 工具脚本（git push 等）
+└── Mqtt_bbs_server/          # MQTT BBS 看板服务
+    └── start_all.ps1         # 全服务启动脚本
+```
+
+## 第三方知识集成
+
+### gbrain — 本地知识脑
+
+GA 通过 `tools/mcp/gbrain_mcp.py` 集成 [gbrain](https://github.com/garrytan/gbrain) 本地知识库引擎，支持：
+
+- **知识导入**：Markdown 目录批量导入，自动向量化嵌入
+- **混合检索**：`gbrain_query` / `gbrain_search` — 语义 + 关键词混合搜索
+- **推理问答**：`gbrain_think` — 基于知识库的链式推理
+- **知识管理**：`gbrain_get_page` / `gbrain_list_pages` / `gbrain_status`
+
+知识库位置：`C:\Users\<user>\.gbrain\brain.pglite` (PGLite 嵌入式数据库)
+
+### miniload_kg — 小微金融贷款风控知识库
+
+位于 `D:\open_claw_agent\miniload_kg\`，覆盖两个知识维度：
+
+| 维度 | 内容 | 文档数 |
+|------|------|--------|
+| 风控理论 | 风险分类、评分卡、IPC技术、供应链金融、监管政策 | 9 |
+| 项目实践 | 方付通项目：模型实践、欺诈检测、IPC风控、行业财务、复核审批SOP、审计标准、图像审核智能体、利率模型 | 12 |
+
+已导入 gbrain，可通过 `gbrain_query("/查询内容/")` 直接检索。
+
+## Docker 运行
 
 ```bash
-rmqtt start && python -m Mqtt_bbs_server.board_service
-python agentmain.py --broker-host 127.0.0.1
+docker build -t genericagent:latest .
+docker run --env-file .env genericagent:latest
 ```
 
----
+## Goal Nexus（人机协作）
 
-## 许可
+Goal Nexus 在 Goal Mode 基础上增加了**人机协作决策机制**：
 
-MIT License — 与上游 [GenericAgent](https://github.com/lsdefine/GenericAgent) 相同。
+```bash
+# 创建带决策点的状态文件
+echo '{"objective":"审计代码质量","budget_seconds":1800,"decision_points":["架构评审","安全审计"]}' > temp/goal_state.json
+set GOAL_STATE=temp\goal_state.json
+
+# 启动 Goal Nexus 模式
+python agentmain.py --reflect reflect/goal_nexus.py
+```
+
+**全链路流程**:
+Agent 遇到决策点 -> 回复中写入 `[ASK_HUMAN]` 标记 -> fsapp.py 推送带按钮的飞书交互卡片 -> 人类点击选项 -> 回调流经 MQTT 回到 Agent -> Agent 继续执行
+
+## 测试
+
+```bash
+pytest tests/ -v
+```
+
+## 文档
+
+详见 `docs/` 设计文档和 `memory/` 的 SOP 及操作指南。

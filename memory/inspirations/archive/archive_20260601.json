@@ -1,0 +1,182 @@
+[
+  {
+    "id": 29,
+    "title": "[Dream] 核心架构 × auto",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:51",
+    "updated_at": "2026-05-29 17:51",
+    "archived_at": "2026-06-01 08:45"
+  },
+  {
+    "id": 30,
+    "title": "[Dream] 核心 × dream_理论家",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:51",
+    "updated_at": "2026-05-29 17:51",
+    "archived_at": "2026-06-01 08:45"
+  },
+  {
+    "id": 31,
+    "title": "[Dream] 核心 × 核心架构",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:55",
+    "updated_at": "2026-05-29 17:55",
+    "archived_at": "2026-06-01 08:45"
+  },
+  {
+    "id": 32,
+    "title": "[Dream] multi-agent × dream_理论家",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:56",
+    "updated_at": "2026-05-29 17:56",
+    "archived_at": "2026-06-01 08:45"
+  },
+  {
+    "id": 33,
+    "title": "[Dream] dream_理论家 × 核心架构",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 18:39",
+    "updated_at": "2026-05-29 18:39",
+    "archived_at": "2026-06-01 08:45"
+  },
+  {
+    "id": 34,
+    "title": "[Dream] 核心架构 × dream_工程师",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 18:39",
+    "updated_at": "2026-05-29 18:39",
+    "archived_at": "2026-06-01 08:45"
+  },
+  {
+    "id": 35,
+    "title": "[Dream] 核心架构 × 全栈",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 18:46",
+    "updated_at": "2026-05-29 18:46",
+    "archived_at": "2026-06-01 08:58"
+  },
+  {
+    "id": 36,
+    "title": "[Dream] multi-agent × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 18:47",
+    "updated_at": "2026-05-29 18:47",
+    "archived_at": "2026-06-01 08:59"
+  },
+  {
+    "id": 37,
+    "title": "[Dream] 低置信度问题: 图神经网络环形检测",
+    "detail": "低置信度问题: 图神经网络环形检测",
+    "tags": [
+      "dream",
+      "gap"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 18:56",
+    "updated_at": "2026-05-29 18:56",
+    "archived_at": "2026-06-01 08:59"
+  },
+  {
+    "id": 38,
+    "title": "[Dream] dream_理论家 × auto",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 18:56",
+    "updated_at": "2026-05-29 18:56",
+    "archived_at": "2026-06-01 08:59"
+  },
+  {
+    "id": 39,
+    "title": "[Dream] 全栈 × multi-agent",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 18:56",
+    "updated_at": "2026-05-29 18:56",
+    "archived_at": "2026-06-01 09:04"
+  },
+  {
+    "id": 40,
+    "title": "[Dream] 核心架构 × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-30 00:39",
+    "updated_at": "2026-05-30 00:39",
+    "archived_at": "2026-06-01 09:04"
+  }
+]

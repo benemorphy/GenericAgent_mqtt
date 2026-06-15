@@ -1,0 +1,137 @@
+[
+  {
+    "id": 20,
+    "title": "[Dream] 全栈 × dream_理论家",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:39",
+    "updated_at": "2026-05-29 17:39",
+    "archived_at": "2026-05-30 00:39"
+  },
+  {
+    "id": 21,
+    "title": "[Dream] dream_理论家 × 核心",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:41",
+    "updated_at": "2026-05-29 17:41",
+    "archived_at": "2026-05-30 00:39"
+  },
+  {
+    "id": 22,
+    "title": "[Dream] 核心 × 核心架构",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:41",
+    "updated_at": "2026-05-29 17:41",
+    "archived_at": "2026-05-30 00:46"
+  },
+  {
+    "id": 23,
+    "title": "[Dream] dream_理论家 × dream_实践者",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:41",
+    "updated_at": "2026-05-29 17:41",
+    "archived_at": "2026-05-30 00:47"
+  },
+  {
+    "id": 24,
+    "title": "[Dream] dream_实践者 × dream_理论家",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:42",
+    "updated_at": "2026-05-29 17:42",
+    "archived_at": "2026-05-30 00:56"
+  },
+  {
+    "id": 25,
+    "title": "[Dream] auto × dream_理论家",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:46",
+    "updated_at": "2026-05-29 17:46",
+    "archived_at": "2026-05-30 00:56"
+  },
+  {
+    "id": 26,
+    "title": "[Dream] 全栈 × dream_实践者",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:47",
+    "updated_at": "2026-05-29 17:47",
+    "archived_at": "2026-05-30 00:56"
+  },
+  {
+    "id": 27,
+    "title": "[Dream] 核心 × dream_实践者",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:50",
+    "updated_at": "2026-05-29 17:50",
+    "archived_at": "2026-05-30 00:56"
+  },
+  {
+    "id": 28,
+    "title": "[Dream] auto × multi-agent",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "archived",
+    "agent_notes": "",
+    "created_at": "2026-05-29 17:50",
+    "updated_at": "2026-05-29 17:50",
+    "archived_at": "2026-05-30 00:56"
+  }
+]

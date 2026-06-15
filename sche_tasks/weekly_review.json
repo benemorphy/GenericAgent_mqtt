@@ -1,0 +1,7 @@
+{
+  "schedule": "09:00",
+  "repeat": "weekly",
+  "enabled": true,
+  "max_delay_hours": 12,
+  "prompt": "执行每周系统复盘：1) 检查过去一周的监控日志 (temp/supervisor_monitor.log) 2) 检查 scheduler 日志 (sche_tasks/scheduler.log) 3) 统计健康检查报告中的异常次数 4) 输出周复盘报告，包含趋势分析和改进建议。"
+}

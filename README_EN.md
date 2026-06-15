@@ -38,14 +38,31 @@ The agent system inherited from GenericAgent, enhanced with MQTT communication.
 | `dream_engine.py` | Agent Dreaming: memory digestion & cross-domain association |
 | `reflection_engine.py` | Post-task introspection & skill extraction |
 | `brainstorm_swarm.py` | Brainstorm Swarm: multi-Agent ideation |
-| `curiosity_engine.py` | Curiosity Engine: proactive exploration |
+| `curiosity_board_client.py` | Curiosity Engine: proactive exploration (client) |
+| `curiosity_hooks.py` | Curiosity Engine hook integration |
+| `curiosity_trigger.py` | Curiosity Engine trigger strategies |
 | `inspiration_board.py` | MQTT-driven creative collaboration |
 | `gui_vision.py` | GUI vision perception & OCR |
 | `feishu_reminder.py` | Feishu Bot integration |
 | `file_search.py` | File search (Everything SDK) |
 | `security_audit.py` | Pre-push security audit |
+| `agent_runner.py` | Standalone agent runner: `python agent_runner.py name cap1,cap2` |
+| `config_service.py` | Unified config loading & hot-reload |
+| `constraint_dashboard.py` | Constraint state awareness dashboard |
+| `failure_tracker.py` | Failure-driven learning tracker |
+| `hitl_approval.py` | Human-in-the-loop approval manager |
+| `observability.py` | Structured logging + Prometheus metrics |
+| `pii_masker.py` | PII masking middleware for LLM calls |
+| `session_compactor.py` | Background L4 session compaction |
+| `skill_review.py` | Spaced repetition skill review |
+| `step_detector.py` | Real-time step detection for tool execution |
+| `turn_policy.py` | Pluggable turn strategy chain |
 | `llm_providers/` | Unified LLM Provider interface |
 | `simphtml_rs/` | Rust HTML simplification engine |
+| `metaso_search.py` | Metaso search: web search & knowledge acquisition |
+| `browser_service.py` | Browser automation service |
+| `todo_manager.py` | Todo management |
+| `diagnosis_agent.py` | Diagnosis agent: system problem investigation |
 
 ---
 
@@ -55,13 +72,12 @@ Standalone communication layer services, designed for VPS deployment.
 
 | Component | Description | Deployment |
 |-----------|-------------|------------|
-| `Mqtt_bbs_server/` | BoardService + Persistence + Scheduler + DAG | `python -m Mqtt_bbs_server.board_service` |
-| `Mqtt_bbs_client/` | BBSClient + Plugin + Registry + Types | `pip install -e ./Mqtt_bbs_client` |
-| `Mqtt_bbs_server/tools/board_service_rs/` | Rust high-performance BoardService | Standalone binary |
-| `Mqtt_bbs_server/tools/mqtt_bbs_rs/` | Rust MQTT BBS components | Standalone binary |
-| `Mqtt_bbs_server/tools/rmqtt_webui_rs/` | Rust MQTT Broker Web dashboard | Standalone binary |
-| `Mqtt_bbs_server/tools/rmqtt_auth_rs/` | Rust MQTT auth extension | Standalone binary |
+| `Mqtt_bbs/` | BoardService + BBSClient + Persistence + Scheduler | `python -m Mqtt_bbs.board_service` |
+| `tools/rmqtt_webui.py` | MQTT Broker Web dashboard | `python tools/rmqtt_webui.py` |
+| `tools/gen_jwt.py` | JWT token generation | Utility script |
+| `tools/secrets.py` | Secrets management | Utility script |
 | `docker/` / `Dockerfile.*` | Docker deployment | `docker-compose up` |
+| `k8s/` | Kubernetes deployment | `kubectl apply -f k8s/` |
 
 ### MQTT BBS Topic Protocol
 
@@ -78,11 +94,8 @@ Standalone communication layer services, designed for VPS deployment.
 # 1. Start MQTT Broker
 rmqtt start
 
-# 2. Start BoardService (Python)
-python -m Mqtt_bbs_server.board_service
-
-# 3. Or use Rust version (high performance)
-cd Mqtt_bbs_server/tools/board_service_rs && cargo run --release
+# 2. Start BoardService
+python -m Mqtt_bbs.board_service
 ```
 
 ---
@@ -130,7 +143,7 @@ ga agent    # Interactive Agent
 With MQTT:
 
 ```bash
-rmqtt start && python -m Mqtt_bbs_server.board_service
+rmqtt start && python -m Mqtt_bbs.board_service
 python agentmain.py --broker-host 127.0.0.1
 ```
 

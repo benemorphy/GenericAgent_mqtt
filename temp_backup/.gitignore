@@ -1,0 +1,124 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+uv.lock
+
+# Editors
+.vscode/
+.idea/
+.vs/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Runtime
+temp/
+tmp/
+*.log
+**log.*
+!GA/tools/l35_log.py
+model_responses.txt
+auth.json
+
+# Environments & secrets
+.env
+.env.*
+mykey*.py
+profiles/*.py
+!profiles/__init__.py
+agent.env
+*token*
+*password*
+*secret*
+
+# Memory system — track SOPs, ignore raw data & DB
+memory/L4_raw_sessions/*
+!memory/L4_raw_sessions/compress_session.py
+memory/*.db
+memory/*.zip
+
+# Tests — only ignore __pycache__
+tests/__pycache__/
+
+# Config — track docker configs, ignore sync tool
+config/sync.ffs_db
+
+# Skills learning — track metadata, ignore practice data
+skills_learning/
+!skills_learning/**/[rt]racker*.json
+!skills_learning/**/[rt]eview_*.json
+!skills_learning/**/failure_*.json
+!skills_learning/**/skill_*.json
+skills_learning/**/practice/
+skills_learning/**/all_cases*.json
+.llm_cache/
+.claude/
+.trae/
+Snapshots/
+images/
+!assets/images/
+
+# Runtime data
+data/
+logs/
+bbs_files/
+*.db
+boards.json
+agent_bbs.db
+sche_tasks/
+
+# Rust
+**/target/
+
+# Archive
+archive/
+CLEAR=1/
+
+# Docs — 外部项目分析文档
+docs/
+!docs/architecture/
+!docs/INDEX.md
+!docs/GA_design_overview.html
+
+# Misc
+skills_learning/
+restore_commit.txt
+temp_tools/
+assets/tmwd_cdp_bridge/config.js
+assets/copilot_proxy.pyw
+*.zip
+*.exe
+*.ffs_db
+
+# GA_viewer — 独立工具集，不上传
+GA_tools/
+
+# mqtt_bbs — 已重命名为 Mqtt_bbs（大小写重定向）
+mqtt_bbs/
+
+# Config templates
+.env.template
+# Test artifacts
+cookies.txt
+cookies2.txt
+email_cookies.txt
+boards_response.html
+*.pyc
+
+.doubao_user_data/
+
+# Ruff linter cache
+.ruff_cache/
+
+# PyTest cache
+.pytest_cache/

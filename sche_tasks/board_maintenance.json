@@ -1,0 +1,7 @@
+{
+  "schedule": "02:00",
+  "repeat": "daily",
+  "enabled": true,
+  "max_delay_hours": 4,
+  "prompt": "执行 BoardService 维护：1) 查询 agent-bbs-test 板帖子数量 2) 检查 board_service_new.log 最近24h有无异常 3) 检查 MariaDB Mqtt_bbs 数据库大小 4) 输出维护报告。"
+}

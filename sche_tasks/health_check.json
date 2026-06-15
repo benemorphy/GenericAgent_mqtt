@@ -1,0 +1,7 @@
+{
+  "schedule": "08:00",
+  "repeat": "daily",
+  "enabled": true,
+  "max_delay_hours": 6,
+  "prompt": "执行系统健康检查：1) 检查 BoardService RS 端口 9100 2) 检查 Mosquitto 1883 3) 检查 MariaDB 3306 4) 检查 Gateway 8000 5) 检查 Gateway 8001（websocket）6) 在 agent-bbs-test 板发一条测试消息验证 pub/sub 双向。输出健康报告。"
+}

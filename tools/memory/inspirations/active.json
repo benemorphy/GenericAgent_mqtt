@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "title": "[Dream] GIT运维 × MQTT",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 16:46",
+    "updated_at": "2026-06-12 16:46"
+  },
+  {
+    "id": 2,
+    "title": "[Dream] RUST × auto",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 16:46",
+    "updated_at": "2026-06-12 16:46"
+  },
+  {
+    "id": 3,
+    "title": "[Dream] 图分析 × AI创作",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 16:46",
+    "updated_at": "2026-06-12 16:46"
+  },
+  {
+    "id": 4,
+    "title": "[Dream] 核心 × RUST",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 16:46",
+    "updated_at": "2026-06-12 16:46"
+  },
+  {
+    "id": 5,
+    "title": "[Dream] FEISHU × AI创作",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 16:51",
+    "updated_at": "2026-06-12 16:51"
+  },
+  {
+    "id": 6,
+    "title": "[Dream] auto × agent_dreaming",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 16:51",
+    "updated_at": "2026-06-12 16:51"
+  },
+  {
+    "id": 7,
+    "title": "[Dream] 图分析 × 本体论",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 17:51",
+    "updated_at": "2026-06-12 17:51"
+  },
+  {
+    "id": 8,
+    "title": "[Dream] RUST × multi-agent",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 17:52",
+    "updated_at": "2026-06-12 17:52"
+  },
+  {
+    "id": 9,
+    "title": "[Dream] multi-agent × 本体论",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 23:51",
+    "updated_at": "2026-06-12 23:51"
+  },
+  {
+    "id": 10,
+    "title": "[Dream] GIT运维 × MQTT",
+    "detail": "score=0.00: ",
+    "tags": [
+      "dream",
+      "associate"
+    ],
+    "source": "agent",
+    "status": "new",
+    "agent_notes": "",
+    "created_at": "2026-06-12 23:52",
+    "updated_at": "2026-06-12 23:52"
+  }
+]

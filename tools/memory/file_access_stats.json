@@ -1,0 +1,298 @@
+{
+  "metaso_search.md": {
+    "count": 2,
+    "last": "2026-06-11"
+  },
+  "goal_mode_sop.md": {
+    "count": 21,
+    "last": "2026-06-13"
+  },
+  "git_push_sop.md": {
+    "count": 6,
+    "last": "2026-06-13"
+  },
+  "keychain.py": {
+    "count": 3,
+    "last": "2026-06-10"
+  },
+  "board_service_diag_sop.md": {
+    "count": 8,
+    "last": "2026-06-12"
+  },
+  "global_mem_insight.txt": {
+    "count": 39,
+    "last": "2026-06-13"
+  },
+  "feishu_connect_sop.md": {
+    "count": 2,
+    "last": "2026-06-11"
+  },
+  "sop_registry.py": {
+    "count": 3,
+    "last": "2026-06-09"
+  },
+  "verify_sop.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "memory_management_sop.md": {
+    "count": 15,
+    "last": "2026-06-13"
+  },
+  "global_mem.txt": {
+    "count": 43,
+    "last": "2026-06-13"
+  },
+  "gbrain_integration_sop.md": {
+    "count": 2,
+    "last": "2026-06-09"
+  },
+  "knowledge_graph.py": {
+    "count": 10,
+    "last": "2026-06-11"
+  },
+  "mempalace_integration_sop.md": {
+    "count": 4,
+    "last": "2026-06-11"
+  },
+  "clipboard_ocr_sop.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "vision_sop.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "brainstorming_sop.md": {
+    "count": 11,
+    "last": "2026-06-12"
+  },
+  "knowledge_graph.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "codegraph_ontology_bridge_sop.md": {
+    "count": 4,
+    "last": "2026-06-11"
+  },
+  "codegraph_ontology_bridge_deep_research.md": {
+    "count": 9,
+    "last": "2026-06-11"
+  },
+  "ontology_model_evolution.md": {
+    "count": 11,
+    "last": "2026-06-13"
+  },
+  "codegraph_first_sop.md": {
+    "count": 3,
+    "last": "2026-06-11"
+  },
+  "2026-06-09.md": {
+    "count": 14,
+    "last": "2026-06-11"
+  },
+  "supervisor_sop.md": {
+    "count": 3,
+    "last": "2026-06-12"
+  },
+  "knowgt_sop.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "mqtt_persistence_analysis": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "ga_mqtt_bbs_scenarios.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "README.md": {
+    "count": 7,
+    "last": "2026-06-12"
+  },
+  "scheduled_task_sop.md": {
+    "count": 1,
+    "last": "2026-06-09"
+  },
+  "board_stress_sop.md": {
+    "count": 2,
+    "last": "2026-06-09"
+  },
+  "2026-06-10.md": {
+    "count": 11,
+    "last": "2026-06-11"
+  },
+  "gliding_horse_integration_plan.md": {
+    "count": 2,
+    "last": "2026-06-10"
+  },
+  "mqtt_service_config.py": {
+    "count": 1,
+    "last": "2026-06-10"
+  },
+  "mqtt_service_config.md": {
+    "count": 2,
+    "last": "2026-06-10"
+  },
+  "plan_sop.md": {
+    "count": 1,
+    "last": "2026-06-10"
+  },
+  "llm_cache_optimization_plan.md": {
+    "count": 21,
+    "last": "2026-06-12"
+  },
+  "mempalace_bridge.py": {
+    "count": 2,
+    "last": "2026-06-11"
+  },
+  "daily_logs": {
+    "count": 3,
+    "last": "2026-06-11"
+  },
+  "goal_hive_sop.md": {
+    "count": 4,
+    "last": "2026-06-11"
+  },
+  "research_synthesis_sop.md": {
+    "count": 8,
+    "last": "2026-06-11"
+  },
+  "oracle_ontology_sop.md": {
+    "count": 6,
+    "last": "2026-06-11"
+  },
+  "cache_monitor.md": {
+    "count": 3,
+    "last": "2026-06-12"
+  },
+  "autonomous_operation_sop.md": {
+    "count": 2,
+    "last": "2026-06-12"
+  },
+  "rust_env_config.md": {
+    "count": 2,
+    "last": "2026-06-11"
+  },
+  "2026-06-11.md": {
+    "count": 10,
+    "last": "2026-06-13"
+  },
+  "memory": {
+    "count": 3,
+    "last": "2026-06-11"
+  },
+  "encoding_lesson_sop.md": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "skills_learned_from_anthropic_kwp.md": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "failure_driven_learning_sop.md": {
+    "count": 3,
+    "last": "2026-06-13"
+  },
+  "skills_learning_sop.md": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "memory_leak_diagnosis_sop.md": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "meridian_ontology.md": {
+    "count": 7,
+    "last": "2026-06-11"
+  },
+  "enterprise_social_governance_ontology.md": {
+    "count": 5,
+    "last": "2026-06-11"
+  },
+  "meridians_perspective_on_ontology.md": {
+    "count": 7,
+    "last": "2026-06-11"
+  },
+  "search_skills_sop.md": {
+    "count": 2,
+    "last": "2026-06-11"
+  },
+  "mempalace_codegraph_bridge.md": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "mempalace_codegraph_bridge.py": {
+    "count": 2,
+    "last": "2026-06-11"
+  },
+  "knowledge_graph": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "mempalace_bridge": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "ontology_model_evolution": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "meridian_ontology": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "hybrid_query.py": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "codegraph_debug_sop.md": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "ga_code_slim_plan.md": {
+    "count": 1,
+    "last": "2026-06-11"
+  },
+  "2026-06-12.md": {
+    "count": 8,
+    "last": "2026-06-13"
+  },
+  "task_planning.md": {
+    "count": 1,
+    "last": "2026-06-12"
+  },
+  "subagent.md": {
+    "count": 1,
+    "last": "2026-06-12"
+  },
+  "2026-06-13.md": {
+    "count": 4,
+    "last": "2026-06-13"
+  },
+  "agent_tier_routing_sop.md": {
+    "count": 2,
+    "last": "2026-06-13"
+  },
+  "courseware_diagram_sop.md": {
+    "count": 2,
+    "last": "2026-06-13"
+  },
+  "compress_session.py": {
+    "count": 1,
+    "last": "2026-06-13"
+  },
+  "graph_ai_creation_implementation_plan.md": {
+    "count": 1,
+    "last": "2026-06-13"
+  },
+  "ask_before_fork_sop.md": {
+    "count": 3,
+    "last": "2026-06-13"
+  },
+  "deviation_interception.md": {
+    "count": 1,
+    "last": "2026-06-13"
+  }
+}

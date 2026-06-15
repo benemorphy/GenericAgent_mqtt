@@ -1,0 +1,1 @@
+{"ts": 1778726813.1692114, "response": "[\n    {\"topic\": \"SQL查询基础（SELECT、JOIN、子查询等核心语法）\", \"confidence\": 95},\n    {\"topic\": \"数据库设计与规范化（表结构、索引、范式）\", \"confidence\": 90},\n    {\"topic\": \"SQL性能优化（查询计划、索引优化、慢查询调优）\", \"confidence\": 85},\n    {\"topic\": \"事务与并发控制（ACID、锁机制、隔离级别）\", \"confidence\": 80},\n    {\"topic\": \"SQL安全实践（防注入、权限管理、数据加密）\", \"confidence\": 75}\n]"}

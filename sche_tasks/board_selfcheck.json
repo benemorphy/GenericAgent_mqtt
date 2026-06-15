@@ -1,0 +1,7 @@
+{
+  "schedule": "00:00",
+  "repeat": "every_6h",
+  "enabled": true,
+  "max_delay_hours": 2,
+  "prompt": "执行 BoardService RS 高频自检：1) 用独立paho客户端连接1883 2) 在 agent-bbs-test 板注册匿名agent 3) 发一条测试帖 4) 查询确认帖子存在 5) 记录延迟和状态。如果任何步骤失败，标记紧急。"
+}

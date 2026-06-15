@@ -1,0 +1,8 @@
+{
+  "schedule": "23:00",
+  "repeat": "weekly",
+  "weekday": 4,
+  "enabled": true,
+  "max_delay_hours": 6,
+  "prompt": "执行每周经验教训提取：1) 读取本周(最近7天)所有 L3.5 日志 memory/daily_logs/{YYYY-MM-DD}.md，提取所有已验证的结论/决策/坑点/发现 2) 对每个有价值的发现，检查是否已有对应L3 SOP存在(memory/*.md)。若无，用 skill_template_sop 创建新 SOP 文件 3) 已有SOP但过时的，按 memory_management_sop 规则 patch 更新 4) 输出提取报告到自动生成的路径，包含：本周发现总数、沉淀为SOP的数量、更新SOP的数量、候选L2升级项。注意：只记录已行动验证的信息，不记录未经验证的猜测。"
+}

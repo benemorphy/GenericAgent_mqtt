@@ -3,9 +3,11 @@ services:
     image: eclipse-mosquitto:2
     ports:
       - "${MQTT_PORT:-1883}:1883"
+      - "${MQTT_TLS_PORT:-8883}:8883"
     volumes:
       - ./docker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - ./docker/mosquitto_retain.conf:/mosquitto/config/conf.d/retain.conf:ro
+      - ./docker/certs:/mosquitto/config/certs:ro
       - mosquitto_data:/mosquitto/data
     healthcheck:
       test: ["CMD", "mosquitto_sub", "-t", "$$SYS/broker/version", "-C", "1"]
